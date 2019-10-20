@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>network on Software Note</title>
+    <link>/categories/network/</link>
+    <description>Recent content in network on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 29 Jan 2015 23:14:14 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/network/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DNS server</title>
+      <link>/posts/dns/</link>
+      <pubDate>Thu, 29 Jan 2015 23:14:14 +0800</pubDate>
+      
+      <guid>/posts/dns/</guid>
+      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
+Installation sudo apt-get install bind9 bind9-doc dnsutils  /etc/bind  named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係  add blog.example.com name.conf.options 不用改
+name.conf.local 正解 :
+zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; };   反解只有 ISP 可以做到, 所以我就不設定了
+ /etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
+改設定要記得增加Serial值</description>
+    </item>
+    
+    <item>
+      <title>Network</title>
+      <link>/posts/network/</link>
+      <pubDate>Fri, 16 Jan 2015 12:15:03 +0800</pubDate>
+      
+      <guid>/posts/network/</guid>
+      <description>Load Balance 分幾種, 常見的是 L3, L7
+L3 是 IP 層, 是以指派 IP 到後面的主機
+L7 是 HTTP 層, 分析 Domain 或 Header 再指派到後面的主機, 效率較 L3 快
+長連線 飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著
+habit 是 tcp 三項交握的 sync 封包
+TCP / UDP 查看系統 TCP 相關設定 MacOS:
+sysctl net.inet.tcp  TCP timeout OS 預設會對 connection 設 timeout, 如果這段期間 connection 是閒置的(沒有 write, read, heartbeat), connection 就會被切斷
+keep alive 發送心跳包, 用來偵測連線是否還正常, server/client 都可以設定, 可以自已調整心跳的頻率, 它的功能只有探測而且只有在 write/read 沒有在發送的時候才會去發送心跳包</description>
+    </item>
+    
+    <item>
+      <title>Linux iptable</title>
+      <link>/posts/firewall/</link>
+      <pubDate>Mon, 20 Jan 2014 23:24:00 +0000</pubDate>
+      
+      <guid>/posts/firewall/</guid>
+      <description>基本設定 /etc/iptables.firewall.rules:
+*filter # Allow all loopback (lo0) traffic and drop all traffic to 127/8 that doesn&#39;t use lo0 -A INPUT -i lo -j ACCEPT -A INPUT -d 127.0.0.0/8 -j REJECT # Accept all established inbound connections -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Allow all outbound traffic - you can modify this to only allow certain traffic -A OUTPUT -j ACCEPT # Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).</description>
+    </item>
+    
+    <item>
+      <title>DHCP</title>
+      <link>/posts/dhcp/</link>
+      <pubDate>Sun, 19 Jan 2014 17:09:00 +0000</pubDate>
+      
+      <guid>/posts/dhcp/</guid>
+      <description>發送流程 [1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server 來源位址 : 0.0.0.0:68 目的位址 : 255.255.255.255:67
+當 client 開機或重啟網卡時會發出此的封包
+[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client 來源位址 : 192.168.181.30:67 目的位址 : 255.255.255.255:68
+收到請求會先依據 client 的 MAC 來判斷以下
+ 到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端； 若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端； 若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。  接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主</description>
+    </item>
+    
+    <item>
+      <title>TCP Three-way handshake</title>
+      <link>/posts/tcp-three-way-handshake/</link>
+      <pubDate>Sun, 19 Jan 2014 15:20:00 +0000</pubDate>
+      
+      <guid>/posts/tcp-three-way-handshake/</guid>
+      <description>瀏覽器向 server 發送請求 : 瀏覽器發送 : 指定 seq
+22:39:13.832224 IP 42.79.253.189.29729 &amp;gt; 172.31.23.23.8080: Flags [S], seq 3605791234, win 65535, options [mss 1394,nop,wscale 4,nop,nop,TS val 401990828 ecr 0,sackOK,eol], length 0  server 回應 : 將 seq+1 放到 ack, 並且指定 seq
+22:39:13.832271 IP 172.31.23.23.8080 &amp;gt; 42.79.253.189.29729: Flags [S.], seq 4067821211, ack 3605791235, win 28960, options [mss 1460,sackOK,TS val 333436167 ecr 401990828,nop,wscale 7], length 0  瀏覽器發送 : ack = 1 用來回應上一個封包並且確認封包正確</description>
+    </item>
+    
+    <item>
+      <title>Linux netstat</title>
+      <link>/posts/netstat/</link>
+      <pubDate>Sun, 19 Jan 2014 14:47:00 +0000</pubDate>
+      
+      <guid>/posts/netstat/</guid>
+      <description>常用  -t: tcp -u: udp -n: don&amp;rsquo;t resolve names -l: listening -p: show pid or program name -i: Display a table of all network interfaces. -a: Show both listening and non-listening sockets. 如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行  列出在監聽的網路服務:
+netstat -tunl  列出所有的連線
+netstat -antp  列出已連線的網路連線狀態:
+netstat -tun  刪除已建立或在監聽當中的連線:
+netstat -tunp #看他的pid ex: 10270 kill -9 10270 netstat -nltp  顯示 timer</description>
+    </item>
+    
+    <item>
+      <title>Wireless Network</title>
+      <link>/posts/wireless-network-setting/</link>
+      <pubDate>Sun, 15 Dec 2013 20:57:00 +0000</pubDate>
+      
+      <guid>/posts/wireless-network-setting/</guid>
+      <description>安裝 wpa client sudo apt-get install wireless-tools wpasupplicant  掃描無線網路 sudo iwlist wlan0 scan | grep SSID ESSID:&amp;quot;hinet-net4690695&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0-1&amp;quot; ESSID:&amp;quot;kking22&amp;quot; ESSID:&amp;quot;TP-LINK_5499B2&amp;quot; ESSID:&amp;quot;HTC ONE X - test&amp;quot; ESSID:&amp;quot;P880&amp;quot;   等等要將 SSID 填入 /etc/network/interfaces wpa-ssid 的值
+ 新增 /etc/network/interfaces : auto lo iface lo inet loopback auto eth0 iface eth0 inet dhcp auto wlan0 allow-hotplug wlan0 iface wlan0 inet dhcp wpa-ssid My-Hone-Wireless wpa-psk My-Password    SSID 就是無線網路的名稱 WPA-PSK金鑰 就是無線網路的密碼   重新啟動無線網路介面 sudo ifdown wlan0 sudo ifup wlan0  成功連線的結果 :</description>
+    </item>
+    
+    <item>
+      <title>Linux Network Sniffer Tools</title>
+      <link>/posts/listen-packet/</link>
+      <pubDate>Sun, 15 Dec 2013 20:39:00 +0000</pubDate>
+      
+      <guid>/posts/listen-packet/</guid>
+      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
+    </item>
+    
+    <item>
+      <title>Linux nmap</title>
+      <link>/posts/nmap/</link>
+      <pubDate>Sun, 15 Dec 2013 18:00:00 +0000</pubDate>
+      
+      <guid>/posts/nmap/</guid>
+      <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
+安裝 ubuntu :
+sudo apt-get install nmap  使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010  或
+$ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 port [tcp/mysql] succeeded!   -z: Specifies that nc should just scan for listening daemons, without sending any data to them. It is an error to use this option in conjunction with the -l option.</description>
+    </item>
+    
+  </channel>
+</rss>

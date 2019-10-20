@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>octopress on Software Note</title>
+    <link>/categories/octopress/</link>
+    <description>Recent content in octopress on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 24 Mar 2015 10:27:48 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/octopress/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>jekyll Octopress</title>
+      <link>/posts/octopress/</link>
+      <pubDate>Tue, 24 Mar 2015 10:27:48 +0000</pubDate>
+      
+      <guid>/posts/octopress/</guid>
+      <description>介紹 一個寫 blog 的 framework, 使用 markdown 語法快速的記下筆記, 再利用 generate 指令幫你生成 html, 你可以 deploy 到 github, 直接使用 github 當作你的 host, 就不需要自己再去找主機架設了, 並且使用 git 做版控, 未來要搬家到其他支援 markdown 語法的服務都非常方便, 也不怕文章遺失問題, 唯一缺點就是有點使用門檻
+目前最新版本是 3.0
+運作原理 source 存放著主程式，當 generate 時會產生在 /public 下，如果執行 preview 其實是看到這資料夾底下的檔案
+當執行 deploy 時，會將原本的 _deploy 刪除，並將 /public 資料 copy 為 _deploy 並且 push 到 master
+所以 github 上的 master 就是你的 _deploy 資料夾，在這資料夾外面，包含根目錄等等都是 source
+而你輸入 example.github.io 就會連到 example.github.io 的 master branch</description>
+    </item>
+    
+  </channel>
+</rss>

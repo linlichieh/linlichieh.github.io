@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regex on Software Note</title>
+    <link>/categories/regex/</link>
+    <description>Recent content in regex on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 16 Jan 2013 18:10:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/regex/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Regular Expression</title>
+      <link>/posts/regular-expression/</link>
+      <pubDate>Wed, 16 Jan 2013 18:10:00 +0000</pubDate>
+      
+      <guid>/posts/regular-expression/</guid>
+      <description>需要被脫逸的符號 :  \ : 可以脫逸字元 [ ] : [xyz] 比對中括孤內的任一個字元 , 但不會將配對到的字串存入RegExp變數中 ( ) : 合起來 (x) 比對x並將符合的部份存入一個變數, /(a) and (b)/ 可以對 ‘aaa and bb’ 中的’aaa’和’bb’, 並將這兩個比對得到的字串設定至數字 RegExp.$1 和 RegExp.$2 . : 比對任何一個字元 , 但換行符號不算 ^ : 啟始位置 $ : 結束位置 * : 比對前一個字元 , 零次或更多次 , 等於{0,} ? : 比對前一個字元 , 零次或一次 , 等於{0,1} + : 比對前一個字元 , 一次或更多次 , 也等於 {1,} | : 或者 , 等於OR , 邏輯運算子(Logical Operators)   左中括號([)需脫逸 , 但右中括號(])不需脫逸 , 左下到右上的斜線(/)也需要脫逸</description>
+    </item>
+    
+  </channel>
+</rss>

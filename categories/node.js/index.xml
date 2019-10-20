@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>node.js on Software Note</title>
+    <link>/categories/node.js/</link>
+    <description>Recent content in node.js on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 28 Oct 2014 23:03:59 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/node.js/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Node.js guard</title>
+      <link>/posts/guard/</link>
+      <pubDate>Tue, 28 Oct 2014 23:03:59 +0800</pubDate>
+      
+      <guid>/posts/guard/</guid>
+      <description>介紹 guard 是一個 node.js 的套件, 它可以偵測資料夾下面的檔案發生變動然候再去做相對應的事, 修改的檔案變動就 reload 瀏覽器或執行一段 shell
+Install rvm 首先要先安裝 rvm, 我們再利用 rum 安裝 guard
+[1] Install
+sudo apt-get update sudo apt-get install curl curl -L https://get.rvm.io | bash -s stable --auto-dotfiles   如果執行失敗照著指示做 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3, 然候再執行一次安裝指令
+ [2] Exec source /etc/profile.d/rvm.sh
+rvm requirements  [3] Install ruby
+rvm install ruby rvm use ruby --default  [4] Install RubyGems
+rvm rubygems current  安裝 guard 及 guard-livereload guard 是偵測檔案變動你再跟它說要做什麼事</description>
+    </item>
+    
+    <item>
+      <title>Node.js gulp</title>
+      <link>/posts/gulp/</link>
+      <pubDate>Thu, 02 Oct 2014 00:28:58 +0800</pubDate>
+      
+      <guid>/posts/gulp/</guid>
+      <description>介紹 使用 node.js 的 gulp 套件可以偵測當 .scss 發生變動時可以自動 compile 並放到對應目錄
+Install gulp npm install gulp npm install gulp-compass  gulpfile.js :
+var gulp = require(&#39;gulp&#39;); var compass = require(&#39;gulp-compass&#39;); gulp.task(&#39;default&#39;, function() { gulp.run(&#39;compass&#39;); gulp.watch([ &#39;../../sass/**&#39;, ], function(event) { gulp.run(&#39;compass&#39;); }); }); gulp.task(&#39;compass&#39;, function() { gulp.src(&#39;../../sass/**&#39;) .pipe(compass({ comments: false, css: &#39;../../../public/static/css&#39;, // css folder sass: &#39;../../sass&#39;, // scss folder })); });  在 package.json 下執行 npm install</description>
+    </item>
+    
+    <item>
+      <title>Node.js</title>
+      <link>/posts/nodejs/</link>
+      <pubDate>Mon, 26 May 2014 12:30:54 +0800</pubDate>
+      
+      <guid>/posts/nodejs/</guid>
+      <description>Install node.js &amp;amp; npm (package manager) &amp;amp; nvm (version manager) Ubuntu sudo apt-get update sudo apt-get install nodejs nodejs-legacy sudo apt-get install npm git clone git://github.com/creationix/nvm.git ~/.nvm . ~/.nvm/nvm.sh  Add path to .bashrc
+echo &amp;quot;. ~/.nvm/nvm.sh&amp;quot; &amp;gt;&amp;gt; ~/.bashrc  Amazon Linux (?) sudo yum install gcc-c++ make sudo yum install nodejs npm --enablerepo=epel  Websocket example npm install websocket -gd  test.js :
+var sys = require(&amp;quot;sys&amp;quot;), my_http = require(&amp;quot;http&amp;quot;); my_http.</description>
+    </item>
+    
+  </channel>
+</rss>

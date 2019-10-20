@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>oauth on Software Note</title>
+    <link>/categories/oauth/</link>
+    <description>Recent content in oauth on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 26 Nov 2013 22:43:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/oauth/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>PHP yahoo oauth</title>
+      <link>/posts/php-yahoo-oauth/</link>
+      <pubDate>Tue, 26 Nov 2013 22:43:00 +0000</pubDate>
+      
+      <guid>/posts/php-yahoo-oauth/</guid>
+      <description>申請 [1] 到Yahoo! Developer Network登入後 -&amp;gt; 右上角 My Projects -&amp;gt; Create a Project
+[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret
+[3] 填入 domain 後記得驗證它, 才能用於線上
+登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter) Oauth 原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子
+YQL 原以為做登入 Oauth 取得的 GUID 再透過 YQL Console 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK
+例如我想取得使用者資料 YQL Console 執行
+select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot;  完成後頁面下面有 url : http://query.</description>
+    </item>
+    
+    <item>
+      <title>PHP Weibo Oauth</title>
+      <link>/posts/php-weibo-oauth/</link>
+      <pubDate>Tue, 26 Nov 2013 16:23:00 +0000</pubDate>
+      
+      <guid>/posts/php-weibo-oauth/</guid>
+      <description>申請  微博申請非常的麻煩, 需要負責人的身份證件等等, 過關後才可以申請網站服務
+ 在申請前最好先了解 &amp;ldquo;我的應用&amp;rdquo; 及 &amp;ldquo;我的網站&amp;rdquo; 的差異, 再申請適合你網站的服務
+  1) 如果你的網站純粹只是要串接微博登入, 就選擇我的網站 2) 我的應用是給如手機登入或是如 facebook app 那樣的去申請
+申請我的網站 [1] 申請
+ 在開發平台頁面 點擊 管理中心 -&amp;gt; 我的網站 -&amp;gt; 添加網站 (接下來審核的步驟可以先略過) 網站名稱可以先隨便寫，而網站域名必須為已經註冊的域名 (EX : www.example.com 以下均用此 domain 當例子) 添加網站成功後，會得到 App Key 和 App Secret ，這兩個程式裡所需要的參數  [2] 網站信息 -&amp;gt; 高級信息, 在安全設置裡面，填寫網站的域名: www.example.com 及 IP: 127.0.0.1
+[3] 網站信息 -&amp;gt; 測試賬號, 設置一個管理賬號
+[4] 將域名綁定到 127.0.0.1
+ 因為在做 Oauth 回來後會導向你自己設定的 callback_url, 而這個 callback_url 的域名也是你在步驟 [1] 所申請的, 如果你沒有將這個域名在本機導向 127.</description>
+    </item>
+    
+  </channel>
+</rss>

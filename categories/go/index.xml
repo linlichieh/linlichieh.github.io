@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on Software Note</title>
+    <link>/categories/go/</link>
+    <description>Recent content in go on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 22 Dec 2018 15:50:19 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go Scheduler</title>
+      <link>/posts/go-scheduler/</link>
+      <pubDate>Sat, 22 Dec 2018 15:50:19 +0800</pubDate>
+      
+      <guid>/posts/go-scheduler/</guid>
+      <description>What is the Go Scheduler? Go scheduler’s purpose is to efficiently distribute goroutines over multiple OS threads.
+Kernel thread is expensive; therefore, reducing and reusing kernel threads are keys.
+  initial goroutine stack comsumes 2 KB memory default thread stack comsumes 1 MB memory   Scheduling Basics P (Processor)  It is given a Logical Processor (P) for every virtual core. Runtime keeps track of each G and maps them onto Logical Processors.</description>
+    </item>
+    
+    <item>
+      <title>Go AWS</title>
+      <link>/posts/go-aws/</link>
+      <pubDate>Mon, 12 Sep 2016 12:54:44 +0800</pubDate>
+      
+      <guid>/posts/go-aws/</guid>
+      <description>如何使用 AWS API 在使用它的任何一個 service 前要先準備好 credential 然候再建立 session，然候再跟 AWS services 互動，
+Session 可以讓全部 AWS services 共用 (在使用各服務前會需要用 session 建立) ，最好 cache 起來，
+每次要用之前再從 cache 拿出來， 避免每一次重新建立連線耗費資源。
+[1] 初始化 credential 可以使用 aws-cli 指令 aws configure 幫你產生或手動建立檔案
+~/.aws/config
+[這裡填 profile name] region = us-west-2 output = json  ~/.aws/credentials
+[這裡填 profile name] aws_access_key_id = A******************A aws_secret_access_key = 9**************************************V  常用的 credential 有幾種，以下會按照順序，哪個可以取到就使用
+func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config := aws.NewConfig() var ProviderList []credentials.</description>
+    </item>
+    
+    <item>
+      <title>Go Frameworks</title>
+      <link>/posts/go-frameworks/</link>
+      <pubDate>Sun, 04 Sep 2016 10:21:39 +0800</pubDate>
+      
+      <guid>/posts/go-frameworks/</guid>
+      <description>Beego 上手資源  官網文件 作者中文影片教學  安裝 按照官網指令即可
+Routers 基本語法
+beego.Router(&amp;quot;/api/:id&amp;quot;, &amp;amp;controllers.RController{}) beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;*:ListFood&amp;quot;) # * = ANY, 可替換為 post / put beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get,post:ApiFunc&amp;quot;) # 指定兩個 Http method 到同一個 func beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get:GetFunc;post:PostFunc&amp;quot;) # 指定到不同 Http method 即不同的 Func beego.AutoRouter(&amp;quot;&amp;amp;controllers.ObjectController{}) # 自動 Match /object/blog/2013/09/12 -&amp;gt; ObjectController 的 blog 方法，參數: map[0: 2013 1:09 2:12]  Match  /api:id : Match /api/123 (即使沒有 :id, :id 相當於 .* 任意字元) /api/:id! : Match /api/123 (:id 一定要有值) /api/:id([0-9]+) = api/:id:int : 指定要配對的字元 /news/:all : Match /news/path/to/123.</description>
+    </item>
+    
+    <item>
+      <title>Go Testing</title>
+      <link>/posts/go-testing/</link>
+      <pubDate>Thu, 05 Feb 2015 18:01:23 +0800</pubDate>
+      
+      <guid>/posts/go-testing/</guid>
+      <description>Commands Test all file
+go test  Test all file including subdirectory
+go test ./...   ./... will cache your testing result
+ Expires all test results
+go clean -testcache  Ignore specific package
+go test `go list ./... | grep -v your_go_app/utilities`  Test specific package
+go test your_go_app/utilities/ip  Test specific func
+go test -run TestListEvent  Benchmark
+go test -bench=.  Race detection
+go test -race  Coverage Show coverage of code</description>
+    </item>
+    
+    <item>
+      <title>Go Third-party Packages</title>
+      <link>/posts/go-third-party-packages/</link>
+      <pubDate>Tue, 06 Jan 2015 16:11:25 +0800</pubDate>
+      
+      <guid>/posts/go-third-party-packages/</guid>
+      <description>redigo github.com/garyburd/redigo/redis  Connect to redis server One connection
+conn, err := redis.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;:6379&amp;quot;) if err != nil { panic(err) } defer conn.Close()  Connection pool
+pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections in the pool. MaxActive: 5, // Maximum number of connections allocated by the pool at a given time. IdleTimeout: 20 * time.Second, // Close connections after remaining idle for this duration. Applications should set the timeout to a value less than the server&#39;s timeout.</description>
+    </item>
+    
+    <item>
+      <title>Go GUI</title>
+      <link>/posts/go-gui/</link>
+      <pubDate>Mon, 27 Jan 2014 23:19:00 +0000</pubDate>
+      
+      <guid>/posts/go-gui/</guid>
+      <description>therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本
+如果都安裝成功後跑 basic example 就可以看到 GUI 介面了
+如果跑 $GOPATH/bin/qtsetup 遇到這個錯誤 Project ERROR: Could not resolve SDK Path for &#39;macosx&#39; 執行 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer, 再跑一次
+Cross compile (未完成) linux 似乎可以 cross compile 到 windows, 使用官方提供的 docker 並按步驟安裝 cross compile 需要的套件, 但一直遇到環境問題, 很多套件無法順利安裝, 便放棄了
+Windows 安裝 walk 及 rsrc
+1) Walk 是一款 golang 的 GUI Framework</description>
+    </item>
+    
+    <item>
+      <title>Go Basics</title>
+      <link>/posts/go-basics/</link>
+      <pubDate>Mon, 20 Jan 2014 22:25:00 +0000</pubDate>
+      
+      <guid>/posts/go-basics/</guid>
+      <description>Declare var t *T = new(T) // t := new(T) var a uint64 = 22 // a := uint64(22) a := 0x12 // 18  Multiple variables
+ff, xx := 3, &amp;quot;cc&amp;quot;  []interface{}
+hMap := make(map[string]interface{}) hMap[&amp;quot;ID&amp;quot;] = &amp;quot;06&amp;quot; hMap[&amp;quot;Info&amp;quot;] = map[string]string{ &amp;quot;Name&amp;quot;: &amp;quot;Jack&amp;quot; } resque2 := map[string]interface{}{ &amp;quot;class&amp;quot;: &amp;quot;hnap&amp;quot;, &amp;quot;args&amp;quot;: []interface{}{hMap}, }  map[string]interface{}
+x := map[string]interface{}{ &amp;quot;foo&amp;quot;: []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}, &amp;quot;bar&amp;quot;: &amp;quot;foo&amp;quot;, &amp;quot;baz&amp;quot;: 10.4, }  map[string]interface{}
+t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&amp;quot;] = &amp;quot;realtime&amp;quot; t[&amp;quot;data&amp;quot;] = []map[string]string{ { &amp;quot;did&amp;quot;: &amp;quot;did1&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action1&amp;quot;, }, { &amp;quot;did&amp;quot;: &amp;quot;did2&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action2&amp;quot;, }, } 但不可以, 無法這樣給值 var t map[string]interface{} t[&amp;quot;xxx&amp;quot;] = &amp;quot;xxx&amp;quot;  map[string]map[string]string</description>
+    </item>
+    
+    <item>
+      <title>Go Installation</title>
+      <link>/posts/go-installation/</link>
+      <pubDate>Mon, 20 Jan 2014 22:23:00 +0000</pubDate>
+      
+      <guid>/posts/go-installation/</guid>
+      <description>Linux ／ Mac (最後更新: 2016-03-28)
+[1] download golang source Linux : https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
+Mac : https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz
+[2] Install Linux : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
+Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
+ 如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
+ [3] Create essential folders 在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin
+ src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方 pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它 bin 是程式編譯後產生的 binary 執行檔  .</description>
+    </item>
+    
+    <item>
+      <title>Go Built-in Packages</title>
+      <link>/posts/go-built-in-packages/</link>
+      <pubDate>Mon, 20 Jan 2014 13:05:03 +0800</pubDate>
+      
+      <guid>/posts/go-built-in-packages/</guid>
+      <description>fmt 輸出固定長度 fmt.Printf(&amp;quot;ID : %-10s&amp;quot;, id) // 十個字元的長度, 向左對齊 fmt.Printf(&amp;quot;ID : %10s&amp;quot;, id) // 十個字元的長度, 向右對齊 fmt.Printf(&amp;quot;ID : %.10s&amp;quot;, id) // 印出頭十個字元 fmt.Printf(&amp;quot;%q&amp;quot;, []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}) // 印 slice `[&amp;quot;a&amp;quot; &amp;quot;b&amp;quot;]`  前面補 0 fmt.Sprintf(&amp;quot;%02d:%02d&amp;quot;, 5, 3) // 05:03  接收 command 輸入的值 fmt.Print(&amp;quot;Enter a number: &amp;quot;) var input float64 fmt.Scanf(&amp;quot;%f&amp;quot;, &amp;amp;input)  印出顏色 fmt.Println(&amp;quot;\x1b[31;1mHello, World!\x1b[0m&amp;quot;)  最簡單的方法, 不過有個缺點是它會是 string fmt.Sprintf(&amp;quot;%.7f&amp;quot;, 123.123456789) // 123.1234568  不改變本身的型態 val := 123.123456789 pow10_n := math.</description>
+    </item>
+    
+  </channel>
+</rss>

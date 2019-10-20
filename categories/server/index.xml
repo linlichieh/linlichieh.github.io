@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>server on Software Note</title>
+    <link>/categories/server/</link>
+    <description>Recent content in server on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 May 2016 08:29:59 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/server/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deploy on Heroku</title>
+      <link>/posts/deploy-on-heroku/</link>
+      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
+      
+      <guid>/posts/deploy-on-heroku/</guid>
+      <description>介紹 Heroku 是雲端主機供應商，它有提供免費方案，提供 DB 及 mailgun etc.，如果只是一個小型不複雜的專案使用它還蠻合適的
+如何 Deploy 到 Heroku 1) 安裝 Heroku 的 command 並登入 heroku login  2) 到你的 Repository 目錄裡 3) Push 你的 code 到 heroku  Production 不能使用 sqlite3，詳細說明在這 Production 要用 PostgreSQL，最好是 Dev 及 Production 都用 PostgreSQL Production 一定要有 gem &#39;pg&#39; 否則即使 deploy 成功，頁面也會噴錯 Gemfile.lock 必須要有，不要在 .gitignore 加上它  這裡可以先做個小修改，讓 App 能順利 deploy 再說，Postgres 安裝再另外解決，Gemfile :
+gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :production  如果 PostgreSQL 還沒安裝，在 bundle install 先略過它</description>
+    </item>
+    
+    <item>
+      <title>FTP server</title>
+      <link>/posts/ftp/</link>
+      <pubDate>Wed, 20 May 2015 11:48:47 +0800</pubDate>
+      
+      <guid>/posts/ftp/</guid>
+      <description>使用 vsftpd 安裝 sudo apt-get update sudo apt-get install vsftpd  設定 /etc/vsftpd.conf write_enable=YES local_umask=022 chroot_local_user=YES allow_writeable_chroot=YES  開放 root 帳號登入 /etc/ftpusers : 把 root 註解
+啟動 sudo service vsftpd restart  記得開放 21 port 現在 user 都可以登入到自己家目錄了
+指令 連線
+ftp example.com sftp example.com  操作
+ls 查看 Server 端的目錄或檔案 pwd 查看 Server 端目前所在的目錄 cd 變更 Server 端目前的目錄 cdup 變更 Server 端目前的目錄到上一目錄 lls 查看 Local 端的目錄或檔案 lcd 變更 Local 端目前的目錄 asc 設定傳輸模式為文字檔方式 bin 設定傳輸模式為二進位檔方式 get 將 Server 端的檔案拷貝至 Local 端現在目錄下 mget 拷貝多個 Server 端的檔案至 Local 端現在目錄下 put 將 Local 端的檔案拷貝至 Server 端現在目錄下 mput 拷貝多個 Local 端的檔案至 Server 端現在目錄下 delete 刪除 Server 端的檔案 mkdir 在 Server 端建立目錄 rmdir 刪除 Server 端的目錄 !</description>
+    </item>
+    
+    <item>
+      <title>DNS server</title>
+      <link>/posts/dns/</link>
+      <pubDate>Thu, 29 Jan 2015 23:14:14 +0800</pubDate>
+      
+      <guid>/posts/dns/</guid>
+      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
+Installation sudo apt-get install bind9 bind9-doc dnsutils  /etc/bind  named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係  add blog.example.com name.conf.options 不用改
+name.conf.local 正解 :
+zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; };   反解只有 ISP 可以做到, 所以我就不設定了
+ /etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
+改設定要記得增加Serial值</description>
+    </item>
+    
+    <item>
+      <title>AWS</title>
+      <link>/posts/aws/</link>
+      <pubDate>Wed, 29 Oct 2014 13:13:53 +0800</pubDate>
+      
+      <guid>/posts/aws/</guid>
+      <description>(最後更新: 2016-04-27)
+介紹 AWS (Amazon Web Services) 是針對主機或 App 提供整套 solution 的雲端服務
+Install/Upgrade AWS CLI 安裝
+sudo pip install --upgrade awscli  如果安裝出問題, 強制重新安裝可以解決
+sudo pip install awscli --force-reinstall --upgrade    Ubuntu (建議不要使用 apt-get 安裝, 版本很舊) 有些安裝完會有設定檔 /var/awslogs/etc/awslogs.conf   Stop the agent
+sudo service awslogs stop // Works on Ubuntu sudo service awslogsd stop // Amazon Linux 2   stop|restart|start
+ Region &amp;amp; AZ  region 是 Data Center 的集合 AZ 與 AZ 至少隔70公里以上 AZ 與 AZ 是用光纖連接 AZ 裡有很多 DC 每個 DC 是 25Tbps 同一 region 我的帳號的 eu-west-1a 跟你的帳號的 eu-west-1a 不一定是同一個 AZ, 避免太多人選擇同一 AZ  IAM  如果有很多開發者要共用一個 AWS 帳號, 這算是必用的服務 可以針對不同開發者給與不同權限 一般來說程式透過 Access key &amp;amp; Secret Key 調用 AWS API 是要寫在程式裡的, 但會遇到 Credentials embedded in code問題, 如果 push 到 public 的 github 就有資安風險, 也可以改成在 ec2 裡(環境)設定 secret key 較安全 (aws command) 角色可分 3 種 :  user : 可以讓多個開發者共用同一個 AWS, 每個人可以有不同的登入帳密及權限 group : 可以設定權限, 再把要執行這些權限的 user 圈到這個 group 裡 role : 這是給 ec2 執行的權限, 開 ec2 時 IAM role 選這個, 而此 ec2 就有權限執行開放的服務   [操作] 增加一個登入帳號給團隊的成員 Users -&amp;gt; Create Users -&amp;gt; 輸入 user name -&amp;gt; copy Access Key ID 及 Secret Access Key (目前還不會用到) -&amp;gt; 回到 Users 列表就會看到剛剛新加的 user</description>
+    </item>
+    
+    <item>
+      <title>Process Manager</title>
+      <link>/posts/process-manager/</link>
+      <pubDate>Wed, 29 Oct 2014 00:27:20 +0800</pubDate>
+      
+      <guid>/posts/process-manager/</guid>
+      <description>Introduction If you want a program or application to run in background, process managers like supervisord, pm2, etc. can get this done for you.
+Supervisor 安裝參考這裡 ubuntu 安裝指令
+sudo apt-get install supervisor  唯一要注意的是 command=/usr/local/bin/long.sh command 要寫完整的指令路徑
+/etc/supervisor/conf.d/aws-sqs.conf :
+[program:aws-sqs] command=/home/ubuntu/mygo/bin/aws-sqs autostart=true autorestart=true stderr_logfile=/var/log/golang.err.log stdout_logfile=/var/log/golang.out.log stderr_logfile_maxbytes=10MB user=ubuntu environment=USER=&#39;test&#39;,BRAND=&#39;Company_name&#39;,HOME=/home/my_user directory=/var/www  將 supervisor 跑起來
+sudo service supervisor start  對 program conf 的指令
+sudo supervisorctl &amp;gt; restart worker &amp;gt; reread &amp;gt; status &amp;gt; start resque &amp;gt; tail resque // error log    or sudo supervisorctl reread goworker 有時候不管怎麼 restart 及 reread 都沒有用時用 reload   Error CRIT Server &#39;unix_http_server&#39; running without any HTTP authentication checking 設定 unix_http_server 帳密</description>
+    </item>
+    
+    <item>
+      <title>Linux logrotate</title>
+      <link>/posts/logrotate/</link>
+      <pubDate>Tue, 05 Aug 2014 21:11:35 +0800</pubDate>
+      
+      <guid>/posts/logrotate/</guid>
+      <description>(最後更新: 2016-04-27)
+介紹 設定 log 定期壓縮及輩份，通常是 /var/log 下的 log，主要是控制 log 的大小不要越來越大
+如何設定 有兩個地方可以設定
+ /etc/logrotate.conf : 直接寫在裡面 /etc/logrotate.d/ : 新增你想要控制 log 的程式，比較建議寫在這裡，一個程序 (i.e. nginx) 就是一個檔案，方便管理  但不管寫在哪裡效果都是一樣的，因為 /etc/logrotate.d/ 下的檔案最後也是會被讀取到 /etc/logrotate.conf 裡執行
+參數  daily | weekly | monthly : 進行 rotate 的間隔 rotate 7 : 保留 7 份 log, 也就是只會保留到 mysql.log.7.gz create : 如果 log 被改名，建立一個新的繼續儲存 create 0664 root web-admin : 設定新建的 log 檔的權限與擁有者/群組 dateext : 被輪替的檔案加上日期作為檔名 compress : 壓縮輩份的 log，預設使用 gzip minsize 50M : rotates only when the file has reached an appropriate size and the set time period has passed.</description>
+    </item>
+    
+    <item>
+      <title>Load Testing</title>
+      <link>/posts/load-testing/</link>
+      <pubDate>Thu, 05 Jun 2014 00:02:45 +0800</pubDate>
+      
+      <guid>/posts/load-testing/</guid>
+      <description>Siege 設定檔 /etc/siege  siegerc : 設定檔, 可以將 verbose 改為 true, 預設就是 -v 了 urls.txt : 將 url 或 post 資料寫在裡面, 下指令可以不用指定 url, 預設會讀取這裡  Example siege -c200 -t10S www.google.com -v    -c, &amp;ndash;concurrent=NUM CONCURRENT users, default is 10 -t, &amp;ndash;time=NUMm TIMED testing where &amp;ldquo;m&amp;rdquo; is modifier S, M, or H (ex: &amp;ndash;time=1H, one hour test.) -v, &amp;ndash;verbose VERBOSE, prints notification to screen.   結果 :</description>
+    </item>
+    
+    <item>
+      <title>Nginx</title>
+      <link>/posts/nginx/</link>
+      <pubDate>Fri, 23 May 2014 10:59:34 +0800</pubDate>
+      
+      <guid>/posts/nginx/</guid>
+      <description>Install sudo apt-get update sudo apt-get install nginx  啟動
+sudo service nginx start  到 browser 看是否安裝成功 ex: http://192.168.56.1
+ nginx www default directory : /usr/share/nginx/html/
+ 如果啟動 nginx 不成功/沒反應 先判斷設定檔語法是否都正確
+$ sudo nginx -t nginx: the configuration file /etc/nginx/nginx.conf syntax is ok nginx: configuration file /etc/nginx/nginx.conf test is successful  查看 /var/log/nginx/error.log 是否有噴錯
+2017/08/07 08:51:59 [emerg] 2032#0: bind() to 0.0.0.0:80 failed (98: Address already in use) 2017/08/07 08:51:59 [emerg] 2032#0: bind() to [::]:80 failed (98: Address already in use)  重新安裝 nginx (Ubuntu) sudo apt-get purge nginx nginx-common nginx-full sudo apt-get install nginx  nginx.</description>
+    </item>
+    
+    <item>
+      <title>NFS (Network FileSystem)</title>
+      <link>/posts/nfs/</link>
+      <pubDate>Tue, 26 Nov 2013 15:54:00 +0000</pubDate>
+      
+      <guid>/posts/nfs/</guid>
+      <description>分享目錄的 server 安裝及設定 server 安裝:
+sudo apt-get update sudo apt-get install nfs-kernel-server  設定 /etc/exports :
+建議直接設定*, 在防火牆再限 ip, 不然因為 nfs port 是浮動的不好設定
+/my_ugc *(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check) /home/me/test *(ro) /my_ugc 10.170.189.142(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check) /my_ugc 10.170.189.0/24(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check)    * : 代表任意主機 ro : 唯讀，是預設值 rw : 允許讀、寫 sync : 預設值。同步 I/O，也就是在資料異動時，會同步寫入記憶體與磁碟之中 all_squash : 所有client 端的user 都對應成 nobody(一般設定) anonuid : 為 nobody 帳號設 uid anongid : 為 nobody 帳號設 gid insecure : 允許主機不需認證即可存取 subtree_check (或 no_subtree_check, 不加上會有 error) : If a subdirectory of a filesystem is exported, but the whole filesystem isn&amp;rsquo;t then whenever a NFS request arrives, the server must check not only that the accessed file is in the appropriate filesystem (which is easy) but also that it is in the exported tree (which is harder) 更多官方文件參數說明   啟動 啟動 server</description>
+    </item>
+    
+    <item>
+      <title>Race condition</title>
+      <link>/posts/race-condition/</link>
+      <pubDate>Sat, 02 Nov 2013 00:51:00 +0000</pubDate>
+      
+      <guid>/posts/race-condition/</guid>
+      <description>當幾乎同時間被不同 Thread 存取共同資料時，而資料存取過程中沒有 lock 起來, 就會造成資料不符合預期的結果
+例如:
+p1.setProduct(prod); p2.setProduct(prod); p3.setProduct(prod); Thread t1 = new Thread(p1); Thread t2 = new Thread(p2); Thread t3 = new Thread(p3); t1.start(); t2.start(); t3.start();  結果:
+Processor 3 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3) **Processor 2 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3)** **Processor 3 Create Order for: my_product_01(NT$ 20.0, modified by processor: 2)** **Processor 1 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3)** Processor 2 Create Order for: my_product_01(NT$ 20.</description>
+    </item>
+    
+    <item>
+      <title>phpmyadmin</title>
+      <link>/posts/phpmyadmin/</link>
+      <pubDate>Wed, 23 Oct 2013 23:03:00 +0000</pubDate>
+      
+      <guid>/posts/phpmyadmin/</guid>
+      <description>安裝 phpmyadmin sudo apt-get install phpmyadmin  啟動 phpmyadmin Apache /etc/apache2/apache2.conf 加入 :
+Include /etc/phpmyadmin/apache.conf sudo service apache2 restart  nginx 將 phpmyadmin 的 code 放到 /var/www 下
+ln -s /usr/share/phpmyadmin /var/www/phpmyadmin  建立 /etc/nginx/sites-available/phpmyadmin :
+server { listen 80; root /var/www/phpmyadmin; index index.php index.html index.htm index.nginx-debian.html; server_name db.ivy-way.com; location / { try_files $uri $uri/ =404; } location ~ \.php$ { include snippets/fastcgi-php.conf; fastcgi_pass unix:/var/run/php5-fpm.sock; } }  建立 phpmyadmin 的 site config</description>
+    </item>
+    
+    <item>
+      <title>PHP Gearman</title>
+      <link>/posts/gearman/</link>
+      <pubDate>Mon, 21 Oct 2013 00:24:00 +0000</pubDate>
+      
+      <guid>/posts/gearman/</guid>
+      <description>介紹 Gearman 是可以在 backgroud 做事的 job worker
+安裝 Gearman 可參考apple boy安裝步驟
+如果一直安裝失敗可以執行以下試看看 :
+sudo apt-get update sudo apt-get upgrade  Persistent Storage : MySQL  預設 queue 是存在記憶體, 如果重開或 server crash, queue 就不見了, 所以我們需要一直永久存放 queue 的地方, 詳細可參考官方文件的說明
+ 設定 /etc/default/gearman-job-server
+PARAMS=&amp;quot;-q mysql --mysql-host=localhost --mysql-user=root --mysql-db=test --mysql-table=gearman_queue&amp;quot;   PARAMS=&amp;ldquo;-q mysql &amp;ndash;mysql-host=localhost &amp;ndash;mysql-user=xxxx &amp;ndash;mysql-password=xxxxx&amp;ndash;mysql-db=gearman &amp;ndash;mysql-table=gearman_queue&amp;rdquo;
+ 搭配 MySQL, 使用 test DB, 建立 gearman_queue 資料表
+mysql -u root &amp;gt; use test; &amp;gt; CREATE TABLE IF NOT EXISTS `gearman_queue` ( &amp;gt; `unique_key` VARCHAR(64) DEFAULT NULL, &amp;gt; `function_name` VARCHAR(255) DEFAULT NULL, &amp;gt; `priority` INT(11) DEFAULT NULL, &amp;gt; `data` longblob, &amp;gt; `when_to_run` INT(11) DEFAULT NULL, &amp;gt; UNIQUE KEY `unique_key` (`unique_key`,`function_name`) &amp;gt; ) ENGINE=InnoDB DEFAULT CHARSET=utf8;    一定要加上 primary key ?</description>
+    </item>
+    
+    <item>
+      <title>Samba</title>
+      <link>/posts/samba/</link>
+      <pubDate>Sat, 24 Aug 2013 15:08:00 +0000</pubDate>
+      
+      <guid>/posts/samba/</guid>
+      <description>安裝 sudo apt-get install samba  關閉 $ sudo service smbd stop smbd stop/waiting  開啟 $ sudo service smbd start smbd start/running, process 15892  重新啟動 $ sudo service smbd restart smbd stop/waiting smbd start/running, process 7782  查看目前狀態 $ sudo service smbd status smbd start/running, process 9395  設定 /etc/samba/smb.conf : (append到最下面) [share] &amp;lt;= 這個samba位置的名字, 變更時URL也會變 path = /home/test/share &amp;lt;= 自已指定放置網芳的位置 public = yes writable = yes printable = no #only guest = yes #guest ok = yes  連線 windows連進samba輸入\\{IP/Domain name}\share :</description>
+    </item>
+    
+    <item>
+      <title>Apache - Reduce Requests From Browser</title>
+      <link>/posts/apache-reduce-requests-from-browser/</link>
+      <pubDate>Sun, 21 Jul 2013 15:29:00 +0000</pubDate>
+      
+      <guid>/posts/apache-reduce-requests-from-browser/</guid>
+      <description>當瀏覽器第一次讀取圖檔 status : 200 OK
+request header:
+Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Connection:keep-alive Host:test.com User-Agent:Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36  response header:
+Accept-Ranges:bytes Connection:Keep-Alive Content-Length:45860 Content-Type:image/jpeg Date:Thu, 11 Jul 2013 08:09:03 GMT ETag:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; Keep-Alive:timeout=5, max=100 Last-Modified:Thu, 11 Jul 2013 07:00:57 GMT Server:Apache/2.2.22 (Ubuntu)   內容會有圖檔
+ 第二次讀取讀檔會跟cache要所以 status : 304 Not Modified
+request header:
+Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Cache-Control:max-age=0 Connection:keep-alive Host:test.com If-Modified-Since:Thu, 11 Jul 2013 07:00:57 GMT If-None-Match:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; User-Agent:Mozilla/5.</description>
+    </item>
+    
+    <item>
+      <title>Apache</title>
+      <link>/posts/apache/</link>
+      <pubDate>Sun, 21 Jul 2013 05:56:38 +0000</pubDate>
+      
+      <guid>/posts/apache/</guid>
+      <description>基本設定 /etc/apache2/sites-available/test.conf :
+&amp;lt;VirtualHost *:80&amp;gt; ServerName example.com ServerAdmin admin@example.com DocumentRoot /var/www/test &amp;lt;Directory /var/www/test&amp;gt; RewriteEngine on RewriteCond $1 !^(index\.php|static|crossdomain\.xml|robots\.txt|favicon\.ico) RewriteRule ^(.*)$ /index.php/$1 [L] Options Indexes FollowSymLinks MultiViews AllowOverride All Order allow,deny allow from all ExpiresActive On ExpiresByType image/jpg &amp;quot;access plus 10 years&amp;quot; ExpiresByType image/jpeg &amp;quot;access plus 10 years&amp;quot; &amp;lt;/Directory&amp;gt; ErrorLog ${APACHE_LOG_DIR}/error.log CustomLog ${APACHE_LOG_DIR}/access.log combined LogLevel warn &amp;lt;/VirtualHost&amp;gt;  啟動 conf
+sudo a2ensite test  Options  All: 以下諸功能皆有 None: 以下諸功能皆無 Indexes: 自動產生目錄的索引, 將Indexes拿掉, 點選連結目錄就不會秀出目錄來, 會改成403 forbidden的訊息頁面, 如果網站下的 public 下有放 symbolic link 就要將此開啟, 才可以被 access Includes: 提供 SSI (Server-Side Inclues) 功能, 即使用Apache的指令在html檔中寫程式, 須先載入 includes_module FollowSymLinks: 遵循符號鏈接, 即能夠連到其它的目錄去執行, 會壓過 SymLinksIfOwnerMatch。 SymLinksIfOwnerMatch: 對符號鏈接及其每一層父資料夾, 都進行權限檢查, 當連結檔本身的owner跟連結目的地的owner不同時拒絕存取, 比 FollowSymLinks 更安全 ExecCGI: 可以執行CGI程式。 MultiViews: 送出多國語言支援的頁面.</description>
+    </item>
+    
+  </channel>
+</rss>

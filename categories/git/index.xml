@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>git on Software Note</title>
+    <link>/categories/git/</link>
+    <description>Recent content in git on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 24 Aug 2013 15:41:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/git/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Git submodule</title>
+      <link>/posts/git-submodule/</link>
+      <pubDate>Sat, 24 Aug 2013 15:41:00 +0000</pubDate>
+      
+      <guid>/posts/git-submodule/</guid>
+      <description>基本語法 git submodule foreach git pull origin master : 將每個submodule重新pull
+git submodule update --recursive --remote: update submodule
+git submodule update --init : update submodule
+git subomdule init :
+根據 .gitmodules 的名稱和 URL，將這些資訊註冊到 .git/config 內，可是把 .gitmodules 內不用的 submodule 移除，使用這個指令並沒辦法自動刪除 .git/config 的相關內容，必須手動刪除；
+git submodule update :
+根據已註冊（也就是 .git/config ）的 submodule 進行更新，例如 clone 遺失的 submodule，也就是上一段講的方法，所以執行這個指令前最好加上 --init
+git submodule sync :
+如果 submodule 的 remote URL 有變動，可以在 .gitmodules 修正 URL，然後執行這個指令，便會將 submodule 的 remote URL 更正</description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>/posts/git/</link>
+      <pubDate>Sun, 21 Jul 2013 14:51:00 +0000</pubDate>
+      
+      <guid>/posts/git/</guid>
+      <description>git add 加入空的目錄 建立 gitkeep 或 .keep 在空的目錄
+git branch  都不加 : 顯示 local branch -r : 顯示 remote branch -a : 顯示所有 branch (local + remote) -v : 顯示branch的詳細資料 --merged : 列出已經merge的branch --no-merged : 列出尚未merge的branch  Rename branch
+git branch -m {old_name} {new_name}  Rename current branch
+git branch -m {new_name}  刪除branch
+git branch -d developXD git branch -D {branch name}   git branch —no-merged</description>
+    </item>
+    
+  </channel>
+</rss>

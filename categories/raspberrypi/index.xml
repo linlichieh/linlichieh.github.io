@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>raspberryPi on Software Note</title>
+    <link>/categories/raspberrypi/</link>
+    <description>Recent content in raspberryPi on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 16 Dec 2014 13:02:45 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Raspberry Pi with ffmpeg</title>
+      <link>/posts/raspberry-pi-ffmpeg/</link>
+      <pubDate>Tue, 16 Dec 2014 13:02:45 +0800</pubDate>
+      
+      <guid>/posts/raspberry-pi-ffmpeg/</guid>
+      <description>rpi camera 只支援輸出 raw h.264 雖然 chrome 跟 safari （firefox 不援, 而 safari 因為是 call 自己的 quicktime 去播放影片所以支援的又更廣) 都支援解碼 h.264 codec 但不支援解 raw h.264
+但可以解 container 一定要是 mp4, 所以輸出 h.264 還需要經過一層轉檔成 mp4 才能在瀏覽器上看到
+install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get update sudo apt-get install ffmpeg  convert raw h264 to mp4 ffmpeg -r 30 -i test2.h264 -vcodec copy test2.mp4  ffserver /etc/ffserver.conf 加上
+&amp;lt;Stream live.mp4&amp;gt; Format mp4 Feed feed1.ffm VideoCodec libx264 VideoFrameRate 30 VideoSize 320x240 NoAudio &amp;lt;/Stream&amp;gt;  啟動 ffserver : ffserver -f /etc/ffserver.</description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi camera RTSP</title>
+      <link>/posts/raspberry-pi-camera-rtsp-video-streaming/</link>
+      <pubDate>Wed, 22 Jan 2014 01:35:00 +0000</pubDate>
+      
+      <guid>/posts/raspberry-pi-camera-rtsp-video-streaming/</guid>
+      <description>什麼是 RTP/RTCP/RTSP/RTMP  RTP (Real-time Transport Protocol) 是一種傳遞音訊和視訊的協定, 主要應用在 UDP 上, 大多用在一對一傳播 RTCP (Real-time Transport Control Protocol) 為 RTP 提供 out-of-band 控制, 本身不傳輸數據, 但和RTP一起協作將 media data 打包和發送 RTSP (Real Time Streaming Protocol) 控制聲音及影像的多媒體串流協定, 運作跟 HTTP/1.1 類似, 支援 Multicast, 不強調時間同步等特性, 通常處理 RTP 及 RTCP 協定使用, 可選擇 TCP 或 UDP 傳送 RTMP (Real Time Messaging Protocol) 是 Adobe Flash 的多媒體串流協定  RTMP vs RTSP  做的事情基本是一樣的, rtsp 是公開的 protocal, rtmp 是 adobe 的 protocal rtsp on web: Realplayer / Quicktime player / VLC player rtmp on web: flash (目前直播 live 幾乎都走 rtmp) youtube 是 vp8 (一種 codec 格式) camera 幾乎都是走 h.</description>
+    </item>
+    
+    <item>
+      <title>Raspberry pi uses 3.5G</title>
+      <link>/posts/raspberry-pi-3g/</link>
+      <pubDate>Tue, 21 Jan 2014 23:15:00 +0000</pubDate>
+      
+      <guid>/posts/raspberry-pi-3g/</guid>
+      <description>介紹 RPI 本身如果要上網就只能連附近的 wifi 熱點, 這樣就會有地域上的限制,
+想要脫離此限制, 可以使用 3.5G 無線網卡來上網,
+這樣一來不但可以解決網路問題, 也能做出更好玩的應用,
+想想如果可以將 RPI + camera + arduino + 無線網卡結合,
+最基本就可以做到超遠端控制了, e.g. 具備即時影像的遠端搖控車
+首先需要一個 RPI 支援的無線網卡, 需要注意的是並不是每家無線網卡 RPI 都支援,
+看到蠻多的成功案例是華為 E173, 所以我也買此款,
+如果要買其他廠牌型號的網卡建議先去 google 看看是否有人成功
+檢查一下硬體有沒有讀到 lsusb Bus 001 Device 002: ID 0424:9512 Standard Microsystems Corp. Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. Bus 001 Device 004: ID 12d1:1446 Huawei Technologies Co.</description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi camera MJPG-streamer server</title>
+      <link>/posts/raspberry-pi-camera-mjpg-streamer-server/</link>
+      <pubDate>Tue, 21 Jan 2014 22:53:00 +0000</pubDate>
+      
+      <guid>/posts/raspberry-pi-camera-mjpg-streamer-server/</guid>
+      <description>MJPG-streamer 是一個能截取 camera 影像的套件, 將每幅影像壓成 jpg, 並且起一個 server 將影像輸出, 好處是跨瀏覽器、編解碼容易、運算能力需求低, 缺點是即時性差(在高解析的影像更是明顯)
+安裝 MJPG-streamer 安裝必要的相依套件 sudo apt-get install subversion libjpeg8-dev imagemagick libv4l-dev  下載並安裝 MJPG-streamer cd ~ svn co https://svn.code.sf.net/p/mjpg-streamer/code/ cd mjpg-streamer/mjpg-streamer make sudo make install    svn 點斷了可到官方下載 最後一行安裝指令會將一些檔案搬到以下路徑 mjpg_streamer : /usr/local/bin input_uvc.so output_file.so output_udp.so input_testpicture.so input_file.so : /usr/local/lib www/* : /usr/local/www   Starting the Webcam Server cd ~/mjpg-streamer/mjpg-streamer ./mjpg_streamer -i &amp;quot;./input_uvc.so -r 320x240 -f 1&amp;quot; -o &amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi camera</title>
+      <link>/posts/raspberry-pi-camera/</link>
+      <pubDate>Tue, 21 Jan 2014 22:48:00 +0000</pubDate>
+      
+      <guid>/posts/raspberry-pi-camera/</guid>
+      <description>硬體規格  感測器像素 5M Pixel sensor (500 萬) 靜止拍照解析度 2592 X 1944 最大錄影解析度 1080p (720p 或 1080p 的 H.264 錄影格式 最大錄影速度 30fps  安裝 硬體參考官網影片教學將 camera 安裝到 Rpi 上
+安裝 camera sudo apt-get update sudo apt-get upgrade sudo raspi-config  選擇 Enable Camera -&amp;gt; enable 結束 config 時會問你要不要重開機, 選擇要
+指令介紹 raspistill 拍照儲存成jpeg raspistill -o image.jpg   -o : Output filename
+ 輸入完後原本 terminal 的黑畫面會有一層 camera 的影像佔滿螢幕高度
+過了大約 5 秒就會拍下來了, 檔案大小大約 2.</description>
+    </item>
+    
+    <item>
+      <title>Raspberry Pi, Installation, XBMC, Samba</title>
+      <link>/posts/raspberry-pi/</link>
+      <pubDate>Sun, 15 Dec 2013 21:09:00 +0000</pubDate>
+      
+      <guid>/posts/raspberry-pi/</guid>
+      <description>介紹 Raspberry Pi 是一台小型的電腦, 幾乎一般 linux 電腦能做到的事它也都能做到, 而它最大的優勢就是體型非常的小, 小到你可以方便攜帶, 而功能一點也不陽春, 非常適合拿它來作媒體中心或小型的運算。
+如果還沒有 Raspberry Pi(以下簡稱 rpi) 不知道哪些要買的可以參考本文末的推薦清單
+安裝 OS(作業系統) [下載 OS 映像檔] 下載 Raspberry Pi 的 OS 選擇 Raspbian 版本是 wheezy
+下載完後解壓縮出來是一個 2013-09-25-wheezy-raspbian.img 檔
+[將 Raspbian OS 燒錄到 SD 卡] 不同的作業系統要用不同的方式燒到 SD 卡, 先將 SD 卡插入到電腦
+如果是 Windows 下載 Win32 Disk Imager, 解壓縮完是一個資料夾, 執行 Win32DiskImager, Image File 選擇 2013-09-25-wheezy-raspbian.img
+Device 選擇 SD 卡, 按 write, 就會進行燒錄了
+[安裝 Raspbian] 將燒錄好的 SD 卡插入 Raspberry pi, 並且將電源線插上插座, 鍵盤接上, HDMI線接上電視或電腦螢幕,</description>
+    </item>
+    
+  </channel>
+</rss>

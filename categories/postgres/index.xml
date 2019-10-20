@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>postgres on Software Note</title>
+    <link>/categories/postgres/</link>
+    <description>Recent content in postgres on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 01 May 2016 13:45:44 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/postgres/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>PostgreSQL</title>
+      <link>/posts/postgresql/</link>
+      <pubDate>Sun, 01 May 2016 13:45:44 +0800</pubDate>
+      
+      <guid>/posts/postgresql/</guid>
+      <description>(最後更新 : 2016-05-01)
+介紹 和 MySQL 一樣都是關聯型資料庫，一樣使用 SQL 來執行 query
+正確念法為 post-gress-Q-L 或簡稱 postgres
+安裝 安裝 Postgres Ubuntu : todo&amp;hellip;
+Mac :
+brew install postgres  初始化 Database 安裝完要始初化一個 Database, 而它的 owner 就是執行這指令的 User
+initdb /usr/local/var/postgres -E utf8  Database 已存在 initdb: directory &amp;quot;/usr/local/var/postgres&amp;quot; exists but is not empty If you want to create a new database system, either remove or empty the directory &amp;quot;/usr/local/var/postgres&amp;quot; or run initdb with an argument other than &amp;quot;/usr/local/var/postgres&amp;quot;.</description>
+    </item>
+    
+  </channel>
+</rss>

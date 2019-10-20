@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>javascript on Software Note</title>
+    <link>/categories/javascript/</link>
+    <description>Recent content in javascript on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 19 Feb 2013 17:40:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Javascript Basics</title>
+      <link>/posts/javascript-basics/</link>
+      <pubDate>Tue, 19 Feb 2013 17:40:00 +0000</pubDate>
+      
+      <guid>/posts/javascript-basics/</guid>
+      <description>Ajax jQuery
+$(document).ready(function(){ $.ajax({ url: &#39;/test/test_response.php&#39;, type: &amp;quot;POST&amp;quot;, data: &#39;test=1&amp;amp;test2=33&#39;, beforeSend: function(html) { $(&#39;#loading&#39;).removeClass(&#39;hide&#39;); }, success: function(response) { alert(response); }, complete: function () { $(&#39;#loading&#39;).addClass(&#39;hide&#39;); }, error: function(xhr, statusText, err){ alert(&amp;quot;Error:&amp;quot; + xhr.status); } }); });  PHP
+// POST header(&#39;Content-Type: application/json&#39;); echo &#39;test=&#39;.$_POST[&#39;test&#39;].&#39;; test2= &#39;.$_POST[&#39;test2&#39;]; // GET echo &#39;test=&#39;.$_GET[&#39;test&#39;].&#39;; test2= &#39;.$_GET[&#39;test2&#39;]; // JSON $value = json_decode(file_get_contents(&#39;php://input&#39;)); //取得JSON字串並且解析 echo json_encode($value); //將$value轉成JSON格式傳回  Regex match Example 1
+str = &#39;aabbddeeffggiiCC&#39;; reFee=/cc/i; //補上i(忽略大小寫) 才會為true document.</description>
+    </item>
+    
+    <item>
+      <title>JSON and JSONP</title>
+      <link>/posts/json-and-jsonp/</link>
+      <pubDate>Tue, 19 Feb 2013 17:25:00 +0000</pubDate>
+      
+      <guid>/posts/json-and-jsonp/</guid>
+      <description>JSON 中文被編碼問題 如果 ajax 設定值沒有 dataType 的話, 就代表是以預設方式接收, 此時接收到 php 回傳的 json 格式時, 中文會被編碼, 長得像 :
+\u518d\u807d\u9019\u9996\u6b4c\u7684\u9ede  有四種方式可以解決: 第一種 : 在 jQuery 的 $.ajax({ 的屬性裡 , 將 dataType 指定為 json $.ajax({ url: &#39;index.php/ajax_load/content_loading/&#39;, type: &amp;quot;POST&amp;quot;, dataType: &amp;quot;json&amp;quot;, (以下略..)  則 ajax 回傳的 json 格式就會自動被轉換成物件了, 所以就可以用一般我們使用陣列的方式來取值
+例如使用foreach來alert出陣列裡的資料 :
+for(qq in response) (註 : response 為 php 回傳的 json 資料) { alert(response[qq]); }  第二種 : 與第一種原理一樣, 只不過我們手動把 json 轉為物件 response = JSON.</description>
+    </item>
+    
+  </channel>
+</rss>

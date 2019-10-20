@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nginx on Software Note</title>
+    <link>/categories/nginx/</link>
+    <description>Recent content in nginx on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 23 May 2014 10:59:34 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nginx</title>
+      <link>/posts/nginx/</link>
+      <pubDate>Fri, 23 May 2014 10:59:34 +0800</pubDate>
+      
+      <guid>/posts/nginx/</guid>
+      <description>Install sudo apt-get update sudo apt-get install nginx  啟動
+sudo service nginx start  到 browser 看是否安裝成功 ex: http://192.168.56.1
+ nginx www default directory : /usr/share/nginx/html/
+ 如果啟動 nginx 不成功/沒反應 先判斷設定檔語法是否都正確
+$ sudo nginx -t nginx: the configuration file /etc/nginx/nginx.conf syntax is ok nginx: configuration file /etc/nginx/nginx.conf test is successful  查看 /var/log/nginx/error.log 是否有噴錯
+2017/08/07 08:51:59 [emerg] 2032#0: bind() to 0.0.0.0:80 failed (98: Address already in use) 2017/08/07 08:51:59 [emerg] 2032#0: bind() to [::]:80 failed (98: Address already in use)  重新安裝 nginx (Ubuntu) sudo apt-get purge nginx nginx-common nginx-full sudo apt-get install nginx  nginx.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>backend on Software Note</title>
+    <link>/categories/backend/</link>
+    <description>Recent content in backend on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 May 2016 08:29:59 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/backend/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deploy on Heroku</title>
+      <link>/posts/deploy-on-heroku/</link>
+      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
+      
+      <guid>/posts/deploy-on-heroku/</guid>
+      <description>介紹 Heroku 是雲端主機供應商，它有提供免費方案，提供 DB 及 mailgun etc.，如果只是一個小型不複雜的專案使用它還蠻合適的
+如何 Deploy 到 Heroku 1) 安裝 Heroku 的 command 並登入 heroku login  2) 到你的 Repository 目錄裡 3) Push 你的 code 到 heroku  Production 不能使用 sqlite3，詳細說明在這 Production 要用 PostgreSQL，最好是 Dev 及 Production 都用 PostgreSQL Production 一定要有 gem &#39;pg&#39; 否則即使 deploy 成功，頁面也會噴錯 Gemfile.lock 必須要有，不要在 .gitignore 加上它  這裡可以先做個小修改，讓 App 能順利 deploy 再說，Postgres 安裝再另外解決，Gemfile :
+gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :production  如果 PostgreSQL 還沒安裝，在 bundle install 先略過它</description>
+    </item>
+    
+    <item>
+      <title>Payment Integration</title>
+      <link>/posts/payments/</link>
+      <pubDate>Thu, 07 Apr 2016 16:42:53 +0800</pubDate>
+      
+      <guid>/posts/payments/</guid>
+      <description>(最後更新 : 2016-04-28)
+智付寶 介紹 智付寶有個很大的好處是提供測試環境，你可以直接去註冊，不用事先到主站註冊
+這是它的測試環境註冊完後直接去開立商店，但期限只有 30 天（如果需要延長，直接寫信告知客服 cs@pay2go.com 就可以了）
+接著到商店後台就會看到 API 串接金鑰了，到這裡先停，我們先做程式的部份，本篇以 Rails 實作，如果使用其他語言的朋友也沒關係，理解概念才是重點
+實作導到智付寶的付款頁面 到智付寶文件專區選擇 MPG API 文件，裡面串接方法寫的很清楚，我們直接看 Code :
+Controller :
+# 智付寶文件規定的5個欄位必須按照字母順序 chain = &amp;quot;Amt=#{@order.total}&amp;amp;MerchantID=#{智付寶MerchantID}&amp;amp;MerchantOrderNo=#{@order.id}&amp;amp;TimeStamp=#{@order.created_at.to_i}&amp;amp;Version=#{智付寶Version}&amp;quot; # 頭先加上 HashKey，尾再加上 HashIV ，最後以 SHA-256 加密後再轉大寫 @check_value = Digest::SHA256.hexdigest(&amp;quot;HashKey=#{智付寶HashKey}&amp;amp;#{chain}&amp;amp;HashIV=#{智付寶HashIV}&amp;quot;).upcase    智付寶Merchant ID : 在支付寶後台的商店清單會顯示商店代號，不要點到你的商店裡，裡面沒有顯示 智付寶Version : 要看 API 文件的那個欄位，它會跟你說。i.e. 請帶 1.2。 智付寶HashKey : 後台的商店基本資料的API串接金鑰 智付寶HashIV : 後台的商店基本資料的API串接金鑰   HTML :
+&amp;lt;form method=&amp;quot;post&amp;quot; action=&amp;quot;https://capi.pay2go.com/MPG/mpg_gateway&amp;quot;&amp;gt; &amp;lt;!-- 此為測試的 url, 正式為 : https://api.</description>
+    </item>
+    
+    <item>
+      <title>Backend</title>
+      <link>/posts/backend/</link>
+      <pubDate>Wed, 30 Jul 2014 21:06:39 +0800</pubDate>
+      
+      <guid>/posts/backend/</guid>
+      <description>安全性  SSL 憑證及加密傳送 (HTTPS) 資料再以 private key 做 AES CBC 方式加密 對某些重要的值使用 private key 以 sha1 產生 signature 參數做驗證 token &amp;amp; Access-Control-Allow-Origin (CSRF) htmlspecialchars (XSS) SQL injection  設計 RESTful API 注意地方 避免使用 cookie, 因違反無狀態協議, 如果只用來記錄 client 資料不維護狀態, 那麼還是可以使用
+session 則完全違反 REST 的無狀態性
+解決方式是 client 登入後產生 token, 再從 url 帶 token 過來 驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名
+驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限</description>
+    </item>
+    
+  </channel>
+</rss>

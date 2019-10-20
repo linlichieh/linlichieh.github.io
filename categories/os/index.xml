@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>os on Software Note</title>
+    <link>/categories/os/</link>
+    <description>Recent content in os on Software Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 Feb 2015 10:55:43 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/os/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>OS</title>
+      <link>/posts/os/</link>
+      <pubDate>Fri, 13 Feb 2015 10:55:43 +0800</pubDate>
+      
+      <guid>/posts/os/</guid>
+      <description>動態庫與靜態庫 linux 下有動態庫和靜態庫. 動態庫以 .so 為副檔名, 靜態庫以 .a 為副檔名
+ldd 指令可以查詢此程序用到哪些動態庫
+$ ldd dch_worker linux-vdso.so.1 =&amp;gt; (0x00007fff60bfe000) libpthread.so.0 =&amp;gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f6d583b2000) libc.so.6 =&amp;gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6d57fec000) /lib64/ld-linux-x86-64.so.2 (0x00007f6d585dc000)  檢查主機狀態  pid : process id ppid : parent process id  top  sorted by memory : top -o MEM  ps 顯示特定幾個欄位
+ps -Ao pid,%cpu,%mem,comm   上面的參數 comm 與 command 的差別在 command 會完整顯示程序的指令，而 comm 只會顯示你用什麼程序，例如使用 command 會多看到後面的參數 /Google Chrome Helper --type=renderer</description>
+    </item>
+    
+  </channel>
+</rss>
