@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Encryption | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/encrypt/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/encrypt/">Encryption</a></h1>
+    <p class="meta"><time datetime="2014-12-05T11:52:58&#43;08:00">December 05, 2014</time></p>
+  </header>
+  
+
+<h2 id="aes">AES</h2>
+
+<p>可正解及反解, 常用的有 ECB, CBC</p>
+
+<p>ECB 速度快, 但每一次編碼後都長一樣</p>
+
+<p>CBC 較耗效能, 但每一次編碼後會不一樣, 安全性高</p>
+
+<h3 id="ecb-cbc-benchmark-與如何選擇">ECB, CBC Benchmark 與如何選擇</h3>
+
+<p>這是由前同事 Chris 測試出來的效能比較與結論</p>
+
+<p>1) 測試內容:</p>
+
+<pre><code>台北市長當選人柯文哲以85萬票獲得台北市民青睞當選台北長，然而，開票勝選以來，無論在市府人事與政策政見上，柯文哲接慢慢浮現不少有待討論的議題與爭議。人事上，包括台北市副市長林欽榮與勞動局長遴選制度都出現爭議；政策政見上，一上任就面對忠孝西路公車專用道是否拆除的兩難，現在又突然拋出裁撤派出所的想法，這些風波紛紛引發網友熱議。
+</code></pre>
+
+<p>2) 內容長度: 162個字</p>
+
+<p>3) 測試方法: 連續對測試內容執行 AES 加密解密 10 萬次</p>
+
+<p>4) 測試平台: dlink device S150</p>
+
+<p>5) 測試結果</p>
+
+<pre><code>AES performace  |  CBC mode     ECB mode
+--------------------------------------------------
+cost time       |  9895 msec    9715 msec
+cost time       |  9894 msec    9703 msec
+cost time       |  9849 msec    9726 msec
+</code></pre>
+
+<p>6) 結論: 使用 cbc mode 對平台增加的負擔近乎其微, 為了資料安全性, 使用 cbc mode 是更好的方式</p>
+
+</article>
+
+
+
+</html>

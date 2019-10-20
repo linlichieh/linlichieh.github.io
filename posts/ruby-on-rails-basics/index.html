@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Rails Basics | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-on-rails-basics/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-on-rails-basics/">Rails Basics</a></h1>
+    <p class="meta"><time datetime="2015-01-29T11:15:25&#43;08:00">January 29, 2015</time></p>
+  </header>
+  
+
+<h2 id="rails-指令">Rails 指令</h2>
+
+<ul>
+<li><code>rails new my_app</code> : 新增 my_app 專案</li>
+<li><code>rails s</code> : 啟動 server</li>
+<li><code>rails s RAILS_ENV=development</code> : 啟動 development 環境的 server</li>
+<li><code>rails s -b 0.0.0.0</code> : 開放外部, 預設只允許本機 (127.0.0.1:3000)</li>
+<li><code>rvmsudo rails s -p 80</code> : 使用 80 port, 使用 <code>rvmsudo</code> 是因為 rails 起 80 port 一定要用 sudo 身份</li>
+<li><code>rails s -p 5000</code> : 換 port, 預設是 3000</li>
+<li><code>rails c</code> : rails console, 可以直接操作 ActiveRecord</li>
+<li><code>rails c --sandbox</code> : 沙盒的 console, 在這期間改的 DB 內容在離開時都會還原</li>
+<li><code>rails db</code> : 進入 db console 根據 <code>config/database.yml</code>. ex: 如果是 sqlite, 就會進到 sqlite 的 console</li>
+<li><code>rake stats</code> : 統計 code 寫了幾行</li>
+<li><code>rake tmp:clear</code> : 清除 cache</li>
+</ul>
+
+<p>console :</p>
+
+<ul>
+<li><code>Rails.cache.clear</code> : 清除 cache</li>
+</ul>
+
+<h2 id="routes">Routes</h2>
+
+<h3 id="command">command</h3>
+
+<ul>
+<li><code>rake routes</code> : 查看所有routes</li>
+<li><code>rake routes | grep user</code> : 查看所有 routes 含有 <code>user</code> 關鍵字的</li>
+</ul>
+
+<h3 id="觀念">觀念</h3>
+
+<p>4 HTTP methods, 4 URL helper, 7 actions</p>
+
+<pre><code>Helper                      GET                 POST            PUT 或 PATCH    DELETE
+event_path(@event)          /events/1                           /events/1       /events/1
+                            show                                update          destroy
+
+events_path                 /events             /events
+                            index               create
+
+edit_event_path(@event)     /events/1/edit
+                            edit
+
+new_event_path              /events/new
+                            new
+</code></pre>
+
+<blockquote>
+<ul>
+<li>show, edit, update, destroy 是單數, 對特定元素操作</li>
+<li>index, create 是複數, 對群集操作</li>
+</ul>
+</blockquote>
+
+<h3 id="基本-route-語法">基本 Route 語法</h3>
+
+<pre><code>root 'welcome#index'
+
+# 7 個 action 都使用
+resources :info do
+
+    # 只允許 edit, update
+    resources :users, only: [:edit, :update]
+
+    # 除了 show 其他 action 都用
+    resources :products, except: [:show]
+
+    # 指定使用 PUT
+    put 'change_password', on: :member
+end
+
+# namespace 是 folder 名稱
+namespace :dashboard  do
+  # 原本 dashboard 在 route 的命名改為 admin, 通常是為了美化 route 或是減少不直覺的 url 造成的困惑才會使用
+  resources :welcome, as: 'home'
+end
+
+# 兩者是一樣的
+resources :search, only: [:show]
+get '/search/:id', to: 'search#show', as: 'search'      # to: action, as: route name
+</code></pre>
+
+<h3 id="difference-between-member-and-collection">Difference between <code>member</code> and <code>collection</code></h3>
+
+<p>如果要帶上原本物件的 id 就用 <code>:member</code></p>
+
+<p>如果只是需要一個一般的頁命就用 <code>:collection</code></p>
+
+<p>i.e.</p>
+
+<pre><code>resources :posts do
+  # on collection
+  get 'search', on: :collection             # '/posts/search' and search_posts_path
+
+  # on member
+  get 'share', on: :member                  # '/posts/:id/share' and share_photo_path(@post)
+end
+</code></pre>
+
+<p>member 與 collection 那一種寫法</p>
+
+<pre><code>resources :users do
+  member do
+    get :find
+  end
+
+  collection do
+    get  :find
+    post :freeze
+  end
+end
+</code></pre>
+
+<h3 id="url-path-相關">Url / Path 相關</h3>
+
+<p>完整 url</p>
+
+<pre><code>request.original_url
+&gt; http://127.0.0.1:3000/dashboard/admin/110/find_name
+</code></pre>
+
+<p>Path</p>
+
+<pre><code>request.path (= request.full.path)
+&gt; /dashboard/admin/110/find_name
+</code></pre>
+
+<p>判斷目前 path 是否一樣</p>
+
+<pre><code>current_page?(new_product_path)
+&gt; True / False
+</code></pre>
+
+<p>將 hash 轉為 query string</p>
+
+<pre><code>{ name: 'David', nationality: 'Danish' }.to_query
+&gt; name=David&amp;nationality=Danish
+</code></pre>
+
+<h3 id="在-rails-consloe-下">在 Rails consloe 下</h3>
+
+<p>使用 route path 必須要先引入</p>
+
+<pre><code>include Rails.application.routes.url_helpers
+&gt; root_path
+</code></pre>
+
+<p>印出所有的 assets path</p>
+
+<pre><code>Rails.application.config.assets.paths
+
+# 條列式
+y Rails.application.config.assets.paths
+ap Rails.application.config.assets.paths
+</code></pre>
+
+<p>path helper</p>
+
+<pre><code>xxxx_path(anchor: 'xx')             # /xxxx#xx
+xxxx_path(format: :json)            # /xxxx.json
+</code></pre>
+
+<h3 id="dashboard-設計">Dashboard 設計</h3>
+
+<p>config/route.rb :</p>
+
+<pre><code>root 'welcome#index'                    # 首頁
+
+namespace :dashboard do
+  root 'welcome#index'                  # dashboard 的首頁
+  resources :musics, only: [:index]
+end
+</code></pre>
+
+<p>controllers/dashboard_controller.rb</p>
+
+<pre><code>class DashboardController &lt; ApplicationController
+end
+</code></pre>
+
+<p>controllers/dashboard/welcome_controller.rb :</p>
+
+<pre><code>class Dashboard::WelcomeController &lt; DashboardController
+  def index
+  end
+end
+</code></pre>
+
+<p>views/dashboard/welcome/index.rb :</p>
+
+<pre><code>dashboard index
+</code></pre>
+
+<h4 id="另一種寫法-dashboard-controller-rb-放在-controllers-dashboard-下">另一種寫法 <code>dashboard_controller.rb</code> 放在 controllers/dashboard 下</h4>
+
+<p>controllers/dashboard/dashboard_controller.rb</p>
+
+<pre><code>class Dashboard::DashboardController &lt; ApplicationController
+</code></pre>
+
+<p>controllers/dashboard/welcome_controller.rb :</p>
+
+<pre><code>class Dashboard::WelcomeController &lt; Dashboard::DashboardController
+</code></pre>
+
+<h2 id="controller">Controller</h2>
+
+<p>(最後更新 : 2016-04-27)</p>
+
+<h3 id="params">Params</h3>
+
+<p>全部通過</p>
+
+<pre><code>params.require(:post).permit!
+</code></pre>
+
+<p>只接收特定的欄位的參數</p>
+
+<pre><code>params[:user].permit(:name, ages)
+
+# 或這樣寫
+params.require(:user).permit(:name, :ages)
+</code></pre>
+
+<p>permit Array</p>
+
+<pre><code>params[:user].permit(user_contacts: [:name, :ages, phone])
+</code></pre>
+
+<h3 id="protect-from-forgery">Protect from forgery</h3>
+
+<p>Rails 會在 <code>POST</code>, <code>PUT</code>/<code>PATCH</code>, <code>DELETE</code> 時檢查 authenticity token,</p>
+
+<p>假如接收到假造的 token 如: <code>{&quot;authenticity_token&quot;=&gt;&quot;g1mmeTH3brains=&quot;, &quot;user&quot;=&gt;{&quot;name&quot;=&gt;&quot;Big Dummy&quot;}}</code></p>
+
+<p>則 protect_from_forgery 做出的反應會依照你在 controller 的設定, 有以下情況 :</p>
+
+<ul>
+<li>擲出錯誤 (default) : <code>protect_from_forgery with: :exception</code></li>
+<li>相當於關掉檢查 token, 直接通過 : <code>protect_from_forgery with: :null_session</code></li>
+<li>刪舊session, 建新的一條 : <code>protect_from_forgery with: :reset_session</code></li>
+</ul>
+
+<h4 id="關掉檢查-authenticity-token">關掉檢查 authenticity token</h4>
+
+<p>測試環境下預設是不檢查的</p>
+
+<p>config/environments/test.rb</p>
+
+<pre><code>config.action_controller.allow_forgery_protection = false
+</code></pre>
+
+<h4 id="skip-authenticity-token">Skip authenticity token</h4>
+
+<p>即使你在 ApplicationController 有檢查 authenticity token，但有些需要接外部 POST 值的 API 接口，你可以在那個 controller 加上</p>
+
+<pre><code>skip_before_action :verify_authenticity_token
+</code></pre>
+
+<h3 id="session-cookie">session &amp; cookie</h3>
+
+<p>session</p>
+
+<pre><code>session[:locale] = 'zh-TW'
+</code></pre>
+
+<p>cookie</p>
+
+<pre><code>cookies[:storage_path] = params[:storage_path]
+cookies[:storage_path] = {:value =&gt; params[:storage_path], exripes =&gt; 1.hour.from_now}
+</code></pre>
+
+<h3 id="cache">Cache</h3>
+
+<p>Write</p>
+
+<pre><code>Rails.cache.write(&quot;cache_key1&quot; , 'Hello World!', :expires_in =&gt; 5.minutes)
+</code></pre>
+
+<p>Read</p>
+
+<pre><code>Rails.cache.read(&quot;cache_key1&quot;)
+</code></pre>
+
+<p>存入 hash 及取出</p>
+
+<pre><code>source = {
+    'xx': 'Hello World!'
+}
+Rails.cache.write(&quot;cache_key1&quot; , Marshal.dump(source) , :expires_in =&gt; 5.minutes)
+source = Marshal.load(Rails.cache.read(&quot;cache_key1&quot;))
+</code></pre>
+
+<h3 id="render-redirect">render &amp;&amp; redirect</h3>
+
+<p>render</p>
+
+<pre><code>render :new                                                 # render new.html.erb
+render action: 'new'                                        # 同上
+render text: Rails.env                                      # 輸出純文字
+render json: @files, status: 200                            # same as =&gt; status: :ok
+render json: user.errors, status: 422                       # return Http status code
+render json: episode, status: :created, location: episode   # :created 等同 201 (新增成功)
+</code></pre>
+
+<p>redirect</p>
+
+<pre><code>redirect_to root_path
+redirect_to post_comment_path(@post, @comment)
+redirect_to @user, notice: 'Updated'                    # 等同 flash[:notice] = 'Updated' 再 redirect
+redirect_to(:back)                                      # 回送出時的那一頁
+redirect_to request.referer + &quot;#user-#{@user.id}&quot;       # back + anchor 是無效的, 必須改成這樣
+redirect_to(request.env['HTTP_REFERER'])                # 效果同上
+redirect_to action: 'profile'                           # 等同 redirect_to profile_path
+redirect_to root_path, :anchor =&gt; &quot;user-#{user.id}&quot;     # url 加入 anchor : http://xxxxxx.com/#user-33
+</code></pre>
+
+<p>注意 <code>redner :edit</code> 使用 <code>flash[:notice]</code> 是沒用的(下個 request 才會發生), 要改用 <code>flash.now[:notice] = '...'</code></p>
+
+<p>輸出 json 立即 stop</p>
+
+<pre><code>return render json: post_params
+</code></pre>
+
+<h4 id="format-根據網址後面的格式輸出">format : 根據網址後面的格式輸出</h4>
+
+<p>link: <code>/users/1.json</code> <code>/users/1.xml</code></p>
+
+<pre><code>def show
+    @user = user.find(params[:id])
+    respond_to do |format|
+        format.html # show.html.erb
+        format.json {render json: @user }      # Content-Type: application/json
+        format.xml  {render xml: @user }       # Content-Type: application/xml
+
+        # Render specific action
+        format.html { render :action =&gt; &quot;edit&quot; }
+
+        # JSONP
+        format.json { render :json =&gt; @user.to_json, :callback =&gt; &quot;process_user&quot; }
+        format.json     # 預設是 show.js.erb
+    end
+end
+
+def create
+    @post = Post.new(post_params)
+    respond_to do |format|
+        if @post.save
+            format.html { redirect_to @post, notice: 'Success!' }
+            format.json { render :show, status: :created, location: @post }
+        else
+            format.html { render :new }
+            format.json { render json: @post.errors, status: :unprocessable_entity }
+        end
+    end
+end
+</code></pre>
+
+<blockquote>
+<p>只要在 url 後面加上 <code>.json</code> 它就可以用 <code>format.json</code> 去做區分，你不需要在 Header 帶 json，因為它不是靠 Content-Type 判斷的，而且它支援 <code>CORS</code> (Cross-origin resource sharing)</p>
+</blockquote>
+
+<h4 id="redirect-with-flash">Redirect with flash</h4>
+
+<pre><code>flash[:notice] = &quot;Success&quot;
+flash[:alert] = &quot;Fail&quot;
+
+redirect_to root_path, notice: &quot;Success&quot;
+</code></pre>
+
+<h3 id="actions">Actions</h3>
+
+<p>before_action</p>
+
+<pre><code>before_action :set_person,          except: [ :index, :new, :create ]           # except
+before_action :ensure_permission,   only: [ :edit, :update ]                    # only
+before_action :set_menu, if: :devise_controller?                                # 只有特定 controller 才讀
+</code></pre>
+
+<p>其他 actions</p>
+
+<ul>
+<li>prepend_before_action</li>
+<li>skip_before_action</li>
+<li>append_before_action</li>
+<li>after_action</li>
+<li>prepend_after_action</li>
+<li>skip_after_action</li>
+<li>append_after_action</li>
+<li>around_action</li>
+<li>prepend_around_action</li>
+<li>skip_around_action</li>
+<li>append_around_action</li>
+</ul>
+
+<h3 id="exception-handling">Exception Handling</h3>
+
+<pre><code>begin
+    @cart = Cart.new(cart_params)
+    @cart.save
+
+    @user = User.find(3)
+
+rescue ActiveRecord::RecordNotUnique
+    logger.info('Unique key 已重覆')
+
+rescue ActiveRecord::RecordNotFound
+    logger.info('沒有這筆資料')
+
+rescue =&gt; e
+    # 如果以上沒有符合的 error, 都會進這裡
+    logger.info(e.class)            # i.e. ActiveRecord::RecordNotUnique
+    # retry                         # 下 retry 要注意，不小心可能會形成無窮迴圈
+
+ensure
+    &quot;無論是否發生例外都會執行&quot;
+end
+</code></pre>
+
+<p>補捉自訂 exception</p>
+
+<pre><code>def create
+  @order = check_cart
+rescue CartService::CartIsEmpty
+  flash[:alert] = 'Cart is empty'
+rescue ActiveRecord::ActiveRecordError
+  flash[:alert] = &quot;Something Wrong：#{$!}&quot;
+end
+
+class CartIsEmpty &lt; StandardError; end
+def check_cart
+  raise CartIsEmpty, '購物車裡無任何商品' if current_user.carts.empty?
+end
+</code></pre>
+
+<p>擲出其他錯誤</p>
+
+<pre><code>吐 404
+raise ActionController::RoutingError.new('Not Found')
+</code></pre>
+
+<p><code>$!</code> (例外物件)</p>
+
+<ul>
+<li><code>.class</code>, ex: ZeroDivisionError</li>
+<li><code>.message</code>, ex: divided by 0</li>
+<li><code>.backtrace</code> (等同於<code>$@</code>), 程式出錯的位置, ex: <code>/tmp/test.rb:2:in</code></li>
+</ul>
+
+<h3 id="concerns-controller-之間共同-method">concerns - controller 之間共同 method</h3>
+
+<blockquote>
+<p>controllers/concerns 與 models/concerns 是共通的</p>
+</blockquote>
+
+<p>controllers/concerns/example.rb</p>
+
+<pre><code>module Example
+  def test
+    logger.info('TEST TEST TEST')
+  end
+end
+</code></pre>
+
+<p>controllers/carts_controller.rb</p>
+
+<pre><code>class CartsController &lt; ApplicationController
+  include CheckCart
+
+  def show
+    test
+  end
+end
+</code></pre>
+
+<h3 id="includes-避免-n-1-queries-問題">includes 避免 n+1 queries 問題</h3>
+
+<p>若 posts 有 user_id 欄位, 顯示 post list 時, 每筆 post 後面也要顯示 user name 怎麼撈會比較好 ?</p>
+
+<p>因為要透過 user_id 去關聯 users TABLE 的 name 欄位, 以下是有用 includes 及沒有使用的解析</p>
+
+<h4 id="沒有用-includes">沒有用 includes :</h4>
+
+<pre><code>@posts = Post.all
+&gt; Post Load (1.4ms)  SELECT &quot;posts&quot;.* FROM &quot;posts&quot;
+</code></pre>
+
+<blockquote>
+<p>執行了第一次 query</p>
+</blockquote>
+
+<p>執行迴圈 :</p>
+
+<pre><code>@posts.each do |post|
+  post.title %&gt; written by &lt;%= post.user.email
+end
+&gt; User Load (0.4ms)  SELECT  &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;id&quot; = ? LIMIT 1  [[&quot;id&quot;, 1]]
+&gt; User Load (0.1ms)  SELECT  &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;id&quot; = ? LIMIT 1  [[&quot;id&quot;, 2]]
+&gt; User Load (0.1ms)  SELECT  &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;id&quot; = ? LIMIT 1  [[&quot;id&quot;, 2]]
+</code></pre>
+
+<blockquote>
+<p>迴圈每一次執行都會跑一次, 所以執行了 n 次 query</p>
+</blockquote>
+
+<p><strong>總共是 n+1 次</strong></p>
+
+<h4 id="使用-includes">使用 includes</h4>
+
+<pre><code>@posts = Post.includes(:user).all
+&gt; Post Load (0.7ms)  SELECT &quot;posts&quot;.* FROM &quot;posts&quot;
+&gt; User Load (0.4ms)  SELECT &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;id&quot; IN (1, 2)
+
+@posts.each do |post|
+  post.title %&gt; written by &lt;%= post.user.email
+end
+(不會再產生 query)
+</code></pre>
+
+<blockquote>
+<p>只執行了第兩次 query</p>
+</blockquote>
+
+<p>總共只會執行 2 次 query, <strong>之後迴圈每一次執行都會跟 cache 拿</strong>, 所以不會有額外的 query 產生</p>
+
+<h4 id="結論">結論</h4>
+
+<ul>
+<li>如果要顯示的 list 沒有關聯的問題, 就不需要用 includes</li>
+<li>如果有的話, 則需要</li>
+</ul>
+
+<h3 id="logger">Logger</h3>
+
+<p>如果在 model 或 concerns 下會無法直接取到 logger，需改用 <code>Rails.logger</code></p>
+
+<p>幾種 log 的方法, 按照越來越嚴重的等級排序 :</p>
+
+<ul>
+<li>logger.debug : 在 production 下不會紀錄</li>
+<li>logger.info : 一般等級的 log，在 production 也會紀錄</li>
+<li>logger.warn : 警告訊息</li>
+<li>logger.error : 誤訊息，但還不到網站無法執行的地步</li>
+<li>logger.fatal : 嚴重錯誤到網站無法執行的訊息</li>
+</ul>
+
+<p>注意! log 檔案會越來越大，記得要用 logrotate 控制它的檔案大小，可<a href="/posts/logrotate/">參考此篇</a></p>
+
+<h3 id="其他">其他</h3>
+
+<h4 id="在-controller-使用-numberhelper-需要另外引入">在 controller 使用 NumberHelper 需要另外引入</h4>
+
+<pre><code>include ActionView::Helpers::NumberHelper
+number_with_delimiter(1000000)
+</code></pre>
+
+<h4 id="get-controller-and-action-name">Get controller and action name</h4>
+
+<pre><code>controller_name
+action_name
+</code></pre>
+
+<h4 id="在-controller-取得上傳檔名">在 controller 取得上傳檔名</h4>
+
+<pre><code>params[:user][:avatar].original_filename
+</code></pre>
+
+<h2 id="database">Database</h2>
+
+<p>(最後更新: 2016-05-01)</p>
+
+<h3 id="連接-sqlite3-設定">連接 sqlite3 設定</h3>
+
+<blockquote>
+<p>rails 預設連接的 DB，開發階段才使用</p>
+</blockquote>
+
+<p>config/database.yml</p>
+
+<pre><code>development:
+  &lt;&lt;: *default
+  database: db/development.sqlite3
+</code></pre>
+
+<blockquote>
+<p>有個小缺點，即使欄位有限制字數，但 sqlite 仍然可以超出字數且 insert 成功</p>
+</blockquote>
+
+<h3 id="連接-mysql-設定">連接 MySQL 設定</h3>
+
+<ul>
+<li>ubuntu 可能要再安裝<code>sudo apt-get install libmysqlclient-dev</code></li>
+<li>安裝 MySQL 可<a href="/posts/mysql/">參考這</a></li>
+</ul>
+
+<p>1) 設定好 <code>config/database.yml</code></p>
+
+<pre><code>production:
+  adapter: mysql2
+  encoding: utf8
+  database: myapp_production
+  username: root
+  password:
+  host: 127.0.0.1
+  port: 3306
+  strict: false                     # 關閉此模式, 否則存超過 size 的資料會噴 error, 讓它自動截斷
+</code></pre>
+
+<p>2) Gemfile</p>
+
+<pre><code>gem 'mysql2', '~&gt; 0.4.3'
+</code></pre>
+
+<blockquote>
+<ul>
+<li>ubuntu 需要再安裝 <code>libmysqlclient-dev</code>, 否則 bundle 安裝到 mysql2 時會噴錯</li>
+<li>要強制指定版號, 不然會噴 error :
+<code>Specified 'mysql2' for database adapter, but the gem is not loaded. Add</code>gem &lsquo;mysql2&rsquo;<code>to your Gemfile (and ensure its version is at the minimum required by ActiveRecord). (Gem::LoadError)</code></li>
+</ul>
+</blockquote>
+
+<p>3) 建立資料庫</p>
+
+<pre><code>RAILS_ENV=production rake db:create
+</code></pre>
+
+<p>4) 執行 migrate</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<blockquote>
+<p>沒有的話, 建立 table : <code>rails g migration create_videos</code></p>
+</blockquote>
+
+<p>註) 連到 MySQL console</p>
+
+<pre><code>rails dbconsole
+</code></pre>
+
+<h3 id="連接-postgresql-設定">連接 PostgreSQL 設定</h3>
+
+<p>安裝 PostgreSQL 可<a href="/posts/postgresql/">參考這</a></p>
+
+<p>1) 設定好 <code>config/database.yml</code></p>
+
+<pre><code>default: &amp;default
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+
+development:
+  &lt;&lt;: *default
+  adapter: postgresql
+  encoding: unicode
+  database: myapp_development
+</code></pre>
+
+<p>2) Gemfile</p>
+
+<pre><code>gem 'pg'
+</code></pre>
+
+<p>3) 建立資料庫 (使用 Postgres 或 rails 的 command 都可以)</p>
+
+<pre><code>createdb myapp_development
+或
+rake db:create
+</code></pre>
+
+<p>4) 執行 migrate</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<p>註) 連到 MySQL console</p>
+
+<pre><code>rails dbconsole
+</code></pre>
+
+<h3 id="欄位">欄位</h3>
+
+<h4 id="欄位型態">欄位型態</h4>
+
+<ul>
+<li><code>:string</code> : 有限的字串長度, 如果不指定長度, 預設是 varchar(255)</li>
+<li><code>:text</code> : 不限的字串長度</li>
+<li><code>:integer</code> : 整數</li>
+<li><code>:float</code> : 浮點數</li>
+<li><code>:decimal</code> : 十進位數</li>
+<li><code>:datetime</code> : 日期時間</li>
+<li><code>:timestamp</code> : 時間戳章, 型態為 datetime</li>
+<li><code>:date</code> : 日期</li>
+<li><code>:time</code> : 時間</li>
+<li><code>:binary</code> : 二進位, blob</li>
+<li><code>:boolean</code> : 布林值</li>
+<li><code>:references</code> : 用來參照到其他 Table 的外部鍵, 型態為 integer</li>
+</ul>
+
+<h4 id="tinyint-與-boolean">tinyint 與 boolean</h4>
+
+<p>1) MySQL 有 tinyint 欄位, 但 Rails 不支援, 但使用 integer + limit 來取代, 如下</p>
+
+<pre><code>t.integer :status, :limit =&gt; 2
+</code></pre>
+
+<p>2) MySQL 沒有 boolean 的型態, Rails 是用 tinyint(1) 來支援 MySQL 的 boolean</p>
+
+<h4 id="integer-補充">integer 補充</h4>
+
+<p>如果沒有指定 limit 的話, 預設會建立 int(11), 但如果需要建立 BIGINT,</p>
+
+<p>又該指定多少的 limit 呢? 參考以下對照表</p>
+
+<pre><code> :limit     Numeric Type    Column Size     Max Value
+-----------------------------------------------------------------------
+    1       TINYINT         1 byte          127
+    2       SMALLINT        2 bytes         32767
+    3       MEDIUMINT       3 bytes         8388607
+    4       INT(11)         4 bytes         2147483647
+    8       BIGINT          8 bytes         9223372036854775807
+</code></pre>
+
+<p>預設 INT(11) = limit 4</p>
+
+<pre><code>add_column :users, :money, :integer
+</code></pre>
+
+<p>BIGINT = limit 5~8</p>
+
+<pre><code>add_column :users, :money, :integer, limit: 8
+</code></pre>
+
+<h2 id="db-migration">DB Migration</h2>
+
+<p>產生 migration 指令及命名慣例</p>
+
+<pre><code>rails g migration create_users                      # 建立 TABLE
+rails g migration add_confirmable_to_devise         # 新增欄位
+rails g migration change_comment_field_name         # 修改欄位
+</code></pre>
+
+<h3 id="command-1">Command</h3>
+
+<pre><code>rake db:create                                  # 建立目前 RAILS_ENV 環境的資料庫
+rake db:create:all                              # 建立所有環境的資料庫
+rake db:drop                                    # 刪除目前 RAILS_ENV 環境的資料庫
+rake db:drop:all                                # 刪除所有環境的資料庫
+rake db:migrate                                 # 執行 migration
+rake db:migrate RAILS_ENV=development           # 指定 development 環境執行 migration
+rake db:migrate:up VERSION=20150713155732       # 執行特定版本的 migration
+rake db:migrate:down VERSION=20150713155732     # 回復特定版本的 migration
+rake db:rollback                                # To rollback the previous migration
+rake db:rollback STEP=3                         # 回復前 3 個 migration
+rake db:version                                 # 顯示 Current version: 20150713155732
+rake db:seed                                    # 執行 db/seeds.rb (種子資料)
+rake db:schema:dump                             # Dump the current db state. 產生 db/schema.rb
+rake db:setup                                   # Creates the db, loads schema, &amp; seed.    ( When you start working on an existing app
+</code></pre>
+
+<ul>
+<li>不加上 RAILS_ENV 預設就是 development</li>
+<li>rails 的 db 可以分為 production 跟 development, 所以可以用 RAILS_ENV 指定哪個 DB</li>
+</ul>
+
+<h3 id="語法">語法</h3>
+
+<p>migrate 的方式</p>
+
+<pre><code>def up          # migrate 執行的
+def down        # rollback 執行的
+def change      # migrate 執行的, 要嘛就 up + down, 不想那麼麻煩就選擇 change
+</code></pre>
+
+<p>Create Table &amp; 欄位</p>
+
+<pre><code>create_table(:users) do |t|
+
+    t.column :id, 'INT UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY (id)'
+    t.string :id, primary_key: true     # create_table :users, id: false
+    t.string :video_id, :limit =&gt; 50, :null =&gt; false               # primary key 但要自己產生
+    t.integer :kind , :limit =&gt; 1 , :default =&gt; 0 , :null =&gt; false , :unsigned =&gt; true
+    t.boolean  :is_hidden, :default =&gt; false   ,:null =&gt; false
+    t.datetime &quot;delete_at&quot;
+    t.string   &quot;title&quot; limit: 100,  default: 0, null: false           (VARCHAR)
+    t.text     &quot;body&quot;                                               (TINYTEXT, TEXT, MEDIUMTEXT, or LONGTEXT2)
+    t.timestamps                                                    (same as : t.datetime :created_at, :updated_at)
+    t.references :article, index: true
+
+end
+</code></pre>
+
+<p>操作欄位</p>
+
+<ul>
+<li>改default : <code>change_column_default :users, :is_admin, default: true</code></li>
+<li>建立table : <code>create_table :videos do |t|</code></li>
+<li>刪除table : <code>drop_table :people</code></li>
+<li>變更欄位 : <code>change_column :table_name, :field_name, :integer, :limit =&gt; 8, :unsigned =&gt; true, :null =&gt; false, :auto_increment =&gt; true</code></li>
+<li>增加欄位 : <code>add_column :table_name, :balance, :integer, default: 0, null: false, unsigned: true</code></li>
+<li>刪除欄位 : <code>remove_column :table_name, :created_at</code></li>
+<li>rename欄位   : <code>rename_column :table_name, :id, :udid</code></li>
+<li>增加索引 : <code>add_index :table_name, :email, unique: true</code></li>
+<li>增加組合索引 : <code>add_index :user_views, [:user_id, :article_id]</code></li>
+<li>執行SQL  : <code>execute &quot;ALTER TABLE users modify COLUMN id int(8) AUTO_INCREMENT&quot;</code></li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>change_column :videos, :source_website, :string, :limit =&gt; 50, :null =&gt; false
+add_column :videos, :file_name, :string, :limit =&gt; 100, :null =&gt; false
+add_index :videos, :file_name, :unique =&gt; true
+add_index :videos, :source_website
+add_index &quot;users&quot;, [&quot;confirmation_token&quot;], name: &quot;index_users_on_confirmation_token&quot;, unique: true
+add_index &quot;users_roles&quot;, [&quot;user_id&quot;, &quot;role_id&quot;], name: &quot;index_users_roles_on_user_id_and_role_id&quot;
+</code></pre>
+
+<p>欄位參數</p>
+
+<ul>
+<li><code>default: 'Hello'</code></li>
+<li><code>limit: 30</code></li>
+<li><code>null: false</code></li>
+<li><code>first: true     # position</code></li>
+<li><code>after: :email   # position</code></li>
+</ul>
+
+<h3 id="unsigned-true"><code>unsigned: true</code></h3>
+
+<p>當做 migration 時，這個屬性 rails 本身是不支援的，雖然執行 <strong>migrate</strong> 不會噴錯誤，但是你可以去 <code>db/schema.rb</code> 看，<code>unsigned: true</code> 是沒有被寫進去的</p>
+
+<h2 id="assets">Assets</h2>
+
+<h3 id="command-2">Command</h3>
+
+<p>清除 assets cache</p>
+
+<pre><code>rake assets:clean
+</code></pre>
+
+<p>precompiled 所有 assets</p>
+
+<pre><code>rake assets:precompile
+RAILS_ENV=production bundle exec rake assets:precompile
+</code></pre>
+
+<h3 id="custom-assets-folder">Custom assets folder</h3>
+
+<p><code>config/application.rb</code> 在 class 裡加上 :</p>
+
+<pre><code>config.assets.paths &lt;&lt; Rails.root.join(&quot;app&quot;, &quot;assets&quot;, &quot;[custom foler name]&quot;)
+</code></pre>
+
+<h3 id="加入-fonts">加入 fonts</h3>
+
+<p>1) config/application.rb</p>
+
+<pre><code>config.assets.paths &lt;&lt; Rails.root.join(&quot;app&quot;, &quot;assets&quot;, &quot;fonts&quot;)
+</code></pre>
+
+<p>??) config/initializers/assets.rb, 不加也能 work, 但先保留</p>
+
+<pre><code># Rails.application.config.assets.precompile += %w( .svg .eot .woff .ttf )
+</code></pre>
+
+<h4 id="assets-fonts-path"><code>assets/fonts</code> path</h4>
+
+<p>font-awesome.min.css.erb :</p>
+
+<pre><code>src:url(&lt;%= asset_path 'dashboard/fontawesome-webfont.eot' %&gt;);
+</code></pre>
+
+<p>它會被 compile 成</p>
+
+<pre><code>src:url(/assets/dashboard/fontawesome-webfont-e511891d3e01b0b27aed51a219ced5119e2c3d0460465af8242e9bff4cb61b77.eot);
+</code></pre>
+
+<h3 id="如果不用預設的-application-js-application-css">如果不用預設的 <code>application.js</code> <code>application.css</code></h3>
+
+<p>不用預設的 application, 在 controller 帶值給 layout load asset, 就必須要寫在 config/initializers/assets.rb :</p>
+
+<pre><code>Rails.application.config.assets.precompile += %w( welcome.js )
+Rails.application.config.assets.precompile += %w( welcome.css )
+Rails.application.config.assets.precompile += %w( videofrom.js )
+Rails.application.config.assets.precompile += %w( videofrom.css )
+</code></pre>
+
+<p>或加入所有的 js 及 css</p>
+
+<pre><code>config.assets.precompile += Dir[&quot;#{__dir__}/../app/assets/stylesheets/*.css&quot;].map{|i|i.split('/').pop}
+config.assets.precompile += Dir[&quot;#{__dir__}/../app/assets/javascripts/*.js&quot;].map{|i|i.split('/').pop}
+</code></pre>
+
+<h3 id="讀取-javascript-css">讀取 Javascript / CSS</h3>
+
+<pre><code>&lt;%= javascript_include_tag &quot;application&quot; %&gt;
+&lt;%= stylesheet_link_tag &quot;application&quot; %&gt;
+</code></pre>
+
+<h4 id="依-controller-name-決定讀取的-js">依 controller name 決定讀取的 JS</h4>
+
+<p>view : (讓 controller 讀自己的 javascript)</p>
+
+<pre><code>&lt;%= stylesheet_link_tag controller_name, media: 'all', 'data-turbolinks-track' =&gt; true %&gt;
+&lt;%= javascript_include_tag controller_name, 'data-turbolinks-track' =&gt; true %&gt;
+</code></pre>
+
+<h3 id="require-語法說明">require 語法說明</h3>
+
+<pre><code>//= require jquery
+//= require jquery.turbolinks       # 一定要馬上在 jquery 後面 load
+//= require jquery_ujs
+//= require turbolinks
+</code></pre>
+
+<p>/app/assets/javascripts/application.js :</p>
+
+<pre><code>//= require jquery
+//= require jquery_ujs      # unobtrusive JavaScript. Ajax
+//= require_tree .          # include all files
+//= require application     # include application.js
+//= require shared          # include lib/assets/javascripts/shared.js.coffee
+//= require friend          # include vendor/assets/javascripts/friend.js
+</code></pre>
+
+<p>/app/assets/stylesheets/application.css :</p>
+
+<pre><code>/*
+ *= require reset           # Included before the content in this file
+ *= require_self            # Specifies where to insert content in this file
+ *= require_tree .
+ */
+form.new_user {
+    border: 1px dashed gray;    # include before everything else
+}
+</code></pre>
+
+<h3 id="helper">Helper</h3>
+
+<h4 id="assets-helper-使用後都會加上-hash-讓-browser-判斷是否拿-cache">Assets helper 使用後都會加上 hash, 讓 browser 判斷是否拿 cache</h4>
+
+<pre><code>audio_path(&quot;horse.wav&quot;)   # =&gt; /audios/horse.wav
+audio_tag(&quot;sound&quot;)        # =&gt; &lt;audio src=&quot;/audios/sound&quot; /&gt;
+font_path(&quot;font.ttf&quot;)     # =&gt; /fonts/font.ttf
+image_path(&quot;edit.png&quot;)    # =&gt; &quot;/images/edit.png&quot;
+image_tag(&quot;icon.png&quot;)     # =&gt; &lt;img src=&quot;/images/icon.png&quot; alt=&quot;Icon&quot; /&gt;
+video_path(&quot;hd.avi&quot;)      # =&gt; /videos/hd.avi
+video_tag(&quot;trailer.ogg&quot;)  # =&gt; &lt;video src=&quot;/videos/trailer.ogg&quot; /&gt;
+</code></pre>
+
+<p>引入</p>
+
+<pre><code>src: url('/assets/fonts/myfont-webfont.ttf')
+src: url('myfont-webfont.eot?#iefix') format('embedded-opentype');
+</code></pre>
+
+<p>在副檔名加入 .erb, ex:  application.css.erb</p>
+
+<pre><code>src: url(&lt;%= asset_path 'Chunkfive-webfont.eot' %&gt;);
+</code></pre>
+
+<blockquote>
+<p>或直接用 public 路徑, 不管是 assets/fonts, assets/js, 最後都是同一層目錄結構, 所以可以在 css 下直接引入 <code>/assets/web-icons.woff</code> 位在 <code>/assets/fonts/web-icons.woff</code> 的檔案</p>
+</blockquote>
+
+<h4 id="sass-helper">Sass helper</h4>
+
+<p><strong>將原本 <code>.css</code> 檔 rename 為 <code>.scss</code>, 並根據以下修改</strong></p>
+
+<pre><code>image-url(&quot;rails.png&quot;)         # =&gt; url(/assets/rails.png)
+image-path(&quot;rails.png&quot;)        # =&gt; &quot;/assets/rails.png&quot;.
+asset-url(&quot;rails.png&quot;, image)  # =&gt; url(/assets/rails.png)
+asset-path(&quot;rails.png&quot;, image) # =&gt; &quot;/assets/rails.png&quot;
+</code></pre>
+
+<p>用法</p>
+
+<pre><code>src: asset-url('Junction-webfont.eot', font);
+background-image:image-url('application/typewriter_dark.jpg');
+src: url(font-path('myfont-webfont.eot')
+src: font-url('icofonts.eot');                      # compile css 後 : src: url(/assets/icofonts.eot);
+src: url(font-path('myfont-webfont.eot')
+
+src:url(/assets/dashboard/web-icons/web-icons.eot?v=0.2.2)      # web-icons.eot 的路徑在 app/assets/fonts/dashboard/web-icons/web-icons.eot
+改成
+src:asset-url(&quot;dashboard/web-icons/web-icons.eot?v=0.2.2&quot;)
+</code></pre>
+
+<h3 id="如何套入-bootstrap-dashboard-theme">如何套入 bootstrap dashboard theme</h3>
+
+<h4 id="將會引入的-css-放在-assets-stylesheets-dashboard-下">將會引入的 css 放在 <code>assets/stylesheets/dashboard</code> 下</h4>
+
+<p>assets/stylesheets/dashboard.css</p>
+
+<pre><code>/*
+ *= require_tree ./dashboard
+ */
+</code></pre>
+
+<h4 id="將會引入的-js-放在-assets-javascripts-dashboard-下">將會引入的 js 放在 <code>assets/javascripts/dashboard</code> 下</h4>
+
+<p>assets/javascripts/dashboard.js</p>
+
+<pre><code>/*
+ *= require ./dashboard/jquery.min.js
+ *= require_tree ./dashboard
+ */
+</code></pre>
+
+<h4 id="將會引入的-fonts-放在-assets-fonts-dashboard-下">將會引入的 fonts 放在 <code>assets/fonts/dashboard</code> 下</h4>
+
+<p>需再做以下步驟</p>
+
+<p>1) config/application.rb 加入 assets_path</p>
+
+<p>2) initialize/assets.rb 加入 precompile</p>
+
+<p>3) 修改 css 引入的 fonts</p>
+
+<ol>
+<li>將 url 改成 asset-url 參考本文 <code>Sass helper -&gt; 用法</code></li>
+<li>如果網站使用的是 HTTPS, 那麼如果 css 有引入 http 的 font 都要改成 https, 否則瀏覽器會拒絕載入</li>
+</ol>
+
+<h3 id="troubleshootings">Troubleshootings</h3>
+
+<h4 id="actioncontroller-routingerror-no-route-matches-get-assets-dashboard-jquery-min-map">ActionController::RoutingError (No route matches [GET] &ldquo;/assets/dashboard/jquery.min.map&rdquo;)</h4>
+
+<p>能將 minify 後的變數從 a b c 轉回原本的, 它在 jquery.min.js 最後一行 <code>//# sourceMappingURL=jquery.min.map</code>, 如果不需要可以直接刪掉</p>
+
+<h3 id="讓-js-檔可以取得-route-path">讓 js 檔可以取得 Route Path</h3>
+
+<p>application.js.erb : (注意! 副檔名是 <code>.erb</code>)</p>
+
+<pre><code>Rails.application.routes.url_helpers.*_path
+
+# ex:
+Rails.application.routes.url_helpers.edit_post_path
+</code></pre>
+
+<h2 id="custom-helper">Custom helper</h2>
+
+<ul>
+<li>View 在不需要 controller include 可以直接用 helper 定義的 method</li>
+<li>controller 要用 定義的 helper 一定要 include</li>
+</ul>
+
+<p>app/helpers/event_helper.rb</p>
+
+<pre><code>module EventsHelper
+  def do_something
+  end
+end
+</code></pre>
+
+<p>controller :</p>
+
+<pre><code>class BadgeController &lt; ApplicationController
+  include EventHelper
+
+  ....
+end
+</code></pre>
+
+<h2 id="mailer">Mailer</h2>
+
+<h3 id="smtp-設定">SMTP 設定</h3>
+
+<p>config/application.rb</p>
+
+<pre><code>config.action_mailer.default_url_options = { host: $settings[:host] }
+config.action_mailer.delivery_method = :smtp
+config.action_mailer.smtp_settings = {
+    address: &quot;smtp.mailgun.org&quot;,
+    port: 587,
+    user_name: &quot;postmaster@example.com&quot;,
+    password: &quot;9******************************d&quot;,
+}
+</code></pre>
+
+<h3 id="寄信範例">寄信範例</h3>
+
+<p>app/mailers/application_mailer.rb</p>
+
+<pre><code>class ApplicationMailer &lt; ActionMailer::Base
+  # 如果有設定的話, 在寄信時就不用特別指定
+  default from: 'contact@gmail.com'
+  default to: 'test@gmail.com'
+
+  layout 'mailer'
+end
+</code></pre>
+
+<p>app/mailers/my_mailer.rb</p>
+
+<pre><code>class MyMailer &lt; ApplicationMailer
+  def welcome(user)
+    @user = user
+
+    mail(to: @user.email, subject: 'Welcome')
+  end
+end
+</code></pre>
+
+<blockquote>
+<p>寄給多位 User : <code>to: 'aaa@gmail.com,bbb@gmail.com'</code></p>
+</blockquote>
+
+<p>app/views/layouts/mailer.text.erb</p>
+
+<pre><code>&lt;%= @user.nickname %&gt; 您好~
+
+&lt;%= yield %&gt;
+
+如果有任何疑問，歡迎隨時聯絡我們
+
+謝謝您選擇我們，期待與您的合作。
+</code></pre>
+
+<p>app/views/my_mailer/welcome.text.erb</p>
+
+<pre><code>Welcome to example.com, &lt;%= @user.name %&gt;
+</code></pre>
+
+<p>app/controllers/user_controller.rb</p>
+
+<pre><code>MyMailer.welcome(current_user).deliver_later
+</code></pre>
+
+<blockquote>
+<p>寫完一封 mail 可以在 console 下執行, 測試信件是否發送出去</p>
+</blockquote>
+
+<h3 id="send-to-multiple-recipients">Send to multiple recipients</h3>
+
+<pre><code>emails = @recipients.collect(&amp;:email).join(&quot;,&quot;)
+mail(to: emails, subject: &quot;A replacement clerk has been requested&quot;)
+</code></pre>
+
+<h3 id="cc-bcc">cc &amp; bcc</h3>
+
+<blockquote>
+<p>cc 看到的所有副本的收件人 email, bcc 則看不到</p>
+</blockquote>
+
+<pre><code>mail(to: recipient.email_address_with_name, bcc: [&quot;bcc@example.com&quot;, &quot;Order Watcher &lt;watcher@example.com&gt;&quot;])
+</code></pre>
+
+<h3 id="reply-to">reply-to</h3>
+
+<blockquote>
+<p>當收件人按下回覆，預設回覆是給寄件人，但寄件人的 email 往往是客服的信箱，所以可以透過指定 reply-to 去指定收件人</p>
+</blockquote>
+
+<pre><code>mail(to: user_email, reply_to: [email_1, email_2])
+</code></pre>
+
+<h2 id="config">Config</h2>
+
+<h3 id="為每條-log-前加上-user-id">為每條 log 前加上 user_id</h3>
+
+<pre><code>Started GET &quot;/&quot; for 127.0.0.1 at 2016-03-31 14:12:52 +0800
+</code></pre>
+
+<p>加上後 :</p>
+
+<pre><code>[user_id:2] Started GET &quot;/&quot; for 127.0.0.1 at 2016-03-31 14:12:52 +0800
+</code></pre>
+
+<h4 id="如何加上">如何加上 :</h4>
+
+<p>config/application.rb</p>
+
+<pre><code>config.middleware.delete(ActionDispatch::Cookies)
+config.middleware.delete(ActionDispatch::Session::CookieStore)
+config.middleware.insert_before(Rails::Rack::Logger, ActionDispatch::Session::CookieStore)
+config.middleware.insert_before(ActionDispatch::Session::CookieStore, ActionDispatch::Cookies)
+</code></pre>
+
+<p>config/initializers/logging.rb</p>
+
+<pre><code>Rails.configuration.log_tags = [
+  proc do |req|
+    if req.session[&quot;warden.user.user.key&quot;].nil?             # 這個 key 是 devise 的
+      &quot;Anonym&quot;
+    else
+      &quot;user_id:#{req.session[&quot;warden.user.user.key&quot;][0][0]}&quot;
+    end
+  end
+]
+</code></pre>
+
+<p>ref : <a href="http://stackoverflow.com/questions/10811393/how-to-log-user-name-in-rails">http://stackoverflow.com/questions/10811393/how-to-log-user-name-in-rails</a></p>
+
+<h2 id="其他-1">其他</h2>
+
+<h3 id="difference-between-length-count-and-size">Difference between <code>.length</code>, <code>.count</code> and <code>.size</code></h3>
+
+<p>這三個共同點都是算一個集合的數量,
+如果對像是 Array 這兩者的行為無差別</p>
+
+<p>有差別的是有時候我們會利用這兩者去判斷從 DB 撈出來的筆數如果 <code>&gt;0</code> 再做相關的處理,
+從 DB 撈出來的是 ActiveRecord::Relation</p>
+
+<pre><code>a = User.all
+User Load (115.4ms)  SELECT &quot;users&quot;.* FROM &quot;users&quot;
+</code></pre>
+
+<p>使用 <code>.length</code>, <code>.size</code> 會直接算出數量</p>
+
+<pre><code>a.length
+ =&gt; 203
+
+a.size
+ =&gt; 203
+</code></pre>
+
+<p>使用 <code>.count</code> 就會使用 SQL count, 成本相對是比較高的</p>
+
+<pre><code>a.count
+(2.5ms)  SELECT COUNT(*) FROM &quot;users&quot;&lt;F6&gt;
+ =&gt; 203
+</code></pre>
+
+<p>結論 : 如果只是需要單純判斷目前 DB 資料的筆數用 <code>.count</code>, 如果不是或不確定用哪個就用 <code>.length</code> 或 <code>.size</code></p>
+
+<h3 id="nil-vs-empty-vs-balnk">nil vs empty vs balnk</h3>
+
+<p><strong>首先 blank 是 rails 才有的, ruby 本身是沒有的</strong></p>
+
+<p>nil 可以用在任何物件上, 即使物件為 nil, 當 Object 為 nil 的話為 true</p>
+
+<p>empty 可以用在 strings, arrays and hashes, True 的話有以下三種情況</p>
+
+<ul>
+<li>String length == 0</li>
+<li>Array length == 0</li>
+<li>Hash length == 0</li>
+</ul>
+
+<p>如果在某個為 nil 的物件上問 <code>.empty?</code> 會擲出 <code>NoMethodError</code></p>
+
+<p><code>.blank?</code> 可以解決這個問題, 它不會引發 <code>NoMethodError</code>, 用法跟 empty 幾乎一樣</p>
+
+<pre><code>nil.blank? = true       # empty? 會引發錯誤
+false.blank? = true     # empty? 會引發錯誤
+[].blank? = true
+[].empty? = true
+{}.blank? = true
+{}.empty? = true
+&quot;&quot;.blank? = true
+&quot;&quot;.empty? = true
+5.blank? = false       # empty? 會引發錯誤
+0.blank? = false       # empty? 會引發錯誤
+</code></pre>
+
+<p>有一個 space 的情況</p>
+
+<pre><code>&quot; &quot;.blank? = true
+&quot; &quot;.empty? = false
+</code></pre>
+
+<p>Array 是空的情況</p>
+
+<pre><code>[ nil, '' ].blank? == false
+[ nil, '' ].all? &amp;:blank? == true
+</code></pre>
+
+<h3 id="區分環境變數">區分環境變數</h3>
+
+<p>config/settings.yml</p>
+
+<pre><code>:development:
+  :host: '127.0.0.1'
+
+:production:
+  :host: 'example.com'
+</code></pre>
+
+<p>config/application.rb</p>
+
+<pre><code># 載入 settings.yml
+require 'yaml'
+$settings = YAML.load(File.open(&quot;#{__dir__}/settings.yml&quot;))[Rails.env.to_sym]
+</code></pre>
+
+<p>要記得先重啟 rails server 才能讀取新的 config，在程式裡使用，會依照你的環境讀取相對的設定</p>
+
+<pre><code>$settings[:host]
+</code></pre>
+
+<h3 id="只顯示-date-就好">只顯示 date 就好</h3>
+
+<p>如果網站上常使用 date 顯示, 一般輸出 <code>created_at</code> 都要用 <code>created_at.strftime('%F %T')</code> 很不方便</p>
+
+<p>可以建一個 <code>config/initializers/time_format.rb</code> 或直接寫在 <code>application.rb</code></p>
+
+<pre><code>Time::DATE_FORMATS[:default] = &quot;%Y-%m-%d %H:%M:%S&quot;
+</code></pre>
+
+<h3 id="將物件儲存成字串">將物件儲存成字串</h3>
+
+<p>Marshal</p>
+
+<pre><code>a = {qq: 'xxx', ff: {cc: 'ccc', dd: 'ddddd'}}
+
+# 轉成字串
+Marshal.dump(a)
+ =&gt; &quot;\x04\b{\a:\aqqI\&quot;\bxxx\x06:\x06ET:\aff{\a:\accI\&quot;\bccc\x06;\x06T:\addI\&quot;\nddddd\x06;\x06T&quot;
+
+# 轉回成物件
+Marshal.load(&quot;\x04\b{\a:\aqqI\&quot;\bxxx\x06:\x06ET:\aff{\a:\accI\&quot;\bccc\x06;\x06T:\addI\&quot;\nddddd\x06;\x06T&quot;)
+ =&gt; {:qq=&gt;&quot;xxx&quot;, :ff=&gt;{:cc=&gt;&quot;ccc&quot;, :dd=&gt;&quot;ddddd&quot;}}
+</code></pre>
+
+<p>JSON</p>
+
+<pre><code># 轉成 JSON
+a.to_json
+ =&gt; &quot;{\&quot;qq\&quot;:\&quot;xxx\&quot;,\&quot;ff\&quot;:{\&quot;cc\&quot;:\&quot;ccc\&quot;,\&quot;dd\&quot;:\&quot;ddddd\&quot;}}&quot;
+
+# 轉成 json ( hash key)
+JSON.parse(&quot;{\&quot;qq\&quot;:\&quot;xxx\&quot;,\&quot;ff\&quot;:{\&quot;cc\&quot;:\&quot;ccc\&quot;,\&quot;dd\&quot;:\&quot;ddddd\&quot;}}&quot;)
+ =&gt; {&quot;qq&quot;=&gt;&quot;xxx&quot;, &quot;ff&quot;=&gt;{&quot;cc&quot;=&gt;&quot;ccc&quot;, &quot;dd&quot;=&gt;&quot;ddddd&quot;}}
+
+# 轉成 &lt;F10&gt;
+JSON.parse(&quot;{\&quot;qq\&quot;:\&quot;xxx\&quot;,\&quot;ff\&quot;:{\&quot;cc\&quot;:\&quot;ccc\&quot;,\&quot;dd\&quot;:\&quot;ddddd\&quot;}}&quot;, symbolize_names: true)
+ =&gt; {:qq=&gt;&quot;xxx&quot;, :ff=&gt;{:cc=&gt;&quot;ccc&quot;, :dd=&gt;&quot;ddddd&quot;}}
+</code></pre>
+
+<blockquote>
+<p>Marshal 會佔比較多的字符 55 : 43</p>
+</blockquote>
+
+<h3 id="解開-session">解開 session</h3>
+
+<pre><code>Marshal.load(Base64.decode64(cookie_token.split(&quot;--&quot;)[0]))
+</code></pre>
+
+<blockquote>
+<p>devise 登入使用記住我，cookie_token 才能解</p>
+</blockquote>
+
+<h3 id="簡化-console-指令">簡化 console 指令</h3>
+
+<p>~/.irbrc</p>
+
+<pre><code>class T
+  def self.mail(mail)
+    User.where(email: mail)
+  end
+end
+</code></pre>
+
+<p>Rails console :</p>
+
+<pre><code>T.mail('me@gmail.com)
+</code></pre>
+
+<h3 id="console-下自動-include-好像沒用了-updated-at-2015-9-3">console 下自動 include (好像沒用了 updated at 2015/9/3)</h3>
+
+<p>config/application.rb</p>
+
+<pre><code>config.console do
+  include Rails.application.routes.url_helpers
+end
+</code></pre>
+
+<h3 id="找出-gem-的真實路徑">找出 Gem 的真實路徑</h3>
+
+<p>In console</p>
+
+<pre><code> &gt; Gem.loaded_specs['rails'].full_gem_path
+ =&gt; &quot;/usr/local/rvm/gems/ruby-2.2.1/gems/rails-4.2.3&quot;
+</code></pre>
+
+<p>Rails lib 真實路徑</p>
+
+<pre><code>ex: upload
+/usr/local/rvm/gems/ruby-2.2.1/gems/actionpack-4.2.3/lib/action_dispatch/http/upload.rb
+</code></pre>
+
+</article>
+
+
+
+</html>

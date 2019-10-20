@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Node.js gulp | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/gulp/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/gulp/">Node.js gulp</a></h1>
+    <p class="meta"><time datetime="2014-10-02T00:28:58&#43;08:00">October 02, 2014</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>使用 node.js 的 gulp 套件可以偵測當 .scss 發生變動時可以自動 compile 並放到對應目錄</p>
+
+<h2 id="install-gulp">Install gulp</h2>
+
+<pre><code>npm install gulp
+npm install gulp-compass
+</code></pre>
+
+<p>gulpfile.js :</p>
+
+<pre><code>var gulp = require('gulp');
+var compass = require('gulp-compass');
+gulp.task('default', function() {
+    gulp.run('compass');
+    gulp.watch([
+        '../../sass/**',
+    ], function(event) {
+        gulp.run('compass');
+    });
+});
+
+gulp.task('compass', function() {
+    gulp.src('../../sass/**')
+    .pipe(compass({
+        comments: false,
+        css: '../../../public/static/css', // css folder
+        sass: '../../sass', // scss folder
+    }));
+});
+</code></pre>
+
+<p>在 package.json 下執行 <code>npm install</code></p>
+
+</article>
+
+
+
+</html>

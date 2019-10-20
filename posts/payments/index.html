@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Payment Integration | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/payments/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/payments/">Payment Integration</a></h1>
+    <p class="meta"><time datetime="2016-04-07T16:42:53&#43;08:00">April 07, 2016</time></p>
+  </header>
+  
+
+<p>(最後更新 : 2016-04-28)</p>
+
+<h2 id="智付寶">智付寶</h2>
+
+<h3 id="介紹">介紹</h3>
+
+<p>智付寶有個很大的好處是提供測試環境，你可以直接去註冊，不用事先到主站註冊</p>
+
+<p><a href="https://cweb.pay2go.com/">這是它的測試環境</a>註冊完後直接去開立商店，但期限只有 30 天（如果需要延長，直接寫信告知客服 cs@pay2go.com 就可以了）</p>
+
+<p>接著到商店後台就會看到 API 串接金鑰了，到這裡先停，我們先做程式的部份，本篇以 Rails 實作，如果使用其他語言的朋友也沒關係，理解概念才是重點</p>
+
+<h3 id="實作導到智付寶的付款頁面">實作導到智付寶的付款頁面</h3>
+
+<p>到<a href="https://www.pay2go.com/info/site_description/api_description">智付寶文件專區選擇 MPG API 文件</a>，裡面串接方法寫的很清楚，我們直接看 Code :</p>
+
+<p>Controller :</p>
+
+<pre><code># 智付寶文件規定的5個欄位必須按照字母順序
+chain = &quot;Amt=#{@order.total}&amp;MerchantID=#{智付寶MerchantID}&amp;MerchantOrderNo=#{@order.id}&amp;TimeStamp=#{@order.created_at.to_i}&amp;Version=#{智付寶Version}&quot;
+
+# 頭先加上 HashKey，尾再加上 HashIV ，最後以 SHA-256 加密後再轉大寫
+@check_value = Digest::SHA256.hexdigest(&quot;HashKey=#{智付寶HashKey}&amp;#{chain}&amp;HashIV=#{智付寶HashIV}&quot;).upcase
+</code></pre>
+
+<blockquote>
+<ul>
+<li>智付寶Merchant ID : 在支付寶後台的商店清單會顯示商店代號，不要點到你的商店裡，裡面沒有顯示</li>
+<li>智付寶Version : 要看 API 文件的那個欄位，它會跟你說。i.e. <code>請帶 1.2。</code></li>
+<li>智付寶HashKey : 後台的商店基本資料的<strong>API串接金鑰</strong></li>
+<li>智付寶HashIV : 後台的商店基本資料的<strong>API串接金鑰</strong></li>
+</ul>
+</blockquote>
+
+<p>HTML :</p>
+
+<pre><code>&lt;form method=&quot;post&quot; action=&quot;https://capi.pay2go.com/MPG/mpg_gateway&quot;&gt;               &lt;!-- 此為測試的 url, 正式為 : https://api.pay2go.com/MPG/mpg_gateway --&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;MerchantID&quot; value=&quot;&lt;%= 智付寶MerchantID %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;RespondType&quot; value=&quot;JSON&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;CheckValue&quot; value=&quot;&lt;%= @check_value %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;TimeStamp&quot; value=&quot;&lt;%= @order.created_at.to_i %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;Version&quot; value=&quot;&lt;%= 智付寶Version %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;MerchantOrderNo&quot; value=&quot;&lt;%= @order.id %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;Amt&quot; value=&quot;&lt;%= @order.total %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;ItemDesc&quot; value=&quot;TESTTESTTEST&quot;/&gt;                       &lt;!-- 商品資訊，先隨便帶 --&gt;
+  &lt;input type=&quot;text&quot; name=&quot;CustomerURL&quot; value=&quot;&lt;%= customer_payments_url %&gt;&quot;/&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;Email&quot; value=&quot;your_email@gmail.com&quot;/&gt;                  &lt;!-- 付款成功時會依照 Email 欄位填的 Email 寄送付款成功信件 --&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;LoginType&quot; value=&quot;0&quot;/&gt;                                 &lt;!-- 0 = 不須登入智付寶會員 --&gt;
+  &lt;button type=&quot;submit&quot;&gt;付款&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>送出後就會接到智付寶的付款頁面，在裡面預設有四種付款方式供選擇 Web ATM / ATM轉帳 / 超商代碼繳費 / 條碼繳費；信用卡付款(VISA金融卡)一次付清/分期付款則需要另外在後台申請開通</p>
+
+<p>除了信用卡付款需要打測試用的卡號(4000-2222-2222-2222)，其他都是點一點就能模擬付款成功，相當方便</p>
+
+<p>只有當客戶使用非即時交易支付方式 : ATM 轉帳(VACC)、超商代碼繳費(CVS) 、條碼繳費(BARCODE)時，需要額外儲存繳費代碼；使用 WebATM 或信用卡則不需要</p>
+
+<h3 id="接收取號完成參數-儲存繳費代碼">接收取號完成參數 - 儲存繳費代碼</h3>
+
+<h4 id="前言">前言</h4>
+
+<p>當客戶使用非即時交易支付方式時，雖然說繳費代碼會顯示在智付寶的頁面上，但如果使用者忘記儲存就離開，那麼它就沒辦法再得知繳費代碼了，
+所以我們要有個 API 接收智付寶傳回來的繳費代碼，以便使用者在我們的網站上也可以查詢</p>
+
+<p>這個 API 的 URL 需定義在傳送給智付寶表單的 CustomerURL 欄位</p>
+
+<pre><code>&lt;input type=&quot;text&quot; name=&quot;CustomerURL&quot; value=&quot;&lt;%= customer_payments_url %&gt;&quot;/&gt;
+</code></pre>
+
+<h4 id="實作-api">實作 API</h4>
+
+<p>用它回傳的 CheckCode 來驗證資料是否有無被竄改，再判斷取號是否成功</p>
+
+<pre><code>resp = JSON.parse(params[:JSONData])
+result = JSON.parse(resp['Result'])
+
+# 這裡的 MerchantID 不使用 POST 過來的，使用我們自已的會更安全
+chain = &quot;Amt=#{result['Amt']}&amp;MerchantID=#{智付寶MerchantID}&amp;MerchantOrderNo=#{result['MerchantOrderNo']}&amp;TradeNo=#{result['TradeNo']}&quot;
+
+# 頭先加上 **HashIV** 尾再加上 **HashKey** (這邊的順序與 check_value 那邊不同)，以 SHA-256 加密後再轉大寫
+@check_code = Digest::SHA256.hexdigest(&quot;HashIV=#{智付寶HashIV}&amp;#{chain}&amp;HashKey=#{智付寶HashKey}&quot;).upcase
+
+# 檢查 CheckCode
+if @check_code == result['CheckCode']
+  if resp['Status'] == 'SUCCESS'          # 若取號成功，則回傳 SUCCESS。
+
+    # Extra info
+    extra_info = {
+      bank_code: result['BankCode'],        # ATM 轉帳
+      code_no: result['CodeNo'],            # ATM 轉帳 / 超商代碼繳費
+      barcode_1: result['Barcode_1'],       # 條碼繳費
+      barcode_2: result['Barcode_2'],       # 條碼繳費
+      barcode_3: result['Barcode_3'],       # 條碼繳費
+    }
+
+    # 儲存以下重要資料 :
+    # result['TradeNo'],
+    # result['PaymentType'],
+    # &quot;#{result['ExpireDate']} #{result['ExpireTime']}&quot;,
+    # resp['Result']                        # 將 ATM 轉帳/超商代碼繳費/條碼繳費 及相關訊息存起來
+
+  end
+end
+</code></pre>
+
+<h3 id="接收付款成功參數-將訂單改為已付款">接收付款成功參數 - 將訂單改為已付款</h3>
+
+<h4 id="前言-1">前言</h4>
+
+<p>智付寶提供兩種方式接收參數，你需要去設定<strong>前景(Return URL)</strong>跟<strong>背景(Notify URL)</strong>，
+但我不知道如果超商付款的話是不是也會戳 Return URL? 因為超商付款就沒有在網站上了，
+所以我把 Return URL 只做為線上付款成功後導向自已網站成功訊息的頁面，換句話說 Return URL 可有可無沒關係，
+而 Notify URL 當作主要確認客戶是否成功付款的 API，
+當智付寶收到款項後會戳這個 API，所以一定要設定它</p>
+
+<ul>
+<li>先在智付寶後台設定好這兩個 URL, <strong>注意!!</strong> 這兩個 Route 的 method 都要用 <code>POST</code></li>
+<li>Rails 需要在接口的 controller 加上 : <code>skip_before_action :verify_authenticity_token</code> (以便通過防 CSRF Token 驗證)</li>
+</ul>
+
+<h4 id="實作-api-1">實作 API</h4>
+
+<p>用它回傳的 CheckCode 來驗證資料是否有無被竄改，再判斷付款是否成功</p>
+
+<pre><code>resp = JSON.parse(params[:JSONData])
+result = JSON.parse(resp['Result'])
+
+# 這裡的 MerchantID 不使用 POST 過來的，使用我們自已的會更安全
+chain = &quot;Amt=#{result['Amt']}&amp;MerchantID=#{智付寶MerchantID}&amp;MerchantOrderNo=#{result['MerchantOrderNo']}&amp;TradeNo=#{result['TradeNo']}&quot;
+
+# 頭先加上 HashIV，尾再加上 HashKey (這邊的順序與 check_value 那邊不同，要注意)，以 SHA-256 加密後再轉大寫
+@check_code = Digest::SHA256.hexdigest(&quot;HashIV=#{智付寶HashIV}&amp;#{chain}&amp;HashKey=#{智付寶HashKey}&quot;).upcase
+
+# 檢查 CheckCode
+if @check_code == result['CheckCode']
+  if resp['Status'] == 'SUCCESS'            # 若交易付款成功，則回傳 SUCCESS
+
+    if 此訂單未付款成功
+      # 將訂單改成付款成功，並且把一些重要的回傳資料存起來 :
+      # result['PayTime']
+      # result['TradeNo']
+      # result['PaymentType']
+      # result['EscrowBank']
+      # resp['Result']                      # 將其他參數存下來
+    end
+
+  else
+    # 若交易付款失敗，則回傳錯誤代碼。  代碼對應請參考文件
+  end
+end
+</code></pre>
+
+<blockquote>
+<p>要注意如果這個 API 被重覆 POST 也不能影響你的資料</p>
+</blockquote>
+
+<h3 id="補充">補充</h3>
+
+<h4 id="測試環境">測試環境</h4>
+
+<p>在智付寶的測試環境下，當使用非即時性支付(e.g. 超商代碼繳費)，是有可能會先收到 Notify URL(付款成功通知)，再收到 Customer URL(取號成功通知)，這並不符合常理 (我自已測都是先收到 Notify URL 才收到 Customer URL)，
+所以我有特別去跟技術部的客服確認一下，確實是會這樣，但在 Production 環境就會是正常了 (會先收到 Customer URL 才收到 Notify URL)。</p>
+
+<h4 id="產生-barcode-條碼">產生 Barcode 條碼</h4>
+
+<p>顯示非即時性交易傳回來的 barcode，可以使用智付寶的資源，改最後面的 <code>barcode_text</code> 值即可：</p>
+
+<pre><code>https://api.pay2go.com/API/barcode_display/get_barcode_img?barcode_text=test1
+</code></pre>
+
+<p>顯示如下 :</p>
+
+<p><img src="https://api.pay2go.com/API/barcode_display/get_barcode_img?barcode_text=test1" alt="barcode.JPG" /></p>
+
+</article>
+
+
+
+</html>

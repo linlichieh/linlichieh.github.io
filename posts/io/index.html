@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>I/O | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/io/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/io/">I/O</a></h1>
+    <p class="meta"><time datetime="2013-11-01T22:22:00Z">November 01, 2013</time></p>
+  </header>
+  
+
+<h2 id="測試-filesystem-讀寫速度">測試 filesystem 讀寫速度</h2>
+
+<p>dd 只能測試寫入速度</p>
+
+<pre><code>$ dd if=/dev/zero of=/tmp/output conv=fdatasync bs=384k count=1k; rm -f /tmp/output
+1024+0 records in
+1024+0 records out
+402653184 bytes (403 MB, 384 MiB) copied, 2.07614 s, 194 MB/s
+</code></pre>
+
+<p>or</p>
+
+<pre><code>$ sync ; time sh -c &quot;dd if=/dev/zero of=/tmp/output bs=100k count=1k  &amp;&amp; sync&quot; ; rm /tmp/output
+1024+0 records in
+1024+0 records out
+104857600 bytes (105 MB, 100 MiB) copied, 0.0646765 s, 1.6 GB/s
+
+real    0m0.296s
+user    0m0.005s
+sys 0m0.065s
+</code></pre>
+
+<p>hdparm 測試讀寫速度</p>
+
+<pre><code>$ sudo hdparm -Tt /dev/nvme0n1p1
+
+/dev/nvme0n1p1:
+ Timing cached reads:   12588 MB in  2.00 seconds = 6308.45 MB/sec
+ Timing buffered disk reads: 514 MB in  3.01 seconds = 170.53 MB/sec
+</code></pre>
+
+<h2 id="server-效能調校">Server 效能調校</h2>
+
+<h3 id="快速設定最多開啟-file-的數量">快速設定最多開啟 file 的數量</h3>
+
+<p><code>/etc/security/limits.conf</code> 最後增加</p>
+
+<pre><code>* soft nofile 65535
+* hard nofile 65535
+</code></pre>
+
+<blockquote>
+<p>可以再<a href="/posts/linux-commands/">用 <code>ulimit</code> 指令查詢</a></p>
+</blockquote>
+
+<p><code>/etc/pam.d/login</code> 加上</p>
+
+<pre><code>session    required     pam_limits.so
+</code></pre>
+
+<p><code>/etc/sysctl.conf</code></p>
+
+<pre><code>fs.file-max = 100000
+net.core.somaxconn = 2048
+</code></pre>
+
+<p>修改完後執行 <code>sudo sysctl -p</code> 使設定值生效</p>
+
+<h3 id="tcp-參數細節">TCP 參數細節</h3>
+
+<p><code>/etc/sysctl.conf</code></p>
+
+<pre><code># 調高系統的 IP 及 Port 限制，可以接受更多的連接 32768 61000
+net.ipv4.ip_local_port_range = 32768 65000
+net.ipv4.tcp_window_scaling = 1
+
+# 調高 socket 監聽的數值
+net.core.somaxconn = 65535
+net.ipv4.tcp_max_tw_buckets = 1440000
+
+# Increase TCP buffer sizes
+# 調大 TCP 儲存大小
+net.core.rmem_default = 8388608
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.ipv4.tcp_rmem = 4096 87380 16777216
+net.ipv4.tcp_wmem = 4096 65536 16777216
+net.ipv4.tcp_congestion_control = cubic
+
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 1
+fs.file-max = 65000
+</code></pre>
+
+<p>ref : <a href="http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/">http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/</a></p>
+
+<h2 id="phpconf-i-o">PHPConf I/O</h2>
+
+<p>之前參加 PHPConf Ricky 講者發表的一個主題裡談到 I/O 架構, 然候我再以它的投影片為基礎做的一個小整理</p>
+
+<p>這篇適合簡單及快速了解 I/O 架構的基本介紹, 沒辦法提供專業的教學說明。</p>
+
+<h3 id="c10k-problem">C10K Problem</h3>
+
+<ul>
+<li>解決通訊問題, server 端有問題要解決, 因為要即時通知 client, server 勢必得保持大量連線</li>
+<li>1990 提出, 當連線數到達 10K 時, 一些設計不良的架構會遭遇到效能問題, 無法通過提升硬體來解決, 是操作系統固有問題</li>
+<li>假設 server 最高支撐 1000 個連線, 儘管硬體升級一倍也無法支援 2000 個連線</li>
+</ul>
+
+<h3 id="blocking-i-o">blocking I/O:</h3>
+
+<p>Serve one client with each thread/process</p>
+
+<p>優點:</p>
+
+<ul>
+<li>設計容易</li>
+<li>容易實現複雜的邏輯</li>
+<li>CPU 資源可充份運用</li>
+</ul>
+
+<p>缺點:</p>
+
+<ul>
+<li>每個 thread / process 都得佔用一份記億體</li>
+<li>當連線爆增容易拖垮效能, 並且產生阻塞(block)情形</li>
+</ul>
+
+<blockquote>
+<p>apache 的 prefork 或 worker MPM</p>
+</blockquote>
+
+<h3 id="non-blocking-i-o">non-blocking I/O :</h3>
+
+<p>改良 blocking I/O 缺點, 使用 event-driven 讓整支程式在事件發生時才做事</p>
+
+<h3 id="asynchronous-i-o">Asynchronous I/O</h3>
+
+<p>一個 thread 處埋多個連線, 同樣具有 non-blocking 特性, 使用者不需自已檢查事件是否完成, 而是系統主動通知, 使用者收到再做動作</p>
+
+<p>優點:</p>
+
+<ul>
+<li>節省記憶體(不管連線數都只會佔用一份記憶體)</li>
+<li>反應速度快（不用重複產生 process)</li>
+<li>事件驅動</li>
+</ul>
+
+<p>缺點:</p>
+
+<ul>
+<li>Blocked API 也可能導致其他連線也被 block</li>
+</ul>
+
+<blockquote>
+<p>Nginx, memcached, node.js</p>
+</blockquote>
+
+<h3 id="要處理大量連線還是得用-asynchronous-i-o">要處理大量連線還是得用 Asynchronous I/O</h3>
+
+<ul>
+<li>實現 Asynchronous I/O 一般採用 select 及 poll 兩個系統函式</li>
+<li>在處理大量連線效能會隨連線數遞減</li>
+</ul>
+
+<h3 id="libevent">libevent</h3>
+
+<ul>
+<li>非同步事件處理的函式庫, 提供 API 使某些事生發生時執行函式, 因此易於移植, 擴展性佳</li>
+<li>可以用來取代網路伺服器所使用的事件循環檢查框架</li>
+</ul>
+
+<p>優點 :
+* 解決 3 個平台不能移植問題
+* 反應速度快能應付大量連線
+* 省資源</p>
+
+<p>ref:
+<a href="http://ricky.ez2.us/">http://ricky.ez2.us/</a></p>
+
+<h2 id="openresty-介紹">OpenResty 介紹</h2>
+
+<p>這是在一次技術活動聽 Pahud 大神推薦的 web server 時做的筆記,</p>
+
+<p>它可大幅度提升 server 的反應速度, 尤其是對 php 這種 request / per process 的語言</p>
+
+<p>先介紹各 web server 的特點</p>
+
+<h3 id="apache">Apache</h3>
+
+<ul>
+<li>select 網路 I/O 模型, 處理大量連續的讀寫效率低</li>
+<li>process / perconnection</li>
+<li>1~2 G Ram 同時服務幾百人</li>
+</ul>
+
+<p>缺點 : <code>阻塞</code></p>
+
+<h3 id="nginx">Nginx</h3>
+
+<ul>
+<li>epoll 網路 I/O 模型, 高併發下效能好</li>
+<li>佔用更少的 Ram</li>
+<li>請求非同步</li>
+</ul>
+
+<p>優點 : <code>非阻塞</code></p>
+
+<p>運作流程 : Master process 將 resque 丟給 worker, worker 再丟到 Task Queue 執行</p>
+
+<ul>
+<li>Single process / thread - 利用 coroutine 達到多工</li>
+<li>worker 數量 = cpu core 數量</li>
+</ul>
+
+<p>假如 php 跑在 nginx 上, <strong>仍會阻塞</strong>, 因為 php 是線性一個一個撈取 (拿留言版 -&gt; 再拿心情帖 -&gt; 再拿大頭貼)</p>
+
+<h3 id="openresty-ngx-openresty">OpenResty (ngx_openresty)</h3>
+
+<ul>
+<li>不是新的 web server</li>
+<li>不是 nginx fork, 可跟上最新的 nginx 核心</li>
+<li>打包標準 nginx 核心及常用的第三方模組</li>
+<li>可處理極高並發請求的高性能 web 應用</li>
+<li>無縫結合 Lua, 可在 nginx 執行 lua script</li>
+</ul>
+
+<p>先來講 Lua 帶來的好處</p>
+
+<ul>
+<li>Multiple concurrent subrequests in Lua</li>
+<li>Shared-memory dictionary API in Lua</li>
+<li>The socket API is implemented atop Lua conroutines and is synchronous and non-blocking</li>
+</ul>
+
+<p>運作流程 : 由 openresty 來伴演 Frondend API, 將每個 API request 拆成 subrequest 再並行發送到 sub API</p>
+
+<p>詳細實現原理 :</p>
+
+<p>每個 worker 是一個 process, 單執行緒處理多個連線, 可想像成一個 node.js</p>
+
+<p>Worker 會跑 Lua VM, 使用 coroutine 方式處理連線, 一個連線就是一個 coroutine,</p>
+
+<p>如果要做其他的 network I/O 等等動作, 會把控制權交給 Lua VM, 再交由其他 coroutine 去做, 做完後再把控制權交回</p>
+
+<p>即使是線性的 php 也可以達到完全非阻塞</p>
+
+<p>四核 16G Ram 可達到 60,000 req/s 真實流量</p>
+
+</article>
+
+
+
+</html>

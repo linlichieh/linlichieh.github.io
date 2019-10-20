@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>PHP Codeigniter S3 | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/aws-s3-php/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/aws-s3-php/">PHP Codeigniter S3</a></h1>
+    <p class="meta"><time datetime="2015-02-06T10:40:57&#43;08:00">February 06, 2015</time></p>
+  </header>
+  
+
+<p>(最後更新: 2016-04-27)</p>
+
+<h2 id="介紹">介紹</h2>
+
+<p>以下會介紹上傳到 s3 的 2 種方法 :</p>
+
+<ul>
+<li>mobile 上傳到 s3</li>
+<li>server 上傳到 s3</li>
+</ul>
+
+<p>command 上傳到 s3, 請<a href="/posts/aws/">參考此篇 AWS-CLI command 上傳到 s3</a></p>
+
+<h2 id="安裝-aws-sdk">安裝 AWS SDK</h2>
+
+<p>首先先用 composer 安裝 aws-sdk, composer.json :</p>
+
+<pre><code>{
+    &quot;require&quot;: {
+        &quot;aws/aws-sdk-php&quot;: &quot;2.7.0&quot;
+    }
+}
+</code></pre>
+
+<p>執行</p>
+
+<pre><code>$ composer install
+</code></pre>
+
+<blockquote>
+<p>Codeigniter (application/config/config.php) 打開 : <code>$config['composer_autoload'] = TRUE;</code></p>
+</blockquote>
+
+<h2 id="mobile-上傳到-s3">mobile 上傳到 s3</h2>
+
+<p>有兩種方法</p>
+
+<ul>
+<li>直接給手機一個 S3 的 IAM User 讓手機以 SDK 上傳圖片</li>
+<li>S3 server 產生有 expire time 的 pre-signed URL (由 server 取得授權的 url) 給 mobile 上傳圖片</li>
+</ul>
+
+<h3 id="直接給手機一個-s3-的-iam-user-讓手機以-sdk-上傳圖片">直接給手機一個 S3 的 IAM User 讓手機以 SDK 上傳圖片</h3>
+
+<p>原本的 Resource 的值是 <code>*</code>, 將它改成以下</p>
+
+<p>Policy for Programmatic Access : (線上 AWS Console 是沒權限看到的)</p>
+
+<pre><code>{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [&quot;s3:ListBucket&quot;],
+      &quot;Resource&quot;: [&quot;arn:aws:s3:::test&quot;]
+    },
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:PutObject&quot;,
+        &quot;s3:PutObjectACL&quot;,
+        &quot;s3:GetObject&quot;,
+        &quot;s3:GetObjectACL&quot;,
+        &quot;s3:DeleteObject&quot;
+      ],
+      &quot;Resource&quot;: [&quot;arn:aws:s3:::test/*&quot;]
+    }
+  ]
+}
+</code></pre>
+
+<blockquote>
+<p>但是設定好以上, 雖然程式可以有權限存取, 但是 AWS Console 是沒有權限訪問 S3 的, 所以可以參考以下讓這個 User 能看到 S3 的 Console</p>
+</blockquote>
+
+<p>Policy for Console Access : (線上 AWS Console 是可以看到目錄結構的)</p>
+
+<pre><code>{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:GetBucketLocation&quot;,
+        &quot;s3:ListAllMyBuckets&quot;
+      ],
+      &quot;Resource&quot;: &quot;arn:aws:s3:::*&quot;
+    },
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [&quot;s3:ListBucket&quot;],
+      &quot;Resource&quot;: [&quot;arn:aws:s3:::test&quot;]
+    },
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;s3:PutObject&quot;,
+        &quot;s3:PutObjectACL&quot;,
+        &quot;s3:GetObject&quot;,
+        &quot;s3:GetObjectACL&quot;,
+        &quot;s3:DeleteObject&quot;
+      ],
+      &quot;Resource&quot;: [&quot;arn:aws:s3:::test/*&quot;]
+    }
+  ]
+}
+</code></pre>
+
+<p>這樣 mobile 就只能存取 test-mobile 這個 bucket 下的資源了</p>
+
+<p><strong>注意!!</strong> 上傳的檔案到 server 的權限是沒有 public-read 的, 所以多加兩個權限 <code>PutObjectACL</code>(更新權限), <code>GetObjectACL</code>(查看權限)</p>
+
+<h3 id="s3-server-產生有-expire-time-的-pre-signed-url-由-server-取得授權的-url-給-mobile-上傳圖片">S3 server 產生有 expire time 的 pre-signed URL (由 server 取得授權的 url) 給 mobile 上傳圖片</h3>
+
+<p>create pre-signed url :</p>
+
+<pre><code>public function create_pre_signed_url()
+{
+    $config = array(
+        'key'       =&gt; 'A******************Q',
+        'secret'    =&gt; 'P**************************************4',
+        'region'    =&gt; 'us-west-2',
+    );
+
+    $client = S3Client::factory($config);
+    $bucket = &quot;s3_bucket_name&quot;;
+    $key = 'data.txt';
+    $url = &quot;{$bucket}/{$key}&quot;;
+
+    // get() returns a Guzzle\Http\Message\Request object
+    $request = $client-&gt;put($url);
+
+    // Create a signed URL from a completely custom HTTP request that
+    // will last for 10 minutes from the current time
+    $signedUrl = $client-&gt;createPresignedUrl($request, '+10 minutes');
+    echo $signedUrl;
+
+    //echo file_get_contents($signedUrl);
+    // &gt; Hello!
+}
+</code></pre>
+
+<blockquote>
+<ul>
+<li>因為要讓這個 pre-signed url 可以被上傳檔案, 所以使用 <code>$client-&gt;put(</code></li>
+<li>如果改成 <code>$client-&gt;get(</code> 輸出的 URL 就可以看到 bucket 的 data.txt 的內容, 那這功能就跟 <code>getObjectUrl</code> 一樣了</li>
+</ul>
+</blockquote>
+
+<p>要測試它是否 OK 要實際用上傳檔案，不要用瀏覽器開，不然只會得到 XML 錯誤訊息</p>
+
+<pre><code>&lt;Error&gt;
+    &lt;Code&gt;SignatureDoesNotMatch&lt;/Code&gt;
+&lt;/Error&gt;
+</code></pre>
+
+<p>使用 command 模擬 mobile 上傳。建立 <code>/tmp/data.txt</code>, 然候執行以下指令上傳檔案</p>
+
+<pre><code>curl -v -T /tmp/data.txt https://s3_bucket_name.s3.amazonaws.com/data.txt?AWSAccessKeyId=A********************2Q&amp;Expires=1423551936&amp;Signature=y**************2FvYVo%3D
+</code></pre>
+
+<blockquote>
+<ul>
+<li>不管傳什麼格式，不用特別指定 Header</li>
+<li><code>-T</code> 是使用 PUT 上傳檔案</li>
+</ul>
+</blockquote>
+
+<p>ref :</p>
+
+<ul>
+<li><a href="http://blogs.aws.amazon.com/security/post/Tx3VRSWZ6B3SHAV/Writing-IAM-Policies-How-to-grant-access-to-an-Amazon-S3-bucket">設定 IAM Policy</a></li>
+<li><a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html">Creating a Signature</a></li>
+<li><a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html">Share an Object with Others</a></li>
+<li><a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html">Uploading Objects Using Pre-Signed URLs</a></li>
+<li><a href="http://www.bennadel.com/blog/2693-uploading-files-to-amazon-s3-using-pre-signed-query-string-authentication-urls.htm">Uploading Files To Amazon S3 Using Pre-Signed (Query String Authentication) URLs</a></li>
+<li><a href="http://s3.amazonaws.com/doc/s3-developer-guide/RESTAuthentication.html">put file 需要的 authenticating REST Requests</a></li>
+<li><a href="http://stackoverflow.com/questions/20709711/amazon-s3-signature-does-not-match-aws-sdk-java">SignatureDoesNotMatch</a></li>
+<li><a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html">RESTAuthentication</a></li>
+</ul>
+
+<h2 id="server-上傳至-s3">server 上傳至 s3</h2>
+
+<p>到 IAM 建立一個 User, policy 新增只允許存取某個 bucket 下某個 folder 的 custom policy</p>
+
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:GetBucketLocation&quot;,
+                &quot;s3:ListAllMyBuckets&quot;
+            ],
+            &quot;Resource&quot;: &quot;arn:aws:s3:::*&quot;
+        },
+        {
+          &quot;Effect&quot;: &quot;Allow&quot;,
+          &quot;Action&quot;: [&quot;s3:ListBucket&quot;],
+          &quot;Resource&quot;: [&quot;arn:aws:s3:::bucket_name&quot;]
+        },
+        {
+        &quot;Effect&quot;: &quot;Allow&quot;,
+        &quot;Action&quot;: &quot;*&quot;,
+        &quot;Resource&quot;: [&quot;arn:aws:s3:::bucket_name/folder_name/*&quot;]
+        }
+    ]
+}
+</code></pre>
+
+<p>Uploading files to s3 in php</p>
+
+<pre><code>$config = array(
+    'key'       =&gt; 'A******************A',
+    'secret'    =&gt; '9**************************************i',
+    'region'    =&gt; 'us-west-2',
+);
+
+$client = S3Client::factory($config);
+
+$result = $client-&gt;putObject([
+    'Bucket'    =&gt; 'bucket_name',
+    'Key'       =&gt; 'folder_name/qqq/test.txt',
+    'SourceFile'    =&gt; '/tmp/qq.txt',
+]);
+</code></pre>
+
+<p>不存在的 folder 會自動建立, 如果檔案已存在會覆蓋原始檔案</p>
+
+<h2 id="刪除-s3-檔案">刪除 s3 檔案</h2>
+
+<p>TODO: 補上 code</p>
+
+<blockquote>
+<p>這裡有個很容易踩雷的點，而且錯誤訊息不好判斷，就是要刪除的檔案路徑最前面不要加 <code>/</code>，直接路徑加檔名即可 e.g. <code>xxxx/ffff/ssss.mp4</code></p>
+</blockquote>
+
+<h2 id="其他-產生-s3-只能-get-不能-put-的-pre-signed-url">[其他] 產生 S3 只能 GET 不能 PUT 的 Pre-signed URL</h2>
+
+<p>get pre-signed url :</p>
+
+<pre><code>use Aws\S3\S3Client;
+
+class S3 extends MY_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function get_pre_signed_url()
+    {
+        $config = array(
+            'key'       =&gt; 'A******************Q',
+            'secret'    =&gt; 'P**************************************4',
+        );
+
+        $client = S3Client::factory($config);
+
+        // Get a plain URL for an Amazon S3 object
+        $plainUrl = $client-&gt;getObjectUrl('s3_bucket_name', 'data.txt');
+        // &gt; https://my-bucket.s3.amazonaws.com/data.txt
+
+        // Get a pre-signed URL for an Amazon S3 object
+        $signedUrl = $client-&gt;getObjectUrl('s3_bucket_name', 'data.txt', '+10 minutes');
+        // &gt; https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&amp;Expires=[...]&amp;Signature=[...]
+
+        // Create a vanilla Guzzle HTTP client for accessing the URLs
+        $http = new \Guzzle\Http\Client;
+
+        // Try to get the plain URL. This should result in a 403 since the object is private
+        try {
+            $response = $http-&gt;get($plainUrl)-&gt;send();
+        } catch (\Guzzle\Http\Exception\ClientErrorResponseException $e) {
+            $response = $e-&gt;getResponse();
+        }
+        echo $response-&gt;getStatusCode();
+        // &gt; 403
+
+        // Get the contents of the object using the pre-signed URL
+        echo $signedUrl;
+        $response = $http-&gt;get($signedUrl)-&gt;send();
+        echo $response-&gt;getBody();
+        // &gt; Hello!
+    }
+}
+
+?&gt;
+</code></pre>
+
+<p>以上面程式產生 pre-signed url, 然候頁面上會印出 url, 再拿這個 url 就可以看到檔案裡的內容了</p>
+
+<p>ref:</p>
+
+<ul>
+<li><a href="http://docs.aws.amazon.com/aws-sdk-php/guide/latest/service-s3.html">方法2, 主要參考這份官方文件去實作</a></li>
+<li><a href="http://docs.aws.amazon.com/aws-sdk-php/guide/latest/installation.html">用 composer 安裝 aws sdk</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Process Manager | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/process-manager/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/process-manager/">Process Manager</a></h1>
+    <p class="meta"><time datetime="2014-10-29T00:27:20&#43;08:00">October 29, 2014</time></p>
+  </header>
+  
+
+<h2 id="introduction">Introduction</h2>
+
+<p>If you want a program or application to run in background, process managers like supervisord, pm2, etc. can get this done for you.</p>
+
+<h2 id="supervisor">Supervisor</h2>
+
+<h3 id="安裝參考-這裡-https-www-digitalocean-com-community-tutorials-how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps">安裝參考<a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-manage-supervisor-on-ubuntu-and-debian-vps">這裡</a></h3>
+
+<p>ubuntu 安裝指令</p>
+
+<pre><code>sudo apt-get install supervisor
+</code></pre>
+
+<p>唯一要注意的是 <code>command=/usr/local/bin/long.sh</code> command 要寫完整的指令路徑</p>
+
+<p><code>/etc/supervisor/conf.d/aws-sqs.conf</code> :</p>
+
+<pre><code>[program:aws-sqs]
+command=/home/ubuntu/mygo/bin/aws-sqs
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/golang.err.log
+stdout_logfile=/var/log/golang.out.log
+stderr_logfile_maxbytes=10MB
+user=ubuntu
+environment=USER='test',BRAND='Company_name',HOME=/home/my_user
+directory=/var/www
+</code></pre>
+
+<p>將 supervisor 跑起來</p>
+
+<pre><code>sudo service supervisor start
+</code></pre>
+
+<p>對 program conf 的指令</p>
+
+<pre><code>sudo supervisorctl
+&gt; restart worker
+&gt; reread
+&gt; status
+&gt; start resque
+&gt; tail resque    // error log
+</code></pre>
+
+<blockquote>
+<ul>
+<li>or <code>sudo supervisorctl reread goworker</code></li>
+<li>有時候不管怎麼 restart 及 reread 都沒有用時用 reload</li>
+</ul>
+</blockquote>
+
+<h2 id="error-crit-server-unix-http-server-running-without-any-http-authentication-checking">Error <code>CRIT Server 'unix_http_server' running without any HTTP authentication checking</code></h2>
+
+<p>設定 unix_http_server 帳密</p>
+
+<pre><code>[unix_http_server]
+file=/var/run/supervisor.sock   ; (the path to the socket file)
+chmod=0700                       ; sockef file mode (default 0700)
+username = user
+password = 123
+
+[supervisorctl]
+serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  for a unix socket
+username = user
+password = 123
+</code></pre>
+
+<h2 id="pm2-https-github-com-unitech-pm2"><a href="https://github.com/Unitech/pm2">Pm2</a></h2>
+
+<h3 id="install">Install</h3>
+
+<pre><code>npm install pm2 -g
+</code></pre>
+
+<blockquote>
+<p>If you haven&rsquo;t installed node.js and npm, please <a href="/posts/nodejs/">take a look</a></p>
+</blockquote>
+
+<h3 id="usage">Usage</h3>
+
+<p>Monitor a process / Stop / Delete from list</p>
+
+<pre><code>pm2 start test.sh
+pm2 stop test.sh
+pm2 delete test.sh
+</code></pre>
+
+<p>List</p>
+
+<pre><code>pm2 list
+</code></pre>
+
+<h3 id="pm2-provides-some-useful-modules">Pm2 provides some useful modules.</h3>
+
+<pre><code>pm2 install &lt;module_name&gt;
+</code></pre>
+
+<ul>
+<li><a href="https://www.npmjs.com/package/pm2-logrotate">pm2-logrotate</a> : auto rotate logs of PM2 and applications managed</li>
+<li>pm2-webshell : expose a fully capable terminal in browsers</li>
+<li>pm2-server-monit : monitor your server health</li>
+</ul>
+
+<p>Set logrotate</p>
+
+<pre><code>pm2 set pm2-logrotate:max_size 5M   The max size limits up to 5MB.
+pm2 set pm2-logrotate:retain 10     Preserve 10 log files. (include current one)
+
+pm2 show pm2-logrotate              Show the configuration of pm2-logrotate
+</code></pre>
+
+<h3 id="grace-stop-http-pm2-keymetrics-io-docs-usage-signals-clean-restart-explanation-signals-flow"><a href="http://pm2.keymetrics.io/docs/usage/signals-clean-restart/#explanation-signals-flow">Grace stop</a></h3>
+
+<p>First a SIGINT a signal is sent to your processes,
+signal you can catch to know that your process is going to be stopped.
+If your application does not exit by itself before 1.6s <a href="http://pm2.keymetrics.io/docs/usage/signals-clean-restart/#customize-exit-delay">customizable</a>
+it will receive a SIGKILL signal to force the process exit.</p>
+
+<p>Lenghten timeout of graceful stop</p>
+
+<pre><code>$ pm2 start app.js --kill-timeout 3000          // 3000ms
+</code></pre>
+
+<blockquote>
+<p>Test at 2016-12-23: It doesn&rsquo;t work and I don&rsquo;t know why.  It&rsquo;s just like that it will wait 3~5 seconds then it force to kill the process.</p>
+</blockquote>
+
+</article>
+
+
+
+</html>

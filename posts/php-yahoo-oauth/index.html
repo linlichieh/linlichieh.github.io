@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>PHP yahoo oauth | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/php-yahoo-oauth/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/php-yahoo-oauth/">PHP yahoo oauth</a></h1>
+    <p class="meta"><time datetime="2013-11-26T22:43:00Z">November 26, 2013</time></p>
+  </header>
+  
+
+<h2 id="申請">申請</h2>
+
+<p>[1] 到<a href="http://developer.yahoo.com/">Yahoo! Developer Network</a>登入後 -&gt; 右上角 My Projects -&gt; Create a Project</p>
+
+<p>[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret</p>
+
+<p>[3] 填入 domain 後記得驗證它, 才能用於線上</p>
+
+<h2 id="登入-oauth-並透過-yql-取得使用者資料-使用-codeigniter">登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter)</h2>
+
+<h3 id="oauth">Oauth</h3>
+
+<p>原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子</p>
+
+<h3 id="yql">YQL</h3>
+
+<p>原以為做登入 Oauth 取得的 GUID 再透過 <a href="http://developer.yahoo.com/yql/console">YQL Console</a> 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK</p>
+
+<p>例如我想取得使用者資料 <a href="http://developer.yahoo.com/yql/console">YQL Console</a> 執行</p>
+
+<pre><code>select * from social.profile where guid = &quot;{我的GUID}&quot;
+</code></pre>
+
+<p>完成後頁面下面有 url : <code>http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;format=json&amp;diagnostics=true&amp;callback=</code></p>
+
+<p>果然事情不是憨人想得這麼簡單, 直接拿來用會得到 ERROR 頁面</p>
+
+<pre><code>{
+    error: {
+        lang: &quot;en-US&quot;,
+        diagnostics: null,
+        description: &quot;Authentication Error. The table social.profile requires a higher security level than is provided, you provided ANY but at least APP is expected&quot;
+    }
+}
+</code></pre>
+
+<p>YQL Console 頁面應該是塞了 Token, 所以只好使用正統的方法來取得了</p>
+
+<p>我們要使用 Yahoo! Social SDK 請將 <a href="https://github.com/yahoo/yos-social-php">yos-social-php</a> 下載到 <code>/application/third_party</code>, 稍後的 Library 會引入它</p>
+
+<p>此練習只是取得使用者資料為例子, 取得 YQL 其它資料應該也是差不多</p>
+
+<p>Oauth Library :</p>
+
+<pre><code>&lt;?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Oauth {
+
+    const CONSUMER_KEY    = &quot;(填你自己的)&quot;;
+    const CONSUMER_SECRET = &quot;(填你自己的)&quot;;
+    const APP_ID          = &quot;(填你自己的)&quot;;
+    const CALLBACK_URL    = &quot;http://{你的 domain}/{你的 controller}/get_access_token&quot;;
+    private $TOKEN;
+
+    public function curl_post($url, $post = NULL, $options = array()) {
+        $defaults = array(
+            CURLOPT_POST           =&gt; 1,
+            CURLOPT_HEADER         =&gt; 0,
+            CURLOPT_URL            =&gt; $url,
+            CURLOPT_FRESH_CONNECT  =&gt; 1,
+            CURLOPT_RETURNTRANSFER =&gt; 1,
+            CURLOPT_FORBID_REUSE   =&gt; 1,
+            CURLOPT_TIMEOUT        =&gt; 4,
+            CURLOPT_POSTFIELDS     =&gt; http_build_query($post),
+        );
+
+        $ch = curl_init();
+        curl_setopt_array($ch, $defaults);
+        if( ! $result = curl_exec($ch))
+        {
+            trigger_error(curl_error($ch));
+        }
+        curl_close($ch);
+        return $result;
+    }
+
+    public function get_request_token()
+    {
+        $post = array(
+            &quot;oauth_nonce&quot;            =&gt; md5(uniqid(rand(), true)),
+            &quot;oauth_timestamp&quot;        =&gt; time(),
+            &quot;oauth_consumer_key&quot;     =&gt; OAUTH::CONSUMER_KEY,
+            &quot;oauth_signature_method&quot; =&gt; &quot;PLAINTEXT&quot;,
+            &quot;oauth_signature&quot;        =&gt; OAUTH::CONSUMER_SECRET.&quot;&amp;&quot;,
+            &quot;oauth_version&quot;          =&gt; &quot;1.0&quot;,
+            &quot;oauth_callback&quot;         =&gt; OAUTH::CALLBACK_URL,
+        );
+
+        $r = $this-&gt;curl_post(&quot;https://api.login.yahoo.com/oauth/v2/get_request_token&quot;, $post);
+        parse_str($r, $output);
+        return $output;
+    }
+
+    public function get_access_token($data)
+    {
+        if ( ! isset($data) || ! is_array($data))
+        {
+            return FALSE;
+        }
+        $post = array(
+            &quot;oauth_nonce&quot;            =&gt; md5(uniqid(rand(), true)),
+            &quot;oauth_timestamp&quot;        =&gt; time(),
+            &quot;oauth_consumer_key&quot;     =&gt; OAUTH::CONSUMER_KEY,
+            &quot;oauth_signature_method&quot; =&gt; &quot;PLAINTEXT&quot;,
+            &quot;oauth_version&quot;          =&gt; &quot;1.0&quot;,
+            &quot;oauth_signature&quot;        =&gt; OAUTH::CONSUMER_SECRET.&quot;&amp;&quot;. $data[&quot;oauth_token_secret&quot;],
+            &quot;oauth_token&quot;            =&gt; $data['oauth_token'],
+            &quot;oauth_verifier&quot;         =&gt; $data['oauth_verifier'],
+        );
+
+        $r = $this-&gt;curl_post(&quot;https://api.login.yahoo.com/oauth/v2/get_token&quot;, $post);
+        parse_str($r, $output);
+        return $output;
+    }
+
+    public function refresh_access_token($data)
+    {
+        if ( ! isset($data) || ! is_array($data))
+        {
+            return FALSE;
+        }
+        $cookie = get_object_vars(http_parse_cookie(getenv(&quot;HTTP_COOKIE&quot;)));
+        $_COOKIE = $cookie[&quot;cookies&quot;];
+        $post = array(
+            &quot;oauth_nonce&quot;            =&gt; md5(uniqid(rand(), true)),
+            &quot;oauth_timestamp&quot;        =&gt; time(),
+            &quot;oauth_consumer_key&quot;     =&gt; OAUTH::CONSUMER_KEY,
+            &quot;oauth_signature_method&quot; =&gt; &quot;PLAINTEXT&quot;,
+            &quot;oauth_version&quot;          =&gt; &quot;1.0&quot;,
+            &quot;oauth_signature&quot;        =&gt; OAUTH::CONSUMER_SECRET.&quot;&amp;&quot;.$data[&quot;oauth_token_secret&quot;],
+            &quot;oauth_token&quot;            =&gt; $data[&quot;oauth_token&quot;],
+            &quot;oauth_session_handle&quot;   =&gt; $data[&quot;oauth_session_handle&quot;],
+        );
+
+        $r = $this-&gt;curl_post(&quot;https://api.login.yahoo.com/oauth/v2/get_token&quot;, $post);
+        parse_str($r, $output);
+        return $output;
+    }
+
+    /*
+     * api : [yos-social-php github](https://github.com/yahoo/yos-social-php)
+     */
+    public function get_user_profile($guid = &quot;&quot;)
+    {
+        if (empty($guid))
+        {
+            return FALSE;
+        }
+        require_once (APPPATH.'third_party/yos-social-php/lib/Yahoo.inc');
+        $session = YahooSession::requireSession(OAUTH::CONSUMER_KEY, OAUTH::CONSUMER_SECRET, OAUTH::APP_ID);
+        $user = $session-&gt;getSessionedUser();
+        return $session-&gt;query(&quot;select * from social.profile where guid ='{$guid}'&quot;);
+    }
+}
+</code></pre>
+
+<p>Controller :</p>
+
+<pre><code>public function __construct()
+{
+    parent::__construct();
+    header(&quot;Content-type: text/html; charset=utf-8&quot;);
+    $this-&gt;load-&gt;library('Oauth');
+    error_reporting(E_ALL ^ E_STRICT);    // ignore php notice
+}
+
+public function get_request_token()
+{
+    $output = $this-&gt;oauth-&gt;get_request_token();
+    if ($output)
+    {
+        setcookie('oauth_token_secret', $output['oauth_token_secret']);
+        header('Location: '. $output['xoauth_request_auth_url']);
+        exit;
+    }
+    $this-&gt;_output_JSON(FALSE);
+}
+
+public function get_access_token()
+{
+    $data['oauth_token_secret'] = $_COOKIE['oauth_token_secret'];
+    $data['oauth_token'] = $this-&gt;input-&gt;get_post('oauth_token');
+    $data['oauth_verifier'] = $this-&gt;input-&gt;get_post('oauth_verifier');
+    $output = $this-&gt;oauth-&gt;get_access_token($data);
+    if ($output)
+    {
+        $this-&gt;get_user_profile($output['xoauth_yahoo_guid']);
+    }
+    $this-&gt;_output_JSON(FALSE);
+}
+
+public function get_user_profile($guid)
+{
+    $result = $this-&gt;oauth-&gt;get_user_profile($guid);
+    $this-&gt;_output_JSON($result);
+    exit;
+}
+
+private function _output_JSON_raw($result)
+{
+    echo json_encode(
+        array(
+            'status'    =&gt; (($result) ? 'ok' : 'fail'),
+            'data'      =&gt; (($result) ? $result : ''),
+        ),
+        JSON_UNESCAPED_UNICODE
+    );
+}
+</code></pre>
+
+<p>瀏覽器執行 <code>http://{你的 domain}/{你的 controller}/get_request_token</code>, 輸出結果如下 :</p>
+
+<p><img src="/images/posts/php-yahoo-oauth.jpg" alt="yahoo-oauth.jpg" /></p>
+
+<p>ref :
+<a href="http://code.gunblues.com/2011/02/yahoo-api-oauth.html">http://code.gunblues.com/2011/02/yahoo-api-oauth.html</a></p>
+
+</article>
+
+
+
+</html>

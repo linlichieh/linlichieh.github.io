@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Docker | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/docker/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/docker/">Docker</a></h1>
+    <p class="meta"><time datetime="2014-12-24T00:53:54&#43;08:00">December 24, 2014</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>有點像 VM 但又不全然是 VM, 最主要它跟一般 VM 的差別在於 VM 所需的 OS 及 bins/libs 是安裝在 VM 本身裡面的</p>
+
+<p>但 docker 的 container 概念會共用 OS 及 bins/libs, 但他們仍是獨立的, 由 Docker Engine 管理</p>
+
+<p>最大好處可以快速啟動環境並且設定好, 很適合用在自動化測試或開發上</p>
+
+<h2 id="基本觀念">基本觀念</h2>
+
+<h3 id="名詞解釋">名詞解釋</h3>
+
+<ul>
+<li>image : 用來建立 container 的東西, 每一個 image 都只能讀且不能被改變</li>
+<li>container : 是由一個 image 建立的一個的<strong>正在執行中</strong>的環境, 可以把它想成一台主機</li>
+<li>官方 registry : 就是 <a href="https://hub.docker.com/">Docker Hub</a></li>
+</ul>
+
+<h3 id="image">Image</h3>
+
+<ul>
+<li>一個完整 image 的名稱是 : username/image_name:tag</li>
+<li>一個 image 可以跑多個 container</li>
+<li>可以 commit 這個 container 的變動製作新的 image</li>
+<li>image 想當於是 AWS EC2 的 AMI</li>
+</ul>
+
+<h3 id="container">Container</h3>
+
+<ul>
+<li>把它想像 AWS EC2 的 Instances 清單 (相當於 <code>docker ps -a</code>)</li>
+<li>每一個主機都是一個 container，有些是 stopped 有些是 running (相當於 <code>docker ps</code>, 只列出 running container)</li>
+<li>只要被 Stop 的主機 (相當於 <code>docker stop</code>) 都是關機的狀態但還在列表上 (相當於還存在在 list 上 <code>docker ps -a</code>)</li>
+<li>被 Stop 的主機你可以再對它執行 Start (相當於 <code>docker start</code>)</li>
+<li>你可以對主機打成 image (相當於 <code>docker commit</code>)</li>
+<li>而被 Terminate 的主機就會被刪除，你無法在 Instances 上看到 (相當於 <code>docker rm</code> 後你無法在 <code>docker ps -a</code> 上再看到它)</li>
+<li>比較不一樣的是，執行中的 container 可以是直接進入(就像執行 ssh 到主機一樣)也可以是背景執行</li>
+<li>停止 container 不只是關機這麼簡單，連修改過的資料都會不見 (但可使用 mount 外部的檔案或資料夾來解決)</li>
+</ul>
+
+<h2 id="安裝">安裝</h2>
+
+<h3 id="mac">mac</h3>
+
+<p><a href="https://www.docker.com/products/docker#/mac">可從官網下載</a></p>
+
+<h3 id="ubuntu">ubuntu</h3>
+
+<pre><code>sudo apt-get update
+sudo apt-get install docker.io
+sudo service docker start
+</code></pre>
+
+<blockquote>
+<p>執行 <code>sudo adduser &lt;username&gt; docker</code>, 將你加入到 docker group</p>
+</blockquote>
+
+<h3 id="windows">windows</h3>
+
+<p><a href="https://docs.docker.com/installation/windows/#installation">下載頁面</a></p>
+
+<blockquote>
+<p>Exec : <code>C:\Program Files\Boot2Docker for Windows\start.sh</code></p>
+</blockquote>
+
+<p>putty / xshell connect to <code>docker@127.0.0.1:2022</code></p>
+
+<blockquote>
+<ul>
+<li>預設的 VM VirtualBox 就已經設定好 port forwarding 了, 預設是 127.0.0.1:2022</li>
+<li>Default account (docker / tcuser)</li>
+</ul>
+</blockquote>
+
+<h3 id="測試是否安裝成功">測試是否安裝成功</h3>
+
+<pre><code>docker run hello-world
+</code></pre>
+
+<h2 id="開始試玩">開始試玩</h2>
+
+<h3 id="將-mysql-跑起來">將 mysql 跑起來</h3>
+
+<p>Pull image <code>mysql</code> from docker hub</p>
+
+<pre><code>docker pull mysql
+</code></pre>
+
+<p>Run container <code>mysql</code></p>
+
+<pre><code>docker run -t -d -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes mysql
+</code></pre>
+
+<p>Test</p>
+
+<pre><code>mysql -h 127.0.0.1 -u root -p
+</code></pre>
+
+<h3 id="將-redis-跑起來">將 redis 跑起來</h3>
+
+<p>Pull Docker Hub 上的 redis image</p>
+
+<pre><code>docker pull redis
+</code></pre>
+
+<p>將 redis image 啟動成 container, 並且將 6379 port 接出來</p>
+
+<pre><code>docker run -t -d -p 6379:6379 redis:latest
+</code></pre>
+
+<blockquote>
+<p>測試用 redis-cli 是否可以連進去</p>
+</blockquote>
+
+<h3 id="將-ubuntu-image-跑起來-建立一個-container">將 ubuntu image 跑起來 (建立一個 container)</h3>
+
+<p>Pull Docker Hub 上的 ubuntu image</p>
+
+<pre><code>docker pull ubuntu
+</code></pre>
+
+<p>以 ubuntu image 建立一個 container</p>
+
+<pre><code>docker run -t -d ubuntu
+</code></pre>
+
+<p>看看執行中的 container 有哪些，你可以看到剛剛建立的 container</p>
+
+<pre><code>docker ps
+
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                               NAMES
+bba4d449e053        ubuntu                       &quot;/bin/bash&quot;              52 seconds ago      Up 51 seconds                                           sharp_mestorf
+</code></pre>
+
+<p>Stop 後 <code>docker ps</code> 就看不到它了</p>
+
+<pre><code>docker stop bba4d449e053
+</code></pre>
+
+<p>但你顯示全部的 container 就看的到了</p>
+
+<pre><code>docker ps -a
+</code></pre>
+
+<p>你可以完全地刪除它</p>
+
+<pre><code>docker rm bba4d449e053
+</code></pre>
+
+<h3 id="how-can-i-run-docker-command-inside-a-docker-container">How can i run docker command inside a docker container?</h3>
+
+<p>在一台 container 裡面安裝 docker 啟動失敗:</p>
+
+<pre><code>Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+</code></pre>
+
+<p>必須要 mount 外部的 docker socket 進去</p>
+
+<pre><code>docker run -td -v /var/run/docker.sock:/var/run/docker.sock ubuntu:18.04
+docker exec -it a1b6a80b0bb8 bash
+
+or
+docker run -it -v /var/run/docker.sock:/var/run/docker.sock ubuntu:latest sh -c &quot;apt-get update ; apt-get install docker.io -y ; bash&quot;
+</code></pre>
+
+<h2 id="常用指令">常用指令</h2>
+
+<h3 id="build-建立寫好的-dockerfile">build : 建立寫好的 Dockerfile</h3>
+
+<pre><code>docker build -t jxxx/golang-env .
+</code></pre>
+
+<h3 id="images-image-list">images : image list</h3>
+
+<pre><code>docker images
+</code></pre>
+
+<h3 id="rmi-刪除-image">rmi : 刪除 image</h3>
+
+<pre><code>docker rmi eg_sshd
+
+// 刪除全部 image
+docker rmi $(docker images -q)
+</code></pre>
+
+<h3 id="inspect-查看此-container-的-info-不常用">inspect : 查看此 container 的 info (不常用)</h3>
+
+<pre><code>docker inspect f244dc51e1d9
+</code></pre>
+
+<h3 id="ps-running-container-list-有哪些主機正在跑">ps : running container list (有哪些主機正在跑)</h3>
+
+<pre><code>docker ps
+</code></pre>
+
+<blockquote>
+<ul>
+<li><code>-a</code> : 所有 container ，即使是被 stop 的都會列出來</li>
+<li><code>-q</code> : 只顯示 CONTAINER ID</li>
+</ul>
+</blockquote>
+
+<h3 id="stop-停掉在跑的-container-相當於關機">stop : 停掉在跑的 container (相當於關機)</h3>
+
+<pre><code>docker stop {CONTAINER ID}
+
+// 停掉全部在跑的 container
+docker stop $(docker ps -a -q)
+</code></pre>
+
+<h3 id="start-將一個已經被-stop-的-container-再跑起來-相當於開機">start : 將一個已經被 stop 的 container 再跑起來 (相當於開機)</h3>
+
+<pre><code>docker start {CONTAINER ID}
+</code></pre>
+
+<h3 id="rm-刪除-container-相當於刪除這台主機">rm : 刪除 container (相當於刪除這台主機)</h3>
+
+<pre><code>docker rm {CONTAINER ID}
+
+// 刪除全部 container
+docker rm $(docker ps -a -q)
+</code></pre>
+
+<h3 id="stop-vs-rm">stop vs rm</h3>
+
+<ul>
+<li>stop : 將這個 container <strong>關機</strong>並保存它的狀態, 只能在 <code>docker ps -a</code> 看到它, 你可以對它 commit 製作新的 image</li>
+<li>stop : It sends SIGTERM first, then, after a grace period, SIGKILL.</li>
+<li>rm : 將這個 container <strong>真的</strong>刪除, 無法在 <code>docker ps -a</code> 看到它</li>
+<li>rm : 你沒辦法 remove 一個 running container，必須先 stop 再 remove</li>
+</ul>
+
+<h3 id="start-vs-run">start vs run</h3>
+
+<ul>
+<li>start : 將一個被 stop 的 container 重新啟動，就像開機一樣</li>
+<li>run : 主機(container) 還沒建立，所以要將一個 image 建立一個 container</li>
+</ul>
+
+<h3 id="run">run</h3>
+
+<p>以 ubuntu image 建立 container 並進入到 container 裡面 (有點像 SSH 連進去，但 <code>exit</code> 後就是 stopped 的狀態了)</p>
+
+<pre><code>docker run -t -i ubuntu:14.04 /bin/bash
+</code></pre>
+
+<blockquote>
+<ul>
+<li>如果沒有指定版本，預設會用最新的 <code>ubuntu:latest</code></li>
+<li>flag 可簡化為 <code>-it</code></li>
+<li>bash 也可以指定絕對路徑 <code>/bin/bash</code></li>
+</ul>
+</blockquote>
+
+<p>背景執行 container</p>
+
+<pre><code>docker run -t -d ubuntu:14.04
+</code></pre>
+
+<p>在 container 裡執行指令</p>
+
+<pre><code>docker run jxxx/golang-env touch ff.md
+</code></pre>
+
+<p>本機與 container 所有的 port</p>
+
+<pre><code>docker run -d -P jxxx/golang-env
+</code></pre>
+
+<blockquote>
+<p><code>-P</code> flag to publish all of the exposed ports.</p>
+</blockquote>
+
+<p>50080 port -&gt; 80 port</p>
+
+<pre><code>docker run -d -p 50080:80 jxxx/golang-env
+</code></pre>
+
+<blockquote>
+<p><code>-p</code> flag to publish a range of ports</p>
+</blockquote>
+
+<p>將 domain 對應到 image name</p>
+
+<pre><code>docker run -d --link my_mysql:db.example.com jxxx/golang-env
+</code></pre>
+
+<p>將目錄名稱 folder_src mount 到 container 家目錄下(?)</p>
+
+<pre><code>docker run -v `pwd`/folder_src:/home/test/into_container jxxx/golang-env ls -al into_container
+</code></pre>
+
+<h3 id="exec">Exec</h3>
+
+<p>進入<strong>正在執行中的</strong>container</p>
+
+<pre><code>docker exec -it &lt;containerIdOrName&gt; bash
+</code></pre>
+
+<h3 id="cp">Cp</h3>
+
+<p>將外部檔案複製到 container 裡</p>
+
+<pre><code>docker cp foo.txt {CONTAINER ID}:/foo.txt
+</code></pre>
+
+<p>將檔案從 container 裡複製出來</p>
+
+<pre><code>docker cp {CONTAINER ID}:/foo.txt ./
+</code></pre>
+
+<h3 id="commit">Commit</h3>
+
+<pre><code>docker commit -m &quot;Add ff.md&quot; e3015 jxxx/golang-env
+</code></pre>
+
+<h3 id="push">Push</h3>
+
+<pre><code>docker push jxxx/golang-env
+</code></pre>
+
+<h3 id="attach">Attach</h3>
+
+<ul>
+<li>docker attach [CONTAINER ID] : 進入 container</li>
+</ul>
+
+<h3 id="logs">Logs</h3>
+
+<p>將 container 的標準輸出接出來</p>
+
+<pre><code>docker logs {CONTAINER ID}
+</code></pre>
+
+<p>在 Docker config 設定將 log 接到標準輸出</p>
+
+<pre><code>RUN ln -sf /dev/stdout /var/log/test.log
+</code></pre>
+
+<h3 id="其他指令">其他指令</h3>
+
+<ul>
+<li><code>expose</code></li>
+<li><code>add/copy</code></li>
+<li><code>volume</code></li>
+<li><code>attach/detach</code></li>
+<li><code>pause/unpause</code></li>
+<li><code>link between containers</code></li>
+</ul>
+
+<h2 id="docker-machine-command">Docker machine command</h2>
+
+<blockquote>
+<p>docker-machine is used to connect to VirtualBox and create virtual machine</p>
+</blockquote>
+
+<p>Show version</p>
+
+<pre><code>docker-machine version
+</code></pre>
+
+<p>Create machine</p>
+
+<pre><code>docker-machine create --driver virtualbox {name}
+</code></pre>
+
+<p>Show machine list</p>
+
+<pre><code>docker-machine ls
+</code></pre>
+
+<p>Show environment variables</p>
+
+<pre><code>docker-machine env {name}
+</code></pre>
+
+<p>SSH into machine</p>
+
+<pre><code>docker-machine ssh {name}
+</code></pre>
+
+<p>Start machine</p>
+
+<pre><code>docker-machine start {name}
+</code></pre>
+
+<p>Stop machine</p>
+
+<pre><code>docker-machine {name}
+</code></pre>
+
+<p>Remove machine</p>
+
+<pre><code>docker-machine {name}
+</code></pre>
+
+<p>Show machine status</p>
+
+<pre><code>docker-machine status {name}
+</code></pre>
+
+<h2 id="dockerfile-怎麼寫">Dockerfile 怎麼寫</h2>
+
+<p>FROM : 使用每個 image 為基礎</p>
+
+<pre><code>FROM ubuntu
+FROM ubuntu:14.04
+</code></pre>
+
+<p>MAINTAINER : 設定產生的 imgage 的 Author</p>
+
+<pre><code>MAINTAINER test &quot;xxxxxxx@gmail.com&quot;
+</code></pre>
+
+<p>USER : 使用哪個 user 去執行 <code>RUN</code>, <code>CMD</code> etc.</p>
+
+<pre><code>USER daemon
+</code></pre>
+
+<p>RUN : 執行指令 (使用預設的 shell <code>/bin/sh -c</code>)</p>
+
+<pre><code>RUN apt-get update &amp;&amp; apt-get -y upgrade
+</code></pre>
+
+<p>CMD : 執行 command</p>
+
+<pre><code>CMD echo &quot;This is a test.&quot; | wc -       // 預設是使用 shell 執行  /bin/sh -c
+
+CMD [&quot;/usr/bin/wc&quot;,&quot;--help&quot;]            // 執行其他指令不使用 shell 的話要使用 JSON format
+</code></pre>
+
+<p>ENV : 設定環境變數</p>
+
+<pre><code>ENV HOME /root
+</code></pre>
+
+<p>WORKDIR 設定工作目錄 (for any <code>RUN</code>, <code>CMD</code>, <code>ENTRYPOINT</code>, <code>COPY</code> and <code>ADD</code> in the Dockerfile)</p>
+
+<pre><code>WORKDIR /root
+或
+WORKDIR ${HOME}
+</code></pre>
+
+<p>ADD : 新增檔案</p>
+
+<pre><code>ADD xx.md /root
+ADD xx.md $HOME
+
+ADD test relativeDir/          # adds &quot;test&quot; to `WORKDIR`/relativeDir/
+ADD test /absoluteDir/         # adds &quot;test&quot; to /absoluteDir/
+</code></pre>
+
+<p>COPY : 複製檔案</p>
+
+<pre><code>COPY \$HOME /tmp
+
+COPY test relativeDir/   # adds &quot;test&quot; to `WORKDIR`/relativeDir/
+COPY test /absoluteDir/  # adds &quot;test&quot; to /absoluteDir/
+</code></pre>
+
+<p>EXPOSE : 開放哪些 Port</p>
+
+<pre><code>EXPOSE 80 443
+</code></pre>
+
+<p>HEALTHCHECK (<a href="https://docs.docker.com/engine/reference/builder/#/healthcheck">https://docs.docker.com/engine/reference/builder/#/healthcheck</a>)</p>
+
+<pre><code>HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+</code></pre>
+
+<p>SHELL : 更改預設的 shell (linux default : <code>/bin/sh -c</code>)</p>
+
+<pre><code>SHELL [&quot;executable&quot;, &quot;parameters&quot;]
+
+# Executed as cmd /S /C echo hello
+SHELL [&quot;cmd&quot;, &quot;/S&quot;&quot;, &quot;/C&quot;]
+RUN echo hello
+</code></pre>
+
+<h2 id="docker-compose">docker-compose</h2>
+
+<p>啟動</p>
+
+<pre><code>docker-compose up -d
+</code></pre>
+
+<p>指定 config</p>
+
+<pre><code>docker-compose -f custom.yml up -d
+</code></pre>
+
+<h3 id="config">config</h3>
+
+<p>docker-compose.yml</p>
+
+<pre><code>version: &quot;2&quot;
+services:
+
+  test-redis:
+    container_name: test-redis
+    image: redis
+    expose:
+      - &quot;6379&quot;
+    ports:
+      - &quot;6379:6379&quot;
+    volumes:
+      - redis-data-test:/data-test
+
+  test-mysql:
+    container_name: test-mysql
+    image: mysql/mysql-server:5.7
+    expose:
+      - &quot;3306&quot;
+    ports:
+      - &quot;3306:3306&quot;
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - dbdata-test:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - test-mysql:db
+    ports:
+      - &quot;8888:80&quot;
+
+volumes:
+  redis-data-test:
+  dbdata-test:
+</code></pre>
+
+<blockquote>
+<p>phpmyadmin: <code>http://localhost:8888</code></p>
+</blockquote>
+
+<h2 id="docker-swarm">Docker Swarm</h2>
+
+<p>A distributed system tool,used to manage a cluster of Docker engines, allows you to deploy your services.</p>
+
+<h3 id="features">Features</h3>
+
+<ul>
+<li>Decentralised design: you can define its optimal state (number of replicas, network, ports, etc.)</li>
+<li>Scaling (easy to scale or shrink your service)</li>
+<li>Load Balancing (use overlay network)</li>
+<li>Security (nodes communicate with each other over TLS)</li>
+<li>Support roll-back</li>
+<li>built in docker</li>
+</ul>
+
+<h3 id="concepts">Concepts</h3>
+
+<ul>
+<li>nodes &amp; roles
+
+<ul>
+<li>manager leader: manager nodes elec a single leader to conduct orchestration tasks</li>
+<li>manager
+
+<ul>
+<li>deploy your application by assigning tasks</li>
+<li>maintain the desired state of the swarm</li>
+<li>manager node is also a worker node by default, you can exclude it</li>
+</ul></li>
+<li>worker
+
+<ul>
+<li>execute tasks</li>
+<li>report current state of its assigned tasks to manager</li>
+</ul></li>
+<li>one or more nodes can run on a server</li>
+<li>a node can be both of a manger and a worker</li>
+</ul></li>
+<li><a href="https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/">services &amp; tasks</a>
+
+<ul>
+<li>a service: the definition of the tasks e.g. 1 service = 3 nginx replicas = 3 task</li>
+<li>a task: a task is a running container on available node e.g. 1 task = 1 nginx</li>
+</ul></li>
+<li>docker swarm use VXLAN (Virtual extensible LAN) to connect each workers just like in the LAN.</li>
+<li>network
+
+<ul>
+<li>ingress: Exposes services to the external network.</li>
+<li><a href="https://en.wikipedia.org/wiki/Overlay_network">overlay network</a> manages communications among the Docker daemons.</li>
+<li>docker_gwbridge: Created by docker, and it allows the containers to connect to the host.</li>
+<li>IPVS: It is a load balancer implementation in the Linux kernel.</li>
+</ul></li>
+</ul>
+
+<h3 id="networking-https-success-docker-com-article-networking"><a href="https://success.docker.com/article/networking">Networking</a></h3>
+
+<p>Routing Mesh</p>
+
+<pre><code>Request -&gt; ingress network on published port -&gt; any node (use IPVS to decide which service to go) -&gt; ingress network (outer LB)-&gt; overlay network (inner LB) -&gt; node
+</code></pre>
+
+<h3 id="docker-swarm-command">Docker swarm command</h3>
+
+<p>Init</p>
+
+<pre><code>docker swarm init --advertise-addr {ip}    // local ip
+</code></pre>
+
+<blockquote>
+<ul>
+<li>This machine will be a manager (leader) by deafault.</li>
+<li>This will generate a token command, you can execute this command at any machine you want to assign it as a worker node.</li>
+</ul>
+</blockquote>
+
+<p>Show node list</p>
+
+<pre><code>docker node ls
+</code></pre>
+
+<p>Show network list</p>
+
+<pre><code>docker network ls
+</code></pre>
+
+<p>Create an overlay network</p>
+
+<pre><code>docker network create --opt encrypted --subnet 100.0.0.0/24 -d overlay {name}
+</code></pre>
+
+<p>Create service</p>
+
+<pre><code>docker service create --name nginx --network {network name} -p {ex_port:in_port} {image_name}
+docker service create --name nginx --network {network name} -p 1080:80 nvbeta/swarm_nginx
+</code></pre>
+
+<h3 id="get-started">Get started</h3>
+
+<ol>
+<li>Use docker machine command to create 3 machines.</li>
+<li>SSH into one of machines and do swarm initialisation.</li>
+<li>SSH into the rest of machines and execute token command that is generated by step 2.</li>
+<li>Show node list to see if expected.</li>
+</ol>
+
+<h3 id="setting">Setting</h3>
+
+<h4 id="open-protocols-and-ports-between-the-hosts">Open protocols and ports between the hosts</h4>
+
+<ul>
+<li>TCP port 2377 for cluster management communications (manager &lt;-&gt; worker)</li>
+<li>TCP and UDP port 7946 for communication among nodes (worker &lt;-&gt; worker, any node participates in the swarm)</li>
+<li>UDP port 4789 for overlay network traffic (worker &lt;-&gt; worker, nodes under the same overlay network)</li>
+</ul>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="dial-unix-var-run-docker-sock-permission-denied"><code>dial unix /var/run/docker.sock: permission denied</code></h3>
+
+<p><code>2014/12/23 14:14:33 Get http:///var/run/docker.sock/v1.12/images/json: dial unix /var/run/docker.sock: permission denied</code></p>
+
+<pre><code>sudo adduser &lt;username&gt; docker
+</code></pre>
+
+</article>
+
+
+
+</html>

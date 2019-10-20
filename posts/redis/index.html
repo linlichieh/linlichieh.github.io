@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Redis | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/redis/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/redis/">Redis</a></h1>
+    <p class="meta"><time datetime="2014-09-03T12:36:07&#43;08:00">September 03, 2014</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<ul>
+<li>Open source</li>
+<li>Key-Value 儲存型態</li>
+<li>Value 可以是 strings, hashes, lists, sets, ordered sets</li>
+<li>運作在 memory, 可用 snapshot 儲存在硬碟</li>
+<li>不支援 2 層以上的 hash</li>
+</ul>
+
+<h2 id="install">Install</h2>
+
+<p>server</p>
+
+<pre><code>brew install redis                      // Mac
+sudo apt-get install redis-server       // Ubuntu
+</code></pre>
+
+<blockquote>
+<p>Mac 需執行 <code>redis-server</code> 指令才會啟動</p>
+</blockquote>
+
+<p>client : 只需安裝 redis-tools</p>
+
+<pre><code>sudo apt-get install redis-tools
+</code></pre>
+
+<h2 id="command">Command</h2>
+
+<h3 id="keys">keys</h3>
+
+<p>全部的 key</p>
+
+<pre><code>keys *
+</code></pre>
+
+<p>Key 的數量</p>
+
+<pre><code>info keyspace
+&gt; db0:keys=74415,expires=63940,avg_ttl=306997004
+</code></pre>
+
+<p>Find prefix string key : &lsquo;queue:&rsquo;</p>
+
+<pre><code>keys queue:*
+</code></pre>
+
+<p>刪除 prefix key</p>
+
+<pre><code>redis-cli KEYS &quot;prefix:*&quot; | xargs redis-cli DEL
+</code></pre>
+
+<p>Count matching keys</p>
+
+<pre><code>redis-cli keys &quot;prefix:*&quot; | wc -l
+</code></pre>
+
+<p>SET, GET</p>
+
+<pre><code>SET users:test &quot;job: php backend, born: 1989&quot;
+GET users:test                                       // &quot;job: php backend, born: 1989&quot;
+</code></pre>
+
+<blockquote>
+<p>A String value can be at max 512 Megabytes in length.</p>
+</blockquote>
+
+<p>hash : 裡面可以有很多 key 跟 value, ex: {name: test}</p>
+
+<pre><code>HSET 'me' 'name' 'test'
+
+HGET 'me' 'name'    //得到 test
+
+HDEL 'me' 'name'
+
+HGETALL 'me'     //得到所有 key: value
+
+HMSET user:1000 username antirez password P1pp0 age 34
+
+HGETALL user:1000
+
+HSET user:1000 password 12345
+
+HGETALL user:1000
+</code></pre>
+
+<p>list</p>
+
+<pre><code>LPUSH mylist a
+LPUSH mylist b
+
+RPUSH mylist c
+
+LRANGE mylist 0 -1
+1) &quot;b&quot;
+2) &quot;a&quot;
+3) &quot;c&quot;
+
+LPOP mylist     // 輸出 b, 剩下 a, c
+
+LBPOP mylist mylist3 mylist3 0    // 非 block 依序彈出 value, 但如果所有的 list 都是空的, 就會 block 直到超時或有 list 被 push 值進來
+
+LLEN mylist     // count 裡面的數量
+</code></pre>
+
+<blockquote>
+<ul>
+<li>LRANGE鍵</li>
+<li>返回列表key中指定區間內的元素，區間以偏移量start和stop指定。</li>
+<li>下標(index)參數start和stop都以0為底，也就是說，以0表示列表的第一個元素，以1表示列表的第二個元素，以此類推。</li>
+<li>你也可以使用負數下標，以-1表示列表的最後一個元素，-2表示列表的倒數第二個元素，以此類推。</li>
+</ul>
+</blockquote>
+
+<p>expired time</p>
+
+<pre><code>EXPIRE key 10      // This key has been set expired time and it'll expire after 10 seconds
+</code></pre>
+
+<p>Show the rest of expired time</p>
+
+<pre><code>TTL key
+</code></pre>
+
+<ul>
+<li>0 ~ ? =&gt; Existed time of seconds.</li>
+<li>-1 =&gt; Never expire.</li>
+<li>-2 =&gt; Doesn&rsquo;t exist.</li>
+</ul>
+
+<p>increase</p>
+
+<pre><code>SET mykey &quot;10&quot;
+&gt; &quot;OK&quot;
+INCR mykey
+&gt; (integer) 11
+</code></pre>
+
+<p>Transactions : MULTI + (一串指令) + EXEC</p>
+
+<pre><code>MULTI
+OK
+&gt; INCR foo
+QUEUED
+&gt; INCR bar
+QUEUED
+&gt; EXEC
+1) (integer) 1
+2) (integer) 1
+</code></pre>
+
+<p>查看 Connection list</p>
+
+<pre><code>client list
+</code></pre>
+
+<p>SETNEX (SET if Not eXists) (如果沒存在, 行為跟 SET 一樣)</p>
+
+<pre><code>SETNX mykey &quot;Hello&quot;
+</code></pre>
+
+<h2 id="其他指令">其他指令</h2>
+
+<p>Connect to redis server</p>
+
+<pre><code>redis-cli -h xxx-cache.cnhynt.0001.usw2.cache.amazonaws.com -p 6379
+</code></pre>
+
+<blockquote>
+<p>可不加 <code>-p</code>, 預設會使用 6379 port</p>
+</blockquote>
+
+<p>latency: 跑一個 loop <code>PING</code> command 100 times per second 來測試, 回應的數字代表是 ms</p>
+
+<pre><code>redis-cli --latency
+min: 2, max: 4, avg: 2.78 (98 samples)
+</code></pre>
+
+<blockquote>
+<p>ref: <a href="https://redis.io/topics/rediscli">https://redis.io/topics/rediscli</a></p>
+</blockquote>
+
+<p>benchmark: 它會測試不同項目</p>
+
+<pre><code>redis-benchmark
+
+(...略...)
+
+====== SET ======
+  10000 requests completed in 0.57 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+0.01% &lt;= 2 milliseconds
+87.84% &lt;= 3 milliseconds
+97.55% &lt;= 4 milliseconds
+98.97% &lt;= 5 milliseconds
+99.40% &lt;= 6 milliseconds
+99.51% &lt;= 14 milliseconds
+99.66% &lt;= 15 milliseconds
+99.93% &lt;= 16 milliseconds
+100.00% &lt;= 16 milliseconds
+17543.86 requests per second
+
+(...略...)
+</code></pre>
+
+<h2 id="export-and-import">Export and Import</h2>
+
+<h3 id="backup-to-another-redis-server">Backup to another redis server</h3>
+
+<p>Export</p>
+
+<pre><code>$ redis-cli
+127.0.0.1:6379&gt; SAVE
+OK
+</code></pre>
+
+<blockquote>
+<p>Default backup path: <code>/var/lib/redis/dump.rdb</code></p>
+</blockquote>
+
+<p>Copy backup(<code>/var/lib/redis/dump.rdb</code>) to another server</p>
+
+<pre><code>$ scp /var/lib/redis/dump.rdb myuser@B:/tmp/dump.rdb
+</code></pre>
+
+<p>Import</p>
+
+<pre><code>$ sudo service redis-server stop
+$ sudo cp /tmp/dump.rdb /var/lib/redis/dump.rdb
+$ sudo chown redis: /var/lib/redis/dump.rdb
+$ sudo service redis-server start
+</code></pre>
+
+<h3 id="import-mass-data">Import mass data</h3>
+
+<p>Create import.txt file :</p>
+
+<pre><code>SET job1 &quot;First job&quot;
+
+SET job2 &quot;Second job&quot;
+
+SET job2 &quot;Second job&quot;
+</code></pre>
+
+<blockquote>
+<p>要空一格, 不然執行後會有錯誤</p>
+</blockquote>
+
+<p>import command :</p>
+
+<p><code>cat import.txt | redis-cli --pipe</code></p>
+
+<p><code>(cat import.txt; sleep 10) | nc localhost 6379 &gt; /dev/null</code></p>
+
+<h2 id="對-lan-開放">對 lan 開放</h2>
+
+<p>/etc/redis/redis.conf :</p>
+
+<pre><code>bind 0.0.0.0
+</code></pre>
+
+<p>ref :
+<a href="https://sendgrid.com/blog/get-going-go-redis/">https://sendgrid.com/blog/get-going-go-redis/</a></p>
+
+<h2 id="其他">其他</h2>
+
+<h3 id="將比對到的-key-做-hget">將比對到的 key 做 HGET</h3>
+
+<pre><code>redis-cli -h redis.example.ap-northeast-1.local KEYS &quot;user:????????????????????????????????&quot; | xargs -i@ redis-cli -h redis.example.ap-northeast-1.local hget @ name
+</code></pre>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux xargs | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/xargs/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/xargs/">Linux xargs</a></h1>
+    <p class="meta"><time datetime="2013-12-15T20:28:00Z">December 15, 2013</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>build and execute command lines from standard input</p>
+
+<h2 id="用法">用法</h2>
+
+<p>假設有個檔案結構如下 :</p>
+
+<pre><code>$ tree test
+test
+├── c1
+│   ├── ii.del
+│   └── pp.ext
+├── c2
+│   ├── gg.del
+│   └── hh.ext
+└── c3
+    ├── c3-1
+    │   ├── qq.del
+    │   └── xx.ext
+    ├── cc.ext
+    └── ff.del
+
+4 directories, 8 files
+</code></pre>
+
+<p>如果我要刪除 test 下所有 *.del 的檔案</p>
+
+<p>找出 *.del</p>
+
+<pre><code>$ find test -name &quot;*.del&quot;
+test/c3/ff.del
+test/c3/c3-1/qq.del
+test/c2/gg.del
+test/c1/ii.del
+</code></pre>
+
+<p>加上 xargs 指令, 可以一次幫你把找到的結果刪除</p>
+
+<pre><code>$ find test -name &quot;*.del&quot; | xargs rm
+</code></pre>
+
+<p>如果前面 find 那邊沒有任何結果輸出會出現錯誤訊息</p>
+
+<pre><code>rm: missing operand
+Try 'rm --help' for more information.
+</code></pre>
+
+<p>可加上 <code>--no-run-if-empty</code> 來避免 :</p>
+
+<pre><code>$ find test -name &quot;*.del&quot; | xargs --no-run-if-empty rm
+</code></pre>
+
+<blockquote>
+<p><code>--no-run-if-empty</code> or <code>-r</code> : If the standard input does not contain any nonblanks, do not run the command.   Normally,  the command is run once even if there is no input.  This option is a GNU extension.</p>
+</blockquote>
+
+<h3 id="將筆對到的字串暫存成符號供取代使用-linux-supports-i-mac-supports-i">將筆對到的字串暫存成符號供取代使用, linux supports <code>-i</code>, mac supports <code>-I</code></h3>
+
+<p>mac</p>
+
+<pre><code>redis-cli KEYS &quot;user:???&quot; | xargs -I@ redis-cli HSET @ field1 1
+</code></pre>
+
+<p>linux</p>
+
+<pre><code>redis-cli KEYS &quot;user:???&quot; | xargs -i@ redis-cli HSET i field1 1
+</code></pre>
+
+<h3 id="add-file-extension">Add file extension</h3>
+
+<pre><code>$ tree .
+.
+├── cc
+└── qq
+
+$ ls | xargs -I file mv file file.txt &amp;&amp; ls
+cc.txt  qq.txt
+</code></pre>
+
+<p>不用 xargs 且達到一樣效果 :</p>
+
+<pre><code>$ for i in `ls`;do mv $i ${i}.txt; done &amp;&amp; ls
+cc.txt  qq.txt
+</code></pre>
+
+<blockquote>
+<ul>
+<li>xargs :</li>
+<li>-I replace-str</li>
+<li>Replace occurrences of replace-str in the initial-arguments with names read from  standard  input.</li>
+<li>Also,  unquoted  blanks  do  not  terminate  input  items;  instead  the  separator is the newline</li>
+<li>character.  Implies -x and -L 1.</li>
+</ul>
+</blockquote>
+
+<h3 id="change-file-extension">Change file extension</h3>
+
+<p>change xxx.thml -&gt; xxx.txt</p>
+
+<pre><code>ls | grep html | sed 's/.html//g' | xargs -I file mv file.html file.txt
+</code></pre>
+
+<h3 id="add-prefix">Add prefix</h3>
+
+<pre><code>ls | xargs -I {FILE} mv {FILE} prefix_{FILE}
+</code></pre>
+
+<blockquote>
+<p><code>{FILE} 是自訂讓 xargs 辨識用的變數名稱</code></p>
+</blockquote>
+
+<h2 id="example">Example</h2>
+
+<p>將指到的檔都刪除</p>
+
+<pre><code>find -name &quot;*.bak&quot; | xargs rm
+</code></pre>
+
+<p>如果沒有找到也不要噴出錯誤訊息</p>
+
+<pre><code>find -name &quot;*.bak&quot; | xargs --no-run-if-empty rm
+</code></pre>
+
+<p>ref :
+<a href="http://blog.yam.com/ddy1280/article/13941218">http://blog.yam.com/ddy1280/article/13941218</a></p>
+
+</article>
+
+
+
+</html>

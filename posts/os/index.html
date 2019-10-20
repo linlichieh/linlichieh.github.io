@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>OS | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/os/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/os/">OS</a></h1>
+    <p class="meta"><time datetime="2015-02-13T10:55:43&#43;08:00">February 13, 2015</time></p>
+  </header>
+  
+
+<h2 id="動態庫與靜態庫">動態庫與靜態庫</h2>
+
+<p>linux 下有動態庫和靜態庫. 動態庫以 <code>.so</code> 為副檔名, 靜態庫以 <code>.a</code> 為副檔名</p>
+
+<p><code>ldd</code> 指令可以查詢此程序用到哪些動態庫</p>
+
+<pre><code>$ ldd dch_worker
+linux-vdso.so.1 =&gt;  (0x00007fff60bfe000)
+libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f6d583b2000)
+libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6d57fec000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f6d585dc000)
+</code></pre>
+
+<h2 id="檢查主機狀態">檢查主機狀態</h2>
+
+<ul>
+<li>pid : process id</li>
+<li>ppid : parent process id</li>
+</ul>
+
+<h3 id="top">top</h3>
+
+<ul>
+<li>sorted by memory : <code>top -o MEM</code></li>
+</ul>
+
+<h3 id="ps">ps</h3>
+
+<p>顯示特定幾個欄位</p>
+
+<pre><code>ps -Ao pid,%cpu,%mem,comm
+</code></pre>
+
+<blockquote>
+<p>上面的參數 <code>comm</code> 與 <code>command</code> 的差別在 <code>command</code> 會完整顯示程序的指令，而 <code>comm</code> 只會顯示你用什麼程序，例如使用 <code>command</code> 會多看到後面的參數 <code>/Google Chrome Helper --type=renderer</code></p>
+</blockquote>
+
+<p>記億體使用量前十的程序</p>
+
+<pre><code>PID     %CPU    %MEM    COMMAND
+ps -Ao pid,%cpu,%mem,comm | sort -k3rn | head -n 10
+</code></pre>
+
+<p>CPU使用量前十的程序</p>
+
+<pre><code>PID     %CPU    %MEM    COMMAND
+ps -Ao pid,%cpu,%mem,comm | sort -k2rn | head -n 10
+</code></pre>
+
+<p>查看 process 詳細資料</p>
+
+<pre><code>ps -v 97280
+  PID STAT      TIME  SL  RE PAGEIN      VSZ    RSS   LIM     TSIZ  %CPU %MEM COMMAND
+97280 S      1:36.19   0   0      0  4922424  10452     -        0   0.0  0.1 /Applications/Google Chrome.app/Contents/Versions/70.0.3
+</code></pre>
+
+<ul>
+<li>VIRT (kb): 需要的虛擬記憶體</li>
+<li>RES/RSS (Resident Set Size) (kb): 實際佔用的記憶體, non-swapped physical memory, including shared libraries, stack, heap</li>
+<li>SHAR (kb): 與其他 process 共享的記憶體 (共享), 實際佔用的記憶體 SHAR = RES - SHR</li>
+<li>SWAP (kb): swapped size</li>
+<li>VSZ (Virtual Memory Size): 所有用到的記憶體, including swap, shared library, allocated memory but not used</li>
+<li>PSS (Proportional Set Size): This is a newer measure which tracks the shared memory as a proportion used by the current process.</li>
+</ul>
+
+<p>記算:</p>
+
+<pre><code>So if process A has a 500K binary and is linked to 2500K of shared libraries, has 200K of stack/heap allocations of which 100K is actually in memory (rest is swapped or unused), and it has only actually loaded 1000K of the shared libraries and 400K of its own binary then:
+
+RSS: 400K + 1000K + 100K = 1500K
+VSZ: 500K + 2500K + 200K = 3200K
+
+if there were two processes using the same shared library from before:
+PSS: 400K + (1000K/2) + 100K = 400K + 500K + 100K = 1000K
+</code></pre>
+
+<p>ref: <a href="https://stackoverflow.com/questions/7880784/what-is-rss-and-vsz-in-linux-memory-management">https://stackoverflow.com/questions/7880784/what-is-rss-and-vsz-in-linux-memory-management</a></p>
+
+<h3 id="ps-aux-查看-process-狀態">ps aux 查看 process 狀態</h3>
+
+<ul>
+<li><code>ps aux</code> : 查看目前系統所執行的程式</li>
+<li><code>ps aux --sort -rss</code> : Show memory usage from highest to lowest.</li>
+</ul>
+
+<p>各欄位所代表的意思</p>
+
+<ul>
+<li>USER = user owning the process</li>
+<li>PID = process ID of the process</li>
+<li>%CPU = It is the CPU time used divided by the time the process has been running.</li>
+<li>%MEM = ratio of the process’s resident set size to the physical memory on the machine</li>
+<li>VSZ = virtual memory usage of entire process (in KiB)</li>
+<li>RSS = resident set size, the non-swapped physical memory that a task has used (in KiB)</li>
+<li>TTY = controlling tty (terminal)</li>
+<li>STAT = multi-character process state</li>
+<li>START = starting time or date of the process</li>
+<li>TIME = cumulative CPU time</li>
+<li>COMMAND = command with all its arguments</li>
+</ul>
+
+<p>看 process 的啟動及持續時間</p>
+
+<pre><code>ps -eo pid,comm,lstart,etime,time,args
+
+PID COMMAND                          STARTED     ELAPSED     TIME COMMAND
+  1 init            Thu Sep 21 10:38:33 2017 11-22:21:26 00:00:01 /sbin/init
+  2 kthreadd        Thu Sep 21 10:38:33 2017 11-22:21:26 00:00:00 [kthreadd]
+  3 ksoftirqd/0     Thu Sep 21 10:38:33 2017 11-22:21:26 00:00:00 [ksoftirqd/0]
+</code></pre>
+
+<h3 id="htop">htop</h3>
+
+<blockquote>
+<ul>
+<li>htop 的來源是使用 ps 指令的</li>
+<li>Mac 使用者要用 <code>sudo htop</code>, 否則 CPU, MEM 可能會無法顯示正確</li>
+</ul>
+</blockquote>
+
+<p>CPU:</p>
+
+<ul>
+<li>Blue = Low priority threads</li>
+<li>Green = Normal priority threads</li>
+<li>Red = Kernel threads</li>
+</ul>
+
+<p>Memory:</p>
+
+<pre><code>||||||||||||(綠藍黃)    57/2003MB   其中的 57 就是 Used memory
+</code></pre>
+
+<ul>
+<li>Green = Used memory</li>
+<li>Blue = Buffers</li>
+<li>Yellow/Orange = Cache</li>
+</ul>
+
+<p>State:</p>
+
+<ul>
+<li>R  running or runnable (on run queue)</li>
+<li>D  uninterruptible sleep (usually IO)</li>
+<li>S  interruptible sleep (waiting for an event to complete)</li>
+<li>Z  defunct/zombie, terminated but not reaped by its parent</li>
+<li>T  stopped, either by a job control signal or because it is being traced</li>
+</ul>
+
+<p>如果搭配 <code>free -m</code> 來看的話，</p>
+
+<pre><code>             total       used       free     shared    buffers     cached
+Mem:          2003        153       1849          0         11         85
+                                                        (藍色)      (黃色)
+
+57 = 153 - 11 - 85
+</code></pre>
+
+<p>快捷鍵:</p>
+
+<pre><code>Shortcut Key    Function Key    Description
+h               F1              Invoke htop Help
+S               F2              Htop Setup Menu
+/               F3              Search for a Process
+I               F4              Invert Sort Order
+t               F5              Tree View
+&gt;               F6              Sort by a column
+[               F7              Nice – (change priority)
+]               F8              Nice + (change priority)
+k               F9              Kill a Process
+q               F10             Quit htop
+</code></pre>
+
+<ul>
+<li><code>P</code> : Sorted by <code>CPU%</code></li>
+<li><code>M</code> : Sorted by <code>Mem%</code></li>
+<li><code>u</code> : Display only processes of a single user</li>
+</ul>
+
+<h2 id="pmap">pmap</h2>
+
+<p>查看 process 使用記憶體的狀況</p>
+
+<pre><code>pmap -x 11047
+
+Address           Kbytes     RSS   Dirty Mode  Mapping
+...略...
+---------------- ------- ------- -------
+total kB          153776    7156    2172
+</code></pre>
+
+<blockquote>
+<p>這裡的 RSS 不會跟 ps 的 RSS 一樣, 因為計算上有很多需要考慮 e.g. kernel stack, code, data, stack</p>
+</blockquote>
+
+<ul>
+<li>-x: show details</li>
+<li>-d: show the device format</li>
+</ul>
+
+<h2 id="strace">strace</h2>
+
+<p>查看 process 或 command 執行時從頭到尾的狀況</p>
+
+<pre><code>strace -p 11047
+strace echo &quot;ff&quot;
+</code></pre>
+
+<h2 id="process-vs-thread">Process vs Thread</h2>
+
+<ul>
+<li>一個程序會產生一個 process, 但一個 process 裡面可以有很多 thread</li>
+<li>不同的 process 之間的記憶體不是共用的</li>
+<li>同一個 process 的 threads 裡面, 記憶體資料是共用的</li>
+<li>每個 thread 有自已的 stack</li>
+</ul>
+
+<h3 id="process-thread">Process thread</h3>
+
+<p>如果有一個程式執行在 htop 可能會看到4個行程, 而且 pid 都不一樣, 但並不代表他是用 4個process</p>
+
+<p>如果按 <code>t</code>, 就會可以清楚的看到是一個主行程跟三個子行程, 但那三個子行程都是 thread, 有可能是在</p>
+
+<p>不同 CPU 跑的, thread 的記憶體是跨 cpu 可以共用的, 但 process 不行</p>
+
+<p>為什麼 thread 也會有 pid? 因為 linux 把 thread 也看成一個 process</p>
+
+<h2 id="difference-between-heap-and-stack">Difference between heap and stack</h2>
+
+<p>In java:</p>
+
+<p>The main difference between heap and stack is that stack memory is used to store local variables and function call
+while heap memory is used to store objects in Java.  No matter, where the object is created in code e.g. as a member variable,
+local variable or class variable, they are always created inside heap space in Java.
+if the compiler cannot prove that the variable is not referenced after the function returns,
+then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors.
+You don&rsquo;t always know if your variable is allocated on the stack or heap.</p>
+
+<h2 id="out-of-memory">Out of memory</h2>
+
+<p>當記憶體不夠用時, 系統 OOM Killer 會開始 kill 最耗記憶體的 process</p>
+
+<h3 id="先看-log-狀態">先看 log 狀態</h3>
+
+<p><code>/var/log/messages</code> (amz-linux)</p>
+
+<pre><code>[952079.901834] Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
+[952079.906483] 357 total pagecache pages
+[952079.908658] 0 pages in swap cache
+[952079.910747] Swap cache stats: add 0, delete 0, find 0/0
+[952079.913679] Free swap  = 0kB
+[952079.915551] Total swap = 0kB
+[952079.917343] 524189 pages RAM
+[952079.919165] 0 pages HighMem/MovableOnly
+[952079.921434] 11312 pages reserved
+[952079.923367] [ pid ]   uid  tgid total_vm      rss nr_ptes nr_pmds swapents oom_score_adj name
+[952079.928155] [ 1520]     0  1520     2866      232      11       3        0         -1000 udevd
+[952079.932846] [ 1646]     0  1646     2865      221      10       3        0         -1000 udevd
+                                        ...(略)...
+[952080.158896] [ 5665]   500  5665   142716    41467     189       3        0             0 php-fpm-7.0
+[952080.164699] [ 5693]   500  5693   142102    13936     136       3        0             0 php-fpm-7.0
+[952080.169943] [ 5695]   500  5695   143401    16756     140       3        0             0 php-fpm-7.0
+[952080.174979] [ 5707]   500  5707   141966    14276     136       3        0             0 php-fpm-7.0
+[952080.180028] [ 5716]   500  5716   143000    41756     189       3        0             0 php-fpm-7.0
+[952080.185071] [ 5753]   500  5753   143162    16590     141       3        0             0 php-fpm-7.0
+[952080.190104] [ 5754]   500  5754   142978    14747     137       3        0             0 php-fpm-7.0
+[952080.196286] [ 5766]   500  5766   142451    14158     135       3        0             0 php-fpm-7.0
+[952080.201450] [ 5771]   500  5771   106828     5564     118       3        0             0 php-fpm-7.0
+                                        ...(略)...
+[952080.390850] Out of memory: Kill process 5716 (php-fpm-7.0) score 81 or sacrifice child
+[952080.395916] Killed process 5716 (php-fpm-7.0) total-vm:572000kB, anon-rss:167024kB, file-rss:0kB
+[952320.400064] INFO: task php-fpm-7.0:5716 blocked for more than 120 seconds.
+</code></pre>
+
+<p>在最後幾行可以看的出來, <code>php-fpm</code> 被 kill 了, 而在出現這行前面你可以看到當時各 process 使用的 memory 狀態</p>
+
+<h3 id="各欄位代表的意思">各欄位代表的意思</h3>
+
+<ul>
+<li>pid: process ID</li>
+<li>uid: user ID</li>
+<li>tgid: Thread group ID</li>
+<li>total_vm: Virtual memory use (in 4 kB pages)</li>
+<li>rss: Resident memory use (in 4 kB pages) (這裡的 rss 與 <code>top</code> 的 rss 單位不同, 這裡的是 4kb 不是 1kb)</li>
+<li>nr_ptes: Page table entries</li>
+<li>nr_pmds: TODO TODO TODO TODO</li>
+<li>swapents: Swap entries</li>
+<li>oom_score_adj: 要 kill 的優先權, 越高越先 kill</li>
+<li>name: process name</li>
+</ul>
+
+<h3 id="算出某個-process-使用的記憶體量">算出某個 process 使用的記憶體量</h3>
+
+<pre><code>[952080.395916] Killed process 5716 (php-fpm-7.0) total-vm:572000kB, anon-rss:167024kB, file-rss:0kB
+</code></pre>
+
+<p>例如 5716 這個 process, total_vm: 143000, rss: 41756, 上面一行得出來的數字也這裡的 x4, 也就是 5716 這個 process 實體記憶體+swap 用了 167MB</p>
+
+<p>ref: <a href="https://stackoverflow.com/questions/9199731/understanding-the-linux-oom-killers-logs">https://stackoverflow.com/questions/9199731/understanding-the-linux-oom-killers-logs</a></p>
+
+<h2 id="系統-log">系統 log</h2>
+
+<p>Ubuntu: <code>/var/log/kern.log</code>, <code>/var/log/syslog</code></p>
+
+<p>amz-linux: <code>/var/log/messages</code></p>
+
+<h2 id="檢查-memory-leak-工具">檢查 memory leak 工具</h2>
+
+<ul>
+<li>pidstat</li>
+<li>Valgrind</li>
+</ul>
+
+<h2 id="what-is-proc-self">What is <code>/proc/self</code>?</h2>
+
+<p>It is a symlink to the path of current running process.</p>
+
+<pre><code>$ ls -al /proc/self
+lrwxrwxrwx 1 root root 0 Dec 12 06:34 /proc/self -&gt; 11845
+</code></pre>
+
+<p>If you execute command below, you will get <code>ls</code>&rsquo;s pid and find <code>proc/self</code> that points to it at that moment.</p>
+
+<pre><code>$ ls -al /proc/self &amp; echo $!
+[1] 792
+792
+lrwxrwxrwx 1 root root 0 Dec 12 06:34 /proc/self -&gt; 792
+[1]+  Done                    ls --color=auto -al /proc/self
+</code></pre>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux mkfifo | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/mkfifo/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/mkfifo/">Linux mkfifo</a></h1>
+    <p class="meta"><time datetime="2014-01-19T16:23:00Z">January 19, 2014</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>用在兩個不同執行的程式溝通, 他就像是一條水管(pipeline file)將兩個程式連接起來</p>
+
+<p>其中一邊不斷的將水倒進去, 另一邊則取水, 這樣就可以達到資料</p>
+
+<h2 id="example">Example</h2>
+
+<h3 id="session-1">session 1 :</h3>
+
+<p>建立 pipe</p>
+
+<pre><code>cd /tmp
+mkfifo test
+</code></pre>
+
+<p>傳送資料進去</p>
+
+<pre><code>echo &quot;Hello Jex&quot; &gt; test
+echo &quot;line 1&quot; &gt; test&amp;
+</code></pre>
+
+<blockquote>
+<p>在命令的最後面加上 <code>&amp;</code> 可以讓它背景作業</p>
+</blockquote>
+
+<h3 id="session-2">session 2 :</h3>
+
+<p>將 session 1 存的資料拿出來</p>
+
+<pre><code>cd /tmp
+cat test
+</code></pre>
+
+<h3 id="fifo-命名通道">fifo (命名通道)</h3>
+
+<blockquote>
+<p>這些參數似乎要用 C 寫才能使用</p>
+</blockquote>
+
+<p>讀 :</p>
+
+<ul>
+<li>O_NONBLOCK enable : 立刻返回成功</li>
+<li>O_NONBLOCK dieable : block 直到有資料寫入而開啟 FIFO</li>
+</ul>
+
+<p>寫 :</p>
+
+<ul>
+<li>O_NONBLOCK enable : 立刻返回失敗, error code 為 ENXIO</li>
+<li>O_NONBLOCK dieable : block 直到有資料寫入而開啟 FIFO</li>
+</ul>
+
+<blockquote>
+<p>打開檔案預設是 block</p>
+</blockquote>
+
+<h3 id="mkfifo-與-fifo-的差異">mkfifo 與 fifo 的差異</h3>
+
+<p>mkfifo 由 pipe 函數建立並打開, fifo 由 mkfifo 函數建立, 打開用 open</p>
+
+<p>差別只在建立與開啟的方式不同, 一旦完成這些, 在通道 I/O 及 FIFO 幾乎一樣</p>
+
+<ul>
+<li>mkfifo - make FIFOs (named pipes)</li>
+<li>mknod - make block or character special files</li>
+</ul>
+
+<p>ref :</p>
+
+<ul>
+<li><a href="http://blog.csdn.net/jnu_simba/article/details/8953960">http://blog.csdn.net/jnu_simba/article/details/8953960</a></li>
+<li><a href="http://goo.gl/vxsxoX">http://goo.gl/vxsxoX</a></li>
+<li><a href="http://catchtest.pixnet.net/blog/post/22220521-linux%E7%A8%8B%E8%A8%AD%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98(%E5%8D%81%E5%9B%9B">http://catchtest.pixnet.net/blog/post/22220521-linux%E7%A8%8B%E8%A8%AD%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98(%E5%8D%81%E5%9B%9B</a>)</li>
+</ul>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Go GUI | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/go-gui/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/go-gui/">Go GUI</a></h1>
+    <p class="meta"><time datetime="2014-01-27T23:19:00Z">January 27, 2014</time></p>
+  </header>
+  
+
+<h2 id="therecipe-qt-https-github-com-therecipe-qt"><a href="https://github.com/therecipe/qt">therecipe/qt</a></h2>
+
+<h3 id="install-on-mac-https-github-com-therecipe-qt-macos"><a href="https://github.com/therecipe/qt#macos">Install on mac</a></h3>
+
+<p>按照它建議 mac 安裝的順序, 其中 qt 我是下載 <code>without Android or iOS support</code> 這個版本</p>
+
+<p>如果都安裝成功後跑 basic example 就可以看到 GUI 介面了</p>
+
+<h5 id="如果跑-gopath-bin-qtsetup-遇到這個錯誤-project-error-could-not-resolve-sdk-path-for-macosx">如果跑 <code>$GOPATH/bin/qtsetup</code> 遇到這個錯誤 <code>Project ERROR: Could not resolve SDK Path for 'macosx'</code></h5>
+
+<p>執行 <code>sudo xcode-select -s /Applications/Xcode.app/Contents/Developer</code>, 再跑一次</p>
+
+<h3 id="cross-compile-未完成">Cross compile (未完成)</h3>
+
+<p>linux 似乎可以 cross compile 到 windows,
+使用官方提供的 docker 並按步驟安裝 cross compile 需要的套件,
+但一直遇到環境問題, 很多套件無法順利安裝, 便放棄了</p>
+
+<h2 id="windows">Windows</h2>
+
+<p>安裝 walk 及 rsrc</p>
+
+<p>1) <a href="https://github.com/lxn/walk">Walk</a> 是一款 golang 的 GUI Framework</p>
+
+<p>2) <a href="https://github.com/akavel/rsrc">rsrc</a> 是可以將 manifest 嵌入執行檔的工具</p>
+
+<pre><code>cd c:\Go\bin                    # windows
+go get github.com/lxn/walk
+go get github.com/akavel/rsrc
+</code></pre>
+
+<h3 id="在-c-go-bin-下建立官方範例">在 <code>c:\Go\bin</code> 下建立官方範例</h3>
+
+<p>建立 gui.go :</p>
+
+<pre><code>package main
+
+import (
+    &quot;github.com/lxn/walk&quot;
+    . &quot;github.com/lxn/walk/declarative&quot;
+    &quot;strings&quot;
+)
+
+func main() {
+    var inTE, outTE *walk.TextEdit
+
+    MainWindow{
+        Title:   &quot;SCREAMO&quot;,
+        MinSize: Size{600, 400},
+        Layout:  VBox{},
+        Children: []Widget{
+            HSplitter{
+                Children: []Widget{
+                    TextEdit{AssignTo: &amp;inTE},
+                    TextEdit{AssignTo: &amp;outTE, ReadOnly: true},
+                },
+            },
+            PushButton{
+                Text: &quot;SCREAM&quot;,
+                OnClicked: func() {
+                    outTE.SetText(strings.ToUpper(inTE.Text()))
+                },
+            },
+        },
+    }.Run()
+}
+</code></pre>
+
+<p>建立 gui.manifest</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+    &lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; manifestVersion=&quot;1.0&quot;&gt;
+        &lt;assemblyIdentity version=&quot;1.0.0.0&quot; processorArchitecture=&quot;*&quot; name=&quot;SomeFunkyNameHere&quot; type=&quot;win32&quot;/&gt;
+        &lt;dependency&gt;
+            &lt;dependentAssembly&gt;
+                &lt;assemblyIdentity type=&quot;win32&quot; name=&quot;Microsoft.Windows.Common-Controls&quot; version=&quot;6.0.0.0&quot; processorArchitecture=&quot;*&quot; publicKeyToken=&quot;6595b64144ccf1df&quot; language=&quot;*&quot;/&gt;
+            &lt;/dependentAssembly&gt;
+        &lt;/dependency&gt;
+    &lt;/assembly&gt;
+</code></pre>
+
+<h4 id="為你的執行檔增加圖案">為你的執行檔增加圖案</h4>
+
+<p>找一個喜歡的 .ico 圖檔</p>
+
+<p>如果這步驟省略, 以下的步驟要記得把 <code>-ico gui.ico</code> 拿掉</p>
+
+<h3 id="建立一個產生執行檔的腳本">建立一個產生執行檔的腳本</h3>
+
+<p>因為一直下指令很麻煩, 所以建立一個 gen_exe.bat, 改完 .go 檔, 執行它就可以幫你產生執行檔了</p>
+
+<p><code>c:\Go\bin\gen_exe.bat</code> :</p>
+
+<pre><code>set GOARCH=386
+set GOOS=windows
+c:\go\mygo\bin\rsrc.exe -manifest gui.manifest -ico gui.ico -o gui.syso
+go build -ldflags=&quot;-H windowsgui&quot;
+</code></pre>
+
+<blockquote>
+<p>加上 <code>-ldflags=&quot;-H windowsgui&quot;</code> 產生的執行檔就不會有醜醜的 cmd 背景</p>
+</blockquote>
+
+<h3 id="產生執行檔">產生執行檔</h3>
+
+<p>雙擊 <code>gen_exe.bat</code>, 會產生 <code>bin.exe</code>, GUI 就已經包在裡面了</p>
+
+<p><img src="/images/posts/go-gui.jpg" alt="icon.JPG" /></p>
+
+<p><img src="/images/posts/go-gui2.jpg" alt="gui.JPG" /></p>
+
+<h2 id="linux-cross-compile">Linux (Cross-Compile)</h2>
+
+<p>這個範例不包含 GUI</p>
+
+<h3 id="install">Install</h3>
+
+<pre><code>go get github.com/akavel/rsrc
+</code></pre>
+
+<h3 id="事前準備">事前準備</h3>
+
+<p>1) 找一個喜歡的圖並轉成 <code>.ico</code> (選項, 可省略)</p>
+
+<p>2) 建立 <code>gui.manifest</code></p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+    &lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; manifestVersion=&quot;1.0&quot;&gt;
+        &lt;assemblyIdentity version=&quot;1.0.0.0&quot; processorArchitecture=&quot;*&quot; name=&quot;SomeFunkyNameHere&quot; type=&quot;win32&quot;/&gt;
+        &lt;dependency&gt;
+            &lt;dependentAssembly&gt;
+                &lt;assemblyIdentity type=&quot;win32&quot; name=&quot;Microsoft.Windows.Common-Controls&quot; version=&quot;6.0.0.0&quot; processorArchitecture=&quot;*&quot; publicKeyToken=&quot;6595b64144ccf1df&quot; language=&quot;*&quot;/&gt;
+            &lt;/dependentAssembly&gt;
+        &lt;/dependency&gt;
+    &lt;/assembly&gt;
+</code></pre>
+
+<h3 id="產生執行檔-1">產生執行檔</h3>
+
+<p>1) 將<code>gui.ico</code>, <code>gui.manifest</code> 放同層目錄</p>
+
+<p>2) 建立 cross-compile 的 shell 檔, 方便未來發佈</p>
+
+<p>deploy.sh :</p>
+
+<pre><code>#!/bin/bash
+if [ -f gui.syso ]; then
+    rm gui.syso
+fi
+
+GOOS=linux     GOARCH=amd64 go build
+GOOS=darwin    GOARCH=amd64 go build -o example.command
+rsrc -manifest gui.manifest -ico gui.ico -o gui.syso
+GOOS=windows   GOARCH=amd64 go build -o example.exe
+</code></pre>
+
+<blockquote>
+<p>如果沒有 <code>.ico</code> 圖, 要記得把 <code>-ico gui.ico</code> 拿掉</p>
+</blockquote>
+
+<p>3) 執行</p>
+
+<pre><code>./deploy.sh
+</code></pre>
+
+<h3 id="註-detection-at-compile-time">[註] Detection at compile time</h3>
+
+<p>golang 提供在 compile 時為不同環境準備不同的變數, 只要額外新增 <code>_windows.go</code>, <code>_unix.go</code>, 如下 :</p>
+
+<p>Windows : <code>/project/path_windows.go</code> :</p>
+
+<pre><code>package project
+const PATH_SEPERATOR = '\\'
+</code></pre>
+
+<p>Unix : <code>/proejct/path_unix.go</code> :</p>
+
+<pre><code>package project
+const PATH_SEPARATOR = '/'
+</code></pre>
+
+<p>ref : <a href="https://inconshreveable.com/04-30-2014/cross-compiling-golang-programs-with-native-libraries/">https://inconshreveable.com/04-30-2014/cross-compiling-golang-programs-with-native-libraries/</a></p>
+
+</article>
+
+
+
+</html>

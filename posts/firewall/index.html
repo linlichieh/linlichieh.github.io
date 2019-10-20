@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux iptable | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/firewall/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/firewall/">Linux iptable</a></h1>
+    <p class="meta"><time datetime="2014-01-20T23:24:00Z">January 20, 2014</time></p>
+  </header>
+  
+
+<h2 id="基本設定">基本設定</h2>
+
+<p><code>/etc/iptables.firewall.rules</code>:</p>
+
+<pre><code>*filter
+
+#  Allow all loopback (lo0) traffic and drop all traffic to 127/8 that doesn't use lo0
+-A INPUT -i lo -j ACCEPT
+-A INPUT -d 127.0.0.0/8 -j REJECT
+
+#  Accept all established inbound connections
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#  Allow all outbound traffic - you can modify this to only allow certain traffic
+-A OUTPUT -j ACCEPT
+
+#  Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).
+-A INPUT -p tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp --dport 443 -j ACCEPT
+
+#  Allow SSH connections
+#
+#  The -dport number should be the same port number you set in sshd_config
+#
+-A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
+
+#  Allow ping
+-A INPUT -p icmp -j ACCEPT
+
+#  Log iptables denied calls
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix &quot;iptables denied: &quot; --log-level 7
+
+#  Drop all other inbound - default deny unless explicitly allowed policy
+-A INPUT -j DROP
+-A FORWARD -j DROP
+
+COMMIT
+</code></pre>
+
+<h2 id="附加設定">附加設定</h2>
+
+<pre><code>-A INPUT -p tcp --dport 445 -j ACCEPT    // for samba
+-A INPUT -p tcp -s 10.160.55.77     --dport 11211 -j ACCEPT // for memcache
+-A INPUT -p tcp -m state --state NEW --dport 4123 -j ACCEPT   // ssh port 改成 4123
+-A INPUT -p icmp -j ACCEPT // allow ping
+</code></pre>
+
+<h2 id="啟動防火牆">啟動防火牆</h2>
+
+<p><code>sudo iptables-restore &lt; /etc/iptables.firewall.rules</code></p>
+
+<h2 id="檢查是否設定成功">檢查是否設定成功</h2>
+
+<p><code>sudo iptables -L</code></p>
+
+<h2 id="重開後防火牆自動啟動">重開後防火牆自動啟動</h2>
+
+<p>編輯 <code>sudo vim /etc/network/if-pre-up.d/firewall</code>:</p>
+
+<pre><code>#!/bin/sh
+/sbin/iptables-restore &lt; /etc/iptables.firewall.rules
+</code></pre>
+
+<p>permission :</p>
+
+<pre><code>sudo chmod +x /etc/network/if-pre-up.d/firewall
+</code></pre>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="發生-iptables-restore-line-36-failed">發生 <code>iptables-restore: line 36 failed</code></h3>
+
+<p>雖然 36 行是指向 COMMIT, 但並不是它的問題, 是前面一些設定的問題,</p>
+
+<p>把下面這些刪除再跑一次看看, 在 Raspberry Pi 發現不刪會一直過不了</p>
+
+<pre><code>#  Log iptables denied calls
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix &quot;iptables denied: &quot; --log-level 7
+</code></pre>
+
+</article>
+
+
+
+</html>

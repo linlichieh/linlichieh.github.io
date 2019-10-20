@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux File System | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-file-system/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-file-system/">Linux File System</a></h1>
+    <p class="meta"><time datetime="2013-05-13T06:09:04Z">May 13, 2013</time></p>
+  </header>
+  
+
+<h2 id="inode">inode</h2>
+
+<p>在linux下，一個檔案產生後，會有一個inode，可以用來當作這個檔案的編號。
+假設有一個檔案叫做cc.txt，它的inode編號為135，
+當我用<code>mv</code>移動到不管哪個資料夾下，它的inode編號依然會是135，
+但當使用<code>cp</code>複製它時，它的inode編號就會重新指派了。</p>
+
+<h3 id="查看inode">查看inode</h3>
+
+<pre><code>ls -i
+7042739 README.md       6954370 bashrc          2287673 bin
+</code></pre>
+
+<h3 id="用-inode-找-file-folder">用 inode 找 file / folder</h3>
+
+<pre><code>find ~/conf -inum 2287673
+/Users/test/conf/bin
+</code></pre>
+
+<h2 id="fat32">FAT32</h2>
+
+<ul>
+<li>支援 windows, mac</li>
+<li>單檔最大 4GB</li>
+<li>最大容量 2TB</li>
+<li>較容易 disk errosr</li>
+<li>效率稍差</li>
+</ul>
+
+<h2 id="exfat">exFAT</h2>
+
+<ul>
+<li>支援 windows, mac, linux</li>
+<li>單檔最大 4GB</li>
+<li>最大容量 2TB</li>
+</ul>
+
+<h2 id="ntfs-windows-only">NTFS (windows only)</h2>
+
+<ul>
+<li>windows 原生支援</li>
+<li>在 mac 上只能讀</li>
+<li>最大單檔 16TB</li>
+<li>最大容量 256TB</li>
+</ul>
+
+<h2 id="hfs">HFS+</h2>
+
+<ul>
+<li>mac 原生支援</li>
+<li>Required for Time Machine</li>
+<li>最大單檔 8EiB</li>
+<li>最大容量 8EiB</li>
+</ul>
+
+<h2 id="xfs">XFS</h2>
+
+<ul>
+<li>xfs 是一種 file system 的 format, 像 ext4 一樣, 不過它特別的地方在於它可以方便的對目錄做 quota 限制</li>
+</ul>
+
+<h3 id="ubuntu-安裝">Ubuntu 安裝 :</h3>
+
+<pre><code>sudo apt-get install xfsprogs xfsdump
+</code></pre>
+
+<h3 id="set-quota">Set quota :</h3>
+
+<p>Make the filesystem and mount it:</p>
+
+<pre><code>mount /dev/sda5 /mnt/xfs -o pquota
+</code></pre>
+
+<p>Create a project named &ldquo;project1&rdquo;, which is the &ldquo;/mnt/xfs/test1&rdquo; tree:</p>
+
+<pre><code>mkdir test1     #on /mnt/xfs
+echo &quot;11:/mnt/xfs/test1&quot; &gt;&gt; /etc/projects
+echo &quot;project1:11&quot; &gt;&gt; /etc/projid
+xfs_quota -x -c &quot;project -s project1&quot; /dev/sda5
+</code></pre>
+
+<p>Set the tree quota to 2 MB:</p>
+
+<pre><code>xfs_quota -x -c &quot;limit -p bsoft=1m bhard=2m project1&quot; /dev/sda5
+</code></pre>
+
+<p>或直接指定project id</p>
+
+<pre><code>xfs_quota -x -c &quot;limit -p bsoft=1m bhard=2m 1&quot; /dev/sda5
+</code></pre>
+
+<blockquote>
+<p>也可以使用projects id指定 ex : &ldquo;limit -p bsoft=1m bhard=2m 11&rdquo;</p>
+</blockquote>
+
+<p>That&rsquo;s it.. Now let&rsquo;s make some tests:</p>
+
+<pre><code>dd if=/dev/zero of=/mnt/xfs/test1/aaa count=10 bs=1024k
+</code></pre>
+
+<p>And there&rsquo;s also a nice report! (looks nicer with a fixed-width console font)</p>
+
+<pre><code>xfs_quota -x -c &quot;report /dev/sda5&quot;
+</code></pre>
+
+<h3 id="將一個quota綁定多個資料夾">將一個quota綁定多個資料夾:</h3>
+
+<p>在/etc/projects設定:</p>
+
+<pre><code>7:/test_ugc/teststorage/default/test_user
+7:/test_ugc/teststorage/default/hun
+</code></pre>
+
+<blockquote>
+<p>xfs report 中 id=7 的 used欄位會將test_user及hun資料夾使用空間加總，超過quota限制的話就會將兩個資料夾鎖住</p>
+</blockquote>
+
+<h3 id="set-unlimited-quota">Set Unlimited Quota</h3>
+
+<pre><code>sudo xfs_quota -x -c &quot;limit -p bsoft=0m bhard=0m project1&quot; /dev/mapper/test--vg-test--lv
+</code></pre>
+
+<h3 id="remove-quota">Remove quota :</h3>
+
+<p>執行清除project quota指令</p>
+
+<pre><code>$ sudo xfs_quota -xc &quot;project -C 1&quot; /dev/mapper/test--vg-test--lv
+Clearing project 1 (path /test_ugc/teststorage/test)...
+Processed 1 (/etc/projects and cmdline) paths for project 1 with recursion depth infinite (-1).
+</code></pre>
+
+<p>刪除資料夾與 /etc/projects 及 /etc/projid 的對應資料</p>
+
+<p>如果要將/etc/projects其中一個project id的資料夾做更改一定要先執行clear quota再改，不然如果舊的資料夾還存在的話會變成限制成兩個資料夾</p>
+
+<p>要先執行clear quota再刪除資料夾否則會發生找不到資料夾的錯誤</p>
+
+<pre><code>    test_acount@test:/test_ugc/teststorage$ sudo xfs_quota -xc &quot;project -C 1&quot; /dev/mapper/test--vg-test--lv
+    xfs_quota: cannot find mount point for path `/test_ugc/teststorage/test': No such file or directory
+    Processed 0 (/etc/projects and cmdline) paths for project 1 with recursion depth infinite (-1).
+</code></pre>
+
+<h3 id="其他功能">其他功能:</h3>
+
+<p>To suspend (i.e. freeze) an XFS file system, use:</p>
+
+<pre><code>xfs_freeze -f /mount/point
+</code></pre>
+
+<p>To unfreeze an XFS file system, use:</p>
+
+<pre><code>xfs_freeze -u /mount/point
+</code></pre>
+
+<h3 id="command">command :</h3>
+
+<ul>
+<li>-c cmd xfs_quota commands may be run interactively (the default) or
+as arguments on the command line. Multiple -c arguments may
+be given. The commands are run in the sequence given, then
+the program exits.</li>
+<li>-p prog Set the program name for prompts and some error messages, the
+default value is xfs_quota.</li>
+<li>-x Enable expert mode. All of the administrative commands (see
+the ADMINISTRATOR COMMANDS section below) which allow modifi -
+cations to the quota system are available only in expert
+mode.</li>
+<li>-d project
+Project names or numeric identifiers may be specified with
+this option, which restricts the output of the individual
+xfs_quota commands to the set of projects specified. Multiple</li>
+<li>-d arguments may be given.</li>
+</ul>
+
+<h3 id="command-details">Command details :</h3>
+
+<pre><code>xfs_quota&gt; test_acount@test:/test_ugc/teststorage/test$ sudo xfs_quota -x
+xfs_quota&gt; ?
+df [-bir] [-hn] [-f file] -- show free and used counts for blocks and inodes
+disable [-gpu] [-v] -- disable quota enforcement
+dump [-gpu] [-f file] -- dump quota information for backup utilities
+enable [-gpu] [-v] -- enable quota enforcement
+help [command] -- help for one or all commands
+limit [-gpu] bsoft|bhard|isoft|ihard|rtbsoft|rtbhard=N -d|id|name -- modify quota limits
+off [-gpu] [-v] -- permanently switch quota off for a path
+path [N] -- set current path, or show the list of paths
+print -- list known mount points and projects
+project [-c|-s|-C|-d &lt;depth&gt;|-p &lt;path&gt;] project ... -- check, setup or clear project quota trees
+quit -- exit the program
+quot [-bir] [-gpu] [-acv] [-f file] -- summarize filesystem ownership
+quota [-bir] [-gpu] [-hnNv] [-f file] [id|name]... -- show usage and limits
+remove [-gpu] [-v] -- remove quota extents from a filesystem
+report [-bir] [-gpu] [-ahnt] [-f file] -- report filesystem quota information
+restore [-gpu] [-f file] -- restore quota limits from a backup file
+state [-gpu] [-a] [-v] [-f file] -- get overall quota state information
+timer [-bir] [-gpu] value -d|id|name -- get/set quota enforcement timeouts
+warn [-bir] [-gpu] value -d|id|name -- get/set enforcement warning counter
+
+Use 'help commandname' for extended help.
+</code></pre>
+
+<h3 id="測試紀錄">測試紀錄</h3>
+
+<h4 id="測試刪除資料夾再新增回來同樣的名稱-quota限制是否還在">測試刪除資料夾再新增回來同樣的名稱，quota限制是否還在?</h4>
+
+<p>將test資料夾刪除，這時看report，會有之前設定的記錄(只要projects及projid沒刪除，都會顯示project{id}的狀態)</p>
+
+<pre><code>Project ID       Used       Soft       Hard    Warn/Grace
+---------- --------------------------------------------------
+project1            0       1024       2048     00 [--------]
+</code></pre>
+
+<p>新增test資料夾</p>
+
+<p>複製10m的檔案，不受quota 2m的影響</p>
+
+<pre><code>test_acount@test:/test_ugc/teststorage$ dd if=/dev/zero of=/test_ugc/teststorage/test/aaa count=10 bs=1024k
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB) copied, 0.00780022 s, 1.3 GB/s
+</code></pre>
+
+<p>report顯示的Used也不正常 (其實是10m但report那還是顯示0)</p>
+
+<pre><code>test_acount@test:/test_ugc/teststorage$ du
+10240   ./test
+10240   .
+test_acount@test:/test_ugc/teststorage$ sudo xfs_quota -xc &quot;report /dev/mapper/test--vg-test--lv&quot;
+Project quota on /test_ugc/teststorage (/dev/mapper/test--vg-test--lv)
+                               Blocks
+Project ID       Used       Soft       Hard    Warn/Grace
+---------- --------------------------------------------------
+project1            0       1024       2048     00 [--------]
+</code></pre>
+
+<p>解決方法: 重新將test與project{id}綁定，再觀察report結果，Used那正常顯示</p>
+
+<pre><code>test_acount@test:/test_ugc/teststorage$ sudo xfs_quota -xc &quot;project -s project1&quot; /dev/mapper/test--vg-test--lv
+Setting up project project1 (path /test_ugc/teststorage/test)...
+Processed 1 (/etc/projects and cmdline) paths for project project1 with recursion depth infinite (-1).
+test_acount@test:/test_ugc/teststorage$ sudo xfs_quota -xc &quot;report /dev/mapper/test--vg-test--lv&quot;
+Project quota on /test_ugc/teststorage (/dev/mapper/test--vg-test--lv)
+                               Blocks
+Project ID       Used       Soft       Hard    Warn/Grace
+---------- --------------------------------------------------
+project1        10240       1024       2048     00 [--none--]
+</code></pre>
+
+<p>再copy 10m進去，quota就把它擋掉了，得到預期結果</p>
+
+<pre><code>test_acount@test:/test_ugc/teststorage$ dd if=/dev/zero of=/test_ugc/teststorage/test/bbb count=10 bs=1024k
+dd: opening /test_ugc/teststorage/test/bbb: Disk quota exceeded
+</code></pre>
+
+<h4 id="就一個已存在的project-id指向到一個新建立的資料夾-abc-會發生什麼情形">就一個已存在的project id指向到一個新建立的資料夾(abc)，會發生什麼情形?</h4>
+
+<p>將</p>
+
+<pre><code>2:/test_ugc/teststorage/default/test
+</code></pre>
+
+<p>改成:</p>
+
+<pre><code>2:/test_ugc/teststorage/default/abc
+</code></pre>
+
+<ul>
+<li>綁定後再設quota, 在report顯示出來的used其實是舊的資料夾加上新的資料夾的使用容量，如果超過使用容量就會變成兩個都鎖</li>
+</ul>
+
+<blockquote>
+<p>解決辦法:
+XFS在將路徑與project id做綁定時，極大的可能是以inode做綁定，所以只要有綁定都會記錄在xfs資料庫中，所以即使將/etc/projects刪除，但只要曾經綁過就會被紀錄下來，而將quota限制在同一個project id曾綁定過所有資料夾使用的總合</p>
+</blockquote>
+
+<ul>
+<li>最好的做法是在將/etc/projects變更前先將舊資料夾做Clear Quota，讓舊資料夾跟project id沒有關係後，再變更/etc/projects及將新資料夾與project id綁定</li>
+<li>或者是直接刪除該舊資料夾讓xfs找不到它的inode，但可能潛在如果後來生成的資料夾被指派到一樣的indoe，造成xfs也對他做quota 限制</li>
+</ul>
+
+<h4 id="在一個有設定quota的資料夾下將檔案搬移出的問題">在一個有設定quota的資料夾下將檔案搬移出的問題</h4>
+
+<p>假設資料夾 a 有設定quota，project id 為 8 (以下簡稱 p8)，裡面有一個檔案test.txt 它的 inode 為 1130</p>
+
+<p>[情況1]</p>
+
+<p>將 a 的 test.txt 檔案搬移到 未設定 quota 的資料夾 b，會產生問題是 p8 仍然還是指向 inode 1130，如果將 a 的 quota 給註銷掉換成資料夾 c，則 p8 的新主人雖然是資料夾 c ，但查看 report 會發現 used 那邊會出錯，因為 inode 1130 這個檔案的使用量會被算到資料夾 c (實際上檔案是在 b 那邊) ，解決方法只要把 inode 1130 的檔案刪除</p>
+
+<p>[情況2]</p>
+
+<p>將 a 的 test.txt 檔案搬移到 已設定 quota 的資料夾 b，就不會發生 p8 指向 inode 錯亂的問題了，因為搬過去時 inode也變重新指派</p>
+
+<h3 id="用-inode-反查">用 inode 反查</h3>
+
+<pre><code>sudo xfs_db -xr -c 'inode 16777350' -c p /dev/sda5
+</code></pre>
+
+<blockquote>
+<p><a href="http://xfs.org/docs/xfsdocs-xml-dev/XFS_User_Guide/tmp/en-US/html/ch08s16.html">http://xfs.org/docs/xfsdocs-xml-dev/XFS_User_Guide/tmp/en-US/html/ch08s16.html</a></p>
+</blockquote>
+
+<h3 id="備註">備註 :</h3>
+
+<ul>
+<li>現代的文件系統如JFS和XFS能夠動態地增加inode，因此不會用盡inode。(From: inode wiki)</li>
+<li>動態變更上限值 : 直接執行步驟3重新指定上限值即可</li>
+<li>步驟2 &ldquo;11:/mnt/xfs/test1&rdquo;中的編號11只可以使用數字，並且 不能超過65535 ，超始值 : 1</li>
+<li>當資料夾rename時，/etc/projects更改路徑，原有的quota限制也都會對應到</li>
+<li>About soft and hard : When a user exceeds the soft limit, the timer is enabled. Any time the quota drops below the soft limits, the timer is disabled. If the timer pops, the particular limit that has been exceeded is treated as if the hard limit has been reached, and no more resources are allocated to the user. The only way to reset this condition, short of turning off limit enforcement or increasing the limit, is to reduce usage below quota. Only the superuser (i.e. a sufficiently capable process) can set the time limits and this is done on a per filesystem basis.</li>
+<li>中文檔名:
+
+<ol>
+<li>Max. filename length : 255bytes</li>
+<li>85個中文 =&gt; OK!</li>
+<li>80個中文+15英文 =&gt; OK!</li>
+<li>80個中文+15數字 =&gt; OK!</li>
+<li>80個中文+16個英文或數字 =&gt; error!</li>
+</ol></li>
+<li>符號:
+
+<ol>
+<li>允許符號 : ~!@#$%^&amp;*()_+ \&rsquo; &ldquo;</li>
+<li>除了 / 不允許其他都OK</li>
+</ol></li>
+</ul>
+
+<h3 id="其他限制方式">其他限制方式:</h3>
+
+<p>User Limits</p>
+
+<pre><code>limits xfs_quota -x -c 'limit bsoft=1000m bhard=1200m username'
+limits xfs_quota -x -c 'limit isoft=500 ihard=700 username'
+</code></pre>
+
+<p>Group Limits.</p>
+
+<pre><code>xfs_quota -x -c 'limit -g bsoft=1000m bhard=1200m groupname'
+Project Limits
+</code></pre>
+
+<h3 id="參考">參考:</h3>
+
+<p><a href="http://xfs.org/docs/xfsdocs-xml-dev/XFS_User_Guide/tmp/en-US/html/index.html">http://xfs.org/docs/xfsdocs-xml-dev/XFS_User_Guide/tmp/en-US/html/index.html</a>
+<a href="http://www.held.org.il/blog/2008/07/per-directory-quota-not-a-dream/">http://www.held.org.il/blog/2008/07/per-directory-quota-not-a-dream/</a>
+<a href="http://dell9.ma.utexas.edu/cgi-bin/man-cgi?xfs_quota+8">http://dell9.ma.utexas.edu/cgi-bin/man-cgi?xfs_quota+8</a>
+<a href="http://docs.fedoraproject.org/en-US/Fedora/14/html/Storage_Administration_Guide/xfsfreeze.html">http://docs.fedoraproject.org/en-US/Fedora/14/html/Storage_Administration_Guide/xfsfreeze.html</a></p>
+
+<h2 id="磁碟分割">磁碟分割</h2>
+
+<h3 id="當安裝linux-要分割磁碟時-類型有分為兩種">當安裝linux，要分割磁碟時，類型有分為兩種:</h3>
+
+<ol>
+<li>primary : 放置主要系統檔</li>
+<li>logical : 如果要自行利用磁區可以選擇它</li>
+</ol>
+
+<h3 id="假設磁碟共有80g-但不想全部都給主要系統檔-可以選擇">假設磁碟共有80G，但不想全部都給主要系統檔，可以選擇:</h3>
+
+<ul>
+<li>分 20G 給 primary</li>
+<li>分 25G 給 logical</li>
+<li>分 25G 給 logical</li>
+<li>建議將<strong>&ldquo;記憶體&rdquo;</strong>的2倍分給swap</li>
+</ul>
+
+<blockquote>
+<p>這樣就有兩個25G磁碟可以讓你任意掛載運用, 但要注意分割磁碟時預設會mount, 要記得設定不要mount</p>
+</blockquote>
+
+<h3 id="fdisk">fdisk</h3>
+
+<p>參數:</p>
+
+<ul>
+<li><code>-l</code> : 查閱目前系統所有的partition有哪些</li>
+<li><code>-l /dev/sda1</code> : 確認一下它是否可以分割</li>
+<li><code>/dev/sda1</code> : 輸入h可以查閱可使用的指令</li>
+</ul>
+
+<h3 id="掛-卸載磁碟">掛/卸載磁碟</h3>
+
+<p>1) 在 <code>/home/user_me</code> 建立 test1 及 test2, 資料夾</p>
+
+<p>2) 查詢磁碟狀態</p>
+
+<pre><code># 列出有磁碟
+fdisk -l
+
+# 顯示己掛載之磁碟
+df -l
+
+# 顯示filesystem type
+df -T
+</code></pre>
+
+<p>3) 掛載</p>
+
+<pre><code>mount /dev/sda5 /home/user_me/test1
+mount /dev/sda6 /home/user_me/test2
+</code></pre>
+
+<blockquote>
+<p>如果test1資料夾裡有資料, 在掛載後, 只會顯示<code>/dev/sda5</code>磁碟的資料, 但只要卸載<code>/dev/sda5</code>,原本test1資料就會回來了</p>
+</blockquote>
+
+<p>如果partition出現錯誤不能掛載: <code>Partition 2 does not start on physical sector boundary.</code></p>
+
+<p>解法方法 : 刪除 partition -&gt; 再建立 partition -&gt; format 要的檔案格式</p>
+
+<p>4) 卸載:</p>
+
+<pre><code>umount /home/user_me/test1    #卸載/dev/sda5
+umount /home/user_me/test2    #卸載/dev/sda6
+</code></pre>
+
+<h3 id="mount-唯讀">mount 唯讀</h3>
+
+<pre><code>mount -r /dev/sda1 /test
+</code></pre>
+
+<h3 id="掛載-usb">掛載 usb</h3>
+
+<pre><code>sudo fdisk -l
+cd /mnt
+sudo mkdir usb
+sudo mount -v -t ntfs /dev/sdb5 /mnt/usb
+</code></pre>
+
+<blockquote>
+<p>-v, &ndash;verbose : Verbose mode.
+-t, &ndash;types vfstype : The  argument  following  the  -t is used to indicate the filesystem type.
+<code>-t</code> 不一定要明確指定格式, 也可以讓系統自動判別, ex: <code>-t auto</code></p>
+</blockquote>
+
+<p>卸載 usb</p>
+
+<pre><code>sudo umount /dev/sdb5
+</code></pre>
+
+<h3 id="重新開機後自動-mount">重新開機後自動 mount</h3>
+
+<p><code>/etc/fstab</code> :</p>
+
+<pre><code>以空格為區塊各代表：
+[磁碟裝置檔名或該裝置的 Label] [掛載點] [磁碟分割槽的檔案系統] [檔案系統參數] [能否被 dump 備份指令作用] [是否以 fsck 檢驗磁區 (0:不檢驗, 1:最早檢驗, 2: 要檢驗)]
+
+/dev/sda5 /home/user_me/test1 xfs pquota 0 2
+/dev/sda5 /home/user_me/test1 ext4
+</code></pre>
+
+<h3 id="刪除partition">刪除partition</h3>
+
+<pre><code>sudo fdisk /dev/sda
+Command (m for help): d
+Partition number (1-6): 2
+Command (m for help): w (存檔後重開機)
+</code></pre>
+
+<h3 id="建立partition">建立partition</h3>
+
+<p>extend:</p>
+
+<pre><code>sudo fdisk /dev/sda
+Command (m for help): n
+</code></pre>
+
+<blockquote>
+<p>第一次切要先選extend(按enter按到底), 第二次之後再切才能選logic</p>
+</blockquote>
+
+<p>logical</p>
+
+<pre><code>Command (m for help): n
+Command (m for help): w (存檔後重開機)
+</code></pre>
+
+<h3 id="format-partition">format partition</h3>
+
+<pre><code>sudo cfdisk /dev/sda5
+
+&gt; 選logical, 指定完大小後選write
+</code></pre>
+
+<p>format to xfs</p>
+
+<pre><code>sudo mkfs.xfs /dev/sda5 -f
+</code></pre>
+
+<h3 id="切割lvm硬碟">切割LVM硬碟</h3>
+
+<p>1) 檢查有無 PV 在系統上，然後將 /dev/hda6~/dev/hda9 建立成為 PV 格式</p>
+
+<pre><code>sudo pvscan
+</code></pre>
+
+<p>(會顯示lvm那個partition資料)</p>
+
+<p>2) 建立vg</p>
+
+<pre><code>sudo vgcreate test /dev/sda5
+</code></pre>
+
+<p>3) 檢查有無vg</p>
+
+<pre><code>sudo vgscan
+</code></pre>
+
+<p>4) 顯示vg內容(主要是取得Free PE(example:214564))</p>
+
+<pre><code>sudo vgdisplay
+</code></pre>
+
+<p>5) 建立lv</p>
+
+<pre><code>sudo lvcreate -l 214564 -n test-lv test-vg
+Logical volume &quot;test-lv&quot; created
+</code></pre>
+
+<p>6) 顯示lv內容(主要是取得LV Path(lv的全名, mkfs要用的))</p>
+
+<pre><code>sudo lvdisplay
+</code></pre>
+
+<p>7) 檔案系統格式化</p>
+
+<pre><code>sudo mkfs.xfs /dev/test-vg/test-lv
+</code></pre>
+
+<p>8) mount</p>
+
+<pre><code>sudo mount -t xfs /dev/test-vg/test-lv /test -o pquota
+</code></pre>
+
+<h3 id="mac-系統格式化">Mac 系統格式化</h3>
+
+<p>mac 系統原生就有 disk utility 可以做格式化, 在 spotlight 搜尋就可以開啟了</p>
+
+<p>在左側選取要格式化的 usb 或硬碟，在右側再選取想要格式化的檔案格式</p>
+
+<p>如果檔案系統需要同時支援 window, mac 建議格式化為 <code>FAT32</code></p>
+
+<blockquote>
+<p>如果要格式化成 FAT32 請選擇 MS-DOS (FAT)</p>
+</blockquote>
+
+<h2 id="dd">dd</h2>
+
+<p>用來複製或轉換為一個檔案</p>
+
+<h3 id="假設目前系統環境只有一顆硬碟-當初安裝時沒有多切-但不想要重新再切-所以以-dd-產生一個檔案-並且利用這個檔案所佔的空間去模擬一個磁碟">假設目前系統環境只有一顆硬碟，當初安裝時沒有多切，但不想要重新再切，所以以<code>dd</code>產生一個檔案，並且利用這個檔案所佔的空間去模擬一個磁碟</h3>
+
+<p>[1] 產生一個50M的檔案</p>
+
+<pre><code>sudo dd if=/dev/sda1 of=~/virtual2.img bs=1M count=50
+</code></pre>
+
+<p>[2] 將這個檔案切成磁碟</p>
+
+<pre><code>cfdisk virtual2.img
+</code></pre>
+
+<blockquote>
+<p>選logical</p>
+</blockquote>
+
+<p>[3] 格式化成XFS</p>
+
+<pre><code>sudo mkfs.xfs virtual2.img -f
+</code></pre>
+
+<p>[4] mount它，<code>-o pquota</code>是xfs特有的參數不需理會，可以將xfs改成你熟悉的ext4</p>
+
+<pre><code>sudo mount -t xfs ~/virtual2.img ./test -o pquota
+</code></pre>
+
+<blockquote>
+<p>xfs的 folder quota 正常:)</p>
+</blockquote>
+
+<h2 id="du">du</h2>
+
+<p>目錄下每一個檔案/資料夾的所佔空間</p>
+
+<pre><code>du -smh *
+</code></pre>
+
+<p>計算資料夾容量(total)</p>
+
+<pre><code>cd /test
+du -s
+441800  .
+</code></pre>
+
+<blockquote>
+<p>-s, &ndash;summarize : display only a total for each argument</p>
+</blockquote>
+
+<p>資料夾下每個資料夾的大小</p>
+
+<pre><code>cd /test
+du -h
+</code></pre>
+
+<blockquote>
+<p>-h : 單位為 mb</p>
+</blockquote>
+
+<p>列出佔用空間前 5 名</p>
+
+<pre><code>du -s /var/* | sort -rn | head -5
+</code></pre>
+
+<p><code>xargs du -s</code>：列出資料夾大小 (單位是 K)</p>
+
+<h2 id="df">df</h2>
+
+<ul>
+<li><code>/</code> : 找出你系統中的根目錄所在磁碟，並顯示相關資訊</li>
+<li><code>-a</code> : 全部檔案系統和各分割區的磁碟用情形</li>
+<li><code>-h</code> : 容量 (G / M / K)</li>
+<li><code>-T</code> : 列出檔案型態</li>
+</ul>
+
+<p>只列出sd磁碟</p>
+
+<pre><code>ls /dev/sd*
+</code></pre>
+
+<p>列出所有磁碟(hd及sd)</p>
+
+<pre><code>ls /dev/[sh]d*
+</code></pre>
+
+<p>顯示磁碟資訊</p>
+
+<pre><code>$ df -h | grep /dev/sda1 | awk '{print $0&quot;=&gt;&quot;$1&quot; &quot;$2&quot; &quot;$3}'
+/dev/sda1       226G  2.1G  212G   1% /=&gt;/dev/sda1 226G 2.1G
+</code></pre>
+
+</article>
+
+
+
+</html>

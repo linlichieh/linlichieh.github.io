@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux Commands | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-commands/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-commands/">Linux Commands</a></h1>
+    <p class="meta"><time datetime="2013-05-24T08:34:00Z">May 24, 2013</time></p>
+  </header>
+  
+
+<h2 id="console-快捷鍵">Console 快捷鍵</h2>
+
+<h3 id="畫面">畫面</h3>
+
+<ul>
+<li><code>Ctrl</code> + <code>l</code> : 清畫面, 等於指令 <code>clear</code></li>
+<li><code>Ctrl</code> + <code>z</code> : 暫時停止程式(將該工作放到背景) (fg 1, fg 2 拿回)</li>
+<li><code>Ctrl</code> + <code>c</code> : 終止正在執行的程式</li>
+<li><code>Ctrl</code> + <code>s</code> : 停止輸出到畫面上(類似 Scroll Lock, ex: cat xxx 需暫停時使用)</li>
+<li><code>Ctrl</code> + <code>q</code> : 回復輸出到畫面上(恢復Ctrl+S的輸出)</li>
+<li><code>Ctrl</code> + <code>d</code> : 結束輸入(如果您在 shell 下，就會跳出該 shell)</li>
+</ul>
+
+<h3 id="刪除">刪除</h3>
+
+<ul>
+<li><code>Ctrl</code> + <code>w</code> : 刪除游標前<strong>一段</strong>指令，依空白為段落</li>
+<li><code>Ctrl</code> + <code>u</code> : 刪除游標前的字</li>
+<li><code>Ctrl</code> + <code>k</code> : 刪除游標後的字</li>
+<li><code>Ctrl</code> + <code>h</code> : Backspace 鍵功能</li>
+<li><code>Ctrl</code> + <code>d</code> : Del 鍵功能</li>
+</ul>
+
+<h3 id="移動">移動</h3>
+
+<ul>
+<li><code>Ctrl</code> + <code>a</code> : 游標移到最前面</li>
+<li><code>Ctrl</code> + <code>e</code> : 游標移到最後面</li>
+<li><code>Ctrl</code> + <code>f</code> : 往右移一個字元, 相當右鍵</li>
+<li><code>Ctrl</code> + <code>b</code> : 往左移一個字元, 相當左鍵</li>
+</ul>
+
+<h3 id="指令">指令</h3>
+
+<ul>
+<li><code>Ctrl</code> + <code>x</code> 接著按 <code>Ctrl</code> + <code>e</code> : 可以使用 vim 寫入 script 讓他一次執行</li>
+<li><code>Ctrl</code> + <code>r</code> : 尋找之前輸入過的指令</li>
+<li><code>Ctrl</code> + <code>p</code> : 上一個指令, 相當上鍵</li>
+<li><code>Ctrl</code> + <code>n</code> : 下一個指令, 相當下鍵</li>
+<li><code>Ctrl</code> + <code>i</code> : 同 Tab</li>
+<li><code>Ctrl</code> + <code>v</code> + <code>Tab</code> : 輸入 Tab (空白)</li>
+<li><code>Ctrl</code> + <code>j</code> : 同 Enter</li>
+<li><code>Ctrl</code> + <code>t</code> : 相近兩個字元互換位置</li>
+<li><code>Ctrl</code> + <code>-</code> : undo</li>
+<li><code>Ctrl</code> + <code>v</code> : 再加上要輸入特殊字元, ex: 先按 Ctrl-V 再按 Ctrl-C 會出現 ^C 而不是中斷</li>
+</ul>
+
+<h3 id="其他">其他</h3>
+
+<ul>
+<li><code>Alt</code> + <code>f</code> : 到此行的後一個字</li>
+<li><code>Alt</code> + <code>b</code> : 到此行的前一個字</li>
+<li><code>Alt</code> + <code>d</code> : 刪除游標之後的一個單字</li>
+<li><code>ESC</code> + <code>t</code> : 最後 兩個 &ldquo;單字&rdquo; 互換位置</li>
+<li><code>set -o</code> : 可以列出所有 Mode</li>
+<li><code>set -o vi</code> : 可以用 vi 操作法來操作 Bash Shell(用此 Mode 上述的快速鍵即無作用)</li>
+<li><code>set -o emacs</code> : Bash 預設就是此 Mode.</li>
+</ul>
+
+<h2 id="開關機">開關機</h2>
+
+<ul>
+<li><code>sudo shutdown -r now</code> :重開機</li>
+<li><code>sudo reboot</code> : 重開機</li>
+<li><code>sudo shutdown -h now</code> : 關機</li>
+</ul>
+
+<h2 id="背景執行">背景執行</h2>
+
+<p>放入背景</p>
+
+<pre><code>ctrl + z
+</code></pre>
+
+<p>看背景有哪些程式在執行</p>
+
+<pre><code>$ jobs
+[1] + Stopped                    vim test
+</code></pre>
+
+<p>叫出第一個背景的程式</p>
+
+<pre><code>$ fg %1
+</code></pre>
+
+<p>停止在背景執行的第一個程式</p>
+
+<pre><code>$ kill -9 %1
+$ jobs
+[1] + Killed                     vim test
+</code></pre>
+
+<h2 id="使用者">使用者</h2>
+
+<p>線上使用者</p>
+
+<pre><code>$ who
+webadmin pts/0        Apr 20 17:51 (61.58.172.120)
+root     pts/1        Apr 20 18:46 (61.58.172.120)
+
+$ w
+18:46:50 up 103 days, 22 min,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+webadmin pts/0    180-176-112-131. 18:40    0.00s  0.00s  0.00s w
+</code></pre>
+
+<p>目前使用者</p>
+
+<pre><code>whoami
+</code></pre>
+
+<h2 id="current-user-s-bash-pid">current user&rsquo;s bash pid</h2>
+
+<ul>
+<li><code>$$</code>: Specified by POSIX and always remains the value of the original shell process.</li>
+<li><code>BASHPID</code>: Subshell&rsquo;s pid</li>
+</ul>
+
+<p>explain:</p>
+
+<pre><code>$ echo $(echo $BASHPID $$)      $$       $BASHPID
+              25680    16920    16920    16920
+#             |        |        |        |
+#             |        |        |        -- $BASHPID outside of the subshell
+#             |        |        -- $$ outside of the subshell
+#             |        -- $$ inside of the subshell
+#             -- $BASHPID inside of the subshell
+</code></pre>
+
+<p>ref: <a href="https://unix.stackexchange.com/questions/62231/bashpid-and-differ-in-some-cases">https://unix.stackexchange.com/questions/62231/bashpid-and-differ-in-some-cases</a></p>
+
+<h2 id="pid">pid</h2>
+
+<p>印出當下執行指令的 pid</p>
+
+<pre><code>$ ll /proc/self &amp; echo $!
+[1] 20424
+20424
+lrwxrwxrwx 1 root root 0 Dec 12 06:34 /proc/self -&gt; 20424
+[1]+  Done                    ls --color=auto -la /proc/self
+</code></pre>
+
+<h2 id="mkdir">mkdir</h2>
+
+<p>自動建立階層目錄 recursive mkdir</p>
+
+<pre><code>mkdir -p /var/www/log/website
+</code></pre>
+
+<blockquote>
+<p>-p, &ndash;parents     no error if existing, make parent directories as needed</p>
+</blockquote>
+
+<h2 id="md5">md5</h2>
+
+<pre><code>md5 test.txt
+MD5 (test.txt) = b79a5759ca168122b9ebd1b57e4a883b
+
+或
+
+md5sum test.txt
+</code></pre>
+
+<h2 id="ls">ls</h2>
+
+<p>顯示目錄下的檔案權限, 擁有者..等等</p>
+
+<pre><code>ls -l
+</code></pre>
+
+<p>檔案大小那邊會換算成我們習慣的方式(G, M, K)</p>
+
+<pre><code>ls -lh
+drwxr-xr-x 15 webadmin root 4.0K Mar 19 21:09 application
+drwxr-xr-x  6 webadmin root 4.0K Apr  7 21:25 assets
+</code></pre>
+
+<p>顯示目錄下的檔案(包含隱藏檔)</p>
+
+<pre><code>ls -a
+
+ls | more    # 分頁 q : 離開
+ls | less    # 分頁 (操作如同vim，但不需要加ctrl)
+             # d : 下12筆,
+             # b、w : 上一頁,
+             # f : 下一頁,
+             # j 、e : 下一筆,
+             # g : 回到第一筆,
+             # k : 上一筆,
+             # h : help
+</code></pre>
+
+<p>顯示檔案的inode id</p>
+
+<pre><code>$ ls -ia
+1451762 .           1443270 .mysql_history  1576628 assets
+1451760 ..          1443190 .php_history    1443160 djfl
+1577046 .cache      1443425 .ssh            1443313 index.php
+1443151 .git        1576655 .vim            1443315 license.txt
+1443307 .gitconfig  1442269 .viminfo        1576661 system
+1443272 .gitignore  1443276 .vimrc          1577048 test
+1443312 .htaccess   1576553 application     1576831 user_guide
+</code></pre>
+
+<p>檔案型別, identifiers:</p>
+
+<ul>
+<li>- : regular file</li>
+<li>d : directory</li>
+<li>c : character device file (Character and block device files allow users and programs to communicate with hardware peripheral devices.). Provides a serial stream of input or output. Your terminals are classic example for this type of files.</li>
+<li>b : block device file (Block devices are similar to character devices. They mostly govern hardware as hard drives, memory, etc.)</li>
+<li>s : local socket file (Local domain sockets are used for communication between processes. Generally, they are used by services such as X windows, syslog and etc.)</li>
+<li>p : named pipe (Similarly as Local sockets, named pipes allow communication between two local processes. They can be created by the mknod command and removed with the rm command.)</li>
+<li>l : symbolic link (With symbolic links an administrator can assign a file or directory multiple identities. Symbolic link can be though of as a pointer to an original file.)</li>
+</ul>
+
+<h2 id="pwd">pwd</h2>
+
+<p>目前目錄位置</p>
+
+<pre><code>$ pwd
+/home/ec2-user/my_project
+</code></pre>
+
+<p>如果是連結檔, 加上<code>-P</code>可以顯示真實路徑</p>
+
+<pre><code>$ pwd -P
+/home/apps/src/my_project
+</code></pre>
+
+<h2 id="cd">cd</h2>
+
+<p>如果是連結檔, 加上<code>-P</code>可以進入到真實路徑</p>
+
+<pre><code>$ cd -P my_project/
+</code></pre>
+
+<h2 id="tail">tail</h2>
+
+<pre><code>tail -f -n 100 log-2013-06-21.php     #當檔案發生變動時印出檔尾末100行
+</code></pre>
+
+<p>限制字數</p>
+
+<pre><code>tail -f log-2017-10-12.php | cut -c -80
+</code></pre>
+
+<h2 id="scp-遠端複製檔案">scp 遠端複製檔案</h2>
+
+<p>一般用法 : 將本機檔案</p>
+
+<pre><code>$ scp .tmux.conf username@example.com:~/.tmux.conf
+</code></pre>
+
+<p>指定 port</p>
+
+<pre><code>scp -P 4123 remote_user@192.168.37.21:~/test/t.txt t.txt
+</code></pre>
+
+<h2 id="使用vim為預設編輯器">使用vim為預設編輯器</h2>
+
+<pre><code>export EDITOR=vim
+export VISUAL=vim
+</code></pre>
+
+<h2 id="chown">chown</h2>
+
+<p>改變群組及擁有者</p>
+
+<pre><code>drwxr-xr-x 4 root     root 4096 Apr 20 18:46 test1        #原本擁有者及群組都是root
+
+$ chown webadmin:webadmin test1                           #將擁有者及群組都改為webadmin
+drwxr-xr-x 4 webadmin webadmin 4096 Apr 20 18:46 test1    #結果擁有者及群組都是webadmin
+</code></pre>
+
+<p>省略群組, 只會改擁有者</p>
+
+<pre><code>drwxr-xr-x 4 webadmin root 4096 Apr 20 18:46 test1          #原本擁有者為webadmin，群組為root
+
+$ chown root test1                                          #只輸入root(省略群組)
+drwxr-xr-x 4 root     root 4096 Apr 20 18:46 test1          #結果只會修改擁有者，群組不變
+</code></pre>
+
+<h2 id="chgrp">chgrp</h2>
+
+<pre><code>drwxr-xr-x 4 webadmin webadmin 4096 Apr 20 18:46 test1      #原本群組為webadmin
+
+$ chgrp root test1                                          #將群組改為root
+drwxr-xr-x 4 webadmin root 4096 Apr 20 18:46 test1          #結果群組改為root了
+</code></pre>
+
+<h2 id="chmod">chmod</h2>
+
+<p>改為 777</p>
+
+<pre><code>drwxr-xr-x 4 webadmin root 4096 Apr 20 18:46 test1          #原本權限為755
+
+$ chmod 777 test1                                           #將權限改為777
+drwxrwxrwx 4 webadmin root 4096 Apr 20 18:46 test1          #結果權限被改為777了
+</code></pre>
+
+<p>全部加上執行權限 (a+x)</p>
+
+<pre><code>-rw-r--r-- 1 webadmin root   20 Apr 21 11:18 test.php       #原本
+
+$ chmod +x test.php                                         #全部都加上執行權限
+-rwxr-xr-x 1 webadmin root   20 Apr 21 11:18 test.php       #結果
+</code></pre>
+
+<p>只有 user 加上執行權限</p>
+
+<pre><code>-rw-rw-rw- 1 webadmin root   20 Apr 21 11:18 test.php       #原本
+
+$ chmod u+x test.php                                        #只有擁有者加上執行權限
+-rwxrw-rw- 1 webadmin root   20 Apr 21 11:18 test.php       #結果
+</code></pre>
+
+<ul>
+<li>u 代表 user</li>
+<li>g 代表 group</li>
+<li>o 代表 others</li>
+<li>a 代表 all</li>
+</ul>
+
+<h2 id="find">find</h2>
+
+<p>Execute a command when matching the files</p>
+
+<pre><code>find src/* -type f -name '*.php' -exec php -l {} \;
+</code></pre>
+
+<h2 id="watch-n-1">watch -n 1</h2>
+
+<p>每秒執行一次</p>
+
+<pre><code>watch -n 1 cat filename
+watch -n 1 tail -5 /etc/projid
+watch -n 1 'netstat -ant | grep &quot;ESTABLISHED&quot; | wc -l'
+</code></pre>
+
+<blockquote>
+<p>-n, &ndash;interval <secs>  seconds to wait between updates</p>
+</blockquote>
+
+<h2 id="locale-列出語言檔">locale 列出語言檔</h2>
+
+<pre><code>locale -a
+</code></pre>
+
+<h2 id="screen">screen</h2>
+
+<ul>
+<li><code>screen</code>: 進入 screen 模式</li>
+<li><code>screen -ls</code>: screen list</li>
+<li><code>screen -r</code>: 連回 screen</li>
+<li><code>screen -r 70346</code>: 連回 screen 叫 <code>70346</code> 的 screen</li>
+<li><code>ctrl</code> + <code>a</code> + <code>d</code>: 離開 screen, 保持 screen 在背景運作</li>
+<li><code>ctrl</code> + <code>a</code> + <code>t</code>: 顯示目前系統的時間與負載狀況</li>
+<li><code>ctrl</code> + <code>a</code> + <code>?</code>: 說明</li>
+<li><code>ctrl</code> + <code>a</code> + <code>x</code>: 鎖定螢幕</li>
+<li><code>ctrl</code> + <code>a</code> + <code>C</code>: 清除內容</li>
+</ul>
+
+<p>視窗</p>
+
+<ul>
+<li><code>ctrl</code> + <code>a</code> + <code>c</code>: 建立新視窗</li>
+<li><code>ctrl</code> + <code>a</code> + <code>n</code>: 切換下一個視窗</li>
+<li><code>ctrl</code> + <code>a</code> + <code>p</code>: 切換上一個視窗</li>
+<li><code>ctrl</code> + <code>x</code> + <code>shift</code> + <code>[</code> : 交換視窗位置</li>
+<li><code>ctrl</code> + <code>a</code> + <code>w</code>: 視窗 list</li>
+<li><code>ctrl</code> + <code>a</code> + <code>&quot;</code>: 視窗 list 並且可以選擇要到哪一個</li>
+<li><code>ctrl</code> + <code>a</code> x 2: 切換到上次的視窗</li>
+<li><code>ctrl</code> + <code>a</code> + <code>k</code>: 關閉目前的視窗</li>
+</ul>
+
+<p>分割視窗</p>
+
+<ul>
+<li><code>ctrl</code> + <code>a</code> + <code>S</code>: 水平分割視窗</li>
+<li><code>ctrl</code> + <code>a</code> + <code>Q</code>: 關閉分割視窗</li>
+<li><code>ctrl</code> + <code>a</code> + <code>tab</code>: 切換分割視窗</li>
+</ul>
+
+<p>copy mode</p>
+
+<ul>
+<li><code>ctrl</code> + <code>a</code> + <code>ESC</code> or <code>ctrl</code> + <code>a</code> + <code>[</code>: 進入 copy mode</li>
+<li>第一次按空白鍵是複製的起點, 第二次按空白鍵是複製的結尾</li>
+<li><code>ctrl</code> + <code>a</code> + <code>]</code>: 將複製的東西貼上</li>
+</ul>
+
+<h2 id="tmux">tmux</h2>
+
+<ul>
+<li><code>ctrl</code> + <code>b</code> + <code>&quot;</code> — split pane horizontally.</li>
+<li><code>ctrl</code> + <code>b</code> + <code>%</code> — split pane vertically.</li>
+<li><code>ctrl</code> + <code>b</code> + <code>arrow key</code> — switch pane.</li>
+<li>Hold Ctrl+b, don’t release it and hold one of the arrow keys — resize pane.</li>
+<li><code>ctrl</code> + <code>b</code> + <code>c</code> — create a new window.</li>
+<li><code>ctrl</code> + <code>b</code> + <code>n</code> — move to the next window.</li>
+<li><code>ctrl</code> + <code>b</code> + <code>p</code> — move to the previous window.</li>
+</ul>
+
+<p>ref: <a href="https://gist.github.com/MohamedAlaa/2961058">more shortcuts</a></p>
+
+<h2 id="uname">uname</h2>
+
+<p>顯示作業系統</p>
+
+<pre><code>$ uname
+Linux
+</code></pre>
+
+<p>顯示作業系統版本</p>
+
+<pre><code>$ uname -a
+Linux ip-10-0-11-161 4.4.35-33.55.amzn1.x86_64 #1 SMP Tue Dec 6 20:30:04 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<p>顯示幾位元</p>
+
+<pre><code>$ uname -m
+x86_64 = 64 bit
+</code></pre>
+
+<blockquote>
+<p>i686 = 32 bit</p>
+</blockquote>
+
+<h2 id="test">test</h2>
+
+<pre><code>test -e /dmtsai
+</code></pre>
+
+<p>[1] 關於某個檔名的『檔案類型』判斷，如 <code>test -e filename</code> 表示存在否</p>
+
+<ul>
+<li><code>-e</code>  該『檔名』是否<code>存在</code>？(常用)</li>
+<li><code>-f</code>  該『檔名』是否存在且為<code>檔案(file)</code>？(常用)</li>
+<li><code>-d</code>  該『檔名』是否存在且為<code>目錄(directory)</code>？(常用)</li>
+<li><code>-b</code>  該『檔名』是否存在且為一個 <code>block device</code> 裝置？</li>
+<li><code>-c</code>  該『檔名』是否存在且為一個 <code>character device</code> 裝置？</li>
+<li><code>-S</code>  該『檔名』是否存在且為一個 <code>Socket</code> 檔案？</li>
+<li><code>-p</code>  該『檔名』是否存在且為一個 <code>FIFO (pipe)</code> 檔案？</li>
+<li><code>-L</code>  該『檔名』是否存在且為一個<code>連結檔</code>？</li>
+</ul>
+
+<p>[2] 關於檔案的權限偵測，如 <code>test -r filename</code> 表示可讀否 (但 root 權限常有例外)</p>
+
+<ul>
+<li><code>-r</code>  偵測該檔名是否存在且具有<code>『可讀』</code>的權限？</li>
+<li><code>-w</code>  偵測該檔名是否存在且具有<code>『可寫』</code>的權限？</li>
+<li><code>-x</code>  偵測該檔名是否存在且具有<code>『可執行』</code>的權限？</li>
+<li><code>-u</code>  偵測該檔名是否存在且具有<code>『SUID』</code>的屬性？</li>
+<li><code>-g</code>  偵測該檔名是否存在且具有<code>『SGID』</code>的屬性？</li>
+<li><code>-k</code>  偵測該檔名是否存在且具有<code>『Sticky bit』</code>的屬性？</li>
+<li><code>-s</code>  偵測該檔名是否存在且為<code>『非空白檔案』</code>？</li>
+</ul>
+
+<p>[3] 兩個檔案之間的比較，如： <code>test file1 -nt file2</code></p>
+
+<ul>
+<li><code>-nt</code> (newer than)判斷 file1 是否比 file2 新</li>
+<li><code>-ot</code> (older than)判斷 file1 是否比 file2 舊</li>
+<li><code>-ef</code> 判斷 file1 與 file2 是否為同一檔案，可用在判斷 hard link 的判定上。 主要意義在判定，兩個檔案是否均指向同一個 inode 哩！</li>
+</ul>
+
+<p>[4] 關於兩個整數之間的判定，例如 <code>test n1 -eq n2</code></p>
+
+<ul>
+<li><code>-eq</code> 兩數值相等 (equal)</li>
+<li><code>-ne</code> 兩數值不等 (not equal)</li>
+<li><code>-gt</code> n1 大於 n2 (greater than)</li>
+<li><code>-lt</code> n1 小於 n2 (less than)</li>
+<li><code>-ge</code> n1 大於等於 n2 (greater than or equal)</li>
+<li><code>-le</code> n1 小於等於 n2 (less than or equal)</li>
+</ul>
+
+<p>[5] 判定字串的資料</p>
+
+<ul>
+<li><code>test -z string</code>  判定字串是否為 0 ？若 string 為空字串，則為 true</li>
+<li><code>test -n string</code>  判定字串是否非為 0 ？若 string 為空字串，則為 false。</li>
+</ul>
+
+<blockquote>
+<p>註： <code>-n</code> 亦可省略</p>
+</blockquote>
+
+<ul>
+<li><code>test str1 = str2</code>    判定 str1 是否等於 str2 ，若相等，則回傳 true</li>
+<li><code>test str1 != str2</code>   判定 str1 是否不等於 str2 ，若相等，則回傳 false</li>
+</ul>
+
+<p>[6] 多重條件判定，例如： <code>test -r filename -a -x filename</code></p>
+
+<ul>
+<li><code>-a</code>  (and)兩狀況同時成立！例如 <code>test -r file -a -x file</code>，則 file 同時具有 r 與 x 權限時，才回傳 true。</li>
+<li><code>-o</code>  (or)兩狀況任何一個成立！例如 <code>test -r file -o -x file</code>，則 file 具有 r 或 x 權限時，就可回傳 true。</li>
+<li><code>!</code>   反相狀態，如 <code>test ! -x file</code> ，當 file 不具有 x 時，回傳 true</li>
+</ul>
+
+<h2 id="cat">cat</h2>
+
+<p>Append one file to another</p>
+
+<pre><code>cat d.txt &gt;&gt; q.txt
+</code></pre>
+
+<p>顯示檔案內容及行數</p>
+
+<pre><code>cat -n phpinfo.php
+</code></pre>
+
+<h2 id="whereis">whereis</h2>
+
+<p>尋找檔案</p>
+
+<pre><code>$ whereis bin
+bin: /usr/local/bin
+</code></pre>
+
+<blockquote>
+<p>whereis 利用曾經找過的系統資訊內的資料去找檔案，所以速度會很快 * 不過，如果 whereis 找不到的話，並不代表該檔案真的不存在！</p>
+</blockquote>
+
+<h2 id="系統資訊">系統資訊</h2>
+
+<p>系統訊息</p>
+
+<pre><code>$ cat /etc/*release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=13.04
+DISTRIB_CODENAME=raring
+DISTRIB_DESCRIPTION=&quot;Ubuntu 13.04&quot;
+NAME=&quot;Ubuntu&quot;
+VERSION=&quot;13.04, Raring Ringtail&quot;
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME=&quot;Ubuntu 13.04&quot;
+VERSION_ID=&quot;13.04&quot;
+HOME_URL=&quot;http://www.ubuntu.com/&quot;
+SUPPORT_URL=&quot;http://help.ubuntu.com/&quot;
+BUG_REPORT_URL=&quot;http://bugs.launchpad.net/ubuntu/&quot;
+</code></pre>
+
+<p>看系統內核等信息</p>
+
+<pre><code>$ uname -a
+Linux virtualBox 3.8.0-30-generic #44-Ubuntu SMP Thu Aug 22 20:52:24 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+
+<p>查看系統資訊</p>
+
+<pre><code>$ more /proc/version
+Linux version 2.6.32-042stab059.7 (root@rh6-build-x64) (gcc version 4.4.6 201203
+05 (Red Hat 4.4.6-4) (GCC) ) #1 SMP Tue Jul 24 19:12:01 MSK 2012
+</code></pre>
+
+<blockquote>
+<p>等同 <code>cat /proc/version</code></p>
+</blockquote>
+
+<p>查看目前Linux版本</p>
+
+<pre><code>$ cat /etc/issue
+Ubuntu 12.04.1 LTS \n \l
+</code></pre>
+
+<p>顯示linux版本</p>
+
+<pre><code>$ lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 12.04.1 LTS
+Release:        12.04
+Codename:       precise
+</code></pre>
+
+<h2 id="pstree">pstree</h2>
+
+<ul>
+<li>pstree</li>
+<li>pstree {USER NAME}</li>
+<li>pstree {PID}</li>
+</ul>
+
+<p>arguments:</p>
+
+<ul>
+<li><code>p</code>: show pid</li>
+<li><code>a</code>: show hierarchy</li>
+</ul>
+
+<p>列出此 pid 下的 process tree</p>
+
+<pre><code>$ pstree 18082
+-+= 18082 test bash /Users/test/projects/test/run.sh
+ \--- 18083 test ./test_pid
+</code></pre>
+
+<h2 id="kill">kill</h2>
+
+<p>強制中斷 process</p>
+
+<p>kill</p>
+
+<pre><code>kill 11372 (pid)
+    -9       KILL (non-catchable, non-ignorable kill)
+</code></pre>
+
+<p>killall (kill processes by name)</p>
+
+<pre><code>killall redis
+</code></pre>
+
+<p>查看 Process 是否執行中(其實就是看有沒有 pid)</p>
+
+<pre><code>pidof redis
+</code></pre>
+
+<ul>
+<li>SIGHUP (1) - terminal line hangup</li>
+<li>SIGINT (2) - interrupt program</li>
+<li>SIGQUIT (3) - quit program</li>
+<li>SIGKILL (9) - kill program</li>
+<li>SIGTERM (15) - software termination signal</li>
+<li>SIGSTOP (17) - stop (cannot be caught or ignored)</li>
+<li>SIGTSTP (18) - stop signal generated from keyboard</li>
+</ul>
+
+<blockquote>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Unix_signal#SIGKILL">unix signal wiki</a></li>
+<li><a href="https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man3/signal.3.html">更多 signal explanation</a></li>
+</ul>
+</blockquote>
+
+<h2 id="lsusb">lsusb</h2>
+
+<p>列出連接 usb 的週邊設備</p>
+
+<pre><code>$ lsusb
+Bus 001 Device 002: ID 80ee:0021 VirtualBox USB Tablet
+Bus 001 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+</code></pre>
+
+<h2 id="apropos">apropos</h2>
+
+<p>apropos  searches a set of database files containing short descriptions of system commands for keywords and displays the result on the standard output.</p>
+
+<pre><code>$ apropos awk
+a2p(1)                   - Awk to Perl translator
+awk(1)                   - pattern-directed scanning and processing language
+English(3pm)             - use nice English (or awk) names for ugly punctuation variables
+a2p(1)                   - Awk to Perl translator
+awk(1)                   - pattern-directed scanning and processing language
+</code></pre>
+
+<h2 id="cpu-info">cpu info</h2>
+
+<pre><code>$ cat /proc/cpuinfo
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 45
+model name      : Intel(R) Xeon(R) CPU E5-2650 0 @ 2.00GHz
+stepping        : 7
+microcode       : 0x70a
+cpu MHz         : 1799.999
+cache size      : 20480 KB
+(...略...)
+</code></pre>
+
+<h2 id="memory-info">Memory info</h2>
+
+<pre><code>$ free -h
+             total       used       free     shared    buffers     cached
+Mem:          3.8G       3.2G       646M         0B       1.1G       1.3G
+-/+ buffers/cache:       914M       3.0G
+Swap:         4.0G       121M       3.9G
+</code></pre>
+
+<h2 id="cpu-core-count">cpu core count</h2>
+
+<pre><code>nproc
+或
+cat /proc/cpuinfo | grep process
+</code></pre>
+
+<h2 id="cpu-information">cpu information</h2>
+
+<pre><code>lscpu
+或
+cat /proc/cpuinfo
+</code></pre>
+
+<h2 id="wc-程序從標準輸入流或文件列表讀取文件-並生成一個或多個下列統計信息">wc 程序從標準輸入流或文件列表讀取文件，並生成一個或多個下列統計信息</h2>
+
+<ul>
+<li><code>wc -l &lt;文件名&gt;</code> 輸出行數統計</li>
+<li><code>wc -c &lt;文件名&gt;</code> 輸出位元組數統計</li>
+<li><code>wc -m &lt;文件名&gt;</code> 輸出字元數統計</li>
+<li><code>wc -L &lt;文件名&gt;</code> 輸出文件中最長一行的長度</li>
+<li><code>wc -w &lt;文件名&gt;</code> 輸出單詞數統計</li>
+</ul>
+
+<p>count line</p>
+
+<pre><code>netstat -ant | grep &quot;ESTABLISHED&quot; | wc -l
+wc -l import.txt
+</code></pre>
+
+<p>count file characters</p>
+
+<pre><code>wc -c off.xml
+</code></pre>
+
+<h2 id="less-color">less color</h2>
+
+<pre><code>ls --color | less
+</code></pre>
+
+<p>結果 :</p>
+
+<pre><code>ESC[0mESC[01;34mc1ESC[0m
+ESC[01;34mc2ESC[0m
+ESC[01;34mc3ESC[0m
+</code></pre>
+
+<p>加上 <code>-R</code>, 結果就會有顏色了</p>
+
+<pre><code> --color | less -R
+</code></pre>
+
+<blockquote>
+<p>-R or &ndash;RAW-CONTROL-CHARS : Like -r, but only ANSI &ldquo;color&rdquo; escape sequences are output in &ldquo;raw&rdquo; form.  Unlike -r, the  screen  appearance is maintained correctly in most cases.</p>
+</blockquote>
+
+<h2 id="sudo-command-not-found">sudo <code>command not found</code></h2>
+
+<p>有時候拿 sudo 去執行某些指令時, 會發生此問題, 因為 sudo 並沒有設定那些指令的路徑, 把它加上去即可</p>
+
+<pre><code>sudo env PATH=$PATH
+</code></pre>
+
+<h2 id="去除顏色符號-e-g-1-33mwhich-environment-0m">去除顏色符號 e.g. <code>^[[1;33mWhich environment? -^[[0m</code></h2>
+
+<pre><code>cat /tmp/tt.log | perl -pe 's/\e[\[\(][0-9;]*[mGKFB]//g' &gt; /tmp/tt2.log
+</code></pre>
+
+<h2 id="檔案字尾出現-windows-換行符號-m">檔案字尾出現 windows 換行符號 <code>^M</code></h2>
+
+<p>因為 windows 與 linux 字尾符號不同的關係, 可藉由 <code>dos2unix</code> 修正</p>
+
+<p>基本用法</p>
+
+<pre><code>dos2unix t1.php t2.php t3.php
+</code></pre>
+
+<p>修正所有檔案(recursive)</p>
+
+<pre><code>find . -type f -exec dos2unix {} \;
+</code></pre>
+
+<p>或用 vim 修正, 但僅限於可以看到 <code>^M</code> 在字尾</p>
+
+<pre><code>:%s/\r//g
+</code></pre>
+
+<p>如果用 vim 開啟看不到 <code>^M</code> 在字尾要改用</p>
+
+<pre><code>sed -i 's/\r$//' wrap-trim.log
+</code></pre>
+
+<h2 id="cowsay">cowsay</h2>
+
+<pre><code>test@test:/tmp$ echo &quot;Hello World!&quot; | cowsay
+ ______________
+&lt; Hello World! &gt;
+ --------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+test@test:/tmp$ echo &quot;????????????&quot; | cowthink
+ ______________
+( ???????????? )
+ --------------
+        o   ^__^
+         o  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+</code></pre>
+
+<h2 id="ulimit">ulimit</h2>
+
+<p>設定每個 user 能使用的資源 e.g. 開檔數量</p>
+
+<ul>
+<li><code>-a</code> : 列出所有 user 的限制</li>
+<li><code>-H</code> : Hard limit 絕對不能超過這個值</li>
+<li><code>-S</code> : Soft limit 可以超過，但會有警告</li>
+<li><code>-d</code> : process 可使用的最大容量</li>
+<li><code>-f</code> : 不加參數會回傳限制的大小，加上數值會設定 process 可以建立的最大檔案的容量 (單位: Kbytes)</li>
+<li><code>-p</code> : 可用 pipe 的數量</li>
+<li><code>-l</code> : 可用於 lock 的記憶體量</li>
+<li><code>-t</code> : 可使用的最大 CPU 時間 (秒)</li>
+<li><code>-u</code> : 某一 User 可使用的最大 process 數量</li>
+<li><code>-n</code> : Specifies the limit on the number of file descriptors a process may have</li>
+</ul>
+
+<p>To set the size of core dumps to unlimited, use:</p>
+
+<pre><code>ulimit –c unlimited
+</code></pre>
+
+<h2 id="uptime">uptime</h2>
+
+<p>server 總共執行多久了</p>
+
+<pre><code> 10:53:24 up 34 days,  7:47,  1 user,  load average: 0.09, 0.06, 0.06
+</code></pre>
+
+<p>load average 代表是系統的平均負荷</p>
+
+<p>後面的3個數字分別代表 1, 5, 15 分鐘。0 CPU 空閒, 1 代表 cpu 滿載, 數值有可能會大於 1</p>
+
+<h2 id="tee">tee</h2>
+
+<p>將標準輸出分流出來, 不會影斷原本的標準輸出</p>
+
+<pre><code>$ echo 'Hello World' | tee t1.txt
+Hello World
+$ cat t1.txt
+Hello World
+</code></pre>
+
+<blockquote>
+<p><code>-a</code>: 累加, 而不是覆寫</p>
+</blockquote>
+
+<h2 id="date">date</h2>
+
+<p>輸出 timestamp</p>
+
+<pre><code>date +%s
+</code></pre>
+
+<p>timestamp to datetime</p>
+
+<pre><code>date -d @1481605585
+Tue Dec 13 05:06:25 UTC 2016
+</code></pre>
+
+<p>datetime to timestamp</p>
+
+<pre><code>date -d '2018/05/09 09:30:30' +&quot;%s&quot;
+date -d 'TZ=&quot;UTC+9&quot; 2018-07-04 02:53:06' +%s   // 會幫你把 datetime +9 再轉成 timestamp
+date -d 'TZ=&quot;UTC-9&quot; 2018-07-04 02:53:06' +%s   // 如果 datetime 是日本時間, 再轉成 timestamp 這樣才對
+</code></pre>
+
+<p>format</p>
+
+<pre><code>date +%Y-%m-%d                  // 2016-12-24
+date +%Y-%m-%d:%H:%M:%S`        // 2016-12-24:10:28:58
+</code></pre>
+
+<h2 id="開機自動執行">開機自動執行</h2>
+
+<p><code>/etc/rc.d/rc.local</code> :</p>
+
+<pre><code>touch /var/lock/subsys/local   # 原本就存在的，新增的寫在下面
+/etc/init.d/nginx start
+/etc/init.d/php-fpm start
+</code></pre>
+
+<h2 id="lsof">lsof</h2>
+
+<p>欄位說明請參考: <a href="http://man7.org/linux/man-pages/man8/lsof.8.html">http://man7.org/linux/man-pages/man8/lsof.8.html</a></p>
+
+<pre><code>$ sudo lsof /dev/ptmx
+[sudo] password for test_user:
+COMMAND     PID         USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd       1134         root    5u   CHR    5,2      0t0   86 /dev/ptmx
+</code></pre>
+
+<p>檔案刪除了, 空間卻沒有被釋放, 還是被維持 open 的狀態, 所以空間釋放不了, 用這個指令查可以把它找出來, 再把這個 process kill 掉就行了</p>
+
+<pre><code>sudo lsof | grep deleted
+
+my-monitor    8172  9770       root  156r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+my-monitor    8172  9770       root  163r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+my-monitor    8172  9770       root  191r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+my-monitor    8172  9770       root  212r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+my-monitor    8172  9770       root  214r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+my-monitor    8172  9770       root  226r      REG              202,1 1359484070     276282 /home/apps/example/test.log (deleted)
+</code></pre>
+
+<h2 id="free-up-memory">free up memory</h2>
+
+<p>linux:</p>
+
+<pre><code>echo 3 &gt; /proc/sys/vm/drop_caches
+</code></pre>
+
+<ul>
+<li>1: pagecache</li>
+<li>2: dentries and inodes</li>
+<li>3: 1 + 2</li>
+</ul>
+
+<p>mac:</p>
+
+<pre><code>sudo purge
+</code></pre>
+
+<h2 id="hexdump-將檔案-一般檔案或-binary-輸出成-16-進制">hexdump: 將檔案(一般檔案或 binary) 輸出成 16 進制</h2>
+
+<p><code>-C</code> 輸出三列(文字偏移量,16進制,ASCII)</p>
+
+<pre><code>hexdump -C test.txt
+00000000  30 31 32 33 34 35 36 37  38 39 41 42 43 44 45 46  |0123456789ABCDEF|
+00000010  47 48 49 4a 4b 4c 4d 4e  4f 50 51 52 53 54 55 56  |GHIJKLMNOPQRSTUV|
+00000020  57 58 59 5a 0a                                    |WXYZ.|
+00000025
+</code></pre>
+
+<blockquote>
+<p>最後的 0a 是換行字元, 可用 ASCII 對應表來看</p>
+</blockquote>
+
+<h2 id="xxd-將檔案輸出成-16-進制或-2-進制">xxd: 將檔案輸出成 16 進制或 2 進制</h2>
+
+<p>不加參數, 輸出成 16 進制</p>
+
+<pre><code>xxd test.txt
+0000000: 3031 3233 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
+0000010: 4748 494a 4b4c 4d4e 4f50 5152 5354 5556  GHIJKLMNOPQRSTUV
+0000020: 5758 595a 0a                             WXYZ.
+</code></pre>
+
+<p><code>-b</code> 輸出成 2 進制</p>
+
+<pre><code>xxd -b test.txt
+0000000: 00110000 00110001 00110010 00110011 00110100 00110101  012345
+0000006: 00110110 00110111 00111000 00111001 01000001 01000010  6789AB
+000000c: 01000011 01000100 01000101 01000110 01000111 01001000  CDEFGH
+0000012: 01001001 01001010 01001011 01001100 01001101 01001110  IJKLMN
+0000018: 01001111 01010000 01010001 01010010 01010011 01010100  OPQRST
+000001e: 01010101 01010110 01010111 01011000 01011001 01011010  UVWXYZ
+0000024: 00001010
+</code></pre>
+
+<blockquote>
+<p>最後的 <code>00001010</code> = Hexadecimal <code>0a</code> 是換行字元</p>
+</blockquote>
+
+<h2 id="symbolic-link">Symbolic Link</h2>
+
+<pre><code>ln -s {source_path} {destination_path}
+</code></pre>
+
+<p>e.g.</p>
+
+<pre><code>ln -s /tmp/QQ /tmp/cc
+</code></pre>
+
+<h2 id="readlink-realpath-find-out-the-real-path-of-a-symbolic-link">readlink/realpath: Find out the real path of a symbolic link</h2>
+
+<ul>
+<li>realpath {path}</li>
+<li>readlink {path}</li>
+</ul>
+
+<p>e.g.</p>
+
+<pre><code>readlink -f /proc/self/
+</code></pre>
+
+<h2 id="pushd-popd-very-useful-command-to-allow-you-to-roam-the-directory">pushd/popd: very useful command to allow you to roam the directory.</h2>
+
+<pre><code>pushd /tmp          # put current path in FIFO Queue and go to /tmp
+popd                # go to that path that comes from FIFO Queue
+</code></pre>
+
+<h2 id="redirections-重定向">Redirections (重定向)</h2>
+
+<ul>
+<li><code>1&gt;</code> = <code>&gt;</code>: 標準輸出 redirection, 因為輸出的 fd 為1, 所以可省略</li>
+<li><code>1&gt;&gt;</code> = <code>&gt;&gt;</code>: 累加 redirection</li>
+<li><code>2&gt;</code>: 錯誤輸出 redirection</li>
+<li><code>0&lt;</code> 或 <code>&lt;</code>: 標準輸入 redirection</li>
+<li><code>-</code>: 標準輸入</li>
+<li><code>2&gt;&amp;1</code>: stderr 重定向 stdout (merge)</li>
+<li><code>1&gt;&amp;2</code> or <code>&gt;&amp;2</code>: stdout 重定向 stderr (merge)</li>
+<li><code>&lt;&lt; STRING</code>: 結束的輸入字串</li>
+<li><code>echo &quot;hello&quot;</code>: This text is shoved into the stdin of the program &lsquo;echo&rsquo;</li>
+<li><code>echo &lt; file.txt</code>: Redirects file.txt to the stdin of the program &lsquo;echo&rsquo;.
+
+<ul>
+<li><code>&lt;</code> redirects the stdout of &lsquo;the program on the right&rsquo; to the stdin of &lsquo;the program on the left&rsquo;</li>
+</ul></li>
+<li><code>ps | grep &lt;userid&gt;</code>: Redirects ps&rsquo;s stdout to grep&rsquo;s stdin</li>
+<li><code>ls . &gt; output.txt</code> = <code>ls . 1&gt; output.txt</code>: Redirects the stdout of <code>ls .</code> to a file. If this file already existed, it is overwritten.</li>
+<li><code>ls . 2&gt; error.txt</code>: Redirects the stderr of <code>ls .</code> to a file.</li>
+<li><code>ls . &gt;&gt; output.txt</code>: The same as <code>&gt;</code>, but if the file already existed, stdout will be appended to the end of the file (instead of overwriting it).</li>
+<li><code>program 2&gt;&amp;1 output.txt</code>: Merges program&rsquo;s stderr with its own stdout.
+
+<ul>
+<li><code>2&gt;&amp;1</code>: merges stderr with stdout</li>
+<li><code>&amp;&gt;</code>: has the same effect</li>
+</ul></li>
+<li><code>program &amp;&gt; /dev/null</code>: Redirects both stderr and stdout to /dev/null (a special file which magically makes things disappear).</li>
+</ul>
+
+<p>ref: <a href="http://wanggen.myweb.hinet.net/ch4/ch4.html#redirection">http://wanggen.myweb.hinet.net/ch4/ch4.html#redirection</a></p>
+
+<h2 id="clusterssh-一次管理多台主機安裝及設定">clusterssh 一次管理多台主機安裝及設定</h2>
+
+<pre><code>  sudo apt-get install clusterssh
+</code></pre>
+
+<p>執行 :</p>
+
+<pre><code>  sudo cssh -l root 192.168.1.200 192.168.1.201
+</code></pre>
+
+<p>設定成設定檔 :</p>
+
+<pre><code>$ sudo nano /etc/clusters
+clusters = testcluster
+testcluster = 192.168.1.200 192.168.1.201
+
+$ sudo cssh -l root testcluster
+</code></pre>
+
+</article>
+
+
+
+</html>

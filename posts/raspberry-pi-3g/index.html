@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Raspberry pi uses 3.5G | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/raspberry-pi-3g/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/raspberry-pi-3g/">Raspberry pi uses 3.5G</a></h1>
+    <p class="meta"><time datetime="2014-01-21T23:15:00Z">January 21, 2014</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>RPI 本身如果要上網就只能連附近的 wifi 熱點, 這樣就會有地域上的限制,</p>
+
+<p>想要脫離此限制, 可以使用 3.5G 無線網卡來上網,</p>
+
+<p>這樣一來不但可以解決網路問題, 也能做出更好玩的應用,</p>
+
+<p>想想如果可以將 RPI + camera + arduino + 無線網卡結合,</p>
+
+<p>最基本就可以做到超遠端控制了, e.g. 具備即時影像的遠端搖控車</p>
+
+<hr />
+
+<p>首先需要一個 RPI 支援的無線網卡, 需要注意的是<strong>並不是每家無線網卡 RPI 都支援</strong>,</p>
+
+<p>看到蠻多的成功案例是華為 E173, 所以我也買此款,</p>
+
+<p>如果要買其他廠牌型號的網卡建議先去 google 看看是否有人成功</p>
+
+<h2 id="檢查一下硬體有沒有讀到">檢查一下硬體有沒有讀到</h2>
+
+<pre><code>lsusb
+Bus 001 Device 002: ID 0424:9512 Standard Microsystems Corp.
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp.
+Bus 001 Device 004: ID 12d1:1446 Huawei Technologies Co., Ltd. E1552/E1800/E173 (HSPA modem)
+Bus 001 Device 005: ID 045e:0750 Microsoft Corp. Wired Keyboard 600
+</code></pre>
+
+<p>如果找不到, 安裝 3G 網卡驅動</p>
+
+<pre><code>sudo apt-get install usb-modeswitch usb-modeswitch-data
+</code></pre>
+
+<p>或</p>
+
+<pre><code>sudo apt-get install ppp
+</code></pre>
+
+<blockquote>
+<p>我沒有安裝過, 因為我的 pi 可以直接讀到我的 E173, 所以沒此問題, 這兩者都看到有人裝過, 如果 usb 讀不到的同學可以參考一下</p>
+</blockquote>
+
+<h2 id="安裝-sakis">安裝 Sakis</h2>
+
+<pre><code>cd /tmp
+wget &quot;http://raspberry-at-home.com/files/sakis3g.tar.gz&quot;
+tar -zxv -f sakis3g.tar.gz
+sudo chmod +x sakis3g
+sudo mv sakis3g /usr/bin/
+</code></pre>
+
+<p>設定從 sim 卡讀取網路</p>
+
+<pre><code>sudo sakis3g --interactive
+</code></pre>
+
+<p>接著會跳出 GUI 的安裝選單, 選擇如下</p>
+
+<p>-&gt; <code>Connect with 3G</code></p>
+
+<p>-&gt; 選擇 modem 的 USB 介面, 選擇 <code>1. Interface #0</code></p>
+
+<p>-&gt; 輸入 pin 碼(你每次手機打開 sim 卡要你輸入的那個密碼)</p>
+
+<p>-&gt; Select APN, 選擇 <code>Custom APN...</code></p>
+
+<p>-&gt; 輸入 APN : <code>internet</code></p>
+
+<p>-&gt; 輸入 APN 密碼 : <code>*99#</code></p>
+
+<p>-&gt; 再輸入一次 APN 密碼 : <code>*99#</code></p>
+
+<p>-&gt; 成功 <code>E173 connected to Chunghwa Telecom (46692).</code></p>
+
+<h3 id="檢查是否連線成功">檢查是否連線成功</h3>
+
+<pre><code>ifconfig
+(..略..)
+ppp0      Link encap:Point-to-Point Protocol
+          inet addr:100.102.97.230  P-t-P:10.64.64.64  Mask:255.255.255.255
+          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
+          RX packets:10 errors:1 dropped:0 overruns:0 frame:0
+          TX packets:12 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:3
+          RX bytes:406 (406.0 B)  TX bytes:521 (521.0 B)
+</code></pre>
+
+<h2 id="指令">指令</h2>
+
+<h3 id="連線-sudo-sakis3g-connect">連線 : <code>sudo sakis3g connect</code></h3>
+
+<p>有可能會要你指定 usb 介面 : <code>sudo sakis3g USBINTERFACE=&quot;0&quot; connect</code></p>
+
+<h3 id="斷線-sudo-sakis3g-disconnect">斷線 : <code>sudo sakis3g disconnect</code></h3>
+
+<h3 id="info">Info :</h3>
+
+<pre><code>$ sudo sakis3g info
+Connection Information
+
+Interface: P-t-P (ppp0)
+
+Connected since: 2014-01-19 13:16
+Kilobytes received: 2
+Kilobytes sent: 2
+
+Network ID: 46692
+Operator name: Chunghwa Telecom
+APN: internet
+
+Modem: E173
+Modem type: USB
+Kernel driver: option
+Device: /dev/ttyUSB2
+
+IP Address: 100.102.34.28
+Subnet Mask: 255.255.255.255
+Peer IP Address: 10.64.64.64
+Default route(s): 10.64.64.64
+</code></pre>
+
+<h2 id="註-用電腦測試-華為-e173-上網">[註] 用電腦測試 <code>華為 E173</code> 上網</h2>
+
+<p>插入後會要你安裝他們的程式 Mobile Partner, 安裝完後打開</p>
+
+<p>會有讓你選擇你的通信商, 然後按連線</p>
+
+<p>如果跟我一樣買的不是跟台灣的通信商合作的無線網卡, 像我的 E173 是跟國外合作的, 所以不會有台灣的通信商</p>
+
+<p>所以要自行新增</p>
+
+<p><code>Options</code> -&gt; <code>Profile Management</code> -&gt; <code>New</code> 並在相對應的表格輸入以下 :</p>
+
+<pre><code>Profile Name    : CHT       (我的是中華電信, 取名為縮寫名稱)
+APN             : 單選按鈕選擇 `Static`, 下面輸入 internet
+Access Number   : *99#      (預設已填上, 如果沒有需自行輸入)
+Authentication Protocol Settings : CHAP(預設)    PAP
+</code></pre>
+
+<p>按 <code>Save</code>, 並回 Connection 頁選擇剛新增的並連線</p>
+
+<p>ref :
+<a href="http://shkspr.mobi/blog/2012/07/3g-internet-on-raspberry-pi-success/">http://shkspr.mobi/blog/2012/07/3g-internet-on-raspberry-pi-success/</a>
+<a href="http://blog.csdn.net/rk2900/article/details/8667833">http://blog.csdn.net/rk2900/article/details/8667833</a></p>
+
+</article>
+
+
+
+</html>

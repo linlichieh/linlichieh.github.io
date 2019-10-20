@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>AWS | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/aws/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/aws/">AWS</a></h1>
+    <p class="meta"><time datetime="2014-10-29T13:13:53&#43;08:00">October 29, 2014</time></p>
+  </header>
+  
+
+<p>(最後更新: 2016-04-27)</p>
+
+<h2 id="介紹">介紹</h2>
+
+<p>AWS (Amazon Web Services) 是針對主機或 App 提供整套 solution 的雲端服務</p>
+
+<h2 id="install-upgrade-aws-cli">Install/Upgrade AWS CLI</h2>
+
+<p>安裝</p>
+
+<pre><code>sudo pip install --upgrade awscli
+</code></pre>
+
+<p>如果安裝出問題, 強制重新安裝可以解決</p>
+
+<pre><code>sudo pip install awscli --force-reinstall --upgrade
+</code></pre>
+
+<blockquote>
+<ul>
+<li>Ubuntu (建議不要使用 apt-get 安裝, 版本很舊)</li>
+<li>有些安裝完會有設定檔 <code>/var/awslogs/etc/awslogs.conf</code></li>
+</ul>
+</blockquote>
+
+<p>Stop the agent</p>
+
+<pre><code>sudo service awslogs stop   // Works on Ubuntu
+sudo service awslogsd stop  // Amazon Linux 2
+</code></pre>
+
+<blockquote>
+<p>stop|restart|start</p>
+</blockquote>
+
+<h2 id="region-az">Region &amp; AZ</h2>
+
+<ul>
+<li>region 是 Data Center 的集合</li>
+<li>AZ 與 AZ 至少隔70公里以上</li>
+<li>AZ 與 AZ 是用光纖連接</li>
+<li>AZ 裡有很多 DC</li>
+<li>每個 DC 是 25Tbps</li>
+<li>同一 region 我的帳號的 eu-west-1a 跟你的帳號的 eu-west-1a 不一定是同一個 AZ, 避免太多人選擇同一 AZ</li>
+</ul>
+
+<h2 id="iam">IAM</h2>
+
+<ul>
+<li>如果有很多開發者要共用一個 AWS 帳號, 這算是必用的服務</li>
+<li>可以針對不同開發者給與不同權限</li>
+<li>一般來說程式透過 Access key &amp; Secret Key 調用 AWS API 是要寫在程式裡的, 但會遇到 <code>Credentials embedded in code</code>問題, 如果 push 到 public 的 github 就有資安風險, 也可以改成在 ec2 裡(環境)設定 secret key 較安全  (aws command)</li>
+<li>角色可分 3 種 :
+
+<ul>
+<li>user : 可以讓多個開發者共用同一個 AWS, 每個人可以有不同的登入帳密及權限</li>
+<li>group : 可以設定權限, 再把要執行這些權限的 user 圈到這個 group 裡</li>
+<li>role : 這是給 ec2 執行的權限, 開 ec2 時 IAM role 選這個, 而此 ec2 就有權限執行開放的服務</li>
+</ul></li>
+</ul>
+
+<h3 id="操作-增加一個登入帳號給團隊的成員">[操作] 增加一個登入帳號給團隊的成員</h3>
+
+<p><code>Users</code> -&gt; <code>Create Users</code> -&gt; 輸入 user name -&gt; copy <code>Access Key ID 及 Secret Access Key</code> (目前還不會用到) -&gt; 回到 <code>Users</code> 列表就會看到剛剛新加的 user</p>
+
+<p>但加完帳號其實還沒有密碼 : <code>Has Password: No</code>, 所以在那 User 下面選擇 <code>Manage Password</code> 可以手動指定一組密碼給它</p>
+
+<p>接著他只要到 IAM users sign-in link 輸入他的 user name 及 password, 就可以登入了</p>
+
+<h3 id="如何用同一個瀏覽器切換不同的-aws-account">如何用同一個瀏覽器切換不同的 AWS account</h3>
+
+<p>假設有 QA &amp; Prod 的 AWS account</p>
+
+<ol>
+<li>在 QA 建立一個 IAM Role 選擇 Another AWS Account 填入 Prod account ID, 然候權限給予 <code>AdministratorAccess</code></li>
+<li>在 Prod Account 右上角選擇 Switch Role, 填入 QA Account ID 及上一步建立的 Role name</li>
+</ol>
+
+<h2 id="route-53">Route 53</h2>
+
+<p>DNS 服務, 使用上很直覺簡單. 一個 domain 可以對應多個 ip  (可以填 TW 及 US IP)</p>
+
+<h3 id="操作">[操作]</h3>
+
+<p>Create Hosted Zone</p>
+
+<p>輸入 Domain Name 後, 會新增一筆 Zone (EX: qq.test.com), 然候進入 Zone 裡面</p>
+
+<p>AWS 預設裡面會有兩筆 Record</p>
+
+<p>自己再新增每一筆 Sub domain record :</p>
+
+<pre><code>s1.qq.test.com   A   55.123.122.33
+</code></pre>
+
+<p>如果上例設定的 Zone 也是主站的 sub domain, 必須在去主要的 domain 設定</p>
+
+<p>首先先去 qq.test.com 這個 Zone copy NS 那筆 Record 的 Value, 再到 test.com 新增一筆 Record</p>
+
+<pre><code>qq.test.com    NS    (將剛 copy 的 ns value 貼到這的 value field)
+</code></pre>
+
+<blockquote>
+<ul>
+<li>A : 將 domain 指向 address</li>
+<li>NS : 將 domain 指向 Name Server</li>
+</ul>
+</blockquote>
+
+<h3 id="一個-domain-對全球-讓-route-53-自動幫我們把-user-的-region-導到對應的-region-的-elb">一個 domain 對全球，讓 route 53 自動幫我們把 user 的 region 導到對應的 region 的 elb</h3>
+
+<p>1) 先設定 domain 對應到 ELB 的 endpoint</p>
+
+<p>2) domain 右邊設定 Routing Policy 選擇 lantency, Set ID 隨便打，它們就對應好關係了</p>
+
+<p>3) user 連上來會根據 latency 指派到最近 region 的 elb</p>
+
+<h3 id="internal-domain">Internal domain</h3>
+
+<p>如果建立 mysql 要使用 interntal domain e.g. mysql.xxx.local 指到那台 endpoint 要記得將它的 VPC 的 hostnames 打開，否則不會通</p>
+
+<p>不知道有沒有打開可以到 VPC 那個網段可以下面是否顯示 <code>DNS hostnames: yes</code></p>
+
+<h2 id="vpc">VPC</h2>
+
+<ul>
+<li>切割 sub-net</li>
+<li>與 AZ 是沒關係的, 而是用 IP 去指定 AZ</li>
+<li>(? 不太懂, 不太確定) 它的 group 是 stateless, 而 EC2 的 security group 是 stateful 的, EC2 的防火牆 ACL 進或出其中一個有通就行了, VPC 是進出都要通才行</li>
+<li>Route 可指定 instance (作 NAT), IGW, VGW (外部儲存 data center)</li>
+<li><strong>預設的 VPC 不要刪掉, 否則之後要建立 CloudFormation 會有問題而無法建立</strong></li>
+</ul>
+
+<h3 id="備註">[備註]</h3>
+
+<ul>
+<li>EIP = Elastic IP</li>
+<li>NET ACL = NET Access Control List</li>
+<li>IGW = Internet Gateway</li>
+<li>ENI = Elastic Network Interfaces</li>
+</ul>
+
+<h3 id="操作步驟">[操作步驟]</h3>
+
+<h4 id="1-your-vpcs-建立一個-vpc-cidr-block-為-10-0-0-0-16">1) Your VPCs : 建立一個 VPC, CIDR block 為 10.0.0.0/16</h4>
+
+<h4 id="2-subnets-實務上可以依這樣分類去切-這樣對之後設定-security-group-比較方便">2) Subnets : 實務上可以依這樣分類去切, 這樣對之後設定 security group 比較方便</h4>
+
+<pre><code>10.0.1.0/24     : base
+10.0.11.0/24    : api-zone-a
+10.0.12.0/24    : api-zone-b
+10.0.21.0/24    : db-zone-a
+10.0.22.0/24    : db-zone-b
+</code></pre>
+
+<blockquote>
+<p>能不能對外可以再以 security group 去個別設定某個網段(i.e. 10.0.11.0/24)要不要對外</p>
+</blockquote>
+
+<h4 id="3-internet-gateways-建立一個可以讓外部連進來的-gateway-再-attach-到-vpc">3) Internet Gateways : 建立一個可以讓外部連進來的 Gateway, 再 attach 到 vpc</h4>
+
+<h4 id="4-route-tables-建立兩個-route-table">4) Route Tables : 建立兩個 Route Table</h4>
+
+<p>建立好的 VPC 的 Routes (在畫面下面) 新增 0.0.0.0/0 指向步驟 3 建立的 internet gateway.</p>
+
+<p>Subnet Associations 指向步驟2建立的 subnet</p>
+
+<blockquote>
+<p><strong>注意!</strong> 要連到外面 Routes 一定要將 0.0.0.0/0 指向 internet gateway, 並且 Security Groups 的 SSH Source 也要記得設定成 0.0.0.0/0</p>
+</blockquote>
+
+<h4 id="5-security-groups">5) Security Groups</h4>
+
+<p>Inbound :</p>
+
+<pre><code>TYPE            Port    Source
+==================================
+ALL Traffic     ALL     10.0.0.0/16
+SSH             22      0.0.0.0/0
+HTTP            80      0.0.0.0/0
+HTTPS           443     0.0.0.0/0
+ALL ICMP        ALL     0.0.0.0/0           # ping
+</code></pre>
+
+<h4 id="6-ec2">6) EC2</h4>
+
+<p>Security Group 選擇步驟5建立的 Private Group</p>
+
+<p>Public :</p>
+
+<pre><code>Network : 選擇剛建立的 VPC
+Subnet : 選擇 Public subnet
+Auto-assign Public IP : Enabled
+</code></pre>
+
+<p>Private :</p>
+
+<pre><code>Network : 選擇建立的 VPC
+Subnet : 選擇 Private subnet
+Auto-assign Public IP : Use subnet setting (Disable)   =&gt; 就算 Enabled 也沒有用, 因為外部無法 Access 到裡面
+</code></pre>
+
+<h3 id="總結">總結</h3>
+
+<p>EC2 主要是看 Security Group, 但 EC2 是掛在 VPC 的 Subnet 裡面, 每個 Subnet 又有他自己的 Route, 所以如果要對外的話</p>
+
+<p>Route 要先設定成對外(加上 internet gateway), 而 EC2 的 Security Group 設定允許外面連進來的的防火牆 rule 才有意義</p>
+
+<h5 id="vpc-connect-another-vpc-in-the-same-region">[VPC connect another vpc in the same region]</h5>
+
+<p>VPC 下的 Peering Connections</p>
+
+<h5 id="vpc-cross-region-需透過-vpn-達成">[VPC cross region, 需透過 VPN 達成]</h5>
+
+<ul>
+<li>不同 region 的 VPN 就要其中一邊有一個 EC2 連到另一個 region 的 VGW (只需一台 EC2 即可)</li>
+<li>Connect Multiple VPCs with EC2 Instances (IPSec or SSL)</li>
+<li>在 VPC 主頁(不是 sidebar)下面就有個 Create VPN Connection, 必須要先建立 Private Gateway 才可以建立 VPN</li>
+<li>或者用兩個 EIP 的 EC2 用 VPN 軟體將兩個 VPC 連起來</li>
+</ul>
+
+<h2 id="ec2">EC2</h2>
+
+<ul>
+<li>就像是一台 VPS 主機讓你使用, 不支援 IPv6, 裡面絕對不會有 AWS 程式跑在裡面 (阿里雲好像會)</li>
+<li>要注意的是在主機裡面設 iptables 是沒有用的, 必須在 <code>console -&gt; EC2 -&gt; Security group</code> 設定才算生效</li>
+<li>Design for failure : 務必將兩台EC2放在不同AZ, 避免兩台 EC2 在同一個 AZ 又剛好在同一台物理機上</li>
+<li>比較要注意的是 public ip 要不要打開, 建議都要開啟, 否則 <code>apt-get update</code> 都會連不出去</li>
+</ul>
+
+<h3 id="申請固定ip">申請固定IP</h3>
+
+<p>Elastic IPs -&gt; Allocate New Address</p>
+
+<h3 id="備註-1">[備註]</h3>
+
+<ul>
+<li>Create Image : 將指定的 EC2 打成映像檔, 會被存在 AMIs 裡, 需要啟動一樣的 EC2 直接 Launch 就行了</li>
+<li>Snapshots : EC2 輩份機制存放的地方, 是 server 當前的狀況, 如果要 Launch 要先 Create Image, 再到 AMIs 那 Launch</li>
+<li>Meta data : dns ip, public ip 等等設定</li>
+<li>User data : 要執行的 script, 不要用 windows 因為換行字元關係, 所以 EC2 執行會失敗. 最多 16k 字節, 但可以用 wget 來解決此限制</li>
+</ul>
+
+<h3 id="ipv4-and-ipv6">IPv4 and IPv6</h3>
+
+<p>IPv6 was supported on &ldquo;EC2 Classic&rdquo; but not on EC2 VPC. And EC2 Classic is no longer available for new AWS accounts. Also, EC2 Classic is deprecated and should not be used, all new accounts use VPC.</p>
+
+<p>Update (Sept 2016): IPv6 is now supported for Elastic Load Balancer end points. Internally in the VPC, IPv4 is still used, but it’s now possible to provide an IPv6 endpoint for public web sites (important for Apple devices!)</p>
+
+<h3 id="流量價錢">流量價錢</h3>
+
+<ul>
+<li>在 aws services 與 ec2 之間傳輸是不需要算錢的</li>
+<li>資料傳輸到 ec2 裡面是不用錢的, 傳出才要收錢 (比較低等級的 ec 為 15 G/month)</li>
+<li>可使用 aws 算費用的工具來算 (<a href="http://calculator.s3.amazonaws.com/index.html">http://calculator.s3.amazonaws.com/index.html</a>)</li>
+</ul>
+
+<h3 id="t2-cpu-credit">t2 CPU Credit</h3>
+
+<p>CPU Credit 保持的越高, query 處理的效率會越好, 反之如果 credit 用完了, 它的處理效率就差</p>
+
+<p>如果 cpu 保持低於基礎線以下的話, credit 是會加回來的, 直到加到上限</p>
+
+<p>可以<a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/t2-credits-baseline-concepts.html#cpu-credits">參考官方的連結</a></p>
+
+<p>CPU Credit usage 如果是 1 的話代表要升級機器了</p>
+
+<p>以 t2.small 為例, credit 基礎線為 CPU utilization 20%, 以上的話會扣 credit, 以下的話會加回來</p>
+
+<blockquote>
+<p>新開的 ec2 e.g. t2.small 開啟動它的 CPU CreditBalance 是從 0 開始, 而不是 288 (updated on 2018-06-28)</p>
+</blockquote>
+
+<h3 id="另外建議在-production-不要用-t-系列-除非是成本考量">另外建議在 production 不要用 t 系列, 除非是成本考量</h3>
+
+<p>因為 CPU Credit Balance 很容易被漏看, 且也需要了解它的規則</p>
+
+<p>對 CPU Credit Balance 做監控比對 CPU Utilization 設重要多了, 因為當 Credit Balance 用完之後, CPU 才會開始衝高, 而且 EC2 CPU 裡面充到 100% 但外面的 CPU Utilization 卻只會顯示只有 20~30%,</p>
+
+<p>而且 EC2 CPU 裡面充到 100% 但外面的 CPU Utilization 卻只會顯示只有 20~30%, 因為主要的 CPU 使用被外面掐住了</p>
+
+<h3 id="用-cli-取得-ec2-private-ip">用 CLI 取得 EC2 private IP</h3>
+
+<p>以下會找出 EC2 tag Name: jenkins Value: my-services 的主機, 並把 private IP 取出來</p>
+
+<pre><code>/usr/bin/aws ec2 describe-instances --filter Name=tag:jenkins,Values=my-services --query 'Reservations[*].Instances[*].[PrivateIpAddress]' --region ap-southeast-1 | /usr/bin/jq -c '.[] | .[] | .[]'
+</code></pre>
+
+<h2 id="elb-alb">ELB / ALB</h2>
+
+<h3 id="elb-http-https-and-tcp">ELB (HTTP, HTTPS, and TCP)</h3>
+
+<p>Load balance 服務, 可以將多台主機放在 Load balance 下, 做隨機或權重分配, 減輕單一 server 負擔</p>
+
+<p>可以設定接 HTTPS 內部再導向 HTTP, 內部都是走 VPC 的網段</p>
+
+<p>設定完大概15分鐘 ELB 的 DNS 才會通</p>
+
+<p>將 ELB 的 domain 貼在 route53 record 新增的 CNAME item 裡</p>
+
+<p>ELB 有內建 graceful shutdown，當把它移除掉，它會先停接新的 request，等到目前的 request 結束才移除</p>
+
+<h3 id="alb-http-https">ALB (HTTP/HTTPS)</h3>
+
+<p>需要先設 Target Groups 主要是 port -&gt; EC2 instance</p>
+
+<p>再到 ELB 選擇 application type (一般的 ELB 是 classic) 然候再選擇 url path 對應到哪個 target group</p>
+
+<p>注意:</p>
+
+<ul>
+<li>ALB 有自已的 security group ，在 Load Balancers 的 ALB 右鍵 -&gt; Description -&gt; 可以看 e.g. 開放 80 / 443 port 0.0.0.0/0</li>
+<li>ALB 設定 EC2 的 health check 的連結要在那個 Target Groups 上面右鍵-&gt; Path e.g. <code>/ok.html</code>, EC2 的 security group 要記得設定 <code>80 Port 10.0.0.0/16</code> 讓 alb 可以打進來</li>
+</ul>
+
+<h3 id="nlb-tcp">NLB (TCP)</h3>
+
+<p>注意:</p>
+
+<ul>
+<li>不能連線出去經過 NLB 再連回到自已, see: <a href="https://aws.amazon.com/tw/premiumsupport/knowledge-center/target-connection-fails-load-balancer/">Why can&rsquo;t a target behind my Network Load Balancer connect to its own Network Load Balancer?</a></li>
+</ul>
+
+<h3 id="ssl">SSL</h3>
+
+<p>如果在 godaddy 買 domain，用 CNAME 連到這個 ELB 的 dns CNAME，然候再把 godaddy 的憑證上傳到 ELB，然候就 OK 了，</p>
+
+<ul>
+<li>private key : 轉過的 .key</li>
+<li>public key certificate : .crt</li>
+<li>chain 貼上 <code>openssl x509 -inform PEM -in GC_bundle_SHA2.crt</code> 的結果 (bundle 是 伺服器 SSL 憑證 + 中繼憑證)</li>
+</ul>
+
+<h2 id="auto-scaling">Auto Scaling</h2>
+
+<ul>
+<li>可以針對網站設定 Policy, 當主機到達某個條件增/減機器 (EC2), 需搭配使用 ELB</li>
+</ul>
+
+<h3 id="操作-1">[操作]</h3>
+
+<ol>
+<li>一開始要先建立 Launch Configurations (要吃哪個 AMI ID 等等) 才能設定 Auto Scaling Groups (自動調整 size 的 Policy)</li>
+<li>一旦建立好的 Launch Configuration 就不能改 AMI ID 了, 所以主機更新後除了重新打一個新的 Image, 再點原本的 Launch Configuration 複製建立新的並且選擇新的 AMI ID, 再到 Auto Scaling 的 config 選擇新的 Launch Configuration.</li>
+<li>如果要一次對兩個 AZ 輪流新增 instance 的話在選擇 Subnet 時就要選擇兩個 AZ 所屬的 Subnet</li>
+<li>IP Address Type 要選擇 <code>Assign a public IP address to every instance.</code> 否則預設不會配 public ip, 但 ELB 走 LAN 還是可以讓此 API 對外開放, 只是如果要更新系統或抓新 code 就會受限無法 access internet</li>
+<li>新啟動的 instance 大約在 1 分鐘內可以上線服務, (讓 CPU% 上升到 100% 的測試指令 : <code>while true; do echo; done</code>)</li>
+</ol>
+
+<p>註: 如果要在機器啟動時執行一些 shell 指令, 可以在 Launch Configuration 的 User data 的 type 選擇 file, 內容 :</p>
+
+<pre><code>#!/bin/sh
+echo &quot;qq white into dd&quot; &gt; /tmp/dd
+</code></pre>
+
+<p>那麼機器啟動時就會執行這份檔案的指令了</p>
+
+<h3 id="autoscaling-with-custom-metrics">[Autoscaling with custom metrics]</h3>
+
+<p>1) Put metric data</p>
+
+<blockquote>
+<p>可以直接在程式引用別人寫好的套件, 直接透過程式做或使用 command line</p>
+</blockquote>
+
+<p>2) 到 cloudWatch 確認 metric 是否上傳成功 (Metrics 搜尋 JobCount 看是否存在)</p>
+
+<blockquote>
+<p>成功後寫一個會定時回報 metric 的 script 或程式, 讓 Auto-Scaling 把 AMI 啟動成 EC2 可以自動執行</p>
+</blockquote>
+
+<p>3) Create Alarm   (Action 是當超過設定值要做什麼事, 例如寄信等等的, 可以不用), 目的是為了讓 Auto-Scaling 的判斷機制可以選擇這個 metric</p>
+
+<blockquote>
+<p>建兩個 Alarm 一個是 JobCount&gt;=100 另一個是 JobCount &lt;=10</p>
+</blockquote>
+
+<p>4) 將 EC2 打成 Image</p>
+
+<p>5) 建立 Auto Scaling configuration 及 group, 並持續 put-metric-data 測試是否 scale 成功</p>
+
+<h2 id="cloudwatch">CloudWatch</h2>
+
+<p>監控 EC2 的狀態 (CPU usage, Network I/O ,etc..)</p>
+
+<h3 id="備註-2">[備註]</h3>
+
+<p>預設默認一些 cpu 使用, io 等資訊</p>
+
+<p>但不包括 ram 使用, 因為 AWS 是與 Hight provider 拿取使用狀況, 如果要拿到 ram 使用率勢必要放 agent 在 ec2, 而 aws 沒有做這件事</p>
+
+<p>如果 launch 一個 instance 沒有打開 monitor, 預設的 CloudWatch 會紀錄</p>
+
+<ul>
+<li>CPUUtilization</li>
+<li>DiskReadBytes</li>
+<li>DiskReadOps</li>
+<li>DiskWriteBytes</li>
+<li>DiskWriteOps</li>
+<li>NetworkIn</li>
+<li>NetworkOut</li>
+</ul>
+
+<p>打開後會多紀錄</p>
+
+<ul>
+<li>CPUCreditUsage</li>
+<li>CPUCreditBalance</li>
+<li>SatatusCheckFailed</li>
+<li>StatusCheckFailed_Instance</li>
+<li>StatusCheckFailed_System</li>
+</ul>
+
+<h3 id="install-aws-cloudwatch-log-agent">Install AWS CloudWatch Log Agent</h3>
+
+<pre><code>curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
+sudo python ./awslogs-agent-setup.py --region us-east-1
+</code></pre>
+
+<p>ref: <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/QuickStartEC2Instance.html">https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/QuickStartEC2Instance.html</a></p>
+
+<p>重新設定要監聽的log, 再下一次</p>
+
+<pre><code>sudo python ./awslogs-agent-setup.py --region
+</code></pre>
+
+<p>log agent 的位置</p>
+
+<pre><code>/var/log/awslogs.log
+</code></pre>
+
+<h3 id="put-custom-metric-command-line">[Put custom metric (command line)]</h3>
+
+<p>1) 安裝 AWS CLI tool</p>
+
+<p>2) EC2 要有權限, 打開 put metric data 給 cloudWatch 的權限有兩種方法</p>
+
+<p>Note: 不需要在 AWS Console 建立一個新的 metric，當你報上來的時候如果是新的 metric name，CloudWatch 會自動新增</p>
+
+<h4 id="第一種是建立-user-並給予對應權限-再到-ec2-上設定-access-及-secret">第一種是建立 User 並給予對應權限, 再到 EC2 上設定 Access 及 Secret</h4>
+
+<ol>
+<li>到 AWS Console 的 IAM : 新增或選擇舊有的 User, 新增 Policy : AWS Service Roles -&gt; Amazon EC2 (Select) -&gt; cloudWatch 全部權限</li>
+
+<li><p>再到主機裡設定 AWS config</p>
+
+<pre><code>aws configure
+AWS Access Key ID [None]: A******************Q
+AWS Secret Access Key [None]: 9**************************************O
+Default region name [None]: us-west-2   (Oregon 是 us-west-2)
+Default output format [None]:text
+</code></pre></li>
+</ol>
+
+<h4 id="第二種是建立-role-然候在起-ec2-的時候指定-role">第二種是建立 Role 然候在起 EC2 的時候指定 Role</h4>
+
+<blockquote>
+<p>(?) 先不要用 role 來做 put-metric-data, 不知道為什麼, 就是會一直噴錯誤</p>
+</blockquote>
+
+<p>一開始以為到 AWS Console 的 IAM : Create Role -&gt; Role Type 選擇 Amazon EC2 -&gt; CloudWatch Full Access -&gt; Create Role</p>
+
+<p>然候再選擇這個 role 建立 EC2 權限是可以的, 但卻會噴出 <code>A client error (InvalidClientTokenId) occurred when calling the PutMetricData operation: The security token included in the request is invalid.</code> 這樣的錯誤</p>
+
+<blockquote>
+<p>註 : 目前這個 Role 只能給你目前帳號使用, 假如你跟別人共同開發, IAM 建立多個 User 並且每個人使用不同的 User 登入 AWS Console, 那麼其他人建 EC2 是看不到這個 Role 的, 解決辦法是在其他人的 User 或 Group 增加 Policy 打開 AWS Data Pipeline Full Access, 這樣其他人在建立 EC2 就可以看到 IAM Role 了</p>
+</blockquote>
+
+<p>再到主機裡設定 AWS config</p>
+
+<pre><code>$ aws configure
+AWS Access Key ID [None]: (留空 直接 enter)
+AWS Secret Access Key [None]: (留空 直接 enter)
+Default region name [None]: us-west-2
+Default output format [None]:text
+</code></pre>
+
+<p>3) 測試 put metric data</p>
+
+<pre><code>aws cloudwatch put-metric-data --namespace &quot;Job worker metrics&quot; --metric-name JobCount --unit &quot;Count&quot; --dimensions &quot;AutoScalingGroupName=myAutoScalingGroup&quot; --value 23
+</code></pre>
+
+<p>如果沒有其他的訊息代表上傳成功</p>
+
+<h3 id="custom-metrics-計價方式">Custom Metrics 計價方式</h3>
+
+<p>以下是官方的範例</p>
+
+<pre><code>If your application runs on 10 Amazon EC2 instances 24x7 for a 30-day month, and you published 5 custom metrics every 5 minutes via the PutMetricData API, your charges would be as follows:
+
+Total number of metrics = 5 metrics per instance * 10 instances = 50 metrics
+Monthly CloudWatch Metrics Charges @$0.30 per custom metric = 50 * $0.30 = $15
+
+Total number of minutes in the month = 60 * 24 * 30 = 42,300 minutes
+Total Number of API requests = 10 instances * (42,300 minutes/5 minutes) = 84,600 requests
+First 1,000,000 API requests = $0
+
+Monthly CloudWatch charges = $15 + $0 = $15 per month
+</code></pre>
+
+<ul>
+<li>如果你的量不是特別大 (要就是不需要每幾秒就 put custom metric) 的話, 那就不太需要太擔心價格了, 如果是的話就要細算了</li>
+<li>由上面可以看出來, 在 put 總月份不到一百萬次不用錢 (就算超過每百萬次也只收 $1)</li>
+</ul>
+
+<h3 id="常收到-state-is-ok-的通知-ok-api-cpu-70-但狀態都沒有變成-alarm">常收到 State is OK 的通知 <code>OK: &quot;API CPU &gt;= 70%&quot;</code>, 但狀態都沒有變成 alarm</h3>
+
+<p>這是因為 cloudwatch 沒有收到足夠的資料所以 Alarm updated from OK to INSUFFICIENT_DATA</p>
+
+<p>這時只要修改這個設定將 Treat missing data as: <code>ignore (maintain the alarm state)</code> 就行了,</p>
+
+<p>它就不會在服務正常的時候還報 OK, 只有在 Alarm -&gt; OK 才會收到</p>
+
+<h3 id="測試-alarm-的方式">測試 alarm 的方式</h3>
+
+<p>先在 sns 建立一個自已的 topic 設定 email 寄給自已做通知</p>
+
+<p>alarm 再指向這個 sns topic, 如果測試完成後再刪除這個 sns topic</p>
+
+<h2 id="ebs">EBS</h2>
+
+<ul>
+<li>SSD 硬碟, EC2 透過 Network I/O 掛載進來</li>
+<li>我曾聽一個 AWS 講師說 : AWS 對硬碟的觀念是不管再好的硬碟都有壞的一天, 與其買很好的硬碟不如把備援系統做到最好, 所以他們不怕硬碟常常壞, 反而專注在備援上, 蠻特別的</li>
+<li>硬碟直的進到 AWS 但碎的出來, 不讓有心人士還原資料</li>
+<li><strong>注意!!!</strong> EBS vs Instance Storage</li>
+</ul>
+
+<p>IS 是跟 EC2 同一台機器上; EBS 是在雲上的硬碟.</p>
+
+<p>如果 EC2 stop 再 start, 而 EC2 會換一台機器上, 所以 IS 就無法使用了, 但 EBS 則不受限制</p>
+
+<p>IS 不收錢, 提供比 EBS 更高的 io/ps 因為沒有網路</p>
+
+<p>一開始選擇 OS 時會標示他預設是使用 IS 還是 EBS, 但幾乎都是 EBS, 除非是在 AMI markets 就會看到有些是 IS 的</p>
+
+<h2 id="glacier">Glacier</h2>
+
+<p>存的資料不常使用, 能接受 3~5 小時的取回時間, 成本只有 s3 的 <sup>1</sup>&frasl;<sub>10</sub>, EX: 常用來封存 log 等等之類的久放但沒事不會拿出來的資料</p>
+
+<h2 id="rds">RDS</h2>
+
+<ul>
+<li>勾選 multi-AZ 會在另一個 AZ 做 slave, 當 master 斷了會將 slave 轉成 master, 而 master 大約會在 5 分鐘恢復</li>
+<li>快照 DB schema 或輩份</li>
+<li>可以 replica 到另一個 region (做全球 deploy 會需要)</li>
+<li>memory 到紅色線沒關係 (from 官方)</li>
+<li>RDS upgrade 一定會有 downtime</li>
+<li>Security Group 一定要選 MySQL/Aurora, 選 All traffic 不會開到 3306</li>
+<li>reboot 約需花 6 秒 (按下重啟後前30秒能連, 30秒後突然不能連, 然後6秒後恢復)</li>
+<li>upgrade / degrade 需花約 70 秒左右 (按下升級後前5分鐘都還能連, 5分鐘後突然不能連, 然後70秒後恢復)</li>
+</ul>
+
+<h3 id="操作-2">[操作]</h3>
+
+<h4 id="1-建立好-vpc">1) 建立好 VPC</h4>
+
+<ol>
+<li>RDS 預設不是 public, 如果要對外, 在建立 instance 時 Publicly Accessible 要選擇 yes</li>
+<li>也可以使用自定義的 VPC, 先分好網段, 一個對內一個對外</li>
+</ol>
+
+<p>如果勾選 Publicly Accessible 則 VPC 要將 DNS resolution 及 hostnames 打開</p>
+
+<h4 id="2-先建立-subnet-groups">2) 先建立 Subnet GRoups</h4>
+
+<ol>
+<li>點擊 Create DB Subnet Group,</li>
+<li>然候選擇 VPC ID 及 VPC 的 public 的 subnet,</li>
+<li>Subnet Group 規定 Subnet 要設定可以通兩個 AZ, 所以 VPC 的 Subnet 要有兩組不同的網段對應到不同的 AZ</li>
+</ol>
+
+<h4 id="3-建立-security-group-讓-rds-可以對外">3) 建立 Security Group, 讓 RDS 可以對外</h4>
+
+<ul>
+<li>Port : 3306</li>
+<li>Source : 0.0.0.0/0</li>
+</ul>
+
+<h4 id="4-建立-rds-mysql-並且選擇-public-的-subnet-及-secruity-group">4) 建立 RDS MySQL, 並且選擇 Public 的 Subnet, 及 Secruity Group</h4>
+
+<ul>
+<li>如果要對外 Publicly Accessible 要選擇 yes,</li>
+<li>RDS 也要放在可以對外的 Public Subnet, 最外層的防火牆還需要讓 3306 port 可以接收外界</li>
+</ul>
+
+<h3 id="主-db-在美西-其他-region-要-update-db-問題-全球-db-佈署問題">[主 DB 在美西, 其他 region 要 update DB 問題 (全球 DB 佈署問題)]</h3>
+
+<p>因為需要考慮到 Auto Scaling 的問題, 新的主機會不知道 IP, 所以無法先設定在 Security Group</p>
+
+<p>有四種方法解決 :</p>
+
+<p>1) singapore 用 mysql 內建的 SSL 連到美西的 DB master, 然候再 call 美西那邊的 security group API 新增讓此 IP 通過的 rule</p>
+
+<blockquote>
+<p>比較麻煩, 不是個很好的方法</p>
+</blockquote>
+
+<p>2) 用 VPN IPSec 將兩個 region 的 VPC Subnet 連在一起, 其通道本身就加密了, 所以可以直接通過 LAN 的方式更新</p>
+
+<blockquote>
+<p>維護主機的成本提高</p>
+</blockquote>
+
+<p>3) 在美西架一個 API server, 所有主機要更新 DB master 都透過此 API server, 並且用 https, 本身也是很安全的</p>
+
+<blockquote>
+<p>幾乎不用花時間設定, 但需要花時間寫 API 接口</p>
+</blockquote>
+
+<p>4) MySQL MMM 架構</p>
+
+<blockquote>
+<p>需要擔心 DB 互相 sync 時引發的錯誤</p>
+</blockquote>
+
+<p>結論 : 建議使用第 3 種方法, 可能 Update 速度稍慢, 但出錯的成本最少</p>
+
+<h3 id="rds-mysql">RDS - MySQL</h3>
+
+<p>max_connection 不同 size 支援的 max_connections 量不同 :</p>
+
+<pre><code>t2.micro    66
+t2.small    150
+m3.medium   296
+t2.medium   312
+M3.large    609
+t2.large    648
+M4.large    648
+M3.xlarge   1237
+R3.large    1258
+M4.xlarge   1320
+M2.xlarge   1412
+M3.2xlarge  2492
+R3.xlarge   2540
+</code></pre>
+
+<h3 id="從-snapshow-復原-db">從 snapshow 復原 DB</h3>
+
+<ol>
+<li>DB Instance Identifier 是 AWS RDS 辨認的 ID, 只要不要重覆就好</li>
+<li>記得取選 Security group</li>
+<li>修改 Master password (也就是 DB admin 的 password)</li>
+</ol>
+
+<p>如果要恢復整個 DB =&gt; <strong>將程式 RDS endpoint 直接指向新的, 舊的再砍掉</strong></p>
+
+<p>如果要恢復每個 TABLE =&gt; <strong>要先用 mysqldump 指令把那個 TABLE 匯出, 再到要復原的 DB TRUNCATE 那個 TABLE 後再匯入</strong></p>
+
+<h3 id="slow-query-https-docs-aws-amazon-com-amazonrds-latest-userguide-user-logaccess-concepts-mysql-html"><a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Concepts.MySQL.html">Slow query</a></h3>
+
+<p>在 instance 下的 Parameter group, 點進去輸入 slow, 看 slow_query_log 有沒有打開</p>
+
+<p>進入 mysql console 去 query mysql.slow_log, 參考 <a href="/posts/mysql/">Slow query</a></p>
+
+<h2 id="dynamo-db">Dynamo DB</h2>
+
+<ul>
+<li>No-sQSL, 性能保證, 使用 SSD, 請求可在 10 毫秒內完成, 也不會因資料量大而變慢</li>
+<li>無 DB 概念, 最多 256 個 TABLE</li>
+<li>資料是用 partition 機制, 盡量把資料分到各 node, ex: Key=a =&gt; Key=a1, a2, a3&hellip;</li>
+<li>避免 request 都戳到同一個 partition</li>
+<li>區域性服務(跨AZ), 雖然是提供一個DNS, 但服務是散佈在很多DC</li>
+<li>分散式儲存, 本身就會跨AZ並且複製3份</li>
+</ul>
+
+<h3 id="細節特性">細節特性</h3>
+
+<ul>
+<li>第一個欄位是 Key</li>
+<li>Key 也可以用兩個欄位組合(composed key)，但最多為 2 個</li>
+<li>在取資料的時候一定要由 Key 去取，不可以用其中一個欄位 = XXX 來取</li>
+<li>有像 Array 的型別，叫作 SS  表示為 { … }</li>
+<li>蠻特別的是你可以在 Update 過後傳回舊資料或更新後的資料，<a href="http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html#DDB-UpdateItem-request-ReturnValues">官方有定義幾種 type</a></li>
+</ul>
+
+<h2 id="elastic-cache">Elastic Cache</h2>
+
+<ul>
+<li>Cache 服務</li>
+<li>支援 memcache 及 redis</li>
+<li>支援 Multi-AZ, 但不能 across region, 外部無法連進來, 即使 security group 允許 0.0.0.0/0, 也就是不支援從 internet 進入, 但可以透過一些 hack 方式例如 ssh 的 port forwarding 做到.</li>
+</ul>
+
+<h3 id="操作-3">[操作]</h3>
+
+<p>先新增 Cache Subnet Groups, 把 VPC 的 Subnet 選進去</p>
+
+<p>Security Group 要開 6379 port</p>
+
+<h2 id="cloudfront">CloudFront</h2>
+
+<ul>
+<li>CDN 服務</li>
+<li>s3 如果要 https 的話需要使用 cloudfront</li>
+<li>可以指定到 bucket 下的 folder</li>
+<li>有支援 pre-signed url</li>
+<li>應用 : 在 A bucket 裡有 aa folder 需要 pre-signed url 才能下載, bb folder 不需要(公開下載)</li>
+</ul>
+
+<h3 id="cloudfront-s3-with-custom-domain-over-ssl">cloudfront + s3 (with custom domain over SSL)</h3>
+
+<p>1) 建立</p>
+
+<ul>
+<li>Origin Domain Name: (選擇 s3 bucket)</li>
+<li>Origin Path: (如果要指定哪一個 folder 下才要填 e.g. <code>/cover</code>)</li>
+</ul>
+
+<p>2) 送出後, 設定 route53 把 sub domain 指到這個 cloudfront 的 <code>Domain Name</code></p>
+
+<p>3) Edit Distribution -&gt; General</p>
+
+<ul>
+<li>Alternate Domain Names (CNAMEs): (輸入剛指過來的 sub domain)</li>
+<li>選擇 Custom SSL Certificate (example.com):
+
+<ul>
+<li>如果都沒有的話, 要點 <code>Request or Import a Certificate with ACM</code> 新增, 可以透過 <code>Request a certificate</code> 或 <code>Import a certificate</code>, 這裡我選擇前者; domain 要輸入兩個 domain <code>example.com</code> 及 <code>*.example.com</code>, 然候再請這個 domain 的管理者到信箱 approval</li>
+<li>如果這個選項是 disabled 的話, 有可能是這個 distribution 的 status 是 <code>In Progress</code>, 因為只要修改過就會是 <code>In Progress</code>, 要等一陣子變成 <code>Deployed</code> 才會是 enabled</li>
+</ul></li>
+</ul>
+
+<p>4) Edit Distribution -&gt; Origin</p>
+
+<ul>
+<li>Restrict Bucket Access: (<code>Yes</code>: 開放透過這個 domain 從外部可以 access 這個 bucket, <code>No</code>: 無法透過這個 domain 從外部 access)</li>
+</ul>
+
+<p>5) 測試</p>
+
+<ul>
+<li>上傳圖片到 s3 bucket, 圖片的 Permissions -&gt; Public access -&gt; Read object 打勾</li>
+<li>看上傳的圖片是否可以 access, e.g. <code>https://t1.example.com/test.jpg</code></li>
+</ul>
+
+<h3 id="pre-signed-url-custom-domain">pre-signed url + custom domain</h3>
+
+<ol>
+<li>將基本的 cloudfront custom domain 設定好</li>
+<li>建立 cloudfront 專用的 key pair
+
+<ul>
+<li>一定要用主帳號新增 (IAM users can&rsquo;t create CloudFront key pair. You must log in using root credentials to create key pair.)</li>
+<li>右上角帳號選單 -&gt; My Security Credentials -&gt; CloudFront key pairs -&gt; Create New Key Pair -&gt; <code>Download Private Key File</code> (<code>Pulblic Key File</code> 可以先載但用不到) -&gt; Copy <code>Access Key ID</code> (實際上只會用到 Private Key, 它只能載一次)</li>
+</ul></li>
+<li>設定 Distribution 的 Origin
+
+<ul>
+<li>Restrict Bucket Access : Yes.</li>
+<li>Your Identities : Use an Existing Identity (沒有的話就選 Create a New Identity)</li>
+<li>Grant Read Permissions on Bucket : Yes, Update Bucket Policy (註1)</li>
+</ul></li>
+<li>新增 S3 bucket + 放一個 test.jpg 測試是否可以通, (Permissions -&gt; Public access -&gt; Read object 打勾) e.g. <code>https://example.com/test.jpg</code></li>
+<li>禁止外部直接取得 s3 資源 CloudFront 的 Behavior 設定
+
+<ul>
+<li>Viewer Protocol Policy : <code>HTTPS Only</code> or <code>Redirect HTTP to HTTPS</code></li>
+<li>Restrict Viewer Access (Use Signed URLs or Signed Cookies) : Yes (允許可以用 <code>signed URL</code> or <code>signed cookie</code> access 檔案)</li>
+<li>Trusted Signers : Self</li>
+</ul></li>
+<li>已經禁止外部直接 e.g. <code>https://example.com/test.jpg</code> 就看不到東西了</li>
+<li>將 private_key 上傳到主機並以各語言實作
+
+<ul>
+<li><a href="/posts/go-aws/">使用 golang 實作</a></li>
+</ul></li>
+</ol>
+
+<p>註1 : 如果本身 bucket 有其他 policy 當你選擇 <code>Yes, Update Bucket Policy</code> 送出後，它會變回 <code>No, I Will Update Permissions</code>，實際上它已經更新 s3 bucket 的 policy 了</p>
+
+<pre><code>{
+    &quot;Version&quot;: &quot;2008-10-17&quot;,
+    &quot;Id&quot;: &quot;PolicyForCloudFrontPrivateContent&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;1&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: {
+                &quot;AWS&quot;: &quot;arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E3D7VZ7WMEZSYS&quot;
+            },
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::test-bucket/*&quot;
+        }
+    ]
+}
+</code></pre>
+
+<p>ref :</p>
+
+<ul>
+<li><a href="http://help.accordlms.com/m/60103/l/617017-create-a-cloudfront-key-pair">圖文 建立 cloudfront key pair</a></li>
+<li><a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-trusted-signers.html">aws 官方 建立 cloudfront key pair</a></li>
+<li><a href="https://aws.amazon.com/cn/blogs/china/amazon-cloudfront-signature-url-s3/">中文官方詳細教學</a></li>
+<li><a href="https://github.com/mindreframer/golang-devops-stuff/blob/master/src/github.com/crowdmob/goamz/cloudfront/cloudfront.go">golang cloudfront sign</a></li>
+</ul>
+
+<h3 id="清除-cache">清除 cache</h3>
+
+<p>目的: 如果 cloudfront 上的檔案還沒 expire, 你的靜態檔如果更新了, 但拉到也可能還會是舊的, 可以選擇手動將 cache 清掉</p>
+
+<pre><code>CloudFront Distributions -&gt; (選 ID，點進去) -&gt; Invalidations -&gt; Create Invalidation -&gt; 輸入要清除的 uri(也可以用 * 清掉全部) -&gt; Invalidate
+</code></pre>
+
+<h2 id="s3">S3</h2>
+
+<ul>
+<li>For web (low latency)</li>
+<li>區域性服務 (跨AZ)</li>
+<li>適合存放靜態資料</li>
+<li>其實是有 region 的, S3 是存放在 AZ 的</li>
+<li>當上傳完一個檔案, 但回應成功背景會複製多份到其他 DC 或 AZ, 不會跨 region 複製, 但會在短時間內複製到其他</li>
+<li>最嚴重是發生在 us-standard, 不存在 aws 上, 是 s3 特有的, 與其他 region 是分開的   (最終一致性)</li>
+<li>資料永久, 唯一地址 (unique key)</li>
+<li>事件驅動, 上傳可以傳簡訊(SNS), SQS, Lambda function (圖片壓縮, 上傳檔案時 s3 call function, 自動壓圖)</li>
+<li>version control, 每次 update 會記錄變動</li>
+<li>可透過 cloudFront 做 CDN, 只需要設定一下就好了</li>
+<li>By default, all Amazon S3 resources are private, including buckets, objects, and related subresources.</li>
+<li>上傳不算流量</li>
+<li>預設一個 aws account 最多可以建立 100 bucket, 如果超過要聯絡 aws support</li>
+<li>folder / 檔案 的數量都沒有上限</li>
+</ul>
+
+<h3 id="權限">權限</h3>
+
+<p>要先了解 S3 有三種權限控制它</p>
+
+<ol>
+<li>Bucket policies : Attached to bucket</li>
+<li>ACLs : Grant access to specific AWS account or anonymous，可以各別定義 Grantee (一種身份) 可以對這個 bucket 做什麼事，預設是 root account 都可以</li>
+<li>IAM : Attached to user, json based ，讓你能不能進入 S3 的 WebUI，<strong>但實際上跟你有沒有權限用 API 的方式操作這個 Bucket 沒有關係</strong></li>
+</ol>
+
+<blockquote>
+<p>IAM 需要去 IAM 服務才能給予權限，而 Bucket policies 及 ACLs 可以在 S3 webUI 就可以選擇了</p>
+</blockquote>
+
+<p>ACLs 只有一些 Group 讓你選 :</p>
+
+<ul>
+<li>Authenticated Users – This should be an AWS account’s either email address or canonical user ID.</li>
+<li>Everyone – For anonymous access</li>
+<li>Log Delivery – This group is used if you enabled logging on your bucket.</li>
+</ul>
+
+<p>Bucket policies :</p>
+
+<ul>
+<li>List – Permission to view a list of the objects in the bucket.</li>
+<li>Upload/Delete – Permission to upload and delete the object if the grantee is logged in</li>
+<li>View Permissions – Permission to see the permissions for objects</li>
+<li>Edit Permissions – Permission to edit the permissions for objects</li>
+</ul>
+
+<h3 id="aws-sdk-aws-cli-上傳及下載-必要設定">AWS-SDK / AWS-CLI 上傳及下載 (必要設定)</h3>
+
+<p>如果發生沒有設定，在上傳時會發生 Access Denied</p>
+
+<pre><code>upload failed: ./test.txt to s3://buname_name/test.txt A client error (AccessDenied) occurred when calling the PutObject operation: Access Denied
+</code></pre>
+
+<p>剛建立的 Bucket 你一定要額外給予它被上傳的權限，否則無法透過 API 的方式上傳 (與 IAM Policy <code>AmazonS3FullAccess</code> 無關)</p>
+
+<p>本以為新增 permission (<code>Add more permissions</code>) 就可以做到，但發現是不行的，所以要使用以下的方法去新增它的權限</p>
+
+<p>Properties -&gt; Permission -&gt; Edit bucket policy -&gt; 點選下面的 AWS Policy Generator 它可以幫你產生 Policy，但我們需要把表填一填</p>
+
+<ol>
+<li>Select Type of Policy : S3 Bucket Policy</li>
+<li>Effect : Allow (維持預設)</li>
+<li>Principal : <code>arn:aws:iam::6**********4:user/app_server</code>  (其實就是 IAM 的某位 User 的 User ARN)</li>
+<li>AWS Service : Amazon S3 (維持預設)</li>
+<li>Actions : 選三個就好 <code>DeleteObject</code> <code>GetObject</code> <code>PutObject</code></li>
+<li>Amazon Resource Name (ARN) : <code>arn:aws:s3:::my-bucket/*</code></li>
+</ol>
+
+<p>Generate Policy 後複製下來，再貼到 Edit bucket policy 那裡</p>
+
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Id&quot;: &quot;Policy1461726945589&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;Stmt1461726943472&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: {
+                &quot;AWS&quot;: &quot;arn:aws:iam::624758352504:user/app_server&quot;
+            },
+            &quot;Action&quot;: [
+                &quot;s3:DeleteObject&quot;,
+                &quot;s3:GetObject&quot;,
+                &quot;s3:PutObject&quot;
+            ],
+            &quot;Resource&quot;: &quot;arn:aws:s3:::my-bucket/*&quot;
+        },
+
+        # 這邊是另外加上的, 讓外部可以直接 Access 檔案
+        {
+            &quot;Sid&quot;: &quot;Stmt1461734747651&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:GetObject&quot;
+            ],
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::my-bucket/*&quot;,
+            &quot;Principal&quot;: &quot;*&quot;
+        }
+    ]
+}
+</code></pre>
+
+<p>然候應該就可以上傳，也可以下載了。</p>
+
+<p>下載也是要使用上述的設定才可以設定公開，我試過在 Bucket 最頂層 <code>Add more permission</code> 設定 Grantee : Everyone, Action 只允許 List，但結果是沒有用的</p>
+
+<p>ref : <a href="http://www.awsomeblog.com/amazon-web-services-s3-part-2-s3-bucket-permissions/">關於 S3 權限</a></p>
+
+<h3 id="對這個-bucket-設定任何人都可以下載檔案">對這個 bucket 設定任何人都可以下載檔案</h3>
+
+<p>click {bucket_name} -&gt; Properties -&gt; Edit bucket policy</p>
+
+<pre><code>{
+    &quot;Version&quot;: &quot;2008-10-17&quot;,
+    &quot;Id&quot;: &quot;Policy1416798504862&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Sid&quot;: &quot;Stmt1416798496088&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: {
+                &quot;AWS&quot;: &quot;*&quot;
+            },
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::{this_bucket_name}/*&quot;
+        }
+    ]
+}
+</code></pre>
+
+<h3 id="aws-cli-command-上傳到-s3">AWS-CLI command 上傳到 s3</h3>
+
+<p>安裝 aws cli</p>
+
+<pre><code>sudo apt-get install awscli
+</code></pre>
+
+<p>上傳</p>
+
+<pre><code>$ aws configure
+AWS Access Key ID :
+AWS Secret Access Key :
+region name : us-west-2                     # 可以在 S3 該 Bucket 的 URL 找到 i.e. ?region=ap-northeast-1#&amp;bucket=
+output format : none
+$ echo &quot;test&quot; &gt; test.txt
+$ aws s3 cp test.txt s3://bucket_name/      # 將 bucket_name 替換為你的 bucket name
+$ curl http://bucket_endpoint/test.txt
+test
+</code></pre>
+
+<p>其他相關 cli 指令</p>
+
+<pre><code>aws s3 cp s3://another-bucket/file.txt s3://my-bucket/          # 從其他 bucket copy
+aws s3 cp test.txt s3://my-bucket/                              # copy local file to my-bucket
+aws s3 ls s3://my-bucket/                                       # my-bucket 下的檔案列表
+aws s3 ls                                                       # bucket list
+</code></pre>
+
+<h3 id="delete-folder">Delete folder</h3>
+
+<p>There is no such thing as folders in S3; There are simply files with slashes in the filenames.</p>
+
+<p>Many S3 tools will visualize these slashes as folders, but they&rsquo;re not real.</p>
+
+<p>You can delete all files with the same prefix, but first you need to look them up with list_objects(), then you can batch delete them.</p>
+
+<p>ref : <a href="https://forums.aws.amazon.com/message.jspa?messageID=249514">https://forums.aws.amazon.com/message.jspa?messageID=249514</a></p>
+
+<p>刪除所有檔案, 目錄也會自動消失</p>
+
+<h2 id="sqs">SQS</h2>
+
+<p>AWS SQS 是一套 Queue 的系統，儲存要處理的工作，通常都是一個 message 用 json encode 存進去，再來就是自已實作 worker 那一段再串 SQS。</p>
+
+<ul>
+<li>支援 across regions, 即使在特定 region 下建立的 Queue, 但是 URL 是公開的, 外部也可以做 enqueue</li>
+<li>在 Send (enqueu) 時可以指定 DelaySeconds (0~900秒)，被新增進 Queue 後 delay 多久才可以被取出</li>
+<li>你無法在 Send 時又指定 visibility timeout, ref: <a href="http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html">delay seconds vs visibility timeout</a></li>
+<li>取出 message 後你可以指定 VisibilityTimeout 要多久 (它下次被看到的時間，最長可以到 12 小時)</li>
+<li>也可以在取完 message 後再針對這個 message 修改 VisibilityTimeout</li>
+<li>內建的 Retry 機制可以透過在 Web UI 或是用程式的方式中修改 Queue 的 attribute 來達到，我們可以利用程式去修改 RedrivePolicy 屬性；我們只需要去指定參數 maxReceiveCount (一個 message 最多被接收幾次)及 deadLetterTargetArn (當達到上限的次數後要把它移到哪一個 Queue)，其他就交給 SQS 了</li>
+<li>如何知道過去的 queue 有沒有屯積, 還是馬上就被取出? 看該 queue 的 monitoring 的 <code>ApproximateNumberOfMessagesVisible</code>, 最好的狀況是都是0, 代表這個 queue 沒有處理不完的 message</li>
+</ul>
+
+<h2 id="ses">SES</h2>
+
+<ul>
+<li>寄 Email 服務</li>
+<li>根據 AWS 自己的說法, 因為 AWS 對寄送的郵件有做控管, 所以不太會被當作垃圾信</li>
+<li>當使用 SES 寄太多不存在的 email 且到達一定的數量有可能會被暫停寄信, 可以設定 <code>Enabling Email Feedback Forwarding</code> 當有發生不存在的 email 時就通知某個 email</li>
+</ul>
+
+<h3 id="修改-mailed-by">修改 mailed-by</h3>
+
+<p>The mailed-by header is the usually used to persist the content of the envelope from or MAIL FROM through forwarding.</p>
+
+<p>Amazon do not allow the MAIL FROM to be customised. The following quote is from an Amazon employee in a comment on an <a href="http://sesblog.amazon.com/post/Tx3IREZBQXXL8O8/SPF-and-Amazon-SES">blog post about SPF &amp; DKIM</a></p>
+
+<pre><code>The headers you mentioned [mailed-by] seem to be something appended by an ISP after the message left Amazon SES, rather than standard message headers.
+We unfortunately do not have control over receiver add-ons.
+Nevertheless, assuming that the “mailed-by” value is based on the MAIL-FROM, the answer would be that right now all emails sent through Amazon SES have amazonses.com (or a subdomain of that) as the MAIL-FROM domain.
+We don't currently support its customization
+
+Posted by Adrian@AWS on November 4, 2014 8:31:29 AM PST
+</code></pre>
+
+<p>ref : <a href="https://serverfault.com/questions/641262/remove-or-replace-mailed-by-field-with-dkim-spf-enabled">https://serverfault.com/questions/641262/remove-or-replace-mailed-by-field-with-dkim-spf-enabled</a></p>
+
+<h3 id="gmail-顯示的-from-singed-by">gmail 顯示的 from &amp; singed-by</h3>
+
+<p>signed-by 顯示的 domain 是通過 domain Auth 的 SES ARN</p>
+
+<p>寄信的時候你可以只指定 from, ses 會判斷 from 的 domain 並且使用對應的 SES ARN</p>
+
+<p>也可以指定 SES ARN 寄信，但其實沒那麼必要，因為 <code>from</code> 跟 <code>domain 的 SES ARN</code> 的 domain 必須要是一樣的，否則信會寄不出去</p>
+
+<p>當一封信收到後，<code>from</code> 跟 <code>signed-by</code> 一定會是一樣的</p>
+
+<h2 id="cloud-formation">Cloud Formation</h2>
+
+<p>將 region 下所有的主機資訊輸出成 JSON, 如果下次要重 build 一個環境可以直接執行, 但記得要改參數</p>
+
+<h3 id="操作-4">[操作]</h3>
+
+<ol>
+<li>進去會看到兩個按鈕, 上面是 Create New Stack, 如果已有建立好的 Template 就選擇它, 下面是 Launch CloudFormer, 如果還沒有建立 Template 就選擇它, 將你目前的 AWS 的服務轉成 Json</li>
+<li>所以先選 Launch CloudFormer, 注意! 必須要有 AWS 本身 region 的 default VPC, 否則會一直出現 error 啟不起來,</li>
+<li>成功後會自動在 EC2 建立一個 instance, 接著連到這個 instance 的 public IP, 就可以開始設定了 (建立的那個帳號要有 <code>IAM Full Access</code> 權限才可以將 instance 跑起來)</li>
+<li>設定完後會產生一份 JSON 格式的 template, 把它存起來</li>
+<li>需要改的地方, 以 singapore 與 frankfurt 舉例, 簡稱 sin 跟 fr, 將 sin 的 AZ 名稱取代成 fr 的 AZ 名稱</li>
+</ol>
+
+<h3 id="無法解決">無法解決</h3>
+
+<p>Security Group 的 outbound 0.0.0.0/0 一直出現 <code>AWS::EC2::SecurityGroupEgress</code> <code>Encountered unsupported property CidrIP</code>, 找不出解決方法, 最後就放棄使用 CloudFormation 了</p>
+
+<h2 id="opsworks">Opsworks</h2>
+
+<ul>
+<li>Deploy 大量主機</li>
+<li>Configuration Management 管理設定檔, 一次修改多個 config 及升級</li>
+</ul>
+
+<h2 id="elastic-beanstalk">Elastic Beanstalk</h2>
+
+<p>可以起一個 web server 並且放在 auto scaling 下, 或者是選擇一個 docker file</p>
+
+<p>並且選擇要如何更新 server, 有兩種方法,</p>
+
+<ol>
+<li>一種是百分比的, 如果是 30%, 那麼 AWS 就會以一次 shutdown 30% 的主機, 進行更新</li>
+<li>另種是一次幾台, 如果是一次一台的話, 那麼就會一台一台更新</li>
+</ol>
+
+<h2 id="cognito">Cognito</h2>
+
+<p>不需要煩惱及建置後端架構, 透過此服務即可達到 mobile 互相交換訊息</p>
+
+<h2 id="mobile-analytics">Mobile Analytics</h2>
+
+<p>Mobile 的 GA</p>
+
+<h2 id="cloudtrail">CloudTrail</h2>
+
+<p>AWS console log</p>
+
+<h2 id="lambda">Lambda</h2>
+
+<ul>
+<li>像 IFTTT 是一個 event trigger 的服務</li>
+<li>例如 s3 一有上傳觸發一個你的 function</li>
+<li>call lambda 時可以自已決定要不要 blocking</li>
+</ul>
+
+<h3 id="建立-function-使用-iam-role-讓它可以-call-dynamodb">建立 Function，使用 IAM Role 讓它可以 call DynamoDB</h3>
+
+<p>1) 在 IAM Role 建立一個 role，policy 這個 <code>AmazonDynamoDBFullAccess</code> 就好</p>
+
+<p>2) 到 Lambda 建立 function : Configure function</p>
+
+<ul>
+<li><code>Code entry type</code> 選擇上傳 zip，但上傳檔案先不選，因為會用指令上傳</li>
+<li><code>Role</code> 選擇剛剛新增的 role</li>
+</ul>
+
+<p>3) 先選擇 <code>code inline</code> 否則如果一開始沒有檔案會無法建立</p>
+
+<h3 id="讓lambda-的-log-可以紀錄在-cloudwatch-log-groups-aws-lambda-lambda-name">讓lambda 的 log 可以紀錄在 cloudwatch Log Groups <code>/aws/lambda/{lambda_name}</code></h3>
+
+<p>先去看該 lambda function 的 Existing role 叫什麼, 然候再到 IAM Role 那將 Policy <code>CloudWatchLogsFullAccess</code> 加到這個 role, 就可以在 cloudwatch 看到執行這個 function 時的 log 了</p>
+
+<h3 id="index">Index</h3>
+
+<ul>
+<li>每個 Table 都一定有一個主鍵，第二鍵則是 optional 的</li>
+<li>如果你要 query 的欄位不是主鍵那就要加 index</li>
+</ul>
+
+<h2 id="sms">SMS</h2>
+
+<p>寄 簡訊</p>
+
+<h2 id="sns">SNS</h2>
+
+<ul>
+<li>可以推送 notification 到手機(支援 APN, GCM 等等..)</li>
+<li>它不算是完整的 messaging service, 只有 aws 特定服務才可以 sub, 但觸發的 endpoint 就蠻多樣的 e.g. email, lambda, endpoint, etc.</li>
+</ul>
+
+<h3 id="registger-sns">Registger SNS</h3>
+
+<ul>
+<li>在 AWS Web Console 建立 SNS ARN</li>
+<li>App 的 token : 如果是 android 會先去跟 gcm 確認身上有沒有 gcm token, 沒有的話就會先去要一把</li>
+<li>將 token 帶給 server, server call aws register SNS API, 給它 SNS ARN + token</li>
+<li>完成</li>
+</ul>
+
+<p>宣要注意的是</p>
+
+<ul>
+<li>AWS SNS 是認 token 的, 只要 token 都是一樣就只能註冊一次, 所以重覆拿同一個 token 註冊是不會成功的</li>
+</ul>
+
+<h3 id="push-notification">Push Notification</h3>
+
+<ul>
+<li>先去 SNS 的 Applications 註冊 Push Notification 的服務</li>
+<li>手機裡的 App 會有個 UUID，帶這個上來到 Server</li>
+<li>拿這個 UUID 向 SNS 註冊 Token (createPlatformEndpoint 帶上面註冊 SNS 的 ARN, 及 app UUID, enabled: true (enabled 預設是 false, 所以要改成 true))，會拿到 EndpointArn</li>
+<li>IOS 在 simulator 或是手機 debug mode, 系統會把 token 扔到 sandbox 的 apns 上, 只有在上架版(app store) 下載下來的才會丟到 production，所以要注意的是使用的環境要與 aws sns apns 的環境一致才發送的出去</li>
+<li>註冊完後 SNS 後台就有一筆 record ，也可以直接用 web ui 發送 notification 做測試</li>
+<li>每筆 record 後面都有 enabled 值，如果是 false 就代表不能推送，只要 SNS 推送一次但送不成功後就會把它改成 false</li>
+<li>發送時如果 client 端沒開網路的話，SNS 不會當它是錯誤 (error)，等到 client 把網路打開就會收到之前送的 notification</li>
+<li>後端要推送只要對 EndpointArn 發送 message 就可以了</li>
+<li>Mobile 可以選擇要不要過濾 Notification</li>
+<li>格式它可以選擇 raw 或 json，要確定送的格式對不對</li>
+</ul>
+
+<h3 id="create-notification-arn-by-platform">Create Notification ARN by Platform</h3>
+
+<ul>
+<li>GCM 申請時需要填上 API key 是手機去 GCM 那裡申請時拿到的, 要用 server key(<code>A*************************************o</code>)來申請</li>
+<li>APNS 申請時需要有 <code>.p12</code> 檔案及<code>密碼</code>，<code>.p12</code> 是手機跟 apple 申請時會拿到，申請 aws arn 只需要上傳 <code>.p12</code> 及輸入密碼，再選它的按鈕 <code>Load credentials from file</code> (上傳的 <code>.p12</code> 檔名用英文, 有遇過中文檔名解失敗的情況)</li>
+<li>IOS certificate 一年會到期, 所以要每一年申請且到 sns push application 更新 certificate</li>
+</ul>
+
+<p>發送 GCM notification 格式 (不管 production 還是 dev 都用這個)</p>
+
+<pre><code>{ &quot;GCM&quot;: &quot;{ \&quot;notification\&quot;: { \&quot;body\&quot;: \&quot;test body\&quot;,\&quot;title\&quot;: \&quot;test title\&quot;,\&quot;icon\&quot;: \&quot;test icon\&quot; },\&quot;data\&quot;: { \&quot;custom_field\&quot;: \&quot;custom_value\&quot; } }&quot; }
+</code></pre>
+
+<blockquote>
+<p>Andriod 的聲音是 app 自已決定的</p>
+</blockquote>
+
+<p>發送 APNS notification 格式 (production)</p>
+
+<pre><code> { &quot;APNS&quot;:&quot;{\&quot;aps\&quot;:{\&quot;alert\&quot;:\&quot;Hello World!!\&quot;,\&quot;sound\&quot;:\&quot;default\&quot;},\&quot;custom_field\&quot;: \&quot;custom_value\&quot;}&quot; }
+</code></pre>
+
+<blockquote>
+<p>自行決定是否要帶聲音的參數</p>
+</blockquote>
+
+<p>APNS_SANDBOX 格式 (dev)</p>
+
+<pre><code> { &quot;APNS_SANDBOX&quot;:&quot;{\&quot;aps\&quot;:{\&quot;alert\&quot;:\&quot;Hello World!!\&quot;},\&quot;custom_field\&quot;: \&quot;custom_value\&quot;}&quot; }
+</code></pre>
+
+<blockquote>
+<p>Apple notification 的 title 不像 GCM 可以自訂, 它是不能動的, title 固定都顯示 app name.</p>
+</blockquote>
+
+<h3 id="error-platformapplicationdisabled-platform-application-is-disabled">Error: PlatformApplicationDisabled: Platform application is disabled</h3>
+
+<p>IOS credentials 在 AWS SNS 上過期了, 需要請 IOS developer 重新產生 credentials, 產生完選擇要 renew 的 ARN, 再選 <code>Update credentials</code> 重新上傳就可以了</p>
+
+<p>註: IOS credentials 一年就會過期, 需要每年更新</p>
+
+<blockquote>
+<p>android 不會有這個問題</p>
+</blockquote>
+
+<h2 id="kinesis">Kinesis</h2>
+
+<p>主要是用來做 log 收集及分析, 跟 Apache Kafka 做的事情很類似</p>
+
+<blockquote>
+<p><a href="https://aws.amazon.com/tw/real-time-data-streaming-on-aws/">Kinesis vs Kafka</a></p>
+</blockquote>
+
+<h3 id="將-cloudwatch-log-傳送到-kinesis-firehose-處理-並將結果存到-s3">將 cloudwatch log 傳送到 kinesis firehose 處理, 並將結果存到 s3</h3>
+
+<p>步驟可參考<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample">官方文件</a>, 但裡面都是用指令去建立, 而我是用 Web Console 來設定</p>
+
+<blockquote>
+<p>1~4 可以用 Web Console 達成, 5 之後就要下指令才能達成</p>
+</blockquote>
+
+<p>[1] 先建立一個 s3 專門給 cloudwatch 或 kinesis 使用</p>
+
+<p>[2] 建立新的 IAM Role 給 Kinesis, Create role -&gt; AWS Service -&gt; Kinesis (這邊很重要, 一定要選, 否則第 3 步驟要選 IAM Role 會看不到這個), 建立完 Role 選擇 Attach policies 旁邊的 Add inline policy, 為的是讓它有權限寫入到步驟 1 的 S3</p>
+
+<pre><code>{
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:AbortMultipartUpload&quot;,
+                &quot;s3:GetBucketLocation&quot;,
+                &quot;s3:GetObject&quot;,
+                &quot;s3:ListBucket&quot;,
+                &quot;s3:ListBucketMultipartUploads&quot;,
+                &quot;s3:PutObject&quot;
+            ],
+            &quot;Resource&quot;: [
+                &quot;arn:aws:s3:::qa-test-cloudwatch-logs&quot;,        // 要改成步驟1 建立的 bucket
+                &quot;arn:aws:s3:::qa-test-cloudwatch-logs/*&quot;       // 要改成步驟1 建立的 bucket
+            ]
+        }
+    ]
+}
+</code></pre>
+
+<p>[3] 建立 Kinesis firehose</p>
+
+<ul>
+<li>選 s3 destination 要選步驟1 建立的 bucket</li>
+<li>Prefix: <code>firehose_</code></li>
+<li>Buffer conditions: <code>5MB or 60s</code>  -&gt; 先暫時這樣設定比較能快點看到測試資料</li>
+<li>Compression: Disabled</li>
+<li>Encryption: Disabled</li>
+<li>IAM Role -&gt; Create new or choose,  要選擇步驟2 建立的 Role 及 Policy</li>
+</ul>
+
+<p>[4] 測試 Kinesis firehose</p>
+
+<p>點選 <code>Start sending demo data</code>, 邊觀察下面的 Monitoring 及 S3 是否有資料</p>
+
+<blockquote>
+<p>cloudwatch logs 會出現這個 group e.g. <code>/aws/kinesisfirehose/</code>, 不過都不會有 log, 可能是 kinesis 有 error 才會在這</p>
+</blockquote>
+
+<p>Kinesis 的測試資料</p>
+
+<pre><code>{&quot;ticker_symbol&quot;:&quot;HJK&quot;,&quot;sector&quot;:&quot;TECHNOLOGY&quot;,&quot;change&quot;:0,&quot;price&quot;:4.78}
+{&quot;ticker_symbol&quot;:&quot;XTC&quot;,&quot;sector&quot;:&quot;HEALTHCARE&quot;,&quot;change&quot;:-4.34,&quot;price&quot;:108.7}
+</code></pre>
+
+<h3 id="optional-當-kinesis-horse-建立完成後-建立-data-analytics-分析結果">(optional) 當 kinesis horse 建立完成後, 建立 Data Analytics 分析結果</h3>
+
+<blockquote>
+<p>Data Analytics 只有幾個 rigion 支援</p>
+</blockquote>
+
+<p>[1] Create</p>
+
+<p>[2] Kinesis firehose 點選 <code>Start sending demo data</code>, 讓資料一直進來, 因為要一直有資料進來才好完成接下來的步驟</p>
+
+<p>[3] SQL Query</p>
+
+<p>1) SQL (這裡做的是把 price &gt; 80 的資料儲存下來)</p>
+
+<pre><code>CREATE OR REPLACE STREAM &quot;DESTINATION_SQL_STREAM&quot; (ticker_symbol VARCHAR(4), sector VARCHAR(12), change DOUBLE, price DOUBLE);
+
+CREATE OR REPLACE PUMP &quot;STREAM_PUMP&quot; AS INSERT INTO &quot;DESTINATION_SQL_STREAM&quot;
+   SELECT STREAM &quot;ticker_symbol&quot;, &quot;sector&quot;, &quot;change&quot;, &quot;price&quot;
+   FROM &quot;SOURCE_SQL_STREAM_001&quot; WHERE &quot;price&quot; &gt; 80
+</code></pre>
+
+<blockquote>
+<p>欄位要用 <code>&quot;</code> 包起來, 否則它內部會幫你自動轉大寫, 送出後會跟你說找不到這個欄位的錯誤</p>
+</blockquote>
+
+<p>2) Save and run SQL (如果要改可以隨時改, 再點擊這個讓它生效)</p>
+
+<p>[4] Connect to a destination</p>
+
+<blockquote>
+<p>SQL 的結果總要有地方來儲存吧? 它這裡無法直接寫入 S3, 必須要靠 firehose 寫入</p>
+</blockquote>
+
+<ol>
+<li>建立 Kinesis Firehose delivery stream 給這個 Data Analytics 儲存結果, 建立過程跟之前一樣, 只是產生在 S3 的 Prefix 改成用 <code>Data-Analytics_</code> 以便分類</li>
+<li>Destination -&gt; Kinesis Firehose delivery stream -&gt; 選擇剛建立的 firehose</li>
+<li>Connect in-application stream -&gt; <code>DESTINATION_SQL_STREAM</code> (SQL Query 建立的 stream name)</li>
+</ol>
+
+<p>[5] 看測試結果</p>
+
+<p>看 s3 bucket 下有沒有 folder <code>data-analytics_2018</code>, 並且看裡面的檔案, 看看 price 是否 <code>&gt; 80</code></p>
+
+<h3 id="optional-當-kinesis-horse-建立完成後-將-cloudwatch-log-傳到-kinesis">(optional) 當 kinesis horse 建立完成後, 將 CloudWatch Log 傳到 Kinesis</h3>
+
+<blockquote>
+<p>接下來就要下指令了, 無法用 Web Console 達成</p>
+</blockquote>
+
+<p>/tmp/TrustPolicyForCWL.json</p>
+
+<pre><code>{
+  &quot;Statement&quot;: {
+    &quot;Effect&quot;: &quot;Allow&quot;,
+    &quot;Principal&quot;: { &quot;Service&quot;: &quot;logs.ap-northeast-1.amazonaws.com&quot; },     // region 要改
+    &quot;Action&quot;: &quot;sts:AssumeRole&quot;
+  }
+}
+</code></pre>
+
+<p>建立 IAM Role</p>
+
+<pre><code>aws iam create-role --role-name CWLtoKinesisFirehoseRole --assume-role-policy-document file:///tmp/TrustPolicyForCWL.json
+</code></pre>
+
+<blockquote>
+<p>file://<code>{file path}</code></p>
+</blockquote>
+
+<p>/tmp/PermissionsForCWL.json</p>
+
+<pre><code>{
+    &quot;Statement&quot;:[
+      {
+        &quot;Effect&quot;:&quot;Allow&quot;,
+        &quot;Action&quot;:[&quot;firehose:*&quot;],
+        &quot;Resource&quot;:[&quot;arn:aws:firehose:region:123456789012:*&quot;]
+      },
+      {
+        &quot;Effect&quot;:&quot;Allow&quot;,
+        &quot;Action&quot;:[&quot;iam:PassRole&quot;],
+        &quot;Resource&quot;:[&quot;arn:aws:iam::123456789012:role/CWLtoKinesisFirehoseRole&quot;]
+      }
+    ]
+}
+</code></pre>
+
+<p>裝 policy 跟 IAM Role 關聯</p>
+
+<pre><code>aws iam put-role-policy --role-name CWLtoKinesisFirehoseRole --policy-name Permissions-Policy-For-CWL --policy-document file:///tmp/PermissionsForCWL.json
+</code></pre>
+
+<p>將要傳送 CloudWatch Log 的 group 連接到 Kinesis</p>
+
+<pre><code>aws logs put-subscription-filter --log-group-name &quot;dev-worker-logs&quot; --filter-name &quot;FirehoseDestination&quot; --filter-pattern &quot;&quot;  --destination-arn &quot;arn:aws:firehose:ap-northeast-1:3**********2:deliverystream/qa-kinesis-test&quot; --role-arn &quot;arn:aws:iam::3**********2:role/CWLtoKinesisFirehoseRole&quot;
+</code></pre>
+
+<p>[6] 確認是否 log 都有被送到 Kinesis Firehose</p>
+
+<p>看 monitoring 就能知道</p>
+
+<blockquote>
+<p>如果不要將 cloudwatch logs 傳到 kinesis (取消訂閱), 在 cloudwatch logs 的該 group 上選擇 Remove Subscription Filter</p>
+</blockquote>
+
+<p>ref:</p>
+
+<ul>
+<li>EN <a href="https://www.slideshare.net/AmazonWebServices/realtime-application-monitoring-with-amazon-kinesis-and-amazon-cloudwatch-aws-online-tech-talks">https://www.slideshare.net/AmazonWebServices/realtime-application-monitoring-with-amazon-kinesis-and-amazon-cloudwatch-aws-online-tech-talks</a></li>
+<li>CN <a href="https://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample">https://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample</a></li>
+<li><a href="https://aws.amazon.com/cn/blogs/china/cloudwatch-logs-kinesis-firehose-athena-quicksight-amazon-aurora/">https://aws.amazon.com/cn/blogs/china/cloudwatch-logs-kinesis-firehose-athena-quicksight-amazon-aurora/</a></li>
+</ul>
+
+<h2 id="other">Other</h2>
+
+<h3 id="安裝-aws-cli-tool">安裝 AWS CLI tool</h3>
+
+<pre><code>$ curl &quot;https://s3.amazonaws.com/aws-cli/awscli-bundle.zip&quot; -o &quot;awscli-bundle.zip&quot;
+$ unzip awscli-bundle.zip
+$ sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+</code></pre>
+
+<h3 id="建立可以看-billing-的帳號">[建立可以看 billing 的帳號]</h3>
+
+<p>除了建立一個 IAM User 並給予權限 (AWSAccountActivityAccess), 但光是這樣還是看不到花費狀況, 還要去主帳號的 Dashboard -&gt; 帳號 -&gt; IAM 用戶對賬單信息的訪問權限 -&gt; 激活IAM 訪問權限, 這樣就可以了</p>
+
+<p>現在登入 IAM User 帳號, 應該就能看到帳單資料了</p>
+
+<h3 id="其他服務">[其他服務]</h3>
+
+<ul>
+<li>chaos monkey 可以將 EC2 terminal 或 security group 動手腳模擬網路不通測試 single point failure</li>
+</ul>
+
+</article>
+
+
+
+</html>

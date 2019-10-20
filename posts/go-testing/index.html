@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Go Testing | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/go-testing/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/go-testing/">Go Testing</a></h1>
+    <p class="meta"><time datetime="2015-02-05T18:01:23&#43;08:00">February 05, 2015</time></p>
+  </header>
+  
+
+<h2 id="commands">Commands</h2>
+
+<p>Test all file</p>
+
+<pre><code>go test
+</code></pre>
+
+<p>Test all file including subdirectory</p>
+
+<pre><code>go test ./...
+</code></pre>
+
+<blockquote>
+<p><code>./...</code> will cache your testing result</p>
+</blockquote>
+
+<p>Expires all test results</p>
+
+<pre><code>go clean -testcache
+</code></pre>
+
+<p>Ignore specific package</p>
+
+<pre><code>go test `go list ./... | grep -v your_go_app/utilities`
+</code></pre>
+
+<p>Test specific package</p>
+
+<pre><code>go test your_go_app/utilities/ip
+</code></pre>
+
+<p>Test specific func</p>
+
+<pre><code>go test -run TestListEvent
+</code></pre>
+
+<p>Benchmark</p>
+
+<pre><code>go test -bench=.
+</code></pre>
+
+<p>Race detection</p>
+
+<pre><code>go test -race
+</code></pre>
+
+<h3 id="coverage">Coverage</h3>
+
+<p>Show coverage of code</p>
+
+<pre><code>go test -cover
+PASS
+coverage: 37.5% of statements
+ok      testing-example 0.016s
+</code></pre>
+
+<p>Generate coverage file</p>
+
+<pre><code>go test -coverprofile=coverage.out
+</code></pre>
+
+<p>Show func coverage based on coverage file</p>
+
+<pre><code>go tool cover -func=coverage.out
+testing-example/main.go:11:     main                    0.0%
+testing-example/main.go:18:     SearchWordInFile        75.0%
+total:                          (statements)            37.5%
+</code></pre>
+
+<p>Display coverage on browser based on coverage file</p>
+
+<pre><code>go tool cover -html=coverage.out
+</code></pre>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="a-simple-example">A simple example</h3>
+
+<pre><code>import (
+    &quot;testing&quot;
+    &quot;github.com/stretchr/testify/assert&quot;
+)
+
+func Sum(x int, y int) int {
+    return x + y
+}
+
+func TestSum(t *testing.T) {
+    total := Sum(5, 5)
+    assert.Equal(t, 10, total)
+}
+</code></pre>
+
+<blockquote>
+<p>Use <a href="github.com/stretchr/testify">stretchr/testify</a> to make testing clean</p>
+</blockquote>
+
+<h3 id="example-http-server">Example - http server</h3>
+
+<p>main.go</p>
+
+<pre><code>func handler() http.Handler {
+    r := http.NewServeMux()
+    r.HandleFunc(&quot;/health&quot;, health)
+    return r
+}
+
+func health(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, &quot;ok&quot;)
+}
+
+func main() {
+    log.Fatal(http.ListenAndServe(&quot;:8000&quot;, handler()))
+}
+</code></pre>
+
+<p>main_test.go</p>
+
+<pre><code>func TestHealth(t *testing.T) {
+    req, _ := http.NewRequest(&quot;GET&quot;, &quot;/health&quot;, nil)
+    rec := httptest.NewRecorder()
+    health(rec, req)
+    res := rec.Result()
+    defer res.Body.Close()
+    b, _ := ioutil.ReadAll(res.Body)
+    assert.Equal(t, http.StatusOK, res.StatusCode)
+    assert.Equal(t, &quot;ok&quot;, string(b))
+}
+
+func TestRouting(t *testing.T) {
+    s := httptest.NewServer(handler())
+    defer s.Close()
+    res, _ := http.Get(fmt.Sprintf(&quot;%s/health&quot;, s.URL))
+    defer res.Body.Close()
+    b, _ := ioutil.ReadAll(res.Body)
+    assert.Equal(t, http.StatusOK, res.StatusCode)
+    assert.Equal(t, &quot;ok&quot;, string(b))
+}
+</code></pre>
+
+<h3 id="example-http-server-use-gorilla-mux">Example - http server (use gorilla/mux)</h3>
+
+<p>main.go</p>
+
+<pre><code>func health(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, &quot;ok&quot;)
+}
+
+func Router() *mux.Router {
+    router := mux.NewRouter()
+    router.HandleFunc(&quot;/health&quot;, health).Methods(&quot;GET&quot;)
+    return router
+}
+
+func main() {
+    log.Fatal(http.ListenAndServe(&quot;:8000&quot;, Router()))
+}
+</code></pre>
+
+<p>main_test.go</p>
+
+<pre><code>func TestHealth(t *testing.T) {
+    req, _ := http.NewRequest(&quot;GET&quot;, &quot;/health&quot;, nil)
+    rec := httptest.NewRecorder()
+    Router().ServeHTTP(rec, req)
+    assert.Equal(t, http.StatusOK, rec.Code)
+    assert.Equal(t, &quot;ok&quot;, string(rec.Body.String()))
+}
+</code></pre>
+
+<h2 id="mock">Mock</h2>
+
+<h3 id="eample-a-simple-example-to-show-how-to-mock-a-func">Eample - A simple example to show how to mock a func.</h3>
+
+<pre><code>func TestSearchWordInFile(t *testing.T) {
+        b := SearchWordInFile(strings.NewReader(&quot;ABCDEFGHIJK&quot;), &quot;DEF&quot;)
+        assert.Equal(t, true, b)
+}
+
+func SearchWordInFile(r io.Reader, s string) bool {
+    b, _ := ioutil.ReadAll(r)
+    if strings.Index(string(b), s) &gt; 0 {
+        return true
+    }
+    return false
+}
+</code></pre>
+
+<h3 id="example-mock-struct-s-func">Example - Mock struct&rsquo;s func.</h3>
+
+<p>main.go</p>
+
+<pre><code>type Counter interface {
+    CountFaces(string) (int, error)
+}
+
+type OpenCV struct{}
+
+func (cv *OpenCV) CountFaces(filepath string) (int, error) {
+    // Count faces from an image
+    return 5, nil
+}
+
+func GetFaceCount(c Counter, filepath string) (int, error) {
+    return c.CountFaces(filepath)
+}
+
+func main() {
+    cv := OpenCV{}
+    count, _ := cv.CountFaces(&quot;/tmp/fake-img.jpg&quot;)
+    fmt.Printf(&quot;Face count: %d\n&quot;, count)
+}
+</code></pre>
+
+<p>main_test.go</p>
+
+<pre><code>type FakeOpenCV struct {
+    MockCount func(string) (int, error)
+}
+
+func (f *FakeOpenCV) CountFaces(s string) (int, error) { return f.MockCount(s) }
+
+func TestDatabase(t *testing.T) {
+    fake := &amp;FakeOpenCV{
+        MockCount: func(s string) (int, error) {
+            return 7, nil
+        },
+    }
+    count, err := GetFaceCount(fake, &quot;/tmp/fake-img-test.jpg&quot;)
+    assert.NoError(t, err)
+    assert.Equal(t, 7, count)
+}
+</code></pre>
+
+<p>main_test.go using <a href="stretchr/testify">stretchr/testify/mock</a></p>
+
+<pre><code>type FakeOpenCV struct {
+    mock.Mock
+}
+
+func (f *FakeOpenCV) CountFaces(s string) (int, error) {
+    args := f.Called(s)
+    return args.Int(0), nil
+}
+
+func TestDatabase(t *testing.T) {
+    fake := new(FakeOpenCV)
+    fake.On(&quot;CountFaces&quot;, &quot;/tmp/fake-img-test.jpg&quot;).Return(7, nil)
+    count, err := GetFaceCount(fake, &quot;/tmp/fake-img-test.jpg&quot;)
+    assert.NoError(t, err)
+    assert.Equal(t, 7, count)
+}
+</code></pre>
+
+<h3 id="same-example-as-above-using-gomock-https-github-com-golang-mock">Same example as above using <a href="https://github.com/golang/mock">GoMock</a></h3>
+
+<p>It has to be a package to generate mock file using GoMock.</p>
+
+<p>workplace/counter/counter.go</p>
+
+<pre><code>package counter
+
+type Counter interface {
+    CountFaces(string) (int, error)
+}
+
+type OpenCV struct{}
+
+func (cv *OpenCV) CountFaces(filepath string) (int, error) {
+    // Count faces from an image
+    return 5, nil
+}
+
+func GetFaceCount(c Counter, filepath string) (int, error) {
+    return c.CountFaces(filepath)
+}
+</code></pre>
+
+<p>workplace/counter/counter_test.go</p>
+
+<pre><code>package counter
+
+import(
+    &quot;testing&quot;
+    &quot;local-test/counter/mocks&quot;
+    &quot;github.com/golang/mock/gomock&quot;
+    &quot;github.com/stretchr/testify/assert&quot;
+)
+
+func TestGetFaceCount(t *testing.T) {
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+    m := mocks.NewMockCounter(ctrl)
+    m.EXPECT().CountFaces(&quot;&quot;).Return(7, nil)
+    count, err := GetFaceCount(m, &quot;&quot;)
+
+    assert.NoError(t, err)
+    assert.Equal(t, 7, count)
+}
+</code></pre>
+
+<blockquote>
+<p>CountFaces&rsquo; parameters passed by mock and via GetFaceCount must be the same.</p>
+</blockquote>
+
+<p>Generate mock file</p>
+
+<pre><code>cd workplace/counter/
+mockgen -destination=mocks/mock_counter.go -package=mocks workplace/counter Counter
+</code></pre>
+
+<blockquote>
+<p>workplace/counter/mocks is created by GoMock</p>
+</blockquote>
+
+<h3 id="example-mock-controller-and-model-using-pointer-to-fake-data">Example - Mock controller and model, using pointer to fake data.</h3>
+
+<p>main.go</p>
+
+<pre><code>// Model
+type table interface {
+    Get(int) error
+}
+
+type User struct {
+    ID   int
+    Name string
+}
+
+func (u *User) Get(id int) error {
+    // Connect to DB and get user data by id.
+    u.ID = 6
+    u.Name = &quot;Jack&quot;
+    return nil
+}
+
+// Controller
+type UserController struct {
+    User table
+}
+
+func (u *UserController) Info(resp http.ResponseWriter, req *http.Request) {
+    id := 5
+    _ = u.User.Get(id)
+    resp.Write([]byte(fmt.Sprintf(&quot;%v&quot;, u.User)))
+    fmt.Println(u.User) // &amp;{6 Jack}
+}
+
+// Http server &amp; Router
+func main() {
+    userController := &amp;UserController{User: &amp;User{}}
+    r := http.NewServeMux()
+    r.HandleFunc(&quot;/user&quot;, userController.Info)
+    log.Fatal(http.ListenAndServe(&quot;:8000&quot;, r))
+}
+</code></pre>
+
+<p>main_test.go</p>
+
+<pre><code>type FakeUser User
+
+func (u *FakeUser) Get(id int) error { return nil }
+
+func TestUserInfo(t *testing.T) {
+    userController := &amp;UserController{User: &amp;FakeUser{ID: 3, Name: &quot;Bob&quot;}}
+    req, _ := http.NewRequest(&quot;GET&quot;, &quot;/&quot;, nil) // It won't be really routed, any path is okay.
+    rec := httptest.NewRecorder()
+    userController.Info(rec, req)
+    resp := rec.Result()
+    defer resp.Body.Close()
+    b, _ := ioutil.ReadAll(resp.Body)
+
+    assert.Equal(t, http.StatusOK, resp.StatusCode)
+    assert.Equal(t, `&amp;{3 Bob}`, string(b))
+}
+</code></pre>
+
+<h2 id="stub">Stub</h2>
+
+<h3 id="time-now">time.Now</h3>
+
+<p>main.go</p>
+
+<pre><code>var TimeNow = func() time.Time { return time.Now() }
+
+func main() {
+    fmt.Println(GetTimestamp())
+}
+
+func GetTimestamp() int64 {
+    return TimeNow().UTC().Unix()
+}
+</code></pre>
+
+<p>main_test.go</p>
+
+<pre><code>func TestGetTimestamp(t *testing.T) {
+    parsed, _ := time.Parse(&quot;2006-01-02 15:04:05&quot;, &quot;2019-01-28 00:00:00&quot;)
+    TimeNow = func() time.Time { return parsed }
+    assert.Equal(t, parsed.Unix(), GetTimestamp())
+}
+</code></pre>
+
+<h3 id="time-sleep">time.Sleep</h3>
+
+<p>TODO, watch <a href="https://youtu.be/ndmB0bj7eyw?t=32m">this video</a></p>
+
+<h2 id="ginkgo">Ginkgo</h2>
+
+<p><a href="http://onsi.github.io/ginkgo/">Ginkgo</a> is a BDD testing framework for go.</p>
+
+<h3 id="install">Install</h3>
+
+<pre><code>go get github.com/onsi/ginkgo/ginkgo
+go get github.com/onsi/gomega
+</code></pre>
+
+<h3 id="create-first-test">Create first test</h3>
+
+<p>Init</p>
+
+<pre><code>ginkgo bootstrap
+ginkgo generate [app_name]
+</code></pre>
+
+<p>user_test.go :</p>
+
+<pre><code>var _ = Describe(&quot;User&quot;, func() {
+    Describe(&quot;Test User&quot;, func() {
+        Context(&quot;with SetName&quot;, func() {
+            data := map[string]interface{}{
+                &quot;Name&quot;:       &quot;Jex&quot;,
+                &quot;Address&quot;:    &quot;Taiwan&quot;,
+            }
+            It(&quot;should be a empty errMsg&quot;, func() {
+                Expect(SetName(data)).To(Equal(&quot;&quot;))
+            })
+        })
+    })
+})
+</code></pre>
+
+<p>Run</p>
+
+<pre><code>$ ginkgo
+
+...略...
+Ran 3 of 3 Specs in 6.895 seconds
+SUCCESS! -- 3 Passed | 0 Failed | 0 Pending | 0 Skipped PASS
+</code></pre>
+
+<h3 id="beforeeach-在每個-context-跑之前先執行">BeforeEach 在每個 Context 跑之前先執行</h3>
+
+<pre><code>var _ = Describe(&quot;Sample&quot;, func() {
+    Describe(&quot;XXX&quot;, func() {
+        Describe(&quot;FFF&quot;, func() {
+            var qq string
+            BeforeEach(func() {
+                qq = &quot;XXX&quot;
+                fmt.Println(&quot;BeforeEach&quot;)
+            })
+            Context(&quot;Valid inputs for add function&quot;, func() {
+                It(&quot;TTT&quot;, func() {
+                    qq = &quot;ZZZZZ&quot;
+                    fmt.Println(qq)
+                    Expect(4).Should(Equal(4))
+                })
+                It(&quot;TTT&quot;, func() {
+                    fmt.Println(qq)
+                    Expect(4).Should(Equal(4))
+                })
+            })
+        })
+    })
+})
+</code></pre>
+
+<p>結果 :</p>
+
+<pre><code>BeforeEach      // qq = XXX
+ZZZZZ           // qq = ZZZZ
+BeforeEach      // qq = XXX
+XXX             // qq = XXX
+</code></pre>
+
+<ul>
+<li>不管是 BeforeEach 賦與的變數或不同地方賦與的變數都要在 It 裡面才拿得到，在 It 外是取不到的，不知道是什麼原因?</li>
+<li>Describe / Context 似乎是用 goroutine 去跑的，如果有些值要先等前一個 Describe/context Set 完，執行時可能不會有你預期的結果，有可能根本沒 Set 到就先執行那段了</li>
+</ul>
+
+<h1 id="benchmark">Benchmark</h1>
+
+<h3 id="how-to-read-benchmark-result">How to read benchmark result</h3>
+
+<p>Result</p>
+
+<pre><code>BenchmarkWorker-4                 100000             19753 ns/op            1164 B/op         15 allocs/op
+</code></pre>
+
+<p>Explaination</p>
+
+<ul>
+<li><code>ns/op</code> means that the loop ran 100000 times at a speed of 19753 ns per loop</li>
+<li><code>B/op</code> is how many bytes were allocated per op</li>
+<li><code>allocs/op</code> means how many distinct memory allocations occurred per op (single iteration)</li>
+</ul>
+
+<p>ref: <a href="https://www.oipapio.com/question-4923866">https://www.oipapio.com/question-4923866</a></p>
+
+<h3 id="ref">ref:</h3>
+
+<ul>
+<li><a href="http://onsi.github.io/ginkgo/#getting-ginkgo">http://onsi.github.io/ginkgo/#getting-ginkgo</a></li>
+<li><a href="http://blog.gopheracademy.com/advent-2013/ginkgo/">http://blog.gopheracademy.com/advent-2013/ginkgo/</a></li>
+<li><a href="https://www.youtube.com/watch?v=OtNJgykLMjk">https://www.youtube.com/watch?v=OtNJgykLMjk</a></li>
+<li><a href="https://tutorialedge.net/golang/improving-your-tests-with-testify-go/">https://tutorialedge.net/golang/improving-your-tests-with-testify-go/</a></li>
+<li><a href="https://www.youtube.com/watch?v=hVFEV-ieeew">https://www.youtube.com/watch?v=hVFEV-ieeew</a></li>
+<li><a href="https://www.youtube.com/watch?v=ttKgBttwzrg">https://www.youtube.com/watch?v=ttKgBttwzrg</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

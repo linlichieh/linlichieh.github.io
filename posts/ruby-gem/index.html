@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Ruby Gem | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-gem/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-gem/">Ruby Gem</a></h1>
+    <p class="meta"><time datetime="2013-11-29T01:44:00Z">November 29, 2013</time></p>
+  </header>
+  
+
+<h2 id="install-gem-on-ubuntu">Install Gem on Ubuntu</h2>
+
+<h3 id="1-update-upgrade">[1] Update &amp; Upgrade</h3>
+
+<pre><code>sudo apt-get update
+sudo apt-get upgrade -y
+</code></pre>
+
+<h3 id="2-install-rvm-ruby-version-manager">[2]  Install RVM (Ruby Version Manager)</h3>
+
+<p>Install curl (MacOS doesn&rsquo;t need to execute this)</p>
+
+<pre><code>sudo apt-get install curl
+</code></pre>
+
+<p>Install RVM</p>
+
+<pre><code>\curl -sSL https://get.rvm.io | bash -s stable
+</code></pre>
+
+<p>讀取 rvm</p>
+
+<pre><code>source ~/.rvm/scripts/rvm
+</code></pre>
+
+<p>安裝 rvm 自己相依的東西</p>
+
+<pre><code>rvm requirements
+</code></pre>
+
+<h3 id="3-install-ruby">[3] Install Ruby</h3>
+
+<pre><code>rvm install ruby
+rvm use ruby --default
+</code></pre>
+
+<h3 id="4-install-rubygems">[4] Install RubyGems</h3>
+
+<pre><code>rvm rubygems current
+</code></pre>
+
+<h2 id="gem-commands">Gem commands</h2>
+
+<ul>
+<li><code>gem -v</code> : RubyGems 版本</li>
+<li><code>gem update --system</code> : 升級 RubyGems</li>
+<li><code>gem install gem_name</code> : 安裝某個套件, 加上 <code>--no-ri --no-rdoc</code> 不產生文件</li>
+<li><code>gem list</code> : 列出安裝的套件</li>
+<li><code>gem update gem_name</code> : 更新最新版本</li>
+<li><code>gem update</code> : 更新所有 Gem</li>
+<li><code>gem install -v x.x.x gemname</code> : 安裝特定版本</li>
+<li><code>gem uninstall gem_name</code> : 反安裝</li>
+</ul>
+
+<h2 id="gemfile-版本符號代表意義">Gemfile 版本符號代表意義</h2>
+
+<pre><code>gem 'rails', '4.2.6'
+</code></pre>
+
+<ul>
+<li>不指定 : 使用最新版</li>
+<li><code>4.2.6</code> : 明確指定使用 <code>4.2.6</code> 版</li>
+<li><code>~&gt; 1</code> : 1.0 ~ 1.9 (小於 2.0)</li>
+<li><code>~&gt; 2.1</code> : 2.1 ~ 2.9 (小於 3.0)</li>
+<li><code>~&gt; 2.0.3</code> : 2.0.3 ~ 2.0.9 (小於 2.1)</li>
+<li><code>~&gt; 2.2.beta</code> : will match <code>2.2.beta.12</code></li>
+<li><code>&gt;= 3.2</code> : 3.2 以上的版本</li>
+</ul>
+
+<h2 id="make-a-ruby-gem">Make a ruby gem</h2>
+
+<h3 id="建立-gem-的基本結構">建立 gem 的基本結構</h3>
+
+<pre><code>test@virtualBox:/tmp$ bundle gem exgem
+      create  exgem/Gemfile                    &lt;= 描述 dependency
+      create  exgem/Rakefile                   &lt;= 發佈和打包的 rake tasks
+      create  exgem/LICENSE.txt                &lt;= 註明 License
+      create  exgem/README.md                  &lt;= 簡單說明如何使用它
+      create  exgem/.gitignore                 &lt;= 不要進 Git 的檔案在這定義
+      create  exgem/exgem.gemspec             &lt;= gem 的 spec
+      create  exgem/lib/exgem.rb              &lt;= gem 裡的 library
+      create  exgem/lib/exgem/version.rb      &lt;= 版本紀錄
+Initializating git repo in /tmp/exgem
+</code></pre>
+
+<h3 id="首先看一下-gemfile">首先看一下 Gemfile</h3>
+
+<p>exgem/Gemfile :</p>
+
+<pre><code>source 'https://rubygems.org'
+
+# Specify your gem's dependencies in exgem.gemspec
+gemspec
+</code></pre>
+
+<p>最後一行要你定義相依套件在 <code>exgem.gemspec</code></p>
+
+<h3 id="開啟-gemspec">開啟 GemSpec</h3>
+
+<p>exgem/exgem.gemspec :</p>
+
+<p>裡面的內容大部份都已填好了, 所以我們改一點使它有變化</p>
+
+<pre><code>spec.description   = %q{Description : This is my gem for example.}
+spec.summary       = %q{Summary : This is my gem for example.}
+</code></pre>
+
+<h3 id="撰寫你的-lib">撰寫你的 lib</h3>
+
+<p>exgem/lib/exgem.rb :</p>
+
+<p>加上 hi 這個 method :</p>
+
+<pre><code>require &quot;exgem/version&quot;
+
+module Exgem
+  # Your code goes here...
+  def self.hi
+    puts &quot;Hello, world!&quot;
+  end
+end
+</code></pre>
+
+<h3 id="build">Build</h3>
+
+<pre><code>gem build exgem.gemspec
+WARNING:  no homepage specified
+  Successfully built RubyGem
+  Name: exgem
+  Version: 0.0.1
+  File: exgem-0.0.1.gem
+</code></pre>
+
+<blockquote>
+<ul>
+<li>出現提示 <code>WARNING:  no homepage specified</code> 可以忽略它,</li>
+<li>因為在 exgem.gemspec 裡我們沒有定義 <code>spec.homepage</code>, 它是一個 URI</li>
+<li>目錄底下會多出此檔 <code>exgem-0.0.1.gem</code></li>
+</ul>
+</blockquote>
+
+<h3 id="install-package">Install package</h3>
+
+<p>在安裝之前你都還不能 require 它, 會噴錯誤</p>
+
+<pre><code>$ irb
+2.0.0-p247 :001 &gt; require 'exgem'
+LoadError: cannot load such file -- exgem
+        from /Users/apple/.rvm/rubies/ruby-2.0.0-p247/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+        from /Users/apple/.rvm/rubies/ruby-2.0.0-p247/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+        from (irb):1
+        from /Users/apple/.rvm/rubies/ruby-2.0.0-p247/bin/irb:13:in `&lt;main&gt;'
+</code></pre>
+
+<p>所以要先安裝(需要 sudo 權限)</p>
+
+<pre><code>$ sudo gem install exgem-0.0.1.gem
+Password:
+Successfully installed exgem-0.0.1
+1 gem installed
+</code></pre>
+
+<p>就可以 require 了</p>
+
+<pre><code>$ irb
+2.0.0p247 :001 &gt; require 'exgem'
+ =&gt; true
+2.0.0p247 :002 &gt; Exgem.hi
+Hello, world!
+ =&gt; nil
+</code></pre>
+
+<blockquote>
+<ul>
+<li>像我習慣用 tmux 分頁切來切去, 如果一 TAB 執行 <code>gem install exgem-0.0.1.gem</code>, 另一 TAB 執行 <code>irb</code> 可能會造成 <code>require exgem</code> 失敗</li>
+<li>最好是 <code>irb</code> 離開再重進一次, 才抓得到新的 gem package</li>
+</ul>
+</blockquote>
+
+<h3 id="發佈在-rubygems-org">發佈在 RubyGems.org</h3>
+
+<p>[1] 更新</p>
+
+<pre><code>gem update --system
+</code></pre>
+
+<p>[2] <a href="http://rubygems.org/sign_up">申請一組帳號</a></p>
+
+<blockquote>
+<p>handle 是 username 的意思</p>
+</blockquote>
+
+<p>[3] 發佈到 RubyGems.org</p>
+
+<p>執行</p>
+
+<pre><code>$ gem push exgem-0.0.1.gem
+Pushing gem to https://rubygems.org...
+Successfully registered gem: exgem (0.0.1)
+</code></pre>
+
+<p>上<a href="https://rubygems.org/gems/exgem">官網</a>就可以看到剛剛發佈的 gem 了
+<img src="/images/posts/ruby-gem.jpg" alt="gem.JPG" /></p>
+
+<h3 id="gem-的相關指令">gem 的相關指令</h3>
+
+<p>刪除</p>
+
+<pre><code>$ sudo gem uninstall exgem
+Successfully uninstalled exgem-0.0.1
+</code></pre>
+
+<h3 id="troubleshootings">Troubleshootings</h3>
+
+<h4 id="error-error-while-executing-gem-runtimeerror">Error ERROR:  While executing gem &hellip; (RuntimeError)</h4>
+
+<p>如果發生錯誤</p>
+
+<pre><code>ERROR:  While executing gem ... (RuntimeError)
+    Can't find 'rubygems-update' in any repo. Check `gem source list`.
+</code></pre>
+
+<p>解決方法</p>
+
+<pre><code>sudo gem sources -a http://s3.amazonaws.com/production.s3.rubygems.org/
+http://s3.amazonaws.com/production.s3.rubygems.org/ added to sources
+</code></pre>
+
+<h4 id="repushing-of-gem-versions-is-not-allowed">Repushing of gem versions is not allowed</h4>
+
+<pre><code>gem push exgem-0.0.1.gem
+Pushing gem to https://rubygems.org...
+Repushing of gem versions is not allowed.
+Please use `gem yank` to remove bad gem releases.
+</code></pre>
+
+<p>修改你的 <code>lib/exgem/version.rb</code>, 將版本從 0.0.1 改成 0.0.2</p>
+
+<pre><code>$ gem build exgem.gemspec
+WARNING:  no homepage specified
+  Successfully built RubyGem
+  Name: exgem
+  Version: 0.0.2
+  File: exgem-0.0.2.gem
+</code></pre>
+
+<blockquote>
+<p>會生成 exgem-0.0.2.gem, 而舊的 exgem-0.0.1.gem 不會消失</p>
+</blockquote>
+
+<h4 id="you-do-not-have-permission-to-push-to-this-gem">You do not have permission to push to this gem</h4>
+
+<p>如果發佈發生此錯誤的話表示 gem 的名稱跟別人重覆了</p>
+
+<pre><code>$ sudo gem push exgem-0.0.2.gem
+Password:
+Pushing gem to https://rubygems.org...
+You do not have permission to push to this gem.
+</code></pre>
+
+<p>ref :
+<a href="http://blog.xdite.net/posts/2012/01/04/how-to-pack-a-gem">http://blog.xdite.net/posts/2012/01/04/how-to-pack-a-gem</a>
+<a href="http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices/">http://weblog.rubyonrails.org/2009/9/1/gem-packaging-best-practices/</a>
+<a href="http://guides.rubygems.org/make-your-own-gem/#first-gem">http://guides.rubygems.org/make-your-own-gem/#first-gem</a>
+<a href="http://net.tutsplus.com/tutorials/ruby/gem-creation-with-bundler/">http://net.tutsplus.com/tutorials/ruby/gem-creation-with-bundler/</a>
+<a href="http://i3zhe.github.io/blog/2012/10/29/ru-he-zhi-zuo-zi-ji-de-gem/">http://i3zhe.github.io/blog/2012/10/29/ru-he-zhi-zuo-zi-ji-de-gem/</a></p>
+
+<h2 id="引入時指定環境">引入時指定環境</h2>
+
+<p>都不寫代表是全部環境都會引入</p>
+
+<pre><code>gem 'bcrypt'
+</code></pre>
+
+<p>只引入 development, test</p>
+
+<pre><code>gem 'awesome_print', gorup: :development, :test
+
+或
+group :development, :test do
+  gem &quot;rspec&quot;
+  gem 'rspec-rails'
+end
+</code></pre>
+
+<h2 id="gem-error">Gem error</h2>
+
+<h3 id="gem-filepermissionerror"><code>Gem::FilePermissionError</code></h3>
+
+<pre><code>$ gem install sitemap_generator
+ERROR:  While executing gem ... (Gem::FilePermissionError)
+    You don't have write permissions for the /usr/local/rvm/gems/ruby-2.2.1 directory.
+</code></pre>
+
+<p>使用 sudo 安裝也不行</p>
+
+<pre><code>sudo: gem: command not found
+</code></pre>
+
+<p>解決方法 : 切換到 sudo 加上 gem 相關的 PATH</p>
+
+<pre><code>$ $PATH
+-bash: /usr/local/rvm/gems/ruby-2.2.1/bin:/usr/local/rvm/gems/ruby-2.2.1@global/bin:/usr/local/rvm/rubies/ruby-2.2.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+</code></pre>
+
+<p>切換到 sudo, 在 <code>.bashrc</code> 最後一行加上</p>
+
+<pre><code>export PATH=$PATH:/usr/local/rvm/gems/ruby-2.2.1/bin:/usr/local/rvm/gems/ruby-2.2.1@global/bin:/usr/local/rvm/rubies/ruby-2.2.1/bin
+</code></pre>
+
+<p>再重新登入, 完成!</p>
+
+<h3 id="gem-loaderror-you-have-already-activated-rake"><code>Gem::LoadError: You have already activated rake ...</code></h3>
+
+<p><code>Gem::LoadError: You have already activated rake 12.0.0, but your Gemfile requires rake 11.3.0.</code></p>
+
+<p>1) Check your Gemfile to see if <code>rake</code> exists. If yes, upgrade it.</p>
+
+<p>2) If no, execute <code>bundle update rake</code></p>
+
+<h2 id="useful-gem">Useful gem</h2>
+
+<p>必備的 Gem</p>
+
+<pre><code>gem 'autoprefixer-rails'                    # 處理有 prefix 的 css 語法
+gem 'bcrypt'                                # 加密，devise 需要
+gem 'devise', '~&gt; 3.5.2'                    # 註冊/登入 etc. 整套功能
+gem 'mysql2', '~&gt; 0.3.20'                   # MySQL
+gem &quot;paperclip&quot;, &quot;~&gt; 4.3&quot;                   # 上傳
+gem 'will_paginate'                         # 分頁
+gem 'migration_comments'                    # 讓 migration 可以在欄位加上註解
+gem 'awesome_print'                         # 讓 Rails console 顯示的資料更好閱讀
+group :development, :test do
+  gem &quot;rspec&quot;                               # Rspec
+  gem 'rspec-rails'                         # Rspec
+  gem 'factory_girl_rails'                  # Seed 會
+  gem 'capybara'                            # 可以摸擬使用者點擊瀏覽器的行為
+  gem 'faker'                               # Seed 假資料
+  gem 'fabrication'                         # 不知道怎麼形容它，它像是個 Model 的模具，需要時再倒原料進去
+end
+group :development do
+    gem 'quiet_assets'                      # 讓 log 更乾淨，過濾一些 Assets 的 log
+    gem 'guard-livereload'                  # 偵測檔案變動，reload 你的瀏覽器
+    gem 'better_errors'                     # 當 Error 發生時，讓頁面上顯示的錯誤更好讀
+end
+</code></pre>
+
+<p>看情況用的 Gem</p>
+
+<pre><code>gem 'papercrop', '~&gt; 0.3.0'                             # Crop 圖片，相依於 paperclip
+gem 'rolify', '~&gt; 4.1.1'                                # 如果需要細分權限的話
+gem 'whenever', require: false                          # cronjob
+gem &quot;recaptcha&quot;, require: &quot;recaptcha/rails&quot;             # Google recaptcha
+gem 'aws-sdk', '~&gt; 2.2.37'                              # AWS SDK
+gem 'omniauth-facebook', '~&gt; 3.0.0'                     # FB 登入
+gem &quot;paranoia&quot;, &quot;~&gt; 2.1.5&quot;                              # 軟刪除
+gem 'pg'                                                # 使用 PostgreSQL 當 DB
+gem 'rubocop', require: false                           # 可以利用它檢查/更正你不符合 ruby coding style 的程式碼
+gem 'rails_12factor', group: :production                # Heroku : 將 rails log 導到標準輸出(STDOUT)，否則會無法 Debug
+</code></pre>
+
+</article>
+
+
+
+</html>

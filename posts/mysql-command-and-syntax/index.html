@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>MySQL Command and Syntax | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/mysql-command-and-syntax/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/mysql-command-and-syntax/">MySQL Command and Syntax</a></h1>
+    <p class="meta"><time datetime="2013-06-03T04:53:00Z">June 03, 2013</time></p>
+  </header>
+  
+
+<h2 id="登入-mysql-使用-p-密碼登入">登入 mysql (使用 <code>-p</code> 密碼登入)</h2>
+
+<pre><code>root@test:/# mysql -u webadmin -p
+root@test:/# mysql -u webadmin --password=00000000 db_name
+</code></pre>
+
+<p>連入遠端 mysql</p>
+
+<pre><code>mysql -h devHostName -u test -p
+mysql&gt;    #按ENTER是換第二行輸入，
+          #不是送出而是繼續輸入，
+          #如果不要再輸入了加上分號(;)表示結束
+          #quit 或 ctrl + d : 中斷
+</code></pre>
+
+<p>進入 local mysql server (in docker)</p>
+
+<pre><code>mysql -h localhost -P 3306 --protocol=tcp -u root
+</code></pre>
+
+<h2 id="console">Console</h2>
+
+<p>看目前連到 MySQL 的 process</p>
+
+<pre><code>SHOW PROCESSLIST;
+.. or ...
+SHOW FULL PROCESSLIST;
++--------+----------+-------------------+-------+---------+------+----------+-----------------------+
+| Id     | User     | Host              | db    | Command | Time | State    | Info                  |
++--------+----------+-------------------+-------+---------+------+----------+-----------------------+
+| 530566 | api      | 10.0.21.49:43537  | my-log | Async commit | 1 | cleaned up | INSERT INTO `device_log` (`model`, `did`, `uid`, `mac`, `category`, `action`, `ip`, `log_date`, `occurred_at`, `created_at`, `timestamp_milli`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+</code></pre>
+
+<p>KILL PROCESS: 如果對 MySQL 下的指令造成 LOCK TABLE 或其他效能上的影響, 想取消的話, 可以刪除這個 process</p>
+
+<pre><code>先找出 process id
+
+SHOW PROCESSLIST;
+| 284349 | root      | 10.0.1.224:52018  | my-log     | Query   | 2568 | copy to tmp table               | ALTER TABLE `user` CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8 COLLATE |
+
+mysql&gt; kill 284349;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre>
+
+<p>Show schema threads</p>
+
+<pre><code>SELECT * FROM performance_schema.threads;
+</code></pre>
+
+<p>其他系統指令</p>
+
+<pre><code>SHOW ENGINE INNODB STATUS;
+SHOW GLOBAL STATUS;
+</code></pre>
+
+<p>Show running queries</p>
+
+<pre><code>SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != 'Sleep';
+</code></pre>
+
+<p>Shows all queries running for 5 seconds or more:</p>
+
+<pre><code>SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != 'Sleep' AND TIME &gt;= 5;
+</code></pre>
+
+<p>Show all running UPDATEs:</p>
+
+<pre><code>SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != 'Sleep' AND INFO LIKE '%UPDATE %';
+</code></pre>
+
+<p>目前連接 mysql 的數量</p>
+
+<pre><code>SHOW STATUS WHERE `variable_name` = 'Threads_connected';
+</code></pre>
+
+<p>最多可以同時幾個連線 (注意，如果超過這個數量，mysql 就會回 Too many connections 錯誤)，如果使用 AWS RDS MySQL 要參考它不同 size 支援的 max_connections 量</p>
+
+<pre><code>SHOW VARIABLES LIKE 'max_connections';
+</code></pre>
+
+<p>MySQL version</p>
+
+<pre><code>SHOW VARIABLES LIKE &quot;%version%&quot;;
+或
+select version();
+</code></pre>
+
+<p>binlog 是否開啟</p>
+
+<pre><code>SHOW VARIABLES LIKE 'log_bin';
+</code></pre>
+
+<p>slow query 是否開啟</p>
+
+<pre><code>SHOW VARIABLES LIKE '%slow%';
+</code></pre>
+
+<p>將執行過的 Query 寫到 log 檔</p>
+
+<pre><code>SET GLOBAL general_log = 'ON';
+</code></pre>
+
+<p>查詢指令使用index情況，在開頭加上EXPLAIN</p>
+
+<pre><code>XPLAIN SELECT *
+FROM  `user_log`
+WHERE uid =2
+</code></pre>
+
+<p>顯示系統狀態（詳細）</p>
+
+<pre><code>show status;
+</code></pre>
+
+<p>顯示系統狀態（簡單）</p>
+
+<pre><code>status;
+</code></pre>
+
+<p>查看自已的權限</p>
+
+<pre><code>mysql&gt; show grants;
+</code></pre>
+
+<p>查看某個 user 的權限</p>
+
+<pre><code>show grants for test@'localhost';
+</code></pre>
+
+<p>列出 mysql 的 user</p>
+
+<pre><code>mysql&gt; select user, host from mysql.user;
+</code></pre>
+
+<p>查看權限</p>
+
+<pre><code>select * from mysql.user where user='test';
+</code></pre>
+
+<p>查看 mysql 帳戶密碼及 host</p>
+
+<pre><code>select host, user, password from mysql.user;
+</code></pre>
+
+<p>mysql privileges</p>
+
+<pre><code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EXECUTE
+</code></pre>
+
+<p>查看 mysql 帳號</p>
+
+<pre><code>desc mysql.user;
+</code></pre>
+
+<p>新增 User</p>
+
+<pre><code>use mysql;
+INSERT INTO user(host,user,password) VALUES('127.0.0.1','test',password('qwer7890'));
+</code></pre>
+
+<p>限定權限</p>
+
+<pre><code>GRANT SELECT,INSERT,UPDATE,DELETE,CREATE ON testDB.* TO test@localhost IDENTIFIED BY 'qwer7890';
+FLUSH PRIVILEGES;
+</code></pre>
+
+<p>所有權限</p>
+
+<pre><code>GRANT ALL PRIVILEGES ON *.* TO test@localhost IDENTIFIED BY 'qwer7890' WITH GRANT OPTION;
+等於
+GRANT ALL PRIVILEGES ON *.* TO test@localhost IDENTIFIED BY PASSWORD '*9B25933BE82583D0F86E4AB11A340DE6A3611ACD' WITH GRANT OPTION;
+</code></pre>
+
+<p>Show cache</p>
+
+<pre><code>show variables like '%cache%';
+</code></pre>
+
+<p>顯示資料庫清單</p>
+
+<pre><code>mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| exam               |
+| mysql              |
+| package            |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+7 rows in set (0.02 sec)
+</code></pre>
+
+<p>選擇資料庫</p>
+
+<pre><code>mysql&gt; use test
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+</code></pre>
+
+<p>顯示資料表清單</p>
+
+<pre><code>mysql&gt; show tables;
++----------------+
+| Tables_in_test |
++----------------+
+| test           |
++----------------+
+1 row in set (0.00 sec)
+</code></pre>
+
+<p>顯示table的欄位資訊</p>
+
+<pre><code>mysql&gt; show columns from test;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(40) | NO   |     | NULL    |                |
+| hobby | varchar(40) | NO   |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+或者：
+
+mysql&gt; desc test;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(40) | NO   |     | NULL    |                |
+| hobby | varchar(40) | NO   |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+</code></pre>
+
+<p>顯示資料表的 TABLE Schema</p>
+
+<pre><code>mysql&gt; show CREATE table test;
++-------+------------------------------------------------------------------------------------------------+
+| Table | Create Table                                                                                   |
++-------+------------------------------------------------------------------------------------------------+
+| test  | CREATE TABLE `test` (
+          `name` varchar(80) DEFAULT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++-------+------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+
+<p>顯示 user 開頭的 table 列表</p>
+
+<pre><code>SHOW tables like 'user%';
+</code></pre>
+
+<p>Create database</p>
+
+<pre><code>CREATE DATABASE db_name
+</code></pre>
+
+<p>Use database</p>
+
+<pre><code>USE db_name
+</code></pre>
+
+<p>Drop database</p>
+
+<pre><code>DROP DATABASE db_name
+
+DROP TABLE IF EXISTS `info`;
+</code></pre>
+
+<p>Create table</p>
+
+<pre><code>CREATE TABLE table_name (no char(4), name char(10));
+
+CREATE TABLE `info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `version` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `url` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `create_time` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `version` (`model`,`version`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+</code></pre>
+
+<p>Drop table</p>
+
+<pre><code>DROP TABLE table_name;
+</code></pre>
+
+<p>Rename table name</p>
+
+<pre><code>RENAME TABLE table_name TO tt;
+</code></pre>
+
+<p>Display database list</p>
+
+<pre><code>SHOW DATABASES;
+</code></pre>
+
+<p>Display table list</p>
+
+<pre><code>SHOW TABLES;
+</code></pre>
+
+<p>Show 各 table 的筆數, 容量等等</p>
+
+<pre><code>SHOW TABLE STATUS;
+</code></pre>
+
+<p>Display table detail</p>
+
+<pre><code>DESC table_name;
+</code></pre>
+
+<p>Show index of a table</p>
+
+<pre><code>SHOW INDEX FROM table_name;
+</code></pre>
+
+<p>Alter column</p>
+
+<pre><code>ALTER TABLE qq_tab CHANGE qq_col qq_col varchar(80) NOT NULL;
+</code></pre>
+
+<p>Add column</p>
+
+<pre><code>ALTER TABLE tt ADD phone varchar(40);
+</code></pre>
+
+<p>Primary key</p>
+
+<pre><code>ALTER TABLE gearman_queue ADD COLUMN `id` INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT;
+</code></pre>
+
+<p>Replace</p>
+
+<pre><code>UPDATE table_name SET field=replace(field, &quot;android&quot;, &quot;iphone&quot;);
+UPDATE `supe_spacenews` SET `message` = REPLACE(`message`,'要替換的文字','替換後的文字') WHERE `message` LIKE '%要替換的文字%'
+</code></pre>
+
+<p>將欄位改成 allow null</p>
+
+<pre><code>ALTER TABLE my_table MODIFY url varchar(100);
+</code></pre>
+
+<p>Show index</p>
+
+<pre><code>SHOW INDEX FROM my_table;
+</code></pre>
+
+<p>Foreign key</p>
+
+<pre><code>SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=1;
+</code></pre>
+
+<p>顯示 Table 的 Index</p>
+
+<pre><code>SHOW INDEX FROM users;
+</code></pre>
+
+<p>刪除資料表內的所有資料,並且重置AUTO_INCREMENT</p>
+
+<pre><code>TRUNCATE TableName
+</code></pre>
+
+<p>LIKE IN 語法怎麼辦? 使用 REGEXP</p>
+
+<pre><code>SELECT * FROM students WHERE name REGEXP 'bob|test|joyce';
+</code></pre>
+
+<p>設定 AUTO_INCREMENT</p>
+
+<pre><code>ALTER TABLE tbl AUTO_INCREMENT = 5;
+</code></pre>
+
+<p>更新與 users.uid 的關聯 parent_id</p>
+
+<pre><code>UPDATE parents set parent_id = (SELECT uid from users where users.username = parents.parent) where parents.parent != ''
+</code></pre>
+
+<h2 id="匯入匯出資料庫">匯入匯出資料庫</h2>
+
+<p>mysqldump 無法將密碼寫在指令上 e.g. <code>--password=00000000</code>, 所要要改用 config 的方式</p>
+
+<pre><code>/home/web-admin/db_backup/my.cnf:
+
+    [mysqldump]
+    password=00000000
+
+mysqldump --defaults-file=/home/web-admin/db_backup/my.cnf --opt -u root my_db &gt; my_db_backup.sql
+</code></pre>
+
+<p>匯出test資料庫, user為test, 密碼送出才輸入, 匯出到目前的目錄, 檔案名稱為test_backup.sql</p>
+
+<pre><code>mysqldump --opt -u test -p db_name &gt; db_name_backup.sql
+</code></pre>
+
+<p>建立 test 使用者及建立 test 資料庫</p>
+
+<pre><code>mysql&gt; GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'test'@'localhost' IDENTIFIED BY PASSWORD '*A8950BFBF9522A31DA227E7E1E751E2DC0691964' WITH GRANT OPTION;
+mysql&gt; create database db_name
+</code></pre>
+
+<p>匯入 test 資料庫 (不論是匯入 database 或是 table, 寫法都一樣)</p>
+
+<pre><code>mysql -u root -p db_name &lt; db_name_backup.sql
+</code></pre>
+
+<p>匯出單筆 user 資料</p>
+
+<pre><code>mysqldump -u root my_db user -w &quot;email='test_user@gmail.com'&quot;
+</code></pre>
+
+<p>匯出 test DB, 無資料(但仍保留AUTO_INCREMENT)</p>
+
+<pre><code>mysqldump --opt -u test -p --no-data test &gt; test_backup.sql
+</code></pre>
+
+<blockquote>
+<p>如果使用 innoDB 可能會有 lock 情況造成無法匯出, 加上 <code>--lock-tables=false</code></p>
+</blockquote>
+
+<p>匯出 test DB 裡的 qq table, 無資料(但仍保留AUTO_INCREMENT)</p>
+
+<pre><code>mysqldump --opt -u test -p --no-data test qq &gt; test_qq_backup.sql
+</code></pre>
+
+<p>匯出 test DB 的 groups 資料表 uid=6 的資料</p>
+
+<pre><code>mysqldump -u root test groups -w &quot;uid=6&quot; &gt; group_test.sql
+</code></pre>
+
+<p>匯出 test DB, 無資料, AUTO_INCREMENT重置</p>
+
+<pre><code>mysqldump -u test -p --no-data --skip-add-drop-table test | sed 's/AUTO_INCREMENT=[0-9]*\b//' &gt; test_backup.sql
+</code></pre>
+
+<p>匯出遠端 mysql 資料</p>
+
+<pre><code>mysqldump -h sqlserver.com -u me -p123 me_test user -w &quot;name='test'&quot; &gt; qq
+
+Host : sqlserver.com
+Account : me
+Password : 123
+DB : me_test
+Table : user
+WHERE 條件 : name='test'
+</code></pre>
+
+<h2 id="程式裡會用到的語法">程式裡會用到的語法</h2>
+
+<p>INSERT</p>
+
+<pre><code>INSERT INTO test2 (name, passwd) VALUES ('test', '123');
+</code></pre>
+
+<p>INSERT IF NOT EXISTS</p>
+
+<pre><code>INSERT INTO promote_grab (m_id)
+SELECT (2)
+FROM DUAL
+WHERE NOT EXISTS(SELECT 1 FROM promote_grab WHERE m_id = 2)
+</code></pre>
+
+<blockquote>
+<p>插入 m_id = 2 到 promote_grab, 如果 promote_grab 不存在 m_id =2 :</p>
+</blockquote>
+
+<p>INSERT IGNORE (if exists)</p>
+
+<pre><code>INSERT IGNORE INTO books (id, title, author, year_published) VALUES (1, 'Green Eggs and Ham', 'Dr. Seuss', 1960)
+</code></pre>
+
+<blockquote>
+<p>插入一樣的 index 如果已存在就會 ignore 不會噴 error</p>
+</blockquote>
+
+<p>INSERT or UPDATE IF EXISTS</p>
+
+<pre><code>INSERT INTO table (id, name, age) VALUES(1, &quot;A&quot;, 19) ON DUPLICATE KEY UPDATE name=&quot;A&quot;, age=19
+</code></pre>
+
+<p>INSERT Table to another one : 將 user 資料表的資料都 insert 到 user2 資料表 :</p>
+
+<pre><code>INSERT INTO `user2` SELECT * FROM `user`
+</code></pre>
+
+<p>Insert or Update</p>
+
+<pre><code>INSERT INTO student (id, name) VALUES('1', 'test') ON DUPLICATE KEY UPDATE name='Bob'
+</code></pre>
+
+<p>UPDATE</p>
+
+<pre><code>UPDATE question_options SET question_id = 20, optional_item = 5 WHERE id = 64;
+</code></pre>
+
+<p>UPDATE with EXISTS</p>
+
+<pre><code>UPDATE suppliers
+SET supplier_name = (SELECT customers.customer_name
+                     FROM customers
+                     WHERE customers.customer_id = suppliers.supplier_id)
+WHERE EXISTS (SELECT *
+              FROM customers
+              WHERE customers.customer_id = suppliers.supplier_id);
+</code></pre>
+
+<p>DELETE</p>
+
+<pre><code>DELETE FROM videos WHERE id=1;
+</code></pre>
+
+<p>DELETE with EXISTS</p>
+
+<pre><code>DELETE FROM suppliers
+WHERE EXISTS (SELECT *
+              FROM orders
+              WHERE suppliers.supplier_id = orders.supplier_id);
+</code></pre>
+
+<p>將 time 欄位加30天</p>
+
+<pre><code>DATE_ADD(time, INTERVAL 30 DAY) AS after_time
+</code></pre>
+
+<p>select 特定時間</p>
+
+<pre><code>select * from device where date_format(update_time, '%Y-%m-%d') = '2014-10-23';
+</code></pre>
+
+<p>WHERE json 裡的欄位</p>
+
+<pre><code>SELECT * FROM `user` WHERE profile-&gt;&quot;$.email&quot; != &quot;&quot;                         // email 是欄位名稱
+SELECT * FROM `user` WHERE profile-&gt;'$.&quot;example+11@example.com&quot;' != &quot;&quot;      // 如果欄位名稱有符號要用 雙引號包起來
+</code></pre>
+
+<p>IFNULL(x, y): 如果 <code>x</code> 欄位的值是 NULl 就回傳 x, 否則是 y</p>
+
+<pre><code>GROUP BY IFNULL(ann_id, id)
+</code></pre>
+
+<p>FORCE INDEX 強制指定某個 index  (寫在 from 前)</p>
+
+<pre><code>FORCE INDEX (uid+age+created_at)
+</code></pre>
+
+<p>LIMIT &amp; OFFSET</p>
+
+<pre><code>// return only 10 records, start on record 16 (OFFSET 15)
+SELECT * FROM Orders LIMIT 10 OFFSET 15
+SELECT * FROM Orders LIMIT 15, 10
+</code></pre>
+
+<blockquote>
+<p>當資料筆數很大, 且 OFFSET 很大的話, 效能會很不好, 解決方式是不要用 OFFSET, 改用 PK id <code>&lt;</code> 每次撈取的最後一個 id</p>
+</blockquote>
+
+<p>UNION 將兩個不同表但欄位類似的 Query 合成一個結果</p>
+
+<pre><code>SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers
+ORDER BY City;
+</code></pre>
+
+<blockquote>
+<p>如果只取一個欄位的話, <code>UNION</code> 預設會幫你去除重覆的, 如果要顯示重覆的話要用 <code>UNION ALL</code></p>
+</blockquote>
+
+<p>UNION + Unique 每個欄位</p>
+
+<pre><code>SELECT * FROM (
+    SELECT City, Code FROM Customers
+    UNION
+    SELECT City, Code FROM Suppliers
+    ORDER BY City;
+) C
+GROUP BY City
+</code></pre>
+
+<blockquote>
+<p>用 <code>DISTINCT</code> 沒有用, 要用 <code>GROUP BY</code></p>
+</blockquote>
+
+<h3 id="join">JOIN</h3>
+
+<p><img src="/images/posts/mysql-command-and-syntax.png" alt="gui.JPG" /></p>
+
+<p>A1</p>
+
+<pre><code>1 aaa
+2 bbb
+</code></pre>
+
+<p>A2</p>
+
+<pre><code>1 bbb
+2 ccc
+</code></pre>
+
+<p>Left join <code>SELECT * FROM `A1` LEFT JOIN A2 ON A1.did = A2.did</code></p>
+
+<pre><code>id did id did
+2 bbb 1 bbb
+1 aaa NULL NULL
+</code></pre>
+
+<p>Right join <code>SELECT * FROM `A1` RIGHT JOIN A2 ON A1.did = A2.did</code></p>
+
+<pre><code>id did id did
+2 bbb 1 bbb
+NULL NULL 2 ccc
+</code></pre>
+
+<p>Inner join <code>SELECT * FROM `A1` INNER JOIN A2 ON A1.did = A2.did</code></p>
+
+<pre><code>id did id did
+2 bbb 1 bbb
+</code></pre>
+
+<h3 id="子查詢">子查詢</h3>
+
+<h4 id="限制">限制</h4>
+
+<p>1) 不可以傳回兩個欄位以上</p>
+
+<p>2) 不可以傳回兩筆以上的紀錄</p>
+
+<pre><code>SELECT *
+FROM users
+WHERE uid = (SELECT parent_id FROM parents WHERE student_id=1109 LIMIT 1)
+</code></pre>
+
+<h2 id="其他">其他</h2>
+
+<h3 id="3-tier-category">3-tier Category</h3>
+
+<pre><code>+--------+---------------+-----------+
+| cat_id | name          | parent_id |
++--------+---------------+-----------+
+|      1 | Electronics   |         0 |
+|      2 | Appliances    |         0 |
+|      3 | Cell phones   |         1 |
+|      4 | Computers     |         1 |
+|      5 | Tablets       |         1 |
+|      6 | Smartphones   |         3 |
+|      7 | Tablet Phones |         3 |
++--------+---------------+-----------+
+
+mysql&gt; SELECT
+    -&gt; a.name AS main_category,
+    -&gt; b.name AS second_level_category,
+    -&gt; c.name AS thrid_level_category
+    -&gt;  FROM categories AS a
+    -&gt; LEFT JOIN categories AS b ON (a.cat_id=b.parent_id)
+    -&gt; LEFT JOIN categories AS c ON (b.cat_id=c.parent_id)
+    -&gt; WHERE a.parent_id=0;
++---------------+-----------------------+----------------------+
+| main_category | second_level_category | thrid_level_category |
++---------------+-----------------------+----------------------+
+| Electronics   | Cell phones           | Smartphones          |
+| Electronics   | Cell phones           | Tablet Phones        |
+| Electronics   | Computers             | NULL                 |
+| Electronics   | Tablets               | NULL                 |
+| Appliances    | NULL                  | NULL                 |
++---------------+-----------------------+----------------------+
+</code></pre>
+
+<p>Rails ORM 版</p>
+
+<pre><code>Category.from('categories AS a').where('a.parent_id = ?', 0).
+         joins('LEFT JOIN categories AS b ON (a.id = b.parent_id)').
+         joins('LEFT JOIN categories AS c ON (b.id = c.parent_id)').
+         select('a.name AS main, b.name AS second, c.name AS third')
+</code></pre>
+
+<p>ref :  <a href="http://stackoverflow.com/questions/21277663/mysql-normalization-with-category-with-1st-tier-sub-category-and-2nd-tier-sub-ca">http://stackoverflow.com/questions/21277663/mysql-normalization-with-category-with-1st-tier-sub-category-and-2nd-tier-sub-ca</a></p>
+
+<h3 id="like-語法關鍵字">LIKE 語法關鍵字 <code>_</code> <code>%</code></h3>
+
+<ul>
+<li><code>%</code> : 0 個或以上的任意字元</li>
+<li><code>_</code> : 只能有一個字元</li>
+</ul>
+
+<h3 id="how-to-prevent-sql-injection">How to prevent sql injection</h3>
+
+<ul>
+<li>限制 db user 的權限</li>
+<li>使用程式提供的工具去過濾，也盡量避免以下字元進入到 query : <code>'</code> <code>&quot;</code> <code>\</code> <code>&amp;</code> <code>*</code> <code>;</code></li>
+<li>使用 Prepare 取代 query 的變數</li>
+<li>使用一些 SQL 的檢查工具 e.g. sqlmap, SQLninja</li>
+<li>避免將 SQL 錯誤發生時的資訊印出</li>
+</ul>
+
+<h3 id="支援儲存-unicode-character-emoji-特殊字元">支援儲存 unicode character(emoji,特殊字元)</h3>
+
+<p>utf8 vs utf8mb4</p>
+
+<ul>
+<li>utf8 is a variable-length encoding. In the case of UTF-8, this means that storing one code point requires one to four bytes. However, MySQL&rsquo;s encoding called &ldquo;utf8&rdquo; only stores a maximum of three bytes per code point.</li>
+<li>utf8mb4 character set uses a maximum of four bytes per character</li>
+</ul>
+
+<p>1) 將欄位改成 utfmb4_unicode_ci</p>
+
+<p>2) 確認連線時的 <code>Server charset</code>, 如果預設是 UTF-8 Unicode (utf8), 那麼與 mysql 建立連線時的 dsn 就要加上 <code>&amp;charset=utf8mb4</code></p>
+
+<pre><code>SHOW VARIABLES WHERE variable_name LIKE 'character%' OR variable_name LIKE 'collation%'
+</code></pre>
+
+<blockquote>
+<ul>
+<li>The server character set and collation are the values of the character_set_server and collation_server system variables.</li>
+<li>The character set and collation of the default database are the values of the character_set_database and collation_database system variables.</li>
+<li>The server takes the character_set_client system variable to be the character set in which statements are sent by the client.</li>
+</ul>
+
+<p>如果連線的 client connection 沒有使用 utf8mb4, 在撈含有特殊字元的資料不會 error, 但字元會變成 <code>?</code></p>
+</blockquote>
+
+</article>
+
+
+
+</html>

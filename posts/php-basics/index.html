@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>PHP Basics | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/php-basics/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/php-basics/">PHP Basics</a></h1>
+    <p class="meta"><time datetime="2013-03-07T08:53:00Z">March 07, 2013</time></p>
+  </header>
+  
+
+<h2 id="升級-安裝-php-ubuntu">升級/安裝 PHP (Ubuntu)</h2>
+
+<p>刪除舊版本 5.0</p>
+
+<pre><code>sudo apt-get autoremove --purge php5-*
+</code></pre>
+
+<p>安裝 7.0</p>
+
+<pre><code>sudo add-apt-repository ppa:ondrej/php
+sudo apt-get -y update
+sudo apt-get install php7.0 php7.0-fpm php7.0-mysql php7.0-mcrypt php7.0-curl -y
+</code></pre>
+
+<blockquote>
+<p>安裝完 php 的 extension (e.g. mcrypt) 會自動幫你建立 <code>/etc/php/7.0/mods-available/mcrypt.ini</code> 並 link 到 <code>/etc/php/7.0/fpm/conf.d/20-mcrypt.ini</code></p>
+</blockquote>
+
+<p>Optional:</p>
+
+<ul>
+<li>php7.0-bz2 (壓縮)</li>
+<li>php7.0-dom (xml)</li>
+<li>php7.0-mbstring (處理編碼)</li>
+</ul>
+
+<p>檢查語法錯誤</p>
+
+<pre><code>$ php -l test.php
+No syntax errors detected in test.php
+</code></pre>
+
+<p>啟動php shell模式</p>
+
+<pre><code>$ php -a
+Interactive shell
+php &gt; echo &quot;Hello World!!&quot;;
+Hello World!!
+php &gt; exit                      #離開shell模式
+</code></pre>
+
+<p>開一個SERVER</p>
+
+<pre><code>php -S test.google.com:8002
+</code></pre>
+
+<p>直接執行php指令</p>
+
+<pre><code>$ php -r &quot;echo 'hello';&quot;
+hello
+</code></pre>
+
+<h2 id="環境設定">環境設定</h2>
+
+<h3 id="顯示已載入的-extension">顯示已載入的 extension</h3>
+
+<pre><code>echo &quot;&lt;pre&gt;&quot;;
+print_r(get_loaded_extensions());
+</code></pre>
+
+<p>判斷某個 extension 是否載入，未載入時載入</p>
+
+<pre><code>if ( ! extension_loaded('Memcached'))
+{
+    dl('memcached.so');
+}
+</code></pre>
+
+<h3 id="php-設定檔路徑">PHP 設定檔路徑</h3>
+
+<ul>
+<li>php.ini : <code>/etc/php5/apache2/php.ini</code></li>
+<li>session 路徑 : <code>/var/lib/php5</code></li>
+<li>pecl (php 5.4) 預設安裝路徑 <code>/usr/lib/php5/20100525/</code></li>
+</ul>
+
+<h4 id="server-variable">server variable</h4>
+
+<p>.htaccess :</p>
+
+<pre><code>setEnv STATIC_DEBUG 1
+</code></pre>
+
+<p>php :</p>
+
+<pre><code>$_SERVER['STATIC_DEBUG']
+</code></pre>
+
+<h3 id="php-ini-php-fpm-設定">PHP.ini/PHP-FPM 設定</h3>
+
+<h4 id="etc-php-7-0-fpm-php-ini-cgi-fix-pathinfo-安全性設定"><code>/etc/php/7.0/fpm/php.ini</code>: cgi.fix_pathinfo 安全性設定</h4>
+
+<p>預設為1, 可能會導致安全性問題: www.example.com/1.jpg, 改用www.example.com/1.jpg/xxx.php 會被執行 (此段未試過, 從<a href="http://www.54chen.com/php-tech/nginx-php-cgi-of-security-hole.html">此篇</a>抄過來)</p>
+
+<p>解法有兩種</p>
+
+<p>1) 將 cgi.fix_pathinfo = 0</p>
+
+<p>2) 調整 nginx 設定</p>
+
+<pre><code>if ( $fastcgi_script_name ~ \..*\/.*php ) {
+    return 403;
+}
+</code></pre>
+
+<h4 id="etc-php-7-0-fpm-pool-d-www-conf-process-manager-相關設定"><code>/etc/php/7.0/fpm/pool.d/www.conf</code>: process manager 相關設定</h4>
+
+<pre><code>pm = dynamic
+pm.max_children = 15
+pm.start_servers = 5
+pm.min_spare_servers = 5
+pm.max_spare_servers = 15
+pm.max_requests = 500
+
+
+access.log = /var/log/php-fpm/$pool.access.log
+slowlog = /var/log/php-fpm/$pool.log.slow
+
+
+php_admin_value[error_log] = /var/log/php-fpm/www-error.log
+php_admin_flag[log_errors] = on
+</code></pre>
+
+<h3 id="etc-php-7-0-fpm-php-fpm-conf"><code>/etc/php/7.0/fpm/php-fpm.conf</code>:</h3>
+
+<pre><code># 修改 log path
+error_log = /var/log/php-fpm/php7.0-fpm.log`
+</code></pre>
+
+<h3 id="php-fpm-執行失敗">php-fpm 執行失敗</h3>
+
+<p>查 <code>/var/log/nginx/error.log</code> 顯示 <code>/run/php/php7.0-fpm.sock</code> 不存在 :</p>
+
+<pre><code>2017/08/07 09:03:09 [crit] 4711#0: *1 connect() to unix:/run/php/php7.0-fpm.sock failed (2: No such file or directory) while connecting to upstream, client: 127.0.0.1, server: astra.cloud, request: &quot;GET /api/ HTTP/1.1&quot;, upstream: &quot;fastcgi://unix:/run/php/php7.0-fpm.sock:&quot;, host: &quot;127.0.0.1:8080&quot;
+</code></pre>
+
+<p>表示可能 php-fpm 沒執行成功, 發現重新執行 php-fpm 雖然成功, 但是 process 啟動後就被 kill 了</p>
+
+<pre><code>$ sudo /etc/init.d/php7.0-fpm start
+php7.0-fpm start/running, process 7801
+</code></pre>
+
+<p>檢查 <code>/var/log/php7.0-fpm.log</code> 有沒有 error message</p>
+
+<p>如果上面的 log 沒有顯示 error message, 看看 <code>/var/log/syslog</code> 有沒有相關線索</p>
+
+<pre><code>Aug  7 09:47:45 ip-10-0-13-120 kernel: [23129.971713] init: php7.0-fpm main process ended, respawning
+Aug  7 09:47:45 ip-10-0-13-120 kernel: [23129.997879] init: php7.0-fpm main process (14519) terminated with status 78`
+</code></pre>
+
+<p>或直接使用 test 參數看 php-fpm 問題出在哪</p>
+
+<pre><code>$ sudo php-fpm7.0 -t
+[07-Aug-2017 09:56:26] ERROR: failed to open access log (/var/log/php-fpm/www.access.log): No such file or directory (2)
+[07-Aug-2017 09:56:26] ERROR: failed to post process the configuration
+[07-Aug-2017 09:56:26] ERROR: FPM initialization failed
+
+php-fpm 沒有權限建立我指定的 log path, 當我建立好之後就正常了
+$ sudo php-fpm7.0 -t
+[07-Aug-2017 09:58:19] NOTICE: configuration file /etc/php/7.0/fpm/php-fpm.conf test is successful
+</code></pre>
+
+<h3 id="安裝其他-extension">安裝其他 extension</h3>
+
+<p>redis</p>
+
+<pre><code>1) sudo vim /etc/php/7.0/mods-available/redis.ini
+```
+extension=redis.so
+```
+
+2)
+sudo ln -s /etc/php/7.0/mods-available/redis.ini /etc/php/7.0/cli/conf.d/20-redis.ini
+sudo ln -s /etc/php/7.0/mods-available/redis.ini /etc/php/7.0/fpm/conf.d/20-redis.ini
+
+3) restart php-fpm
+
+4) 如果依然顯示 `Exception: Class 'Redis' not found` 就執行 `sudo apt-get install php-redis`, 再 restart php-fpm
+</code></pre>
+
+<p>將 session 改使用 redis, <code>/etc/php/7.0/fpm/pool.d/www.conf</code></p>
+
+<pre><code>php_value[session.save_path] = tcp://redis.astra.ap-northeast-1.local:6379
+</code></pre>
+
+<h3 id="session-存活時間">Session 存活時間</h3>
+
+<p>php.ini :</p>
+
+<pre><code>session.cookie_lifetime = 0             // The value 0 means &quot;until the browser is closed.&quot;
+session.gc_maxlifetime = 1440           // session 最多存活時間 (seconds)
+</code></pre>
+
+<h2 id="語法">語法</h2>
+
+<h3 id="include-vs-require-require-vs-require-once">include vs require &amp; require vs require_once</h3>
+
+<ul>
+<li>The require() function is identical to include(), except that it handles errors differently. If an error occurs, the include() function generates a warning, but the script will continue execution. The require() generates a fatal error, and the script will stop.</li>
+<li>The require_once() statement is identical to require() except PHP will check if the file has already been included, and if so, not include (require) it again.</li>
+</ul>
+
+<h3 id="json-encode-中文亂碼">json_encode 中文亂碼</h3>
+
+<p>預設轉為json時, 如果裡面包含中文, 會被轉成編碼, 如:<code>\u53f0\u6e7e \u53f0\u5317\u5e02</code></p>
+
+<p>如果加上第二個參數 <code>JSON_UNESCAPED_UNICODE</code>:</p>
+
+<pre><code>json_encode($data, JSON_UNESCAPED_UNICODE)
+</code></pre>
+
+<p>出來json就會是中文了 : <code>台湾 台北市</code></p>
+
+<h3 id="將字串切割成陣列">將字串切割成陣列</h3>
+
+<pre><code>$row_arr = preg_split('/\s+/', $row, $limit = 5);
+</code></pre>
+
+<blockquote>
+<p>第三個參數指定要切幾次
+array preg_split ( string $pattern , string $subject [, int $limit = -1 [, int $flags = 0 ]] )</p>
+</blockquote>
+
+<h3 id="字串也能用陣列來取字元">字串也能用陣列來取字元</h3>
+
+<pre><code>$a = &quot;238dsfjkh2378afhkj234d&quot;;
+php &gt; echo $a[0];
+2
+php &gt; echo $a[1];
+3
+</code></pre>
+
+<h3 id="php-multiple-replace">php multiple replace</h3>
+
+<pre><code>$patterns = array(&quot;this&quot;, &quot;that&quot;, &quot;other&quot;);
+$regex = '/(' .implode('|', $patterns) .')/i';
+if (preg_replace($regex, &quot;me&quot;)) { ...
+</code></pre>
+
+<h3 id="rawurlencode-與-urlencode-的差異">rawurlencode 與 urlencode 的差異</h3>
+
+<h4 id="編碼後都一樣的符號">編碼後都一樣的符號:</h4>
+
+<p><code>`</code>  <code>!</code>  <code>@</code>  <code>#</code>  <code>$(錢號)</code>  <code>%</code>  <code>^</code>  <code>&amp;</code>  <code>*</code>  <code>(</code>  <code>)</code>  <code>_</code>  <code>-</code>  <code>+</code>  <code>=</code>  <code>&lt;</code>  <code>&gt;</code>  <code>,</code>  <code>.</code>  <code>/</code>  <code>?</code>  <code>|</code>  <code>\</code>  <code>'</code>  <code>&quot;</code>  <code>:</code>  <code>;</code>  <code>{</code>  <code>}</code>  <code>[</code>  <code>]</code>  <code>數字</code>  <code>英文</code>  <code>中文</code></p>
+
+<h4 id="不同的">不同的:</h4>
+
+<p><code>~</code></p>
+
+<pre><code>urlencode('~') : %7E
+rawurlencode('~') : ~
+</code></pre>
+
+<p><code>(空格)</code></p>
+
+<pre><code>urlencode(' ') : +
+rawurlencode(' ') : %20
+</code></pre>
+
+<h3 id="php-傳json物件給javascript">php 傳json物件給javascript</h3>
+
+<p>php :</p>
+
+<pre><code>&lt;input type=&quot;hidden&quot; id=&quot;json-uids&quot; value='&lt;?php if (isset($uids)) echo json_encode($uids); ?&gt;'/&gt;
+</code></pre>
+
+<p>javascript :</p>
+
+<pre><code>var j = JSON.parse($('#json-uids').val());
+</code></pre>
+
+<h3 id="不顯示錯誤訊息">不顯示錯誤訊息 : <code>@</code></h3>
+
+<pre><code>@ rename($old_name, $new_name)
+</code></pre>
+
+<blockquote>
+<p>加上<code>@</code>後，發生錯誤時頁面上不顯示錯誤訊息，但還是會記log (codeigniter測試)</p>
+</blockquote>
+
+<h3 id="脫逸">脫逸</h3>
+
+<p>只有單引號裡的<code>\</code>需要特別脫逸 : <code>'\\'</code>，其他符號都不需脫逸</p>
+
+<h3 id="php-debug">php debug</h3>
+
+<pre><code>echo &quot;&lt;pre&gt;&quot; . print_r($user_list) . &quot;&lt;/pre&gt;&quot;;
+</code></pre>
+
+<p>browser 顯示結果 :</p>
+
+<pre><code>Array
+(
+    [0] =&gt; Array
+        (
+            [id] =&gt; 1
+                            [name] =&gt; test_user
+        )
+ )
+</code></pre>
+
+<h3 id="隱藏錯誤">隱藏錯誤</h3>
+
+<pre><code>error_reporting(E_ALL ^ E_STRICT);
+</code></pre>
+
+<h3 id="php-內部常數">PHP 內部常數</h3>
+
+<p><code>DIRECTORY_SEPARATOR</code> 是 php 內部變數, 在 windows 為 <code>\</code>, linux 為 <code>/</code></p>
+
+<h3 id="php-script-宣告">php script 宣告</h3>
+
+<pre><code>#!/usr/bin/php
+&lt;?php
+// code..
+?&gt;
+</code></pre>
+
+<h3 id="php-script-接收指令參數">php script 接收指令參數</h3>
+
+<p>執行 php script 並接收入進來的參數, 指令 : <code>php t.php Hello-World</code></p>
+
+<p>t.php :</p>
+
+<pre><code>echo $argv[1];              // Hello-World
+</code></pre>
+
+<h3 id="簡寫">簡寫</h3>
+
+<p>if else :</p>
+
+<pre><code>php &gt; ($a &gt; 0) ? $b = 2 : $b = 3; echo $b;
+2
+</code></pre>
+
+<p>另種寫法 :</p>
+
+<pre><code>php &gt; $a = 1;
+
+// 成立
+php &gt; ($a &gt; 0) &amp;&amp; $b = 2; echo $b;
+2
+
+// 不成立
+php &gt; ($a &lt; 0) &amp;&amp; $b = 3; echo $b;
+2
+</code></pre>
+
+<h3 id="檢查及引入某個-module-ex-mcrypt">檢查及引入某個 module (ex: mcrypt)</h3>
+
+<p><code>php -m | grep mcrypt</code> : 檢查 mcrypt 有沒有引入</p>
+
+<p>沒有則執行以下</p>
+
+<pre><code>sudo apt-get install php5-mcrypt
+sudo php5enmod mcrypt
+</code></pre>
+
+<blockquote>
+<p>使用 nginx 記得重啟 fpm : <code>sudo service php5-fpm restart</code></p>
+</blockquote>
+
+<h3 id="regex">Regex</h3>
+
+<h4 id="preg-match">preg_match</h4>
+
+<pre><code>return preg_match('/pattern/flag', $str);    //返回TRUE, FALSE
+</code></pre>
+
+<h4 id="preg-replace">preg_replace</h4>
+
+<p>Example 1</p>
+
+<pre><code>$str = 'aabbccddeeffccggii';
+$str = preg_replace('/cc/', '\\1(cc)被取代了', $str);
+</code></pre>
+
+<p>結果為 : <code>aabb(cc)被取代了ddeeff(cc)被取代了ggii</code></p>
+
+<p>Example 2</p>
+
+<pre><code>$str = 'qq-qq-QQ';
+$reg = '/qq/';
+echo preg_replace($reg,'哈',$str);    //參數分別為 (pattern , 要取代的字串 , 原字串)
+</code></pre>
+
+<p>結果為 : <code>顯示結果為 : 哈-哈-QQ</code></p>
+
+<h4 id="取得比對結果存進正則變數">取得比對結果存進正則變數</h4>
+
+<p>Example 1</p>
+
+<pre><code>$str = 'aabbccddeeffccggiiCC';
+$str = preg_replace('/cc/i', &quot;[\\0]&quot;, $str);    //忽略大小寫 , 結果為 : aabb[cc]ddeeff[cc]ggii[CC]
+echo $str;
+</code></pre>
+
+<blockquote>
+<p><code>\\0</code> 是取得比對到的字串 , 我們將比對到的字串加上中括號。 <strong>似乎pattern未加上括號只能用\0去取變數</strong></p>
+</blockquote>
+
+<p>Example 2</p>
+
+<pre><code>$str = 'aabbccddeeffccggiiCC';
+$str = preg_replace('/(cc)/i', &quot;[\\1]&quot;, $str);    //忽略大小寫 , 結果為 : aabb[cc]ddeeff[cc]ggii[CC]
+echo $str.'&lt;br&gt;';
+</code></pre>
+
+<blockquote>
+<p>註 : pattern 對要比對的字串加上括號 , <code>\\1</code> 是取得比對到的字串 , 最後將比對到的字串加上中括號</p>
+</blockquote>
+
+<h4 id="其他">其他</h4>
+
+<p>pattern escape</p>
+
+<ul>
+<li><code>/</code> : <code>\\/</code></li>
+<li><code>(</code> : <code>\(</code></li>
+<li><code>)</code> : <code>\)</code></li>
+<li><code>.</code> : <code>\.</code></li>
+</ul>
+
+<p>擲出第一張長寬各大於100的圖, 如果都沒有就擲第一張圖</p>
+
+<pre><code>$url = $this-&gt;input-&gt;get_post('url');
+if ( ! $html_content = @file_get_contents($url))
+{
+    return $this-&gt;_outputJSON(array('status' =&gt; 'fail', 'error' =&gt; 'Wrong url'));
+}
+$patten = &quot;/&lt;img.*src=\&quot;(((http[s]?):\/\/|www\.)([^\s\[\\\&quot;'])+)\&quot;.*&gt;/&quot;;
+if (preg_match_all($patten, $html_content, $matches, PREG_SET_ORDER))
+{
+    foreach ($matches as $match)
+    {
+        list($width, $height) = getimagesize($match[1]);
+        if ($width &gt;= 100 OR $height &gt;= 100)
+        {
+            return $this-&gt;_outputJSON(array('status' =&gt; 'ok', 'url' =&gt; $match[1]));
+        }
+    }
+    return $this-&gt;_outputJSON(array('status' =&gt; 'ok', 'url' =&gt; $matches[0][1]));
+}
+return $this-&gt;_outputJSON(array('status' =&gt; 'fail', 'error' =&gt; 'Image not found'));
+</code></pre>
+
+<p>如果只要單一match的話使用</p>
+
+<pre><code>if (preg_match($patten, $html_content, $matches, PREG_OFFSET_CAPTURE))
+</code></pre>
+
+<h3 id="difference-between-htmlentities-and-htmlspecialchars">Difference between <code>htmlentities</code> and <code>htmlspecialchars</code></h3>
+
+<h4 id="相同處">相同處</h4>
+
+<p>兩者都會轉換以下符號 :</p>
+
+<ul>
+<li><code>&amp;</code> (ampersand) : <code>&amp;amp;</code></li>
+<li><code>&quot;</code> (double quote) : <code>&amp;quot;</code></li>
+<li><code>'</code> (single quote) : <code>'&amp;#039;</code> or <code>&amp;apos;</code></li>
+<li><code>&lt;</code> (less than) : <code>&amp;lt;</code></li>
+<li><code>&gt;</code> (greater than) : <code>&amp;gt;</code></li>
+</ul>
+
+<p><strong>兩者都不會轉換<code>英文</code>、<code>數字</code>、<code>括號</code>及<code>分號</code></strong></p>
+
+<h4 id="不同處">不同處</h4>
+
+<ul>
+<li>htmlspecialchars 只轉換以上的 HTML 符號</li>
+<li>htmlentities 除了轉換以上的 HTML 符號, 也轉換中文</li>
+</ul>
+
+<h4 id="example">Example</h4>
+
+<p>不包含中文, 程式碼 :</p>
+
+<pre><code>echo htmlentities(&quot;&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;&quot;);
+echo htmlspecialchars(&quot;&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;&quot;);
+</code></pre>
+
+<p>轉換後的原始碼 :</p>
+
+<pre><code>&amp;lt;script type='text/javascript'&amp;gt;alert(1);&amp;lt;/script&amp;gt;
+&amp;lt;script type='text/javascript'&amp;gt;alert(1);&amp;lt;/script&amp;gt;
+</code></pre>
+
+<p>顯示結果 :</p>
+
+<pre><code>&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;
+&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;
+</code></pre>
+
+<blockquote>
+<p>兩者結果相同</p>
+</blockquote>
+
+<p>包含中文, 程式碼 :</p>
+
+<pre><code>echo htmlentities(&quot;&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;測試&quot;);
+echo htmlspecialchars(&quot;&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;測試&quot;);
+</code></pre>
+
+<p>轉換後的原始碼 :</p>
+
+<pre><code>&amp;lt;script type='text/javascript'&amp;gt;alert(1);&amp;lt;/script&amp;gt;&amp;aelig;&amp;cedil;&amp;not;&amp;egrave;&amp;copy;&amp;brvbar;
+&amp;lt;script type='text/javascript'&amp;gt;alert(1);&amp;lt;/script&amp;gt;測試
+</code></pre>
+
+<p>顯示結果 :</p>
+
+<pre><code>&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;a﹐?ec|
+&lt;script type='text/javascript'&gt;alert(1);&lt;/script&gt;測試
+</code></pre>
+
+<blockquote>
+<p>兩者結果不同</p>
+</blockquote>
+
+<h4 id="結論">結論 :</h4>
+
+<ol>
+<li>如果只有數字、英文、符號, 這兩者轉換後的結果完全沒差</li>
+<li>但如果有包含中文, 結果就會不同。 htmlentities 會轉換中文</li>
+<li>htmlspecialchars 速度會比 htmlentities 快</li>
+</ol>
+
+<p>參考資料 :</p>
+
+<ul>
+<li><a href="http://blog.fesite.com/2007/08/23/php-htmlentities-htmlspecialchars/">http://blog.fesite.com/2007/08/23/php-htmlentities-htmlspecialchars/</a></li>
+<li><a href="http://www.sitepoint.com/forums/showthread.php?574723-don-t-use-htmlentities()-use-htmlspecialchars()-instead-faster-and-UTF-8-compat">http://www.sitepoint.com/forums/showthread.php?574723-don-t-use-htmlentities()-use-htmlspecialchars()-instead-faster-and-UTF-8-compat</a></li>
+</ul>
+
+<h3 id="exec-執行外部指令">exec() 執行外部指令</h3>
+
+<p>exec() 是用來執行外部指令，並且可以透過它取得執行結果</p>
+
+<h4 id="分析-exec-ls-l-2-1-result-is-fail">分析 <code>exec('ls -l 2&gt;&amp;1', $result, $is_fail)</code></h4>
+
+<p>[1] 首先第一個參數是 command line，執行的是<code>ls -l</code>指令</p>
+
+<p>[2] 第二個參數是當執行成功才會有值，失敗則不會有值</p>
+
+<blockquote>
+<p>原本執行錯誤時 $result 是不會有值的，但當 command line 加上<code>2&gt;&amp;1</code>就可以將錯誤訊息回傳給 $result</p>
+</blockquote>
+
+<p>[3] 第三個參數為狀態碼，簡單來說就是執行成功為 0，非 0 則是失敗</p>
+
+<ul>
+<li>1   : Catchall for general errors</li>
+<li>2   : Misuse of shell builtins (according to Bash documentation)</li>
+<li>126 : Command invoked cannot execute</li>
+<li>127 : &ldquo;command not found&rdquo;</li>
+<li>128 : Invalid argument to exit</li>
+</ul>
+
+<p>不要完全相信以上表的錯誤訊息, 建議要取得準確的錯誤訊息還是加上<code>2&gt;&amp;1</code>比較好</p>
+
+<h4 id="exec-sudo-使用-sudo-執行指令">exec(&lsquo;sudo &hellip;..&rsquo;), 使用 sudo 執行指令</h4>
+
+<p>[1] apache 預設執行身份在 <code>/etc/apache2/envvars</code></p>
+
+<pre><code>export APACHE_RUN_USER=www-data
+export APACHE_RUN_GROUP=www-data
+</code></pre>
+
+<p>[2] 原本是在 <code>/etc/apache2/apache2.conf</code> :</p>
+
+<p>有些 linux 的 apache 的預設執行身份不像 ubuntu 是用變數，而是直接寫死在這的, 所以 ubuntu 的 apache2.conf 會再去 load envvars，取得 user 身份 :</p>
+
+<pre><code>User ${APACHE_RUN_USER}
+Group ${APACHE_RUN_GROUP}
+</code></pre>
+
+<p>[3] 執行權限設定在 <code>/etc/sudoers</code> , apache 預設的 http user 是 <code>www-data</code></p>
+
+<p>如果要用 <code>sudo</code> 讓 <code>exec</code> 執行特定指令</p>
+
+<pre><code>www-data ALL=(ALL) NOPASSWD: /usr/sbin/smartctl,/usr/bin/php
+</code></pre>
+
+<p>允許執行所有指令:</p>
+
+<pre><code>www-data ALL=(ALL) NOPASSWD:ALL
+</code></pre>
+
+<blockquote>
+<p>為了讓 <code>exec()</code> 執行 <code>sudo</code> 時不需要輸入密碼，否則 <code>exec()</code> 沒辦法執行</p>
+</blockquote>
+
+<p>[4] 例如執行 <code>smartctl</code> 指令:</p>
+
+<pre><code>echo exec(&quot;sudo -u www-data sudo smartctl -i /dev/sda1&quot;);
+</code></pre>
+
+<blockquote>
+<p>如果 apache 預設的執行 user 是 www-data (例如: 步驟 1 預設執行 user 是 www-data)，則可以省略寫成:</p>
+</blockquote>
+
+<pre><code>echo exec(&quot;sudo smartctl -i /dev/sda1&quot;);
+</code></pre>
+
+<p>參考來源:</p>
+
+<ul>
+<li>夯哥!!</li>
+<li><a href="http://blog.sina.com.cn/s/blog_61afc02601011rgx.html">http://blog.sina.com.cn/s/blog_61afc02601011rgx.html</a></li>
+<li><a href="http://www.linuxtopia.org/online_books/advanced_bash_scripting_guide/exitcodes.html">http://www.linuxtopia.org/online_books/advanced_bash_scripting_guide/exitcodes.html</a></li>
+</ul>
+
+<h3 id="switch-0-problem">switch(0) problem</h3>
+
+<p>當switch帶0進去後會發生一些問題，先來看以下的範例：</p>
+
+<pre><code>function result($num)
+{
+    switch ($num)
+    {
+        case $num &lt; 60 :
+            echo '&lt;60';
+            break;
+        case $num &gt; 60 :
+            echo '&gt;60';
+            break;
+        default:
+            echo &quot;I don't know!&quot;;
+            break;
+    }
+}
+
+echo result(0);    // 結果：&gt;60
+echo result(1);    // 結果：&lt;60
+</code></pre>
+
+<h4 id="why">Why ?</h4>
+
+<p>答案就在 <a href="http://www.php.net/manual/en/types.comparisons.php#types.comparisions-loose">官方手冊這一頁</a> 的 <code>Loose comparisons with ==</code> 這邊，意思是說當帶0進去時它的判斷會是 <code>0 == (0&lt;60)</code>，結果就不會是你預期的，因為<code>0</code>在模糊比對裡也就是代表著<code>false</code>。</p>
+
+<h4 id="那什麼情況要用-if-else-什麼情況用-switch">那什麼情況要用<code>if else</code>什麼情況用<code>switch</code>?</h4>
+
+<p>當你要比對的是一個值而不是一個判斷句則使用switch就沒有問題 ex :</p>
+
+<pre><code>case 3 :
+    echo '這是3'；
+    break;
+</code></pre>
+
+<p>如果要比對的是一個判斷句，代入<code>&gt;0的數值</code>不會出問題，但當代入<code>0</code>時就會出問題，這不是php的bug，只能算是使用上的認知錯誤，因為我們以為它的判斷為<code>0 &gt; 60</code>，但實際上是<code>0 == (0&gt;60)</code>，所以比對判斷句就使用<code>if else</code>吧！</p>
+
+<pre><code>    case $num &gt; 60 :
+        echo '大於60';
+    break;
+</code></pre>
+
+<p>ref:
+夯哥</p>
+
+<h3 id="interface-abstract">Interface &amp; Abstract</h3>
+
+<p>程式碼 :</p>
+
+<pre><code>header('Content-Type: text/html; charset=utf-8');
+
+/**
+ * 題目 :
+ *      (1)有一台紅色休旅車跟藍色法拉利
+ *      (2)有前進、後退、左轉、右轉，基本功能
+ *      (3)有加速跟減速，法拉利性能較優異(法拉利加速跟減速單位都是20公里, 休旅車是10公里)
+ *      (4)紅色休旅車是自排，極速是180公里(打檔的方法我省略它沒有做)
+ *      (5)藍色法拉利是手排，極速是320公里
+ *
+ * 介面跟抽象的差異 :
+ *      (1)介面不可以定義屬性，只可以定義方法，而且只能是public，否則會得到錯誤，
+ *          如: &quot;Fatal error: Access type for interface method Car::accelerate() must be omitted in&quot;
+ *      (2)抽象可以宣告public/protected/private方法及屬性
+ *      (3)只要有一個方法宣告為abstract，類別就要宣告為abstract
+ *      (4)抽象跟類別都不能實體化，代表著 :
+ *          1. 抽象只能被繼承(一個類別只能繼承一個父類別)
+ *          2. 介面只能被實作(一個類別可以實作很多介面)
+ *
+ * 做法 :
+ *      (1)如果大家都會做一模一樣的事情，可以用抽象定義
+ *          (例如 : 因為前進、後退、左轉、右轉，動作大家都是一樣所以我在抽象定義)
+ *      (2)如果大家是做同一件事情，但做法有差異用介面定義
+ *          (例如 : 加速跟減速因為車種的性能不一樣，所以我在介面定義)
+ *      (3)封裝速度，設定上下限
+ */
+
+
+// 介面 - 車子
+interface Car {
+
+    public function accelerate($times);     // 加速
+    public function decelerate($times);     // 減速
+}
+
+// 抽像 - 操作動作
+abstract class Operate {
+
+    public $name;
+    public $color;
+    protected $_transmission;   // 排檔(手、自排)
+    private $_direction;        // 方向(左、右轉)
+    private $_movement;         // 移動(前、後)
+    abstract protected function _set_speed($speed);
+    abstract public function get_speed();
+
+    public function __construct()
+    {
+        echo &quot;$this-&gt;name [$this-&gt;color] [$this-&gt;_transmission] 生產出來了! &lt;br&gt;&quot;;
+    }
+
+    /**
+     * 前進
+     *
+     * @access  public
+     * @return  null
+     */
+    public function move_forward()
+    {
+        $this-&gt;_movement = '前進';
+        echo $this-&gt;name.&quot;前進了! &lt;br&gt;&quot;;
+    }
+
+    /**
+     * 後退
+     *
+     * @access  public
+     * @return  null
+     */
+    public function move_back()
+    {
+        $this-&gt;_movement = '後退';
+        echo $this-&gt;name.&quot;後退了! &lt;br&gt;&quot;;
+    }
+
+    /**
+     * 左轉
+     *
+     * @access  public
+     * @return  null
+     */
+    public function turn_left()
+    {
+        $this-&gt;_direction = '左轉';
+        echo $this-&gt;name.&quot;左轉了! &lt;br&gt;&quot;;
+    }
+
+    /**
+     * 右轉
+     *
+     * @access  public
+     * @return  null
+     */
+    public function turn_right()
+    {
+        $this-&gt;_direction = '右轉';
+        echo $this-&gt;name.&quot;右轉了! &lt;br&gt;&quot;;
+    }
+
+    /**
+     * 取得車子目前狀態
+     *
+     * @access  public
+     * @return  null
+     */
+    public function get_status()
+    {
+        echo $this-&gt;name.&quot;目前狀態是 : $this-&gt;_movement $this-&gt;_direction&quot;;
+    }
+}
+
+// 物件 - 休旅車
+class Suv extends Operate implements Car {
+
+    public $name = '&lt;span style=&quot;color:red;&quot;&gt;休旅車&lt;/span&gt;';
+    public $color = '紅';
+    protected $_transmission = '自排';
+    private $_speed = 0;
+
+    /**
+     * set速度變數(極速180)
+     *
+     * @access  protected
+     * @param   int
+     * @return  null
+     */
+    protected function _set_speed($speed)
+    {
+        $this-&gt;_speed += $speed;
+        if ($this-&gt;_speed &gt;= 180)
+        {
+            $this-&gt;_speed = 180;
+        }
+        elseif ($this-&gt;_speed &lt;= 0)
+        {
+            $this-&gt;_speed = 0;
+        }
+    }
+
+    /**
+     * get速度變數
+     *
+     * @access  public
+     * @return  int
+     */
+    public function get_speed()
+    {
+        echo &quot;，目前時速是 : &quot;.$this-&gt;_speed.&quot; km/h &lt;br&gt;&quot;;
+        return $this-&gt;_speed;
+    }
+
+    /**
+     * 加速
+     *
+     * @access  public
+     * @param   int         $times 加速的次數
+     * @return  null
+     */
+    public function accelerate($times = 1)
+    {
+        $this-&gt;_set_speed(10 * $times);
+        echo $this-&gt;name.&quot;加速&quot;.(10 * $times).&quot; km/h，目前時速是 : $this-&gt;_speed&lt;br&gt;&quot;;
+    }
+
+    /**
+     * 減速
+     *
+     * @access  public
+     * @param   int         $times 減速次數
+     * @return  null
+     */
+    public function decelerate($times = 1)
+    {
+        $this-&gt;_set_speed(-10 * $times);
+        echo $this-&gt;name.&quot;減速&quot;.(-10 * $times).&quot; km/h，目前時速是 : $this-&gt;_speed&lt;br&gt;&quot;;
+    }
+}
+
+// 物件 - 法拉利
+class Ferrari extends Operate implements Car {
+
+    public $name = '&lt;span style=&quot;color:blue;&quot;&gt;法拉利&lt;/span&gt;';
+    public $color = '藍';
+    protected $_transmission = '手排';
+    private $_speed = 0;
+
+    /**
+     * set速度變數(極速320)
+     *
+     * @access  protected
+     * @param   int
+     * @return  null
+     */
+    protected function _set_speed($speed)
+    {
+        $this-&gt;_speed += $speed;
+        if ($this-&gt;_speed &gt;= 320)
+        {
+            $this-&gt;_speed = 320;
+        }
+        elseif ($this-&gt;_speed &lt;= 0)
+        {
+            $this-&gt;_speed = 0;
+        }
+    }
+
+    /**
+     * get速度變數
+     *
+     * @access  public
+     * @return  int
+     */
+    public function get_speed()
+    {
+        echo &quot;，目前時速是 : &quot;.$this-&gt;_speed.&quot; km/h &lt;br&gt;&quot;;
+        return $this-&gt;_speed;
+    }
+
+    /**
+     * 加速
+     *
+     * @access  public
+     * @param   int         $times 加速的次數
+     * @return  null
+     */
+    public function accelerate($times = 1)     // 法拉利性能好, 所以加20
+    {
+        $this-&gt;_set_speed(20 * $times);
+        echo $this-&gt;name.&quot;加速&quot;.(20 * $times).&quot; km/h，目前時速是 : $this-&gt;_speed&lt;br&gt;&quot;;
+    }
+
+    /**
+     * 減速
+     *
+     * @access  public
+     * @param   int         $times 減速次數
+     * @return  null
+     */
+    public function decelerate($times = 1)     // 法拉利性能好, 所以減20
+    {
+        $this-&gt;_set_speed(-20 * $times);
+        echo $this-&gt;name.&quot;減速&quot;.(-20 * $times).&quot; km/h，目前時速是 : $this-&gt;_speed&lt;br&gt;&quot;;
+    }
+}
+
+
+// 建立物件
+$ferrari = new Ferrari();
+$suv = new Suv();
+
+// 執行動作
+$ferrari-&gt;move_back();
+$suv-&gt;move_back();
+$ferrari-&gt;accelerate(5);
+$ferrari-&gt;accelerate();
+$ferrari-&gt;move_forward();
+$suv-&gt;accelerate(3);
+$ferrari-&gt;decelerate(30);
+$suv-&gt;decelerate(5);
+$ferrari-&gt;turn_left();
+$suv-&gt;turn_right();
+$suv-&gt;accelerate(20);
+$ferrari-&gt;accelerate(20);
+$suv-&gt;decelerate();
+$ferrari-&gt;decelerate(4);
+$suv-&gt;decelerate(8);
+$suv-&gt;turn_left();
+$ferrari-&gt;turn_right();
+
+// 顯示最後結果
+$suv-&gt;get_status().$suv-&gt;get_speed();
+$ferrari-&gt;get_status().$ferrari-&gt;get_speed();
+</code></pre>
+
+<p>結果 :</p>
+
+<p><img src="/images/posts/php-basics.png" alt="擷取.PNG" /></p>
+
+<h3 id="self-vs-static"><code>self::</code> vs <code>static::</code></h3>
+
+<pre><code>class Parent_{
+    protected static $x = &quot;parent&quot;;
+    public static function makeTest(){
+        echo &quot;self =&gt; &quot;.self::$x.&quot;\n&quot;;
+        echo &quot;static =&gt; &quot;.static::$x.&quot;\n\n&quot;;
+    }
+}
+
+class Child_ extends Parent_{
+    protected static $x = &quot;child&quot;;
+}
+
+echo &quot;using the Parent_ class\n&quot;;
+Parent_::makeTest();
+
+echo &quot;using the Child_ class\n&quot;;
+Child_::makeTest();
+</code></pre>
+
+<p>Output:</p>
+
+<pre><code>using the Parent_ class
+self =&gt; parent
+static =&gt; parent
+
+using the Child_ class
+self =&gt; parent
+static =&gt; child
+</code></pre>
+
+<p>self only use Parent&rsquo;s variable, static can override the parent&rsquo;s variable</p>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="mysql-回覆-too-many-connections-錯誤">MySQL 回覆 Too many connections 錯誤</h3>
+
+<p>發生原因是 request 量太大，並且操作 MySQL 造成 MySQL server 無法處理他同時最大能處理的連線數所導致的</p>
+
+<p>可以查看目前與 MySQL 建立的 connections 數量</p>
+
+<pre><code>SHOW STATUS WHERE `variable_name` = 'Threads_connected';
+</code></pre>
+
+<p>最多支援的數量</p>
+
+<pre><code>SHOW VARIABLES LIKE 'max_connections';
+</code></pre>
+
+<p>或查看哪個 process 有建立連線但沒有用到 (Sleep)</p>
+
+<pre><code>SHOW FULL PROCESSLIST;
+</code></pre>
+
+<h3 id="如何確認並找出-memory-leak-問題">如何確認並找出 memory leak 問題</h3>
+
+<p>用另一個程式一直戳你覺得有問題的 api，邊用 ps 去查看 php-fpm process memory 成長的狀況，</p>
+
+<pre><code>  PID %CPU %MEM   RSS COMMAND
+19269  0.0  1.1 11872 php-fpm-7.0
+19271  2.2  2.8 28696 php-fpm-7.0
+</code></pre>
+
+<p>當 php-fpm 執行時，mem 有增長是很正常的，但執行同一個 api 幾次到一個量後就不太會變動了，如果它一直保持穩定增長，
+就表示程式有可能存在 memory leak 問題，這時候我們就要細看問題出在哪裡了。</p>
+
+<p>可以把出問題的 api 分成幾個部份，在不同地方結束，邊戳邊看 memory 的變化，看哪一段會讓 memory 突然的增加，
+如果找到在有問題的地方，可以在外層包一個迴圈印出記憶體使用量，如果 GC 後記憶體用量一直增加就能確定有 memory leak 的問題了</p>
+
+<pre><code>while (true) {
+    // do
+
+    gc_collect_cycles();
+    echo memory_get_usage() . &quot;\n&quot;;
+    usleep(2000000);                    // wait for 2 seconds
+}
+</code></pre>
+
+<h3 id="out-of-memory-錯誤">Out of memory 錯誤</h3>
+
+<h4 id="發生原因">發生原因</h4>
+
+<pre><code>Out of memory (allocated 2097152) (tried to allocate 1052672 bytes) ...略
+</code></pre>
+
+<p>不知道為什麼明明流量很小但 php-fpm 記憶體卻吃這麼多，後來發現 API 在結束之後，記憶體都不會自動釋放，有可能程式中有 memory leak 的問題，
+造成越積越多在 php-fpm 的 process，最後沒記憶體用就 crash 了</p>
+
+<p>當時總記憶體吃到 900 M+，過很長的時間 memory 都沒下降的趨勢</p>
+
+<pre><code>             total       used       free     shared    buffers     cached
+Mem:           995        921         73          0        103        123
+</code></pre>
+
+<p>Restart php-fpm 強迫釋放總記憶體後剩 426M</p>
+
+<pre><code>$ sudo /etc/init.d/php-fpm restart
+Stopping php-fpm-7.0:                                      [  OK  ]
+Starting php-fpm-7.0:                                      [  OK  ]
+
+             total       used       free     shared    buffers     cached
+Mem:           995        426        568          0        103        123
+</code></pre>
+
+<p>可以看的出來 php-fpm 吃掉很多記憶體，雖然 restart php-fpm 可以暫時解決問題，但最好的辦法還是讓 php-fpm 自已管理好記憶體</p>
+
+<h4 id="如何解決">如何解決</h4>
+
+<p>方法相當簡單，只需修改幾個 php-fpm 的設定 (<code>/etc/php-fpm-7.0.d/www.conf</code>) 就可以解決了，<a href="http://linuxbsdos.com/2015/02/17/how-to-reduce-php-fpm-php5-fpm-ram-usage-by-about-50/">詳細可以參考這篇教學</a>，</p>
+
+<p>改成 dynamic (固定數量+彈性增減)</p>
+
+<pre><code>pm = dynamic
+pm.max_children = 15
+pm.start_servers = 5            // php-fpm 一啟動就會開5個 child process 起來
+pm.min_spare_servers = 5        // 最少 5 個
+pm.max_spare_servers = 15       // 最多到 15 個
+pm.max_requests = 500
+</code></pre>
+
+<p>或改成 ondemand (有需要才服務)</p>
+
+<pre><code>pm = ondemand                   // ondemand 是最少 0 個，最多到 max_children 設定的數量
+pm.max_children = 15
+pm.process_idle_timeout = 10s   // 當 child process 閒置 10 秒自動 kill 掉
+pm.max_requests = 500
+</code></pre>
+
+<p>補充說明 :</p>
+
+<p><code>max_children</code> 要設定幾個取決於你的 php-fpm child process 吃多少記憶體，假如一個 process 吃 20MB，總記憶體有 1G，
+假設扣掉系統等等雜7雜8的程序記憶體剩 300，那你的 max_children 就是 300MB/20MB = 15 個，可以設定保守點避免 php-fpm 把記憶體吃光光</p>
+
+<p><code>max_requests</code> 建議一定要設定這個，它意思是說當 php-fpm 的 child process 處理一個特定數量的 request 後就會把它 kill 再重新產生新的 php-fpm process，
+它可以避免你因為 memory leak 問題造成整個 server crash，尤其你引入很多第三方的話你根本不知道什麼時候會出現 memory leak，即使知道了可能當下也沒辦法解，
+最保險的方法就是設定這個值，即時有 leak 但到一定 request 數量就會立即釋放讓 process 及記憶體重新來過，而且它只會影響單個 process 不用擔心會有 downtime 問題</p>
+
+<h4 id="後記">後記</h4>
+
+<p>原本以為 memory leak 發生在使用 aws sqs.sendMessage，因為除了更新 sdk，也另外單獨把 sqs 拉成一個獨立且單純的 api，並且一直戳它，
+memory 如預期一直緩慢增加且不會釋放，以為可以確認是 sqs 導致 memory leak，但是連續做 <code>執行 sqs -&gt;GC-&gt;看記億體使用量</code>，卻又很正常，
+判斷應該不是 sqs 造成的 leak，但確實是執行 sqs 會發生 leak 的狀況，或許是 php-fpm 底層有問題？最後實在找不出原因，也沒辦法解決，所以只好繞過這個問題，
+得知一個 request 大概會有 20k 的 memory leak，根據前面設定的 pm.max_requests = 500 以及 pm.max_children = 15，
+所以至少需要保留 500 * 20k * 15 = 150M 以上的記憶體做緩衝以確保 php-fpm 不會沒記憶體可用</p>
+
+</article>
+
+
+
+</html>

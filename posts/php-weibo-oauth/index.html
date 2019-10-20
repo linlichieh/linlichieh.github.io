@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>PHP Weibo Oauth | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/php-weibo-oauth/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/php-weibo-oauth/">PHP Weibo Oauth</a></h1>
+    <p class="meta"><time datetime="2013-11-26T16:23:00Z">November 26, 2013</time></p>
+  </header>
+  
+
+<h2 id="申請">申請</h2>
+
+<ul>
+<li><p>微博申請非常的麻煩, 需要負責人的身份證件等等, 過關後才可以申請網站服務</p></li>
+
+<li><p>在申請前最好先了解 &ldquo;我的應用&rdquo; 及 &ldquo;我的網站&rdquo; 的差異, 再申請適合你網站的服務</p></li>
+</ul>
+
+<p>1) 如果你的網站純粹只是要串接微博登入, 就選擇我的網站
+2) 我的應用是給如手機登入或是如 facebook app 那樣的去申請</p>
+
+<h3 id="申請我的網站">申請我的網站</h3>
+
+<p>[1] 申請</p>
+
+<ul>
+<li>在<a href="http://open.weibo.com">開發平台頁面</a> 點擊 <strong>管理中心 -&gt; 我的網站 -&gt; 添加網站</strong> (接下來審核的步驟可以先略過)</li>
+<li>網站名稱可以先隨便寫，而網站域名必須為已經註冊的域名 (EX : www.example.com 以下均用此 domain 當例子)</li>
+<li>添加網站成功後，會得到 App Key 和 App Secret ，這兩個程式裡所需要的參數</li>
+</ul>
+
+<p>[2] <strong>網站信息 -&gt; 高級信息</strong>, 在安全設置裡面，填寫網站的域名: www.example.com 及 IP: 127.0.0.1</p>
+
+<p>[3] <strong>網站信息 -&gt; 測試賬號</strong>, 設置一個管理賬號</p>
+
+<p>[4] 將域名綁定到 127.0.0.1</p>
+
+<ul>
+<li><p>因為在做 Oauth 回來後會導向你自己設定的 callback_url, 而這個 callback_url 的域名也是你在步驟 [1] 所申請的, 如果你沒有將這個域名在本機導向 127.0.0.1 的話, 就沒辦法完成剩下的步驟</p></li>
+
+<li><p>在本機的 <code>C:\Windows\System32\Drivers\etc\host</code> 檔案加上 <code>127.0.0.1       www.example.com</code></p></li>
+</ul>
+
+<p>[5] 審核</p>
+
+<ul>
+<li>如果網站還在開發階段, 可以先不用認證, 在本機開發不會有問題</li>
+<li>如果你的網站準備要開始上線了, 就可以送出認證了, 大概要3天左右</li>
+</ul>
+
+<h3 id="申請我的應用">申請我的應用</h3>
+
+<p>在開發階段要記得在 <strong>管理中心 -&gt; 應用信息 -&gt; 測試帳號</strong> 新增帳號, 否則在 Oauth 時會得到 <code>applications over the unaudited use restrictions</code> 這樣的錯誤</p>
+
+<blockquote>
+<p>注意：修改後約半小時左右時間生效</p>
+</blockquote>
+
+<p>管理中心-&gt;應用信息-&gt;高級信息設置好授權回調頁(連結要與 callback_url 一樣)</p>
+
+<blockquote>
+<p>否則會得到 <code>error:redirect_uri_mismatch</code> 這樣的錯誤訊息</p>
+</blockquote>
+
+<h3 id="補充申請手機-app">補充申請手機 app</h3>
+
+<ul>
+<li>資料可先隨便填</li>
+<li>記得加回調頁 (高級信息) : <a href="https://api.weibo.com/oauth2/default.html">https://api.weibo.com/oauth2/default.html</a></li>
+<li>測試帳號也要加上自已的微博帳號</li>
+<li>手機只需用 APP Key 就可以從 weibo login 取得 token, 然後可以傳給 server, 而 server 可以直接使用網站的 App Key 及 Secret 做登入判別, 也就是說從 weibo 建立 app 不管是網站還是手機, 取得的 token 是可以相通的</li>
+</ul>
+
+<h2 id="在做之前先了解登入-oauth-流程">在做之前先了解登入 Oauth 流程</h2>
+
+<p>[1] 在頁面上放置一個登入按鈕, 而按鈕的 link 導向你自己的某一隻程式
+[2] 判斷是否己登入過 (檢查 token), 如果未登入就導向微博 Oauth 頁面, 成功後即可取得 token
+[3] 就可以利用 token 拿你想拿的使用者資料</p>
+
+<h2 id="開始動手做-程式碼部份">開始動手做 (程式碼部份)</h2>
+
+<p>首先下載<a href="https://github.com/xiaosier/libweibo">微博 php sdk github</a></p>
+
+<p>設定好 config 方便開發 :</p>
+
+<pre><code>$config['app_id']           = (填上 app_id)
+$config['secret']           = (填上 secret)
+$config['callback_url']     = (填上 callback_url)
+</code></pre>
+
+<h3 id="此頁檢查-token-是否存在-如果沒有代表未登入">此頁檢查 token 是否存在, 如果沒有代表未登入</h3>
+
+<p>引入微博 PHP SDK, 並建立物件:</p>
+
+<pre><code>require 'saetv2.ex.class.php';
+$weiboOauth = new SaeTOAuthV2($config[&quot;app_id&quot;], $config[&quot;secret&quot;]);
+</code></pre>
+
+<p>取得登入及授權 url, 並且導向過去:</p>
+
+<pre><code>$weiboOauth-&gt;getAuthorizeURL($config[&quot;callback_url&quot;])
+</code></pre>
+
+<blockquote>
+<p>User 會被要求登入及授權, 如果通過的話, 會導向 callback_url, 並且網址後面會帶 GET : code=一串亂數</p>
+</blockquote>
+
+<h3 id="callback-url-網址的那一隻程式">callback_url 網址的那一隻程式</h3>
+
+<p>取得 token :</p>
+
+<pre><code>require 'saetv2.ex.class.php';
+$weiboOauth = new SaeTOAuthV2($config[&quot;app_id&quot;], $config[&quot;secret&quot;]);
+
+$code = $_GET['code'];
+if ($code)
+{
+    $keys = array();
+    $keys['code'] = $code;
+    $keys['redirect_uri'] = $config[&quot;callback_url&quot;];
+    try
+    {
+        $token = $weiboOauth-&gt;getAccessToken('code', $keys);
+    }
+    catch (OAuthException $e)
+    {
+        log_message('info', $e-&gt;getMessage());
+    }
+}
+</code></pre>
+
+<blockquote>
+<p>建議將 token 存到 SESSION, 方便下次判斷是否已登入及授權</p>
+</blockquote>
+
+<p>取得 user 資料 (將 token 帶入):</p>
+
+<pre><code>if (is_array($token))
+{
+    $weiboClient = new saeTClientV2($config[&quot;app_id&quot;], $config[&quot;secret&quot;], $token['access_token']);
+    $user_data = $weiboClient-&gt;show_user_by_id($token['uid']);
+    if ( ! empty($user_data['error']))
+    {
+        log_message('info', &quot;Weibo Error: {$user_data['error']}&quot;);
+    }
+}
+</code></pre>
+
+<p>User data 的值如下 :</p>
+
+<pre><code>array (
+  'id' =&gt; 3865801255,                    #用戶UID
+  'idstr' =&gt; '3865801255',
+  'class' =&gt; 1,
+  'screen_name' =&gt; 'test_user',            #微博暱稱
+  'name' =&gt; 'test_user',                   #友好顯示名稱，同微博暱稱
+  'province' =&gt; '400',                   #省份編碼（參考省份編​​碼表）
+  'city' =&gt; '4',                         #城市編碼（參考城市編碼表）
+  'location' =&gt; '海外 俄罗斯',            #所在地
+  'description' =&gt; '',                   #個人描述
+  'url' =&gt; '',                           #用戶博客地址
+  'profile_image_url' =&gt; 'http://tp4.sinaimg.cn/3865801255/50/0/1',      #自定義圖像
+  'profile_url' =&gt; 'u/3865801255',
+  'domain' =&gt; '',                        #用戶個性化URL
+  'weihao' =&gt; '',
+  'gender' =&gt; 'm',                       #性別,m--男，f--女,n--未知
+  'followers_count' =&gt; 15,               #粉絲數
+  'friends_count' =&gt; 23,                 #關注數
+  'statuses_count' =&gt; 0,                 #微博數
+  'favourites_count' =&gt; 0,               #收藏數
+  'created_at' =&gt; 'Mon Oct 21 11:48:34 +0800 2013',                      #創建時間
+  'following' =&gt; false,                  #是否已關注(此特性暫不支持)
+  'allow_all_act_msg' =&gt; false,
+  'geo_enabled' =&gt; true,
+  'verified' =&gt; false,                   #加V標示，是否微博認證用戶
+  'verified_type' =&gt; -1,
+  'remark' =&gt; '',
+  'ptype' =&gt; 0,
+  'allow_all_comment' =&gt; true,
+  'avatar_large' =&gt; 'http://tp4.sinaimg.cn/3865801255/180/0/1',
+  'avatar_hd' =&gt; 'http://tp4.sinaimg.cn/3865801255/180/0/1',
+  'verified_reason' =&gt; '',
+  'follow_me' =&gt; false,
+  'online_status' =&gt; 1,
+  'bi_followers_count' =&gt; 1,
+  'lang' =&gt; 'zh-cn',
+  'star' =&gt; 0,
+  'mbtype' =&gt; 0,
+  'mbrank' =&gt; 0,
+  'block_word' =&gt; 0,
+)
+</code></pre>
+
+<ul>
+<li>Fb 帳號若沒有 active, 會直接在 fb 頁面顯示錯誤訊息, 微博則無法判斷</li>
+<li>如果你的基本資料所在地填國外(Ex: 俄羅斯), 但返回的 lang 並不是 ru-ru, 因為 lang 並不是指你的所在地, 而是你微博頁面顯示的語言, 例如調成繁體中文, 帶回來的 &lsquo;lang&rsquo; =&gt; &lsquo;zh-tw&rsquo;</li>
+<li>注意!! 選擇英文, &lsquo;lang&rsquo; =&gt; &lsquo;en&rsquo;, 並不是我們熟悉的 <code>en-us</code></li>
+<li>FB 在這方面也一樣, 會依照網頁上顯示的語言帶不同的語言碼回來, ex : 語言選日語 &lsquo;locale&rsquo; =&gt; &lsquo;ja_JP&rsquo;</li>
+</ul>
+
+<h3 id="登出微博">登出微博 :</h3>
+
+<p>以下連結加上 token ($token[&lsquo;access_token&rsquo;])</p>
+
+<pre><code>https://api.weibo.com/2/account/end_session.json?access_token=2.00JVVcNE0O_NXn3b7d524c0cl3ekeD
+</code></pre>
+
+<blockquote>
+<p>會返回同 get_user_data 的基本資料</p>
+</blockquote>
+
+<h3 id="使用不同帳號登入">使用不同帳號登入</h3>
+
+<p>如果使用者已登入過微博並且也已經 Oauth 過了, 程式將使用者導到登入 Oauth 的頁面, 如果 token 沒過期, 微博並不會再次要求登入 Oauth, 因為它會當你已經認證過了, 而直接導到帶入的 callback_url, 這是正常的, 但是有時候需要讓使用者直接切換帳號登入 Oauth 的話, 如果要求使用者先到微博登出, 那不就太不方便了嗎?</p>
+
+<p>微博提供的作法是只要在授權連結上添加forcelogin參數，將forcelogin參數設置為true, 就可以達到強制再次做登入 Oauth</p>
+
+<pre><code>$weiboOauth-&gt;getAuthorizeURL($config[&quot;callback_url&quot;]) . '&amp;forcelogin=true';
+</code></pre>
+
+<p>ref :
+<a href="http://open.weibo.com/wiki/Direct_messages/new">http://open.weibo.com/wiki/Direct_messages/new</a>
+<a href="http://open.weibo.com/wiki/%E6%8E%A5%E5%8F%A3%E9%97%AE%E9%A2%98">官方 Q&amp;A - 接口問題</a>
+<a href="http://www.oooink.com/blog/find/c/47">http://www.oooink.com/blog/find/c/47</a>
+<a href="http://open.weibo.com/qa/index.php?qa=1457&amp;qa_1=%E8%AF%B7%E9%97%AE%EF%BC%8C%E5%A6%82%E4%BD%95%E5%9C%A8%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95%E6%96%B0%E6%B5%AA%E7%9A%84%E7%99%BB%E5%BD%95%E6%8C%89%E9%92%AE%E7%99%BB%E5%BD%95%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%EF%BC%9F">http://open.weibo.com/qa/index.php?qa=1457&amp;qa_1=%E8%AF%B7%E9%97%AE%EF%BC%8C%E5%A6%82%E4%BD%95%E5%9C%A8%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95%E6%96%B0%E6%B5%AA%E7%9A%84%E7%99%BB%E5%BD%95%E6%8C%89%E9%92%AE%E7%99%BB%E5%BD%95%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%EF%BC%9F</a></p>
+
+</article>
+
+
+
+</html>

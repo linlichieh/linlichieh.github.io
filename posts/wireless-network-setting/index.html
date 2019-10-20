@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Wireless Network | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/wireless-network-setting/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/wireless-network-setting/">Wireless Network</a></h1>
+    <p class="meta"><time datetime="2013-12-15T20:57:00Z">December 15, 2013</time></p>
+  </header>
+  
+
+<h2 id="安裝-wpa-client">安裝 wpa client</h2>
+
+<pre><code>sudo apt-get install wireless-tools wpasupplicant
+</code></pre>
+
+<h2 id="掃描無線網路">掃描無線網路</h2>
+
+<pre><code>sudo iwlist wlan0 scan | grep SSID
+                    ESSID:&quot;hinet-net4690695&quot;
+                    ESSID:&quot;BUFFALO-E05EE0&quot;
+                    ESSID:&quot;BUFFALO-E05EE0-1&quot;
+                    ESSID:&quot;kking22&quot;
+                    ESSID:&quot;TP-LINK_5499B2&quot;
+                    ESSID:&quot;HTC ONE X - test&quot;
+                    ESSID:&quot;P880&quot;
+</code></pre>
+
+<blockquote>
+<p>等等要將 SSID 填入 /etc/network/interfaces wpa-ssid 的值</p>
+</blockquote>
+
+<h2 id="新增-etc-network-interfaces">新增 /etc/network/interfaces :</h2>
+
+<pre><code>auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+wpa-ssid My-Hone-Wireless
+wpa-psk My-Password
+</code></pre>
+
+<blockquote>
+<ul>
+<li>SSID 就是無線網路的名稱</li>
+<li>WPA-PSK金鑰 就是無線網路的密碼</li>
+</ul>
+</blockquote>
+
+<h2 id="重新啟動無線網路介面">重新啟動無線網路介面</h2>
+
+<pre><code>sudo ifdown wlan0
+sudo ifup wlan0
+</code></pre>
+
+<p>成功連線的結果 :</p>
+
+<pre><code>pi@raspbmc:~$ sudo ifdown wlan0
+ifdown: interface wlan0 not configured
+pi@raspbmc:~$ sudo ifup wlan0
+ioctl[SIOCSIWAP]: Operation not permitted
+ioctl[SIOCSIWENCODEEXT]: Invalid argument
+ioctl[SIOCSIWENCODEEXT]: Invalid argument
+Internet Systems Consortium DHCP Client 4.2.2
+Copyright 2004-2011 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/wlan0/00:0b:81:84:7a:17
+Sending on   LPF/wlan0/00:0b:81:84:7a:17
+Sending on   Socket/fallback
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 4
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 11
+DHCPREQUEST on wlan0 to 255.255.255.255 port 67
+DHCPOFFER from 192.168.1.1
+DHCPACK from 192.168.1.1
+Reloading /etc/samba/smb.conf: smbd only.
+bound to 192.168.1.10 -- renewal in 38644 seconds.
+</code></pre>
+
+<p>以下是我實體網路線及無線網路都有連線的結果</p>
+
+<pre><code>pi@raspbmc:~$ ifconfig
+eth0      Link encap:Ethernet  HWaddr b8:27:eb:7e:6e:3f
+          inet addr:192.168.1.236  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::ba27:ebff:fe7e:6e3f/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:3168 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:2190 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:443833 (433.4 KiB)  TX bytes:375591 (366.7 KiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:8 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:480 (480.0 B)  TX bytes:480 (480.0 B)
+
+wlan0     Link encap:Ethernet  HWaddr 00:0b:81:84:7a:17
+          inet addr:192.168.1.10  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::20b:81ff:fe84:7a17/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:28 errors:0 dropped:2179 overruns:0 frame:0
+          TX packets:51 errors:0 dropped:3 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:31439 (30.7 KiB)  TX bytes:36803 (35.9 KiB)
+</code></pre>
+
+<h2 id="其他">其他</h2>
+
+<h3 id="如果將無線網路登入設定寫在-interfaces-裡面的一些設定寫法">如果將無線網路登入設定寫在 interfaces 裡面的一些設定寫法</h3>
+
+<p>在 <code>/etc/network/interfaces</code> 的寫法 :</p>
+
+<pre><code>wpa-scan-ssid 1
+wpa-ap-scan 1
+wpa-key-mgmt WPA-PSK
+wpa-proto RSN WPA
+wpa-pairwise CCMP TKIP
+wpa-group CCMP TKIP
+wpa-ssid &quot;My Secret SSID&quot;
+wpa-psk &quot;My SSID PSK&quot;
+</code></pre>
+
+<h3 id="另外一種連線設定-使用-wpa-supplicant">另外一種連線設定, 使用 wpa_supplicant</h3>
+
+<p><code>/etc/network/interfaces</code> :</p>
+
+<pre><code>auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+iface default inet dhcp
+</code></pre>
+
+<p>在 <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> 新增(沒有的話建立)</p>
+
+<p>完整寫法 :</p>
+
+<pre><code>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+  ssid=&quot;wireless_1&quot;                                                     // 無線網路的名稱
+  #scan_ssid=1
+  proto=WPA RSN
+  key_mgmt=WPA-PSK
+  pairwise=CCMP TKIP
+  group=CCMP TKIP
+  psk=ec8cdd1c0aa2ebcc6564ee81587ebad81e4a39ebf6c4265e3f931175e3926c5b  // 無線網路的密碼(加密後) 寫法1
+  # psk=&quot;my_password&quot;   // 無線網路的密碼(未加密) 寫法2
+}
+</code></pre>
+
+<p>偷懶寫法 :</p>
+
+<pre><code>network={
+  ssid=&quot;TP-LINK_34403E&quot;
+  psk=&quot;2734403E&quot;
+  id_str=&quot;home&quot;
+}
+network={
+  ssid=&quot;jx&quot;
+  psk=&quot;00000000&quot;
+  id_str=&quot;my mobile&quot;
+}
+</code></pre>
+
+<h3 id="不將明碼打在設定檔上-使用加密後的密碼在設定檔裡較為安全">不將明碼打在設定檔上, 使用加密後的密碼在設定檔裡較為安全</h3>
+
+<pre><code>$ wpa_passphrase test_ssid test_password
+network={
+        ssid=&quot;test_ssid&quot;
+        #psk=&quot;test_password&quot;
+        psk=fce88e792dea2299472529eea209012a812cda28cbbf540e2a55d45be98988d0
+}
+</code></pre>
+
+<h3 id="加密協定">加密協定</h3>
+
+<ul>
+<li>TKIP 與 CCMP 為安全加密協定</li>
+<li>有些無線網路設備以 AES 或 AES-CCMP 來表示 CCMP</li>
+<li>AES 效能更好, 主流, 安全, 美國主推, 在 wifi 上用來取代 TKIP, 雙向加密解密</li>
+</ul>
+
+</article>
+
+
+
+</html>

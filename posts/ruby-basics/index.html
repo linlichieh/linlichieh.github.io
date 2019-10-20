@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Ruby Basics | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-basics/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-basics/">Ruby Basics</a></h1>
+    <p class="meta"><time datetime="2014-01-20T23:27:00Z">January 20, 2014</time></p>
+  </header>
+  
+
+<h2 id="變數">變數</h2>
+
+<p>以此例為例子</p>
+
+<pre><code>class Var
+  def print
+    puts $hh
+  end
+  $hh = &quot;hh&quot;
+end
+
+t = Var.new
+t.print
+</code></pre>
+
+<p>替換以下變數</p>
+
+<ul>
+<li><code>$name</code> : 全域變數. 結果: 正常</li>
+<li><code>@name</code> : 實例變數, 作用僅限於 self 指示的物件. 結果: 相當於輸出 nil, 什麼東沒有</li>
+<li><code>@@name</code> : 類別變數, 在 class 內使用, 如果另個物件繼承它的物件, 也可以使用 <code>@@name</code>. 結果: 正常</li>
+<li><code>name</code> : 區域變數 (小寫字母或底線開頭, 初始化前並沒有 nil 值). 結果: <code>undefined local variable or method hh'</code></li>
+<li><code>Name</code> : 常數 (大寫開頭, 不可重覆定義). 結果: 正常</li>
+</ul>
+
+<p>結論 : 定義在 class 內的變數必須是 全域, 類別或常數</p>
+
+<h2 id="宣告">宣告</h2>
+
+<p>陣列</p>
+
+<pre><code>%w(i1 b2 c3 j4)                 # [&quot;i1&quot;, &quot;b2&quot;, &quot;c3&quot;, &quot;j4&quot;]
+
+arr = {                         # {:A =&gt; 1, :B =&gt; 2 }
+    'A' : 1,
+    'B' : 2,
+}
+</code></pre>
+
+<h2 id="基本-class-觀念">基本 class 觀念</h2>
+
+<pre><code>class Foo
+
+  def instance_method                           # instance method   (可以用 self 取 instance 的值)
+    'instance_method 要先 new 才能使用'
+  end
+
+  def self.class_method                         # class method (無法用 self 取內部的值)
+    'slef.class_method 不能 new, 可直接使用'
+  end
+
+  def call_method
+    inside_method
+  end
+
+  protected
+
+  def inside_method
+    'Call 內部的 inside_method 不需加 `self.` prefix'
+  end
+
+end
+
+a = Foo.new
+puts a.instance_method      # instance_method 要先 new 才能使用
+puts Foo.class_method       # slef.class_method 不能 new, 可直接使用
+puts a.call_method          # Call 內部的 inside_method 不需加 `self.` prefix
+</code></pre>
+
+<h2 id="判斷">判斷</h2>
+
+<blockquote>
+<p>0 及 empty 都是 TRUE, 只有 false 與 nil 才是 FALSE</p>
+</blockquote>
+
+<p>是否為數值</p>
+
+<pre><code>9.9.integer?
+</code></pre>
+
+<p>數值是否在範圍裡面</p>
+
+<pre><code>(11..15).include? 15
+15.between?(11, 15)
+</code></pre>
+
+<h3 id="檔案相關">檔案相關</h3>
+
+<p>Check directory in existence, Create folder</p>
+
+<pre><code>require 'fileutils'
+if File.directory?('/tmp/layer1')
+  puts &quot;Folder exist !&quot;
+else
+  puts &quot;Create folder ...&quot;
+  FileUtils.mkpath('/tmp/layer1/layer2')
+end
+</code></pre>
+
+<p>Check if a file exists</p>
+
+<pre><code>File.exist?('/tmp/ruby_test/send/sorry.mp3')
+</code></pre>
+
+<p>Getting path from full file path</p>
+
+<pre><code>2.0.0-p247 :001 &gt; File.dirname(&quot;/tmp/ruby_test/send/qq.php&quot;)
+ =&gt; &quot;/tmp/ruby_test/send&quot;
+</code></pre>
+
+<p>Getting filename from path</p>
+
+<pre><code>2.0.0-p247 :003 &gt; File.basename(&quot;/tmp/ruby_test/send/qq.php&quot;)
+ =&gt; &quot;qq.php&quot;
+</code></pre>
+
+<h2 id="integer-float">Integer &amp; Float</h2>
+
+<p>小數第一位四捨五入</p>
+
+<pre><code>a = 633.633
+a.round(1)     # 633.6
+</code></pre>
+
+<p>次方</p>
+
+<pre><code>2 ** 3
+</code></pre>
+
+<p>絕對值</p>
+
+<pre><code>-5.abs      # 5
+</code></pre>
+
+<p>取最近的整數/四捨五入</p>
+
+<pre><code>5.6.round   # 6
+</code></pre>
+
+<p>取整數/無條件捨去</p>
+
+<pre><code>9.9.floor   # 9
+</code></pre>
+
+<p>取整數/無條件進位</p>
+
+<pre><code>2312.22.ceil    # 2313
+</code></pre>
+
+<p>下一個數</p>
+
+<pre><code>2.next      # 3
+</code></pre>
+
+<h2 id="二元運算">二元運算</h2>
+
+<pre><code>n &amp; num
+n | num
+n ^ num (XOR)
+n &lt;&lt; num (向左位移)
+n &gt;&gt; num (向右位移)
+</code></pre>
+
+<h2 id="rand">Rand</h2>
+
+<pre><code>rand(1..10)
+[true, false].sample
+</code></pre>
+
+<p>亂數</p>
+
+<pre><code>SecureRandom.random_number(99999999999)             # 9997979524
+</code></pre>
+
+<p>建立 UUID</p>
+
+<pre><code>require 'securerandom'                  # 原生
+SecureRandom.hex(20)                    # ac5d23f916dd83dcc495dc5f0b8b602942b635fa    長度會是你傳值的 2 倍
+SecureRandom.base64(20)                 # WcLJKJzgibphbiXHKIeCsP8jtN8=
+</code></pre>
+
+<blockquote>
+<p>SecureRandom : This library is an interface for secure random number generator which is suitable for generating session key in HTTP cookies</p>
+</blockquote>
+
+<h2 id="字串處理">字串處理</h2>
+
+<p>gsub</p>
+
+<pre><code>&quot;hello&quot;.gsub(/[aeiou]/, '*')                    # &quot;h*ll*&quot;
+&quot;hello&quot;.gsub(/([aeiou])/, '&lt;\1&gt;')               # &quot;h&lt;e&gt;ll&lt;o&gt;&quot;
+&quot;hello&quot;.gsub(/./) {|s| s.ord.to_s + ' '}        # &quot;104 101 108 108 111 &quot;
+&quot;hello&quot;.gsub(/(?&lt;foo&gt;[aeiou])/, '{\k&lt;foo&gt;}')    # &quot;h{e}ll{o}&quot;
+'hello'.gsub(/[eo]/, 'e' =&gt; 3, 'o' =&gt; '*')      # &quot;h3ll*&quot;
+</code></pre>
+
+<p>split</p>
+
+<pre><code>'C3-0803986E423F0C66DA56'.split('-')            # [&quot;C3&quot;, &quot;0803986E423F0C66DA56&quot;]
+</code></pre>
+
+<p>last word</p>
+
+<pre><code>'example'.last                                  # e
+</code></pre>
+
+<p>取固定位置及長度的字串</p>
+
+<pre><code>a = &quot;1234567890&quot;
+a[1..3]  # 234
+</code></pre>
+
+<h2 id="hash">Hash</h2>
+
+<p>key 是否存在</p>
+
+<pre><code>genders.has_key?(:male)
+</code></pre>
+
+<p>value 是否存在</p>
+
+<pre><code>genders.value?(2)
+</code></pre>
+
+<p>刪除某個 key</p>
+
+<pre><code>a.delete('es')
+</code></pre>
+
+<p>刪除某個 value</p>
+
+<pre><code>hash.delete_if{|_,v| v == &quot;2&quot;}
+</code></pre>
+
+<p>Reverse key &lt;-&gt; value</p>
+
+<pre><code>Hash[h.to_a.collect(&amp;:reverse)]
+</code></pre>
+
+<p>Find value and return key</p>
+
+<pre><code>h.key(value)    # return key
+</code></pre>
+
+<p>Get all keys from Hash</p>
+
+<pre><code>h.keys
+</code></pre>
+
+<p>Sort</p>
+
+<pre><code>hash = {f: 4, a: 2, r: 1 }
+hash.sort # =&gt; [[:a, 2], [:f, 4], [:r, 1]]          # 這不是我們要的結果
+hash.sort.to_h                                      # =&gt; {:a=&gt;2, :f=&gt;4, :r=&gt;1} , 這才是
+</code></pre>
+
+<p>兩個 hash 合併另種寫法</p>
+
+<pre><code>a = {&quot;zh&quot;=&gt;1, &quot;es&quot;=&gt;5}
+b = {&quot;zh&quot;=&gt;1, &quot;qq&quot;=&gt;5}
+a.merge(b)                  # {&quot;zh&quot;=&gt;1, &quot;es&quot;=&gt;5, &quot;qq&quot;=&gt;5}
+
+# 這個範例可以看的出它只比對 key，如果 key 一樣值不一樣，則會被後者的值覆蓋
+a = {&quot;zh&quot;=&gt;1, &quot;es&quot;=&gt;5}
+b = {&quot;zh&quot;=&gt;1, &quot;es&quot;=&gt;7}
+a.merge(b)                  # {&quot;zh&quot;=&gt;1, &quot;es&quot;=&gt;7}
+</code></pre>
+
+<p>只取得 hash 裡面某些 key -&gt; value</p>
+
+<pre><code>{a: 1, b: 2, c: 3, d: 4 }.slice(:a, :b)
+{:a=&gt;1, :b=&gt;2}
+</code></pre>
+
+<p>定義 hash parameters</p>
+
+<pre><code>def instance_method(hash = {})
+Call : a.instance_method aa: 'aa', bb: 'bb'
+</code></pre>
+
+<p>hash key 使用 integer 時注意 :</p>
+
+<pre><code>hash = {1: 'one'} # will not work
+hash = {1 =&gt; 'one'} # will work
+</code></pre>
+
+<h2 id="array">Array</h2>
+
+<p>是否為 array</p>
+
+<pre><code>array.is_a?(Array)
+</code></pre>
+
+<p>去除相同的值 :</p>
+
+<pre><code>[2,4,2,5,1].uniq            # =&gt; [2, 4, 5, 1]
+</code></pre>
+
+<p>Array to Hash</p>
+
+<pre><code>a = ['apple', 'banana', 'mongo']
+c = Hash[a.map { |e| [e.to_sym, e + ' !'] }]
+ =&gt; {:apple=&gt;&quot;apple !&quot;, :banana=&gt;&quot;banana !&quot;, :mongo=&gt;&quot;mongo !&quot;}
+
+a = [[&quot;Bob&quot;, 1], [&quot;Jex&quot;, 2], [&quot;Jxx&quot;, 3]]
+Hash[a.map { |e| [e[0].to_sym, e[1]]}
+ =&gt; {:Bob=&gt;1, :Jex=&gt;2, :Jxx=&gt;3}
+</code></pre>
+
+<p>刪除 each 判斷</p>
+
+<pre><code>a.delete_if { |x| x &gt;= 3 }
+
+a.delete_if do |v|
+  if v &gt;= 3
+    true                # Make sure the if statement returns true, so it gets marked for deletion
+  end
+end
+</code></pre>
+
+<p>array&rsquo;s value to symbol</p>
+
+<pre><code>array.map { |x| x.to_sym }
+或
+array.map &amp;:to_sym
+</code></pre>
+
+<p>值是否存在</p>
+
+<pre><code>a = [1,2,3]
+a.include?(2)
+
+多項是否存在, 只要其中一項存在就是 true
+([2, 6, 13, 99, 27] &amp; [5,6]).any?
+</code></pre>
+
+<p>找出值旳 index</p>
+
+<pre><code>array.find_index(90)
+</code></pre>
+
+<p>兩個 array 合併</p>
+
+<pre><code>a.zip(s).flatten.compact
+或
+s.inject(a, :&lt;&lt;)
+</code></pre>
+
+<p>add</p>
+
+<pre><code>會改變原值
+a.push(&quot;d&quot;, &quot;e&quot;, &quot;f&quot;)
+a &lt;&lt; 'x'
+
+不會改變原值
+a + [3]
+</code></pre>
+
+<p>delete</p>
+
+<pre><code>會改變原值
+a = [2,4,6,3,8]
+a.delete(3)
+
+不會改變原值
+a - [3]
+</code></pre>
+
+<p>remove duplicate elements</p>
+
+<pre><code>array = array.uniq
+</code></pre>
+
+<p>join array (無值就 delete value)</p>
+
+<pre><code>my_array.delete_if(&amp;:empty?).join(',')
+</code></pre>
+
+<p>ordre ASC</p>
+
+<pre><code>my_array.sort
+</code></pre>
+
+<p>order DESC</p>
+
+<pre><code>my_array.sort.reverse
+</code></pre>
+
+<p>order 某個欄位</p>
+
+<pre><code>my_array.sort_by &amp;:lastname
+</code></pre>
+
+<p>associations 關聯，如果想刪除其中某一筆</p>
+
+<pre><code>items.each do |i|
+  if i.product.nil?
+    needed_remove &lt;&lt; i  # 先放進待刪除區
+  end
+end
+items - needed_remove
+
+# 以下看起來會 work ，但實際上最後的 items 還是跟原始的一樣，也就是 delete 沒有在原本的 items 移除該項目
+items.each do |i|
+  if i.product.nil?
+    items.delete(i)
+  end
+end
+items
+</code></pre>
+
+<p>insert 一筆到最前面</p>
+
+<pre><code>[1,3,6].unshift(5)              # [5, 1, 3, 6]
+</code></pre>
+
+<h2 id="json">json</h2>
+
+<p>string to json</p>
+
+<pre><code>JSON.parse(params[:JSONData])
+</code></pre>
+
+<h2 id="each">each</h2>
+
+<p>一行</p>
+
+<pre><code>cats.each(&amp;:name)
+cat_names = cats.map(&amp;:name)            # 相當於 each cat.name
+cats.each do |cat| cat.name end
+cats.each {|cat| cat.name }
+</code></pre>
+
+<h2 id="call-dynamic-method-name">Call Dynamic method name</h2>
+
+<blockquote>
+<p>Sometimes you might need a dynamic method, you can use <code>send</code></p>
+</blockquote>
+
+<h3 id="send">send</h3>
+
+<pre><code>def test
+  puts 'test~'
+end
+
+send('test')
+</code></pre>
+
+<p>前面也可以接 instance 以及可以多個 method 一起執行</p>
+
+<pre><code>User.send('smart').send('honest')           # 等於 User.smart.honest
+</code></pre>
+
+<p>傳遞參數</p>
+
+<pre><code>User.send('smart', iq: 130)
+</code></pre>
+
+<p>只 call public method</p>
+
+<pre><code>User.public_send(:name, &quot;Jex&quot;)
+</code></pre>
+
+<h3 id="method-call">method call</h3>
+
+<p>程式碼比較多而且不能串多個 method</p>
+
+<pre><code>&gt; a = &quot;my_string&quot;
+&gt; meth = a.method(&quot;size&quot;)
+&gt; meth.call() # call the size method
+=&gt; 9
+</code></pre>
+
+<h2 id="型態">型態</h2>
+
+<p>Print variable type</p>
+
+<pre><code>3.class
+ =&gt; Fixnum
+3.class.superclass
+ =&gt; Integer
+</code></pre>
+
+<h2 id="加密">加密</h2>
+
+<pre><code>Digest::SHA256.digest 'message'         # &quot;\xABS\n\x13\xE4Y\x14\x98+y\xF9\xB7\xE3\xFB\xA9\x94\xCF\xD1\xF3\xFB\&quot;\xF7\x1C\xEA\x1A\xFB\xF0+F\fm\x1D&quot;
+
+Digest::SHA256.hexdigest('message')     # ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d
+</code></pre>
+
+<h2 id="date-format">Date format</h2>
+
+<h3 id="symbol">Symbol</h3>
+
+<ul>
+<li><code>%Y</code>: 2017
+
+<ul>
+<li><code>%C</code> : 20 (year / 100)</li>
+<li><code>%y</code> : 17 (year % 100)</li>
+</ul></li>
+<li><code>%B</code> : January
+
+<ul>
+<li><code>%^b</code> : JANUARY</li>
+</ul></li>
+<li><code>%b</code> : Jan 也等於 <code>%h</code>
+
+<ul>
+<li><code>%^b</code> : JAN</li>
+</ul></li>
+<li><code>%m</code> : 01..12 with zero-padding
+
+<ul>
+<li><code>%_m</code> : <code>1</code>..12 with blank-padding</li>
+<li><code>%-m</code> : 1..12 without balnk-padding</li>
+</ul></li>
+<li><code>%d</code> : 01..31 with zero-padding
+
+<ul>
+<li><code>%e</code> : <code>1</code>..31 with blank-padding</li>
+<li><code>%-d</code> : 1..31 without balnk-padding</li>
+</ul></li>
+<li><code>%j</code> : 001..336 day of the year</li>
+<li><code>%H</code> : 00..23 with zero-padding</li>
+<li><code>%k</code> : <code>0</code>..23 with blank-padding</li>
+<li><code>%I</code> : 01..12 with zero-padding</li>
+<li><code>%l</code> : <code>1</code>..12 with blank-padding</li>
+<li><code>%P</code> : am / pm</li>
+<li><code>%p</code> : AM / PM</li>
+<li><code>%M</code> : 00..59 minute</li>
+<li><code>%S</code> : 00..59 second</li>
+<li><code>%L</code> : 000..999 millisecond</li>
+<li><code>%N</code> = 9 digits nanosecond
+
+<ul>
+<li><code>%3N</code> = 3 digits millisecond</li>
+<li><code>%6N</code> = 6 digits microsecond</li>
+<li><code>%9N</code> = 9 digits nanosecond</li>
+<li><code>%12N</code> = 12 digits picosecond</li>
+</ul></li>
+<li><code>%z</code> : +0900
+
+<ul>
+<li><code>%:z</code> : +09:00</li>
+<li><code>%::z</code> : +09:00:00</li>
+<li><code>%:::z</code> : +09:30:30</li>
+<li><code>%Z</code> : CST time zone abbreviation name</li>
+</ul></li>
+<li><code>%A</code> : Sunday
+
+<ul>
+<li><code>%^A</code> : SUNDAY</li>
+<li><code>%a</code> : Sun</li>
+<li><code>%^a</code> : SUN</li>
+<li><code>%u</code> : 1..7 day of the week (monday is 1)</li>
+<li><code>%w</code> : 0..6 day of the week (sunday is 0)</li>
+</ul></li>
+<li><code>%G</code> : 2016 the week-based year
+
+<ul>
+<li><code>%g</code> : 16 the last 2 digits of the week-based year</li>
+<li><code>%V</code> : 52 Week number of the week-based year</li>
+</ul></li>
+<li><code>%U</code> : 00..53 week number of the year. starts with sunday
+
+<ul>
+<li><code>%W</code> : 00..53 starts with mondy</li>
+</ul></li>
+<li><code>%s</code> : 1483249934 timestamp, number of seconds since 1970-01-01 00:00:00 UTC</li>
+<li><code>%n</code> : <code>\n</code>
+
+<ul>
+<li><code>%t</code> : <code>\t</code></li>
+<li><code>%%</code> : <code>%</code></li>
+</ul></li>
+<li><code>%c</code> : <code>Sun Jan  1 13:54:29 2017</code> date and time (%a %b %e %T %Y)
+
+<ul>
+<li><code>%D</code> = <code>%x</code> : <code>01/01/17</code> Date (%m/%d/%y)</li>
+<li><code>%F</code> : <code>2017-01-01</code> The ISO 8601 date format (%Y-%m-%d)</li>
+<li><code>%v</code> : <code>1-JAN-2017</code> VMS date (%e-%b-%Y)</li>
+<li><code>%r</code> : <code>01:56:03 PM</code> 12-hour time (%I:%M:%S %p)</li>
+<li><code>%R</code> : <code>13:56</code> 24-hour time (%H:%M)</li>
+<li><code>%T</code> = <code>%X</code> : <code>13:55:44</code> 24-hour time (%H:%M:%S)</li>
+</ul></li>
+</ul>
+
+<h3 id="語法">語法</h3>
+
+<pre><code>Time.now                                        # 2016-04-07 11:04:09 +0800
+Time.now.getutc                                 # 2016-04-07 03:05:00 UTC
+Time.now.strftime('%F %T')                      # 2015-08-10 21:02:04
+Time.now.strftime('%F %R')                      # 2015-09-21 01:04
+Time.now.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)          # 2015-08-10 21:01:06
+Time.now.in_time_zone                           # Tue, 22 Sep 2015 09:27:56 CST +08:00    如果 config 有設定 timezone
+Time.now.to_i                                   # 1483249426 (timestamp)
+</code></pre>
+
+<p>將 <code>String</code> 轉回 <code>Time</code></p>
+
+<pre><code>Time.parse(&quot;2015-09-21 12:00&quot;)
+或
+&quot;2015-09-21 12:00&quot;.to_time
+</code></pre>
+
+<p>2 天前 (rails)</p>
+
+<pre><code>2.days.ago
+</code></pre>
+
+<p>2 天後 (rails)</p>
+
+<pre><code>2.days.since
+</code></pre>
+
+<p>現在 DateTime 減 5 天</p>
+
+<pre><code>Post.find(12).update(created_at: Time.now.strftime('%F %R').to_time - 5.days)
+</code></pre>
+
+<p>5 天後</p>
+
+<pre><code>Date.today + 5
+Date.today + 5.days
+
+10.days.from_now
+</code></pre>
+
+<p>date 相減</p>
+
+<pre><code>require 'date'
+&gt; now = Date.today
+&gt; before = Date.today + 2.days
+&gt; difference_in_days = (before - now).to_i
+
+-----
+start_date = Date.parse &quot;2012-03-02 14:46:21 +0100&quot;
+end_date =  Date.parse &quot;2012-04-02 14:46:21 +0200&quot;
+(end_date - start_date).to_i
+</code></pre>
+
+<p>Add time to date</p>
+
+<pre><code>d = Date.new(2012, 8, 29)
+t = Time.now
+dt = DateTime.new(d.year, d.month, d.day, t.hour, t.min, t.sec, t.zone)
+或
+Date.new(2015, 2, 10).to_datetime + Time.parse(&quot;16:30&quot;).seconds_since_midnight.seconds
+</code></pre>
+
+<p>Today</p>
+
+<pre><code>Date.today
+</code></pre>
+
+<p>Year</p>
+
+<pre><code>Time.now.year
+</code></pre>
+
+<p>顯示時間語意</p>
+
+<pre><code># console 要引入 include ActionView::Helpers::DateHelper
+time_ago_in_words(3.minutes.from_now)                       # =&gt; 3 minutes
+time_ago_in_words(Time.now - 15.hours)                      # =&gt; 15 hours
+time_ago_in_words(Time.now)                                 # =&gt; less than a minute
+from_time = Time.now - 3.days - 14.minutes - 25.seconds     # =&gt; 3 days
+distance_of_time_in_words('2015-09-16'.to_date, Date.today) # =&gt; 不到 1 分鐘
+</code></pre>
+
+<h2 id="progress-bar">Progress bar</h2>
+
+<p>簡易</p>
+
+<pre><code>10.times{|i| STDOUT.write &quot;\r#{i}&quot;; sleep 1}
+</code></pre>
+
+<p>1~100%</p>
+
+<pre><code>progress = 'Progress [ '
+1000.times do |i|
+  j = i + 1
+  if j % 10 == 0
+    # 將 = 加到 progress string
+    progress &lt;&lt; &quot;=&quot;
+
+    # 將游標移到這行的最前面
+    print &quot;\r&quot;
+
+    # 取代目前這一行, 並輸出進度
+    print progress + &quot; #{j / 10} % ]&quot;
+
+    # flush buffer 立即顯示
+    $stdout.flush
+    sleep 0.05
+  end
+end
+puts &quot;\nDone!&quot;
+</code></pre>
+
+<h2 id="rake">Rake</h2>
+
+<p><a href="https://github.com/ruby/rake">Rake</a> 是像 C 語言的 Make 工具, 但是用 Ruby 寫的, 主要是用來執行預先寫好的腳本語言</p>
+
+<h3 id="依不同環境跑-tasks">依不同環境跑 tasks</h3>
+
+<p>lib/tasks/tasks.rake :</p>
+
+<pre><code>namespace :tasks do
+  namespace :create do
+    desc &quot;Create all survey templates&quot;
+    task :all =&gt; [:task1, :task2]
+
+    desc &quot;desc1&quot;
+    task :task1 =&gt; :environment do
+        Rails.logger.info(1)
+    end
+
+    desc &quot;desc2&quot;
+    task :task2 =&gt; :environment do
+
+    end
+  end
+end
+</code></pre>
+
+<p>lib/tasks/dev.rake :</p>
+
+<pre><code>namespace :dev do
+  desc &quot;Rebuild system&quot;
+  task :build =&gt; [&quot;tmp:clear&quot;, &quot;log:clear&quot;, &quot;db:drop&quot;, &quot;db:create&quot;, &quot;db:migrate&quot;]
+  task :rebuild =&gt; [ &quot;dev:build&quot;, &quot;db:seed&quot; ]
+end
+</code></pre>
+
+<ul>
+<li><code>rake dev:build</code> : 重建一個乾淨的環境</li>
+<li><code>rake dev:rebuild</code> : 跑完 <code>dev:build</code> 再跑 <code>db:seed</code></li>
+</ul>
+
+<p>ref: 參考<a href="http://rails101s.logdown.com/posts/247890-20-8-write-automation-reforming-of-dbseed-a-database-program">這裡</a></p>
+
+</article>
+
+
+
+</html>

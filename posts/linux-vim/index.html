@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux Vim | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-vim/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-vim/">Linux Vim</a></h1>
+    <p class="meta"><time datetime="2013-05-15T07:47:00Z">May 15, 2013</time></p>
+  </header>
+  
+
+<h2 id="command-line">Command Line</h2>
+
+<ul>
+<li><code>vim http://www.google.com</code> : 開啟google原始碼</li>
+<li><code>vim -p qq.php cc.php</code> : 用tabe顯示，用<code>gt</code>切換下一個tabe</li>
+<li><code>vim -O qq.php cc.php</code> : 垂直分割顯示</li>
+<li><code>vim -o qq.php cc.php</code> : 水平分割顯示</li>
+<li><code>vim -u NONE cc.php</code> : 不要進行初始化直接開啟檔案 (對開大檔會快很多)</li>
+</ul>
+
+<h2 id="新增-刪除-插入">新增、刪除、插入</h2>
+
+<ul>
+<li><code>O</code> : 在游標那行的上一行插入新的一行</li>
+<li><code>o</code> : 在游標那行的下一行插入新的一行</li>
+<li><code>I</code> : 在該行的第一個字元進入插入模式</li>
+<li><code>i</code> : 在游標前進入插入模式</li>
+<li><code>A</code> ( = $ + a) : 在該行的最後一個字元進入插入模式</li>
+<li><code>a</code> : 在游標後進入插入模式</li>
+<li><code>C</code> : 刪除游標後的字串並進入到insert模式</li>
+<li><code>cc</code> : 刪除該行並進入到insert模式(保留縮排)</li>
+<li><code>1cj</code> : 刪除游標該行及下一行共2行並進入插入模式</li>
+<li><code>D</code> : 刪除游標後的字串</li>
+<li><code>dd</code> : 刪除整行</li>
+<li><code>2dd</code> : 刪除下列2行</li>
+<li><code>10dh</code> : 向左刪除10個字元</li>
+<li><code>d0</code> : 刪除游標位置前的字元</li>
+<li><code>d^</code> : 刪除游標位置前的字元(保留縮排)</li>
+<li><code>d$</code> : 刪除游標位置到最後一個字元</li>
+<li><code>de</code> : 刪除游標位置到區塊的最後一個字元</li>
+<li><code>db</code> : 向前刪除區塊單字</li>
+<li><code>dw</code> : 向後刪除區塊單字</li>
+<li><code>x</code> : 刪除游標所在的字元</li>
+<li><code>X</code> : 向前刪除字元</li>
+<li><code>s</code> : 刪除游標那個字元並進入 insert 模式</li>
+<li><code>S</code> : 同 <code>cc</code></li>
+<li><code>10x</code> : 刪除游標後的5個字元</li>
+<li><code>J</code> : 將游標所在列與下一列的資料結合成同一列</li>
+<li><code>3J</code> : 將下兩行包含游標該行共3行合併成一行</li>
+<li><code>d0</code> : 游標所在處向前刪除到第0格</li>
+<li><code>d^</code> : 游標所在處向前刪除到縮排處停止</li>
+<li><code>diw</code> : 刪除游標上的單字</li>
+<li><code>ciw</code> : 刪除游標上的單字並進入insert模式</li>
+<li><code>cw</code> : 刪除在單字上游標以後字串</li>
+<li><code>ci'</code> : 刪除單引號內的字串並進入insert模式</li>
+<li><code>ci&quot;</code> : 刪除雙引號內的字串並進入insert模式</li>
+<li><code>ci(</code> : 刪除括號內的內容並進入insert模式</li>
+<li><code>ci[</code> : 刪除中括號內的內容並進入insert模式</li>
+<li><code>ci{</code> : 刪除大括號內的內容並進入insert模式</li>
+<li><code>ci&lt;</code> : 刪除<code>&lt;</code>(內容)<code>&gt;</code>並進入insert模式</li>
+<li><code>ca'</code> : 刪除單引號內的字串及單引號並進入 insert 模式</li>
+<li><code>di'</code> : 刪除單引號內的字串</li>
+<li><code>dst</code> : 刪除 html 標籤, 但內容會保留</li>
+<li><code>dit</code> : 刪除 html 標籤內容, 但標籤會保留</li>
+<li><code>cit</code> : 刪除 html 標籤內容, 並進入 insert 模式</li>
+<li><code>6i</code> 或 <code>6a</code> + <code>任意字串</code> : 6 次 * <code>任意字串</code></li>
+<li><code>d/a</code> : 刪到 a 為止</li>
+<li><code>guu</code> : 整行變小寫</li>
+<li><code>gUU</code> : 整行變大寫</li>
+<li><code>g~~</code> : 整行大小寫交換</li>
+</ul>
+
+<h2 id="複製-剪下-貼上">複製、剪下、貼上</h2>
+
+<ul>
+<li><code>shift</code> + <code>Insert</code> : (insert模式下)將<code>系統剪貼簿</code>貼上游標位置。</li>
+<li><code>ctrl</code> + <code>v</code> : 對區塊共同做編輯</li>
+<li><code>ctrl</code> + <code>v</code> 選取後按<code>c</code> : 把選取的字刪掉並進入insert模式</li>
+<li><code>V</code>(select whole line) + <code>y</code> : 相當於 <code>ctrl</code> + <code>c</code></li>
+<li><code>v</code>(select area) + <code>y</code> : 相當於 <code>ctrl</code> + <code>c</code></li>
+<li><code>P</code> : 貼上於目前游標的上一行</li>
+<li><code>p</code> : 貼上於目前游標的下一行，相對於 <code>ctrl</code> + <code>v</code></li>
+<li><code>y1G</code> : 複製游標所在列到第一列的所有資料</li>
+<li><code>y0</code> : 複製游標所在的那個字元到該行行首的所有資料</li>
+<li><code>y$</code> : 複製游標所在的那個字元到該行行尾的所有資料</li>
+<li><code>yy</code> : 複製游標所在的那一行</li>
+<li><code>20yy</code> : 複製 20 行</li>
+<li><code>Y</code> : 複製游標所在的那一行</li>
+<li><code>:m+</code> : 把目前這一行往下移動一行</li>
+<li><code>:m-2</code> : 把目前這一行往上移動一行</li>
+<li><code>shift</code> + <code>insert</code> : 在insert模式貼上滑鼠複製的東西</li>
+<li><code>[p</code> : 貼到游標前</li>
+<li><code>]p</code> : 貼到游標後</li>
+<li><code>dip</code> : 刪除最外層的tag及裡面的所有內容</li>
+<li><code>yiw</code> : 複製單字</li>
+<li><code>yi'</code> : 複製單引號內的字串</li>
+<li><code>vi'</code> : 選取單引號內的字串並進入visual模式</li>
+<li><code>&quot;</code> + <code>a</code> + <code>y</code> + <code>i</code> + <code>'</code> : 將單引號的內容(不包含單引號)存進暫存a</li>
+<li><code>&quot;</code> + <code>a</code> + <code>y</code> + <code>a</code> + <code>'</code> : 將單引號的內容(包含單引號)存進暫存a</li>
+<li><code>v</code> + <code>^</code> + <code>y</code> : 複製從游標到最前面的字串</li>
+<li><code>vitp</code> : 貼在 HTML Tag 裡</li>
+<li><code>:2y</code> : copy 第 2 行</li>
+<li><code>:2,7y</code> : copy 第 2 ~ 7 行</li>
+</ul>
+
+<h2 id="visual模式">Visual模式</h2>
+
+<ul>
+<li><code>~</code> : 在visual模式已選取下，切換大 / 小寫</li>
+<li><code>U</code> : 在visual模式已選取下，轉成大寫</li>
+<li><code>u</code> : 在visual模式已選取下，轉成小寫</li>
+<li><code>viw</code> : 選取游標上的單字並進入visual模式。(v = visual, i = inside, w = word)</li>
+<li><code>vit</code> : 選取<code>&lt;tag&gt;</code>裡面的內容並進入visual模式。例: <code>&lt;a href='#'&gt;(選取這一塊)&lt;/a&gt;</code></li>
+<li><code>vat</code> : 選取<code>&lt;tab&gt;</code>全部內容包含<code>&lt;tag&gt;</code>本身，並進入visual模式(a = around)。選取<code>&lt;a ..(略)..&gt;內容&lt;/a&gt;</code>整段</li>
+<li><code>vip</code> : 選取最外層的tag及裡面的所有內容並進入visual模式</li>
+<li><code>ggVG</code> : 全選</li>
+<li><code>=</code> : 在visual模式己選取下，自動縮排</li>
+<li><code>g</code>, <code>ctrl</code> + <code>g</code> : Count selected lines</li>
+</ul>
+
+<h2 id="游標移動">游標移動</h2>
+
+<ul>
+<li><code>#</code> : 向前搜尋游標上相同的單字。或按<code>N</code> 往下 <code>n</code> 往上</li>
+<li><code>*</code> : 向後搜尋游標上相同的單字</li>
+<li><code>%</code> : 在() {} 上會切換到相對應的上</li>
+<li><code>[</code> + <code>{</code> : 在括號裡游標會移到 {</li>
+<li><code>]</code> + <code>}</code> : 在括號裡游標會移到 }</li>
+<li><code>[</code> + <code>(</code> : 在括號裡游標會移到 (</li>
+<li><code>]</code> + <code>)</code> : 在括號裡游標會移到 )</li>
+<li><code>0</code> : 游標移到最前</li>
+<li><code>^</code> : 游標移到最前(保留縮排)</li>
+<li><code>$</code> : 標移到最後</li>
+<li><code>:12</code> 或 <code>12G</code>: 游標移到第12行</li>
+<li><code>H</code> : 移動到該頁第一行</li>
+<li><code>M</code> : 移動到該頁中間那一行</li>
+<li><code>L</code> : 移動到該頁最後一行</li>
+<li><code>1G</code> 或 <code>gg</code> : 移動到檔案的第一行</li>
+<li><code>G</code> : 移動到檔案的最後一行</li>
+<li><code>w</code> : 移動到下一個單字, 2w 移到下兩個單字</li>
+<li><code>W</code> : 跳下一個單字比<code>w</code>更遠</li>
+<li><code>b</code> : 移動到前一個單字、與w相反</li>
+<li><code>e</code> : 移動到目前單字的最後一個字</li>
+<li><code>t</code> + <code>a</code> : 找到 a 的前一格</li>
+<li><code>fa</code> : 往下移動找到 a 。按<code>;</code>移到下一個</li>
+<li><code>Fa</code> : 往上找到 a 。按<code>;</code>移到下一個</li>
+<li><code>3fa</code> : 移動到往後的第三個a的位置</li>
+<li><code>4j</code> : 往下移動4行</li>
+<li><code>4k</code> : 往上移動4行</li>
+<li><code>4h</code> : 往左移動4格</li>
+<li><code>4l</code> : 往右移動4格</li>
+<li><code>ctrl</code> + <code>o</code> : 回覆到上一個游標的位置(按太多會到你上一個編輯的檔案)</li>
+<li><code>(</code> : 跳到上一個區塊的第一行或最後一行</li>
+<li><code>)</code> : 跳到下一個區塊的第一行或最後一行</li>
+<li><code>[[</code> : 跳到上一個區塊的第一行</li>
+<li><code>]]</code> : 跳到下一個區塊的第一行</li>
+<li><code>{</code> : 跳到上一個區塊的最後一行</li>
+<li><code>}</code> : 跳到下一個區塊的最後一行</li>
+<li><code>+</code> : 移動到非空白區的下一列(保留縮排)</li>
+<li><code>-</code> : 移動到非空白區的上一列(保留縮排)</li>
+<li><code>mx</code> : 記下目前的為止為 x</li>
+<li><code>'x</code> : 回到 x 這個位置</li>
+<li><code>''</code> : 回到最後的 jump點</li>
+<li><code>ctrl</code> + <code>i</code> : 回到後一個 jump 點</li>
+<li><code>ctrl</code> + <code>o</code> : 回到前一個 jump 點</li>
+</ul>
+
+<h2 id="畫面移動">畫面移動</h2>
+
+<ul>
+<li><code>ctrl</code> + <code>f</code> : 下一頁 ( = <code>Page Up</code>)</li>
+<li><code>ctrl</code> + <code>b</code> : 上一頁 ( = <code>Page Down</code>)</li>
+<li><code>ctrl</code> + <code>d</code> : 下半頁</li>
+<li><code>ctrl</code> + <code>u</code> : 上半頁</li>
+<li><code>ctrl</code> + <code>y</code> : 畫面移上一行</li>
+<li><code>ctrl</code> + <code>e</code> : 畫面移下一行</li>
+<li><code>zz</code> : 移動畫面置中游標</li>
+<li><code>zb</code> : 移動畫面置底游標</li>
+<li><code>zt</code> : 移動畫面置頂游標</li>
+<li><code>zl</code> : 畫面向右水平移動一格</li>
+<li><code>zL</code> : 畫面向右水平移動半個畫面</li>
+<li><code>zh</code> : 畫面向左水平移動一格</li>
+<li><code>zH</code> : 畫面向左水平移動半個畫面</li>
+<li><code>zs</code> : 根據目前的游標位置將畫面水平移動到最左</li>
+<li><code>ze</code> : 根據目前的游標位置將畫面水平移動到最右</li>
+</ul>
+
+<h3 id="在分割視窗時讓其他視窗一起-scrolling-down">在分割視窗時讓其他視窗一起 scrolling down</h3>
+
+<p>對每個視窗下 <code>:set scb</code> (<code>:set scrollbind</code> 縮寫), 然候再測試是否 work (<code>ctrl + e</code>)</p>
+
+<p>取消的話對其中一個下 <code>:set scb!</code> (<code>:set noscrollbind</code> 縮寫) 就可以解除了</p>
+
+<h2 id="搜尋-取代">搜尋、取代</h2>
+
+<ul>
+<li><code>/abc</code> : 向下搜尋abc</li>
+<li><code>?abc</code> : 向上搜尋abc</li>
+<li><code>n</code> : 下一筆搜尋結果</li>
+<li><code>N</code> : 上一筆搜尋結果</li>
+<li><code>:35,44g/uid/</code> : 在 33 到 44 行之間搜尋 uid</li>
+<li><code>:100,200s/vbird/VBIRD/g</code> : 在 100 到 200 行之間搜尋 vbird 並取代為 VBIRD</li>
+<li><code>:1,$s/word1/word2/g</code> : 從第一行到最後一行尋找 word1 字串，並將該字串取代為 word2</li>
+<li><code>:1,$s/word1/word2/gc</code> : 且在取代前顯示提示字元給使用者確認 (confirm) 是否需要取代</li>
+<li><code>:%s/phpindo/phpinfo/g</code> : 取代。<code>%s</code> = <code>1,$s</code></li>
+<li><code>:101,201s/phpindo/phpinfo/g</code> : 取代 101~201 行</li>
+<li><code>gd</code> : 在程式的變數上循序按下 gd,可以找到 local declaration 的位置</li>
+<li><code>gD</code> : 同上,只是會找到 global declaration 的位置</li>
+</ul>
+
+<h2 id="分割視窗">分割視窗</h2>
+
+<ul>
+<li><code>:new</code> : 開新的水平分割視窗</li>
+<li><code>:vnew</code> : 開新的垂直分割視窗</li>
+<li><code>:sp</code> : 新增目前的檔案到新視窗</li>
+<li><code>:sp t1.php</code> : 新增另一個檔案加入到分割視窗</li>
+<li><code>vs</code> : 同<code>vsp</code></li>
+<li><code>:vsp</code> : 垂直分割</li>
+<li><code>:sp ./</code> : 用選取的方式尋找檔案</li>
+<li><code>:q</code> : 離開</li>
+<li><code>shift</code> + <code>ZZ</code> : 離開; 等同 <code>:q</code></li>
+<li><code>ctrl</code> + <code>ww</code> : 切換到下一個視窗</li>
+<li><code>ctrl</code> + <code>w</code> + <code>3w</code> : 切換到第三個視窗(如果有多個視窗)</li>
+<li><code>ctrl</code> + <code>w</code> + <code>p</code> : 切換到前一個視窗</li>
+<li><code>ctrl</code> + <code>w</code> + <code>n</code> : 開啟新視窗</li>
+<li><code>ctrl</code> + <code>w</code> + <code>w</code> : 游標切到不同的視窗 (不管是水平還是垂直)</li>
+<li><code>ctrl</code> + <code>w</code> + <code>q</code> : 結束目前視窗</li>
+<li><code>ctrl</code> + <code>w</code> + <code>x</code> : 視窗交換位置</li>
+<li><code>:sq</code> + <code>按space</code> + <code>(按)tab</code> + <code>↓</code> :列出可選的選項，按↓進入資料夾</li>
+<li><code>ctrl</code> + <code>w</code> + <code>v</code> : 垂直</li>
+<li><code>ctrl</code> + <code>w</code> + <code>s</code> : 水平</li>
+<li><code>ctrl</code> + <code>w</code> + <code>o</code> : 留下目前視窗關閉其他</li>
+<li><code>ctrl</code> + <code>w</code> + (<code>j</code>、<code>k</code>、<code>h</code>、<code>l</code>) : 切換下、上、左、右</li>
+<li><code>ctrl</code> + <code>w</code> + (<code>+</code>、<code>-</code>) : 調整垂直大小</li>
+<li><code>ctrl</code> + <code>w</code> + (<code>&lt;</code>、<code>&gt;</code>) : 調整水平大小</li>
+<li><code>ctrl</code> + <code>w</code> + <code>_</code> : 將視窗垂直打開到最大</li>
+<li><code>ctrl</code> + <code>w</code> + <code>|</code>(pipe) : 將視窗水平打開到最大</li>
+<li><code>ctrl</code> + <code>w</code> + <code>=</code> : 將所有視窗的寬高調整至均等</li>
+<li><code>ctrl</code>-<code>w</code> <code>K</code>: Change vertical split window to horizonal split window</li>
+<li><code>ctrl</code>-<code>w</code> <code>H</code>: Change horizonal split window to vertical split window</li>
+</ul>
+
+<h2 id="暫存器">暫存器</h2>
+
+<ul>
+<li><code>:reg</code> : 把暫存器裡的東西叫出來看</li>
+<li><code>&quot;2y</code> : 複製到暫存器索引2 (可配合visual模式使用)</li>
+<li><code>&quot;kyy</code> : 複製整行到索引k</li>
+<li><code>&quot;kp</code> : 貼上索引k</li>
+<li><code>:let @k=''</code> : 清空索引k</li>
+<li><code>:let @0=@1</code> : 索引1複製給索引0</li>
+<li><code>&quot;+x</code> : 剪下，將資料放進剪貼簿及vim緩衝區</li>
+<li><code>&quot;+y</code> : 複製，將資料放進剪貼簿及vim緩衝區</li>
+<li><code>&quot;+gp</code> : 貼上</li>
+</ul>
+
+<h2 id="buffer">buffer</h2>
+
+<ul>
+<li><code>:e qq.php</code> : 跳去編輯 qq.php 這個檔案, qq.php 會在 buffer 裡</li>
+<li><code>:ls</code> : 顯示buffer裡的檔案</li>
+<li><code>:bn</code> : 切到下一個buffer檔案</li>
+<li><code>:bp</code> : 切到上一個buffer檔案</li>
+<li><code>:b2</code> : 切到buffer 2號檔案</li>
+<li><code>:b qq.php</code> : 切到檔名為qq.php的buffer檔案</li>
+<li><code>ctrl</code> + <code>6</code> : 回到上一個開的buffer檔案。注意 : <code>:bp</code>是不一樣的!</li>
+</ul>
+
+<h2 id="tab">tab</h2>
+
+<ul>
+<li><code>:h tabe</code> : 列出tabe的helper</li>
+<li><code>gt</code> : 跳到下一個tabe</li>
+<li><code>gT</code> : 跳到上一個tabe</li>
+<li><code>:tab ba</code> : 將目前的buffer切換成tab</li>
+<li><code>:tabe</code> : 開一個新的tab</li>
+<li><code>:tabe %</code>: 以目前檔案開一個新的tab</li>
+<li><code>:tabe qq.php</code> : 開啟qq.php為tab(不存在就會在當前目錄建立新檔案)</li>
+<li><code>:tabmove 1</code> : 將當前 tabe 順序移動到順序1</li>
+<li><code>3gt</code> : 跳至tabe順序3</li>
+</ul>
+
+<h2 id="儲存-離開">儲存、離開</h2>
+
+<ul>
+<li><code>:wa</code> : 全部儲存</li>
+<li><code>:qa</code> : 關掉全部視窗</li>
+<li><code>:w</code> : 儲存</li>
+<li><code>:q</code> : 離開</li>
+<li><code>:w!</code> : 強制儲存</li>
+<li><code>:wq</code> : 儲存後離開</li>
+<li><code>:w ~/qq.php</code> : 另存新檔</li>
+<li><code>:e qq.php</code> : 打開qq.php，並關閉目前所在頁面</li>
+</ul>
+
+<h2 id="其他操作">其他操作</h2>
+
+<ul>
+<li><code>u</code> : 回復上一個動作</li>
+<li><code>ctrl</code> + <code>r</code> : 回復下一個動作</li>
+<li><code>:noh</code> : 取消選取的highlight</li>
+<li><code>:! ls -l</code> : 在 vim 下暫時切到外面執行 <code>ls -l</code></li>
+<li><code>:set nu</code> : 顯示行號，設定之後會在每一行的最前面顯示行號</li>
+<li><code>:set nonu</code> : 與 <code>set nu</code> 相反，為取消行號！</li>
+<li><code>:set paste</code> : paste模式，直接貼上文字時格式不會跑掉</li>
+<li><code>:set tabstop=4</code> : 設定一個tab等於四個空白長度</li>
+<li><code>:set expandtab</code> : 設定以後，使用tab鍵時會用空白取代(由tabstop設定而定)</li>
+<li><code>:set incsearch</code> : <code>/</code> 不需按 Enter, 邊打邊搜尋</li>
+<li><code>:set nohlsearch</code> : <code>/</code> 不要 highlight 找到的字串</li>
+<li><code>:retab</code> : 將tab轉換成space</li>
+<li><code>:edit</code> or <code>:edit!</code> : reload</li>
+<li><code>ctrl</code> + <code>p</code> : 自動補齊變數名稱或語法</li>
+<li><code>ctrl</code> + <code>g</code>: prints the current file name with full path</li>
+<li><code>~</code> : 可以將游標上的字切換大 / 小寫</li>
+<li><code>.</code> : 重覆前一個動作</li>
+<li><code>&gt;&gt;</code> : 縮排</li>
+<li><code>3&gt;&gt;</code> : 游標那行與下2行一起縮排</li>
+<li><code>&lt;&lt;</code> : 縮排倒退</li>
+<li><code>:3,5&gt;&gt;</code> : 3到5行向右縮排2次</li>
+<li><code>:3,5&lt;</code> : 3到5行向左縮排1次</li>
+<li><code>:%norm A*</code> : 在每一行最後面加上 <code>*</code>。 <code>norm</code> = type the following commands</li>
+<li><code>:11,13 norm Aqq</code> : 在第 11~13 行最後面加上 <code>qq</code> 字串</li>
+<li><code>gf</code> : 跳到 source code 的檔案, 例如在 <code>/tmp/cc.ff</code> 上按, 就會跳到該檔案</li>
+<li><code>ctrl</code> + <code>w</code> + <code>gf</code> : 會在 tab 打開 source code 的檔案</li>
+<li><code>:指令</code> + <code>ctrl</code> + <code>d</code> : 會出現相關指令的 menu, 再按 <code>tab</code> 會補齊指令</li>
+</ul>
+
+<h2 id="execute-outside-commands">Execute outside commands</h2>
+
+<h3 id="pretty-json">Pretty JSON</h3>
+
+<pre><code>:%!python -m json.tool    (all)
+:'&lt;,'&gt;!jq                 (visual select, jq is another json helper)
+</code></pre>
+
+<h2 id="範圍">範圍</h2>
+
+<h3 id="加上註解">加上註解(<code>//</code>)</h3>
+
+<ul>
+<li>加上註解 :
+
+<ol>
+<li>在第一行按下<code>ctrl</code> + <code>v</code> 進入到選取區塊模式</li>
+<li>游標向下移到要註解的最後一行</li>
+<li>按 <code>I</code></li>
+<li>輸入 <code>//</code>  (註解符號，看你的程式語言是什麼)</li>
+<li><code>esc</code></li>
+</ol></li>
+<li>取消註解 :
+
+<ol>
+<li>在第一行按下<code>ctrl</code> + <code>v</code> 進入到選取區塊模式</li>
+<li>游標向下移到要註解的最後一行</li>
+<li>按一個右鍵, 讓區塊把 // 包起來</li>
+<li>按<code>x</code>刪除</li>
+</ol></li>
+</ul>
+
+<p>或</p>
+
+<ul>
+<li>加上註解 : <code>:34,37s/^/\/\//g</code></li>
+<li>取消註解 : <code>:34,37s/^\/\///g</code></li>
+</ul>
+
+<h3 id="範圍縮排">範圍縮排</h3>
+
+<p><code>shift</code> + <code>v</code> : 選出要縮排的列再按<code>&gt;&gt;</code>，這時候只會縮排一次，再按<code>.</code>（複製上一個動作）就可以要縮排幾次就按幾下</p>
+
+<h2 id="vim-plugin">vim plugin</h2>
+
+<p>hello.vim</p>
+
+<pre><code>function! XX()
+    echo getpos(&quot;.&quot;)
+endfunction
+</code></pre>
+
+<p>隨便編輯其他文件</p>
+
+<ol>
+<li><code>:source hello.vim</code></li>
+<li><code>:call XX()</code></li>
+</ol>
+
+<blockquote>
+<p>就會 print 出你目前的游標位子了, 如: <code>[0, 3, 8, 0]</code></p>
+</blockquote>
+
+<p>get external command return</p>
+
+<pre><code>let a = system('ls -al')
+echo a
+</code></pre>
+
+<h2 id="讓-vim-複製到-clipboard">讓 vim 複製到 Clipboard</h2>
+
+<h3 id="確認目前-vim-版本有支援此功能">確認目前 vim 版本有支援此功能</h3>
+
+<p>(TODO: 未完成)</p>
+
+<pre><code>vim --version | grep clipboard
+</code></pre>
+
+<p>如果看到 <code>+clipboard</code> or <code>+xterm_clipboard</code> 就表示有</p>
+
+<p>看到 <code>-clipboard</code> and <code>-xterm_clipboard</code> 表示沒有</p>
+
+<pre><code>:set clipboard=unnamed
+:set clipboard+=unnamed
+</code></pre>
+
+<h2 id="查看檔案的-binary-hex">查看檔案的 binary hex</h2>
+
+<p>command:</p>
+
+<pre><code>vim test.txt
+</code></pre>
+
+<p>test.txt 進入後輸入 <code>:%!xxd</code></p>
+
+<pre><code>0000000: 3031 3233 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
+0000010: 4748 494a 4b4c 4d4e 4f50 5152 5354 5556  GHIJKLMNOPQRSTUV
+0000020: 5758 595a 0a                             WXYZ.
+</code></pre>
+
+<p>最後面的 <code>0a</code> 是換行字元</p>
+
+<p>編輯中間的 hex</p>
+
+<pre><code>0000000: 3031 3233 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
+</code></pre>
+
+<p>將 23 (hex 3233) 位置調換成 32 (hex 3332)</p>
+
+<pre><code>0000000: 3031 3332 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
+</code></pre>
+
+<p>再執行 <code>:%!xxd -r</code> 將 hex 轉回來</p>
+
+<pre><code>0132456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+</code></pre>
+
+</article>
+
+
+
+</html>

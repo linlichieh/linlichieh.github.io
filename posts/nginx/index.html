@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Nginx | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/nginx/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/nginx/">Nginx</a></h1>
+    <p class="meta"><time datetime="2014-05-23T10:59:34&#43;08:00">May 23, 2014</time></p>
+  </header>
+  
+
+<h2 id="install">Install</h2>
+
+<pre><code>sudo apt-get update
+sudo apt-get install nginx
+</code></pre>
+
+<p>啟動</p>
+
+<pre><code>sudo service nginx start
+</code></pre>
+
+<p>到 browser 看是否安裝成功 ex: <a href="http://192.168.56.1">http://192.168.56.1</a></p>
+
+<blockquote>
+<p>nginx www default directory : <code>/usr/share/nginx/html/</code></p>
+</blockquote>
+
+<h3 id="如果啟動-nginx-不成功-沒反應">如果啟動 nginx 不成功/沒反應</h3>
+
+<p>先判斷設定檔語法是否都正確</p>
+
+<pre><code>$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+</code></pre>
+
+<p>查看 <code>/var/log/nginx/error.log</code> 是否有噴錯</p>
+
+<pre><code>2017/08/07 08:51:59 [emerg] 2032#0: bind() to 0.0.0.0:80 failed (98: Address already in use)
+2017/08/07 08:51:59 [emerg] 2032#0: bind() to [::]:80 failed (98: Address already in use)
+</code></pre>
+
+<h3 id="重新安裝-nginx-ubuntu">重新安裝 nginx (Ubuntu)</h3>
+
+<pre><code>sudo apt-get purge nginx nginx-common nginx-full
+sudo apt-get install nginx
+</code></pre>
+
+<h2 id="nginx-conf">nginx.conf</h2>
+
+<p><code>/etc/nginx/nginx.conf</code> :</p>
+
+<pre><code>user  www-data;
+worker_processes  1;                                # CPU 數量, 可以避免 connection lock
+
+events {
+    worker_connections  1024;                       # concurrent connection
+    use epoll;
+}
+</code></pre>
+
+<h3 id="403-forbidden">403 Forbidden</h3>
+
+<p>建議設定 error_log 才能知道問題出在哪裡, 有可能是網站根目錄的權限不對</p>
+
+<h3 id="rails-config">Rails config</h3>
+
+<p><code>/etc/nginx/sites-available/default</code> :</p>
+
+<pre><code>http {
+    passenger_root /home/test/.rvm/gems/ruby-2.1.3/gems/passenger-4.0.50;
+    passenger_ruby /home/test/.rvm/gems/ruby-2.1.3/wrappers/ruby;
+
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+    error_log /var/www/pumpkin/log/nginx_error.log;
+    access_log /var/www/pumpkin/log/nginx_access.log;
+    server {
+        listen       80;
+        server_name  a.example.com;
+        root /var/www/pumpkin/public;
+        passenger_enabled on;
+        passenger_set_cgi_param SECRET_KEY_BASE &quot;cf2d4472039660a31a002b21cd3ded0cf7cc2c5a0d82f24dcdf5097b79c1900241f97eb85542f8e4a349f32fac37b618bc663b21f16de2706bb897885d6cc3f0&quot;;
+        client_max_body_size       50M;     # 最大上傳 50MB
+
+        error_page   500 502 503 504  /50x.html;
+
+        location = /50x.html {
+            root   html;
+        }
+    }
+
+}
+</code></pre>
+
+<h3 id="php-php5-fpm-config">php (php5-fpm) config</h3>
+
+<p>第一次使用 nginx 執行 php 請先參考本文下方 php5-fpm</p>
+
+<p><code>/etc/nginx/sites-available/default</code> :</p>
+
+<pre><code>http {
+    server {
+        listen       80;
+        root  /var/www/php;
+        index index.php index.html index.htm;
+        server_name  php.example.com;
+
+        # 上傳大小
+        client_max_body_size 50M;
+        client_body_buffer_size 128k;
+
+        # log
+        access_log /var/log/nginx/test-access.log;
+        error_log /var/log/nginx/test-error.log;
+
+        # error page
+        error_page 404 /404.html;
+        error_page 500 502 503 504 /50x.html;
+
+        location / {
+            try_files $uri $uri/ /index.php;
+        }
+
+        location = /50x.html {
+            root /usr/share/nginx/www;
+        }
+
+        # pass the PHP scripts to FastCGI server listening on the php-fpm socket
+        location ~ \.php$ {
+            # fastcgi_pass   127.0.0.1:9000;
+            fastcgi_pass unix:/var/run/php5-fpm.sock;                           # 一定要指定, 要跟 php-fpm config 設定的一樣
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            include fastcgi_params;
+
+            # Server variable
+            fastcgi_param DEVELOPER 'test';
+        }
+    }
+
+}
+</code></pre>
+
+<p>修改完重啟</p>
+
+<pre><code>sudo service php5-fpm restart
+sudo service nginx restart
+</code></pre>
+
+<h2 id="multi-sites-新增在-sites-enabled-下">Multi sites 新增在 sites-enabled 下</h2>
+
+<p>有些方法安裝 nginx 完沒有 sites-enabled 資料夾, 必須自行新增資料夾再引入</p>
+
+<p><code>/opt/nginx/conf/nginx.conf</code> :</p>
+
+<pre><code>http {
+
+    ...略...
+
+    server {
+
+        ...略...
+
+    }
+    include /opt/nginx/conf/sites-enabled/*;
+}
+</code></pre>
+
+<p><code>/opt/nginx/conf/sites-enabled/php-nginx.conf</code> :</p>
+
+<pre><code>server {
+    ...略...
+}
+</code></pre>
+
+<p>nginx 預設 user 是 nobody</p>
+
+<p>不同 site 的網站根目錄的權限建議設定為 <code>myUser:www-data</code>,</p>
+
+<p>讓 myUser 開發及 www-data 存取目錄或檔案時不會發生權限問題</p>
+
+<h3 id="如果本身己存在-sites-available-及-sites-enabled">如果本身己存在 sites-available 及 sites-enabled</h3>
+
+<p>建立新的 sites 就不用那麼麻煩了, 使用 symblic link</p>
+
+<pre><code>sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/www
+sudo ln -s /etc/nginx/sites-available/www /etc/nginx/sites-enabled/www
+</code></pre>
+
+<p>並重新啟動 nginx</p>
+
+<blockquote>
+<p>nginx 預設看似沒有像 apache 的 a2ensite 及 a2dissite 指令, 所以手動操作</p>
+</blockquote>
+
+<h2 id="remove-nginx">Remove nginx</h2>
+
+<pre><code>sudo apt-get remove nginx       # Removes all but config files.
+sudo apt-get purge nginx        # Removes everything.
+sudo apt-get autoremove         # After using any of the above commands, use this in order to remove dependencies used by nginx which are no longer required.
+rm -rf /etc/nginx               # remove the conf files too.
+</code></pre>
+
+<h2 id="其他設定">其他設定</h2>
+
+<p>IPv6 + IPv4</p>
+
+<pre><code>listen [::]:80;         # 前面的是 IPv6
+</code></pre>
+
+<h2 id="設定-ssl">設定 SSL</h2>
+
+<h3 id="到-godaddy-買好-domain-ssl-domain-不要買-private-的">到 Godaddy 買好 domain, SSL, domain 不要買 private 的</h3>
+
+<blockquote>
+<p>根據網路上找到很多資料都說 domain 不能 private, 但我仍然在 domain 是 private 的情況下完成 ssl 的設定 at 20150822, 所以以下操作可以等到輸入 CSR 後的 SSL 認證信收不到後再考慮是不是要拿掉 domain private</p>
+</blockquote>
+
+<p>先確定 <a href="http://whois.domaintools.com/">whois</a> 可以查到 domain 的 email, 如果沒有查到代表 domain 被設定為 private 了, 可操作以下步驟解除</p>
+
+<p>到 <a href="https://mya.godaddy.com/">Godaddy 設定頁</a> 點 DOMAINS -&gt; 欄位 Associated Products 的 Domains By Proxy</p>
+
+<p>(你也會看到 Registration Type 為 Private, 如果沒有保護的話會顯示 Public)</p>
+
+<p>取消流程可參考<a href="https://sofree.cc/godaddy-transfer-domain-tech/">此網頁</a>, 流程大約是</p>
+
+<p>在 Account 的 Domain 下點 Domains By Proxy 然候選擇 忘記密碼, 因為那個網站你還沒有帳密, 接著輸入網址後它就會寄信給你了, 收信取得 customer number, 登入帳號為 customer number 密碼為 godaddy 的密碼, 進入 dashboard 點 Cancel private registration</p>
+
+<h3 id="設定-dns">設定 dns</h3>
+
+<p>example.com 及 www.example.com 指到主機 IP</p>
+
+<pre><code>A (Host)
+Host    Points To       TTL
+---------------------------
+@       139.162.11.41   1H
+www     139.162.11.41   1H
+</code></pre>
+
+<h3 id="create-the-ssl-certificate">Create the SSL Certificate</h3>
+
+<pre><code>sudo mkdir /opt/nginx/ssl
+cd /opt/nginx/ssl
+openssl req -new -newkey rsa:2048 -nodes -keyout example.key -out example.csr             # 如果申請 example.com, 輸入 example.key, example.csr
+
+接下來會問你幾個問題, 至少填第一個, 否則 Certificate 可能建立不起來. If you enter '.', the field will be left blank.
+
+Country Name (2 letter code) [AU]:TW
+State or Province Name (full name) [Some-State]:Taiwan
+Locality Name (eg, city) []:Taipei
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:example
+Organizational Unit Name (eg, section) []: (不用輸入)
+Common Name (e.g. server FQDN or YOUR name) []:example.com
+Email Address []:test@gmail.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []: (不用輸入)
+An optional company name []: (不用輸入)
+</code></pre>
+
+<p>到 <a href="https://mya.godaddy.com/">Godaddy 設定頁</a> 點 SSL CERTIFICATES -&gt; manage -&gt; CSR 貼上 <code>.csr 的內容</code></p>
+
+<pre><code>-----BEGIN CERTIFICATE-----
+MIID8zCCAtugAwIBAgIJAOT8G1V0fwvRMA0GCSqGSIb3DQEBCwUAMIGPMQswCQYD
+VQQGEwJUVzEPMA0GA1UECAwGVGFpd2FuMQ8wDQYDVQQHDAZUYWlwZWkxGzAZBgNV
+BAoMEm1lZXR0aGV0cmFuc2xhdG9yczEfMB0GA1UEAwwWbWVldHRoZXRyYW5zbGF0
+b3JzLmNvbTEgMB4GCSqGSIb3DQEJARYRanh4eGxpbkBnbWFpbC5jb20wHhcNMTUw
+ODIxMTY1OTI2WhcNMTYwODIwMTY1OTI2WjCBjzELMAkGA1UEBhMCVFcxDzANBgNV
+BAgMBlRhaXdhbjEPMA0GA1UEBwwGVGFpcGVpMRswGQYDVQQKDBJtZWV0dGhldHJh
+bnNsYXRvcnMxHzAdBgNVBAMMFm1lZXR0aGV0cmFuc2xhdG9ycy5jb20xIDAeBgkq
+hkiG9w0BCQEWEWp4eHhsaW5AZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAvu8s2aL1Tq4UfaCcMoO0jZKzmOeuYDSlCn4CrJjZmctFqFeS
++TVY7YObvbTI7XFLzaru55mOMpVI4QurYFCnHKJsbPsOWIN2PBkPYxv5KuHmZRPj
+d5YGBzqgFaEgIoPftfYmNII9NYxgRCW/hGkx4j9BquZB/CaGMe0Im26Hj/BS3yyZ
+oA+LaxiCz6FqK2E0gS0vVce/7ECvuR7DxQr5GNRQ8gmNrgvly0nvgPjyEzKndfMh
+gv99MRQ5r6JjaozLD6KlNQ8npoNoeiIAaA3Q/uGuYpgKVxqpZIxmC5kMMeGfQHYh
+XZ2tsjKALk+EOOErV/Zwa5y6BrTAUhIznQLZ8QIDAQABo1AwTjAdBgNVHQ4EFgQU
+tETSHyBIKhOzMcJMfLBEcIjJOfwwHwYDVR0jBBgwFoAUtETSHyBIKhOzMcJMfLBE
+cIjJOfwwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAtNokFSCUtwsK
+o5nmhB8pS20sILKWjRWg32HUrPU+uaBwDfAASq5ZRGjUoLQMDrxDuo0HWtR+vUCw
+OLqCrp7iWSUs7UW4jK2OzNKDyEqUfEPnGd1ZcW309b0oix45aUPXwlp4UzvvBTU+
+hZ2UdGsb+Tu/0uPGCjCqJudbZvtESqGSYd5e5bJWnPpz95pibvtCiSsD8ta+S3++
+XscKN4Qpb8bjJ877y7NPm9aud9qJ0RQ41tUa4pmWE3uDVcRSpJzcMRK1oyMuh9YN
+ftUJMSIawf49PCiSqAwGmQfs9Ou/ZtIwqjTnnWJ2lbHCxd2Zd8TaGeyz/TIB6vIH
+OwFSjQxxhQ==
+-----END CERTIFICATE-----
+</code></pre>
+
+<p>去 Email 收信  (當初申請這個 domain 的 email)</p>
+
+<p>Download Certificate  下載會選擇 HTTP Server 的型態, 沒有 nignx 選 other,</p>
+
+<p>下載完是一個 zip 檔, 解壓縮出來是 <code>b38412d0dd76c4f3.crt</code> (伺服器 SSL 憑證) 及 <code>gd_bundle-g2-g1.crt</code> (中繼憑證 (Intermediate Certificate))</p>
+
+<p>nginx 只需要兩個參數，將這兩個檔案搬到 <code>/opt/nginx/ssl</code> 下, 並且合併成同一個檔案 :</p>
+
+<pre><code>cat b38412d0dd76c4f3.crt gd_bundle-g2-g1.crt &gt; example_combined.crt
+</code></pre>
+
+<blockquote>
+<ul>
+<li>godaddy zip 也有可能有4個檔案, 網站憑證, root 憑證, chain 憑證及 bundle 憑證(root + chain)</li>
+<li>(?) 如果是 apache 就要放 網站憑證, chain 憑證跟 bundle 憑證</li>
+</ul>
+</blockquote>
+
+<h3 id="設定-nginx-conf-填上-ssl-設定">設定 nginx.conf, 填上 SSL 設定</h3>
+
+<p>強制將 non-www 及 http 導到 <a href="https://www">https://www</a></p>
+
+<pre><code>ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+server {
+
+    listen 443 ssl;
+    ssl_certificate /opt/nginx/ssl/example_combined.crt;
+    ssl_certificate_key /opt/nginx/ssl/example.key;
+
+    listen       80;
+    server_name  example.com;
+
+    # non-www redirect to www
+    if ($host = $server_name) {
+        return 301 https://www.$server_name$request_uri;
+    }
+
+    # 將 http 導到 https
+    if ($scheme = http) {
+        return 301 https://www.$server_name$request_uri;
+    }
+
+    ...(略)...
+
+}
+</code></pre>
+
+<h3 id="完成">完成!</h3>
+
+<pre><code>https://www.example.com
+</code></pre>
+
+<h3 id="問題-如果-https-不是綠色的而是灰色的">[問題] 如果 Https 不是綠色的而是灰色的</h3>
+
+<p>可能出現此訊息</p>
+
+<pre><code>這個網頁含有其他不安全的資源
+</code></pre>
+
+<p>看一下 developer tool 的 console, 顯示什麼提示訊息,</p>
+
+<p>例如網頁上如果用 <code>&lt;img&gt;</code> 來源是別人的圖片, 如果不是 <code>https</code> 就有可能出現此訊息</p>
+
+<h3 id="判斷您的-ssl-是否安全-https-www-ssllabs-com-ssltest"><a href="https://www.ssllabs.com/ssltest/">判斷您的 SSL 是否安全</a></h3>
+
+<h4 id="disable-ssl-3-to-mitigate-問題"><code>disable SSL 3 to mitigate</code> 問題</h4>
+
+<p><a href="https://en.wikipedia.org/wiki/POODLE">POODLE</a> 是 protocol 層級的弱點, 很難修復, 它可以透過兩個方面去防止這個攻擊</p>
+
+<p>第一個就是 user 將瀏覽器的 SSLv3 關掉, 第二個就是網站工程師要做的, 在 Server 端將 SSLv3 關掉</p>
+
+<p>在 nginx.conf 裡指定 ssl protocols</p>
+
+<pre><code>http {
+
+    ...(略)...
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    ...(略)...
+
+    server {
+        ...(略)...
+    }
+}
+</code></pre>
+
+<blockquote>
+<p>可以在 http 層指定 或每個 server 層指定</p>
+</blockquote>
+
+<p>也因為修正這個漏洞原本被 <a href="https://www.ssllabs.com/ssltest/">QUALYS SSL LABS</a> 評為 C 而升到 B 了</p>
+
+<p>TODO 後記: 停用 SSLv2 + SSLv3 較安全</p>
+
+<h2 id="讓-nginx-執行-php-php5-fpm">讓 nginx 執行 php (php5-fpm)</h2>
+
+<pre><code>sudo apt-get install php5 php5-cli php5-fpm php5-mcrypt php5-mysql
+</code></pre>
+
+<p>啟動 php5-fpm</p>
+
+<pre><code>sudo service php5-fpm
+</code></pre>
+
+<p>將 fpm 與 nginx 連接起來</p>
+
+<h3 id="原理">原理</h3>
+
+<p>當 request 進來, nginx 接到後會往 php-fpm 裡送, 透過它的 fastcgi 去執行 php</p>
+
+<h4 id="修改-nginx-設定檔">修改 nginx 設定檔</h4>
+
+<p>為了讓 nginx 可以執行 php 的 code, 到 <code>/etc/nginx/sites-available/www</code></p>
+
+<p>找到這行 <code># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</code></p>
+
+<p>除了這行 <code>fastcgi_pass 127.0.0.1:9000;</code> 將其他被註解的打開</p>
+
+<p>因為 fpm 預設會使用 unix socket (php-fpm 設定裡預設用 <code>listen = /run/php/php7.0-fpm.sock</code>), 所以在本機跑會比較快, 如果要交由一台效能較好的</p>
+
+<p>server 去處理 php 可以在 <code>/etc/php5/fpm/pool.d/www.conf</code> 設定改用 tcp socket (<code>listen = 127.0.0.1:9000</code>) 而 fpm 就會用 tcp socket 來運作了</p>
+
+<blockquote>
+<p>如果要改 php 的執行 user 及 group 也在 <code>/etc/php5/fpm/pool.d/www.conf</code> 裡面改</p>
+</blockquote>
+
+<p>修改 <code>root</code> path : 網站根目錄路徑</p>
+
+<p>將 <code>index.php</code> 也設為預設的首頁</p>
+
+<pre><code>index index.html index.htm index.php;
+</code></pre>
+
+<p>在網站根目錄新增 index.php 看結果是否成功</p>
+
+<blockquote>
+<p>fpm 設定檔 : <code>/etc/php5/fpm/pool.d/www.conf</code>, 要改 http server 執行的 user, group 在這改</p>
+</blockquote>
+
+<h4 id="if-php5-fpm-not-working">If php5-fpm not working</h4>
+
+<p>1) 檢查 <code>/etc/php5/fpm/pool.d/www.conf</code></p>
+
+<pre><code>listen = /var/run/php5-fpm.sock
+user = www-data
+group = www-data
+</code></pre>
+
+<p>2) 確認 <code>/var/run/php5-fpm.sock</code> 權限</p>
+
+<pre><code>srw-rw---- 1 www-data www-data 0 May  6 17:29 /var/run/php5-fpm.sock
+</code></pre>
+
+<p>3) 確認 nginx 的執行權限</p>
+
+<pre><code>user  www-data;
+</code></pre>
+
+<p>4) 檔案的執行權限</p>
+
+<pre><code>-rw-rw-r-- 1 www-data www-data   81 May  5 08:04 index.php
+</code></pre>
+
+<h2 id="config-效能調校">Config 效能調校</h2>
+
+<ul>
+<li>worker_processes : 與 CPU 核心數一樣</li>
+<li>worker_connections : 每個 process 最多能承載的連線數</li>
+<li>use epoll : 高併發下效能較好</li>
+<li>client_header_buffer_size 4k;</li>
+<li>keepalive_timeout 60;</li>
+<li>open_file_cache max=65535 inactive=60s;</li>
+</ul>
+
+<p>ref : <a href="http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/">http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/</a></p>
+
+<h2 id="安裝-ngx-pagespeed-重新安裝整個-nginx">安裝 ngx_pagespeed (重新安裝整個 nginx)</h2>
+
+<p>無法直接加入 ngx_pagespeed module, 必須把原本的 nginx 刪掉再重編</p>
+
+<p>照著安裝 : <a href="https://developers.google.com/speed/pagespeed/module/build_ngx_pagespeed_from_source?hl=zh-TW">https://developers.google.com/speed/pagespeed/module/build_ngx_pagespeed_from_source?hl=zh-TW</a></p>
+
+<p>Verify :</p>
+
+<pre><code>/usr/local/nginx/sbin/nginx -V
+nginx version: nginx/1.6.2
+built by gcc 4.8.2 (Ubuntu 4.8.2-19ubuntu1)
+configure arguments: --add-module=/home/test/ngx_pagespeed-release-1.9.32.1-beta
+</code></pre>
+
+<p>Command</p>
+
+<pre><code>git clone https://github.com/Fleshgrinder/nginx-sysvinit-script.git
+sudo cp nginx-sysvinit-script/nginx /etc/init.d/nginx
+sudo chmod 0755 /etc/init.d/nginx
+sudo chown root:root /etc/init.d/nginx
+sudo service nginx start
+</code></pre>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="reponse-被截斷">reponse 被截斷</h3>
+
+<blockquote>
+<p>回 json 但 response 只收到一半, 直接被截斷</p>
+</blockquote>
+
+<p>如果以 FastCGI backend (such as PHP-FPM) 為底層, 會 buffer response 在記憶體, 預設 nginx buffer 是 32kb, 如果超過這個大小的話就會被截斷</p>
+
+<p>設定不限制大小</p>
+
+<pre><code>fastcgi_buffering off;
+</code></pre>
+
+<p>[補充] 預設為</p>
+
+<pre><code>fastcgi_buffers 8 4k|8k;        # 8 等分, 後面是取決於平台, Ubuntu 就是 4k
+</code></pre>
+
+<blockquote>
+<p>ref : <a href="https://gist.github.com/magnetikonline/11312172">https://gist.github.com/magnetikonline/11312172</a></p>
+</blockquote>
+
+</article>
+
+
+
+</html>

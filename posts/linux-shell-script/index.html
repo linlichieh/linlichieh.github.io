@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux Shell Script | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-shell-script/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-shell-script/">Linux Shell Script</a></h1>
+    <p class="meta"><time datetime="2013-06-08T09:44:00Z">June 08, 2013</time></p>
+  </header>
+  
+
+<h2 id="basics">Basics</h2>
+
+<h3 id="接收傳入參數">接收傳入參數</h3>
+
+<p>建立test.sh內容:</p>
+
+<pre><code>#!/bin/bash
+echo $0
+echo $1
+echo $2
+</code></pre>
+
+<p>執行你的shell檔案，並將要傳入的參數加在後面</p>
+
+<pre><code>$ sh test.sh hello 11 22
+test.sh         # 檔名
+hello           # 第一個參數
+11              # 第二個參數
+</code></pre>
+
+<h3 id="讀寫檔案內容">讀寫檔案內容</h3>
+
+<p>建立test.sh內容:</p>
+
+<pre><code>cat &gt; qq.php &lt;&lt; EOF
+this is line 1
+this is line 1
+EOF
+</code></pre>
+
+<blockquote>
+<p>執行後就會產生qq.php檔案了，檔案內容為EOF框起來的內容</p>
+</blockquote>
+
+<p>寫檔換行 :</p>
+
+<pre><code>echo -e &quot;line1\nline2&quot; | tee -a /tmp/q.txt
+</code></pre>
+
+<p>append到檔案最後面</p>
+
+<pre><code>tee -a /tmp/t.txt &lt;&lt; EOF
+line 1
+line 2
+EOF
+</code></pre>
+
+<p>讀取檔案，將每行放入陣列</p>
+
+<pre><code>file=1.txt
+
+seq=1
+while read line
+do
+    lines[$seq]=$line
+    ((seq++))
+done &lt; $file
+
+for ((i=1;i&lt;=${#lines[@]};i++))
+do
+    echo ${lines[$i]}
+done
+</code></pre>
+
+<blockquote>
+<p>使用<code>sh</code>執行會有錯誤，但<code>bash</code>執行沒問題</p>
+</blockquote>
+
+<p>或 :</p>
+
+<pre><code>array_1=($(cat /tmp/t.txt))
+echo ${array_1[0]}
+</code></pre>
+
+<blockquote>
+<p>使用<code>sh</code>執行會有錯誤，但<code>bash</code>執行沒問題</p>
+</blockquote>
+
+<h3 id="set">set</h3>
+
+<p>錯誤直接停止, 在最上面加上:</p>
+
+<pre><code>set -e
+</code></pre>
+
+<p>錯誤不停止，繼續執行</p>
+
+<pre><code>set +e
+</code></pre>
+
+<p>其他:</p>
+
+<ul>
+<li><code>set --</code> : 正常看到-後面是option，現在不再是option 而是一個命令參數。如-1 -2 &hellip;</li>
+<li><code>set -a</code> : 從這邊以後變數自動變成環境變數。</li>
+<li><code>set -f</code> : 不要解釋檔名的特殊字元例如wildcard *不再解釋為所有的意思了。</li>
+<li><code>set -x</code> : debug shell scripts</li>
+<li><code>set -o ignoreeof</code> : 一定要用exit離開shell,本來按Ctrl-D(eof)也可以</li>
+<li><code>set -o noclobber</code> : 關掉I/O導向不準overwrite檔案</li>
+<li><code>set -o notify</code> : shell結束時報告background job的status</li>
+<li><code>set -o noglob</code> : 關掉wildcard字元解釋 如 * ? [ ]</li>
+<li><code>set +o</code> : 把-o的反向操作</li>
+<li><code>set -</code> : 關掉-v -x -三種選項</li>
+<li><code>set --</code> : 或者 <code>set -</code> 常常用在shell scripts裡面。 set -o 是很常用的例如set -o vi設定shell的操作方式用vi方法， 取回上個命令就是按ESC再按k囉。</li>
+</ul>
+
+<p>ref:</p>
+
+<h3 id="if-else">if else</h3>
+
+<p>t.sh :</p>
+
+<pre><code>#!/bin/bash
+
+num=$1
+
+if [ &quot;${num}&quot; == &quot;XD&quot; ]; then
+    echo &quot;= XD&quot;
+elif [ &quot;${num}&quot; != &quot;QD&quot; ]; then
+    echo &quot;!= QD&quot;
+else
+    echo &quot;Nothing&quot;
+fi
+</code></pre>
+
+<p>執行 :</p>
+
+<pre><code>$ bash t.sh XD
+= XD
+$ bash t.sh something
+!= QD
+$ bash t.sh QD
+Nothing
+</code></pre>
+
+<p>AND / OR :</p>
+
+<pre><code>[ &quot;${confirm}&quot; == &quot;y&quot; ] &amp;&amp; [ &quot;${confirm}&quot; == &quot;Y&quot; ]
+[ &quot;${confirm}&quot; == &quot;y&quot; ] || [ &quot;${confirm}&quot; == &quot;Y&quot; ]
+</code></pre>
+
+<h3 id="switch">switch</h3>
+
+<pre><code>case $1 in
+    &quot;aa&quot;)
+        echo &quot;aa&quot;
+        ;;
+    &quot;cc&quot;)
+        echo &quot;cc&quot;
+        ;;
+    &quot;dd&quot;)
+        echo &quot;dd&quot;
+        ;;
+    *)
+        echo
+        echo &quot;  ***\$1 doesn't match!&quot;
+        echo
+        exit
+        ;;
+esac
+</code></pre>
+
+<h3 id="迴圈">迴圈</h3>
+
+<h4 id="for">for</h4>
+
+<pre><code>for var in con1 con2 con3 ...
+do
+    // do something
+done
+</code></pre>
+
+<p>or</p>
+
+<pre><code>for ((i=0; i&lt;6; i++)); do
+  echo $i
+  if [ ${i} == 3 ]; then
+        continue
+        // break
+  fi
+  echo &quot;done&quot;
+done
+</code></pre>
+
+<h4 id="while">while</h4>
+
+<pre><code>i=1
+while [ $i -le 5 ]      // i &lt; 5
+do
+    ((i++))
+    echo $i
+done
+</code></pre>
+
+<h4 id="until">until</h4>
+
+<pre><code>until [ condition ]
+do
+    程式段落
+done
+</code></pre>
+
+<h3 id="陣列">陣列</h3>
+
+<pre><code>lines=('line1' 'line2' 'line3')
+</code></pre>
+
+<blockquote>
+<p>${#array[@]} 為array的總數
+${array[0]}  索引從0開始, -1為最後一個值</p>
+</blockquote>
+
+<h3 id="判斷">判斷</h3>
+
+<h4 id="檔案是否存在">檔案是否存在</h4>
+
+<pre><code>if test -e /etc/network/if-pre-up.d/firewall; then
+    echo &quot;/etc/network/if-pre-up.d/firewall exists..&quot;
+fi
+</code></pre>
+
+<p>or</p>
+
+<pre><code>if [ -f /tmp/${filename}.tar.gz ]; then
+    echo &quot;exist&quot;
+fi
+</code></pre>
+
+<h4 id="判斷沒有目錄直接離開">判斷沒有目錄直接離開:</h4>
+
+<pre><code>if [ ! -d &quot;/var/www/$dir&quot; ]; then
+    echo &quot;/var/www/$dir doesn't exist.&quot;
+    exit
+fi
+</code></pre>
+
+<h4 id="判斷變數是否存在">判斷變數是否存在</h4>
+
+<pre><code>if [ -z $1 ]; then
+        # 不存在
+else
+        # 存在
+fi
+</code></pre>
+
+<h4 id="判斷只能輸入數字">判斷只能輸入數字</h4>
+
+<pre><code>echo &quot;$1&quot; | grep -o &quot;^[0-9]*$&quot;
+if [ $? -eq 0 ] ;then
+    echo &quot;match found&quot;
+else
+    echo &quot;match not found&quot;
+fi
+</code></pre>
+
+<h4 id="and-條件">AND 條件</h4>
+
+<pre><code>if (( $hour &gt;= 0 )) &amp;&amp; (( $hour &lt;= 9 )); then
+    # do something
+else
+    # do something
+fi
+</code></pre>
+
+<h3 id="亂數-10-19-中其中一個數字">亂數 10~19 中其中一個數字</h3>
+
+<pre><code>shuf -i 10-19 -n 1
+</code></pre>
+
+<h3 id="執行command結果給變數">執行command結果給變數</h3>
+
+<pre><code>random_num=$(shuf -i 10-19 -n 1)
+</code></pre>
+
+<p>or</p>
+
+<pre><code>count=$(grep &quot;2017-07-07 $hour_str:$min_str&quot; /var/log/php/ci/log-2017-07-07.php | wc -l)
+</code></pre>
+
+<h3 id="how-to-run-mysql-commands-through-shell-script">How to run mysql commands through shell script?</h3>
+
+<pre><code>mysql -u root test_database &lt;&lt; EOF
+SELECT * FROM test
+EOF
+</code></pre>
+
+<blockquote>
+<p>有設定免密碼所以不用加 -p</p>
+</blockquote>
+
+<h3 id="在shell-script執行-發生bad-substitution錯誤">在shell script執行 發生Bad substitution錯誤</h3>
+
+<p>可能發生的原因 ex: shell script 可能使用 ${str:3} (取得str變數第三個字元以後的字串)</p>
+
+<p>因為sh不支援，所以執行時改用bash執行就可以解決了</p>
+
+<pre><code>bash test.sh
+</code></pre>
+
+<h3 id="執行-ssh-後要怎麼離開">執行 ssh 後要怎麼離開</h3>
+
+<p>以下是沒有用的:</p>
+
+<pre><code>ssh qq.com
+exit
+</code></pre>
+
+<p>要改成:</p>
+
+<pre><code>ssh qq.com &lt;&lt;ENDHERE
+exit
+ENDHERE
+</code></pre>
+
+<h3 id="shell-script-回覆-yes">shell script 回覆 yes</h3>
+
+<p>當我要reload supervisor這個套件，但是會有新的一行yes/no，所以要使用這種方法才可以讓shell script幫我填入yes</p>
+
+<pre><code>sudo supervisorctl &lt;&lt;EOF
+reload
+y | command-that-asks-for-input
+EOF
+</code></pre>
+
+<p>or</p>
+
+<pre><code>yes | sudo sensors-detect
+sudo sensors
+</code></pre>
+
+<h3 id="shell-script-下-sudo-echo-發生-permission-denied">shell script 下 sudo echo 發生 permission denied</h3>
+
+<pre><code>sudo echo &quot;123&quot; &gt;&gt; /etc/fstab
+</code></pre>
+
+<p><code>&gt;&gt;</code> 是bash執行，不具root權限，以<code>tee</code> 代替<code>&gt;&gt;</code></p>
+
+<p>改成:</p>
+
+<pre><code>echo &quot;123&quot; | sudo tee -a /etc/fstab
+</code></pre>
+
+<blockquote>
+<p>-a, &ndash;append : append to the given FILEs, do not overwrite</p>
+</blockquote>
+
+<h3 id="match-string">match string</h3>
+
+<p>只比對test, 其餘不要</p>
+
+<p>bash :</p>
+
+<pre><code>#!/bin/bash
+
+test=$(echo $1 | grep -o &quot;test[0-9]*&quot;)
+echo ${test}
+</code></pre>
+
+<blockquote>
+<p>-o, &ndash;only-matching</p>
+</blockquote>
+
+<h3 id="取得指定字串長度">取得指定字串長度</h3>
+
+<pre><code>str='123456'
+echo ${str:3:2}        # 結果為45
+</code></pre>
+
+<h3 id="read讓使用者輸入變數">read讓使用者輸入變數</h3>
+
+<pre><code>sudo fdisk -l
+read -p &quot;Please input XFS partition: &quot; xfs_partition
+echo $xfs_partition
+</code></pre>
+
+<h3 id="執行漸進式選項">執行漸進式選項</h3>
+
+<p>EX: fdisk partition</p>
+
+<pre><code>(echo o; echo n; echo p; echo 1; echo ; echo; echo w) | sudo fdisk
+</code></pre>
+
+<h3 id="判斷-command-是否執行成功">判斷 command 是否執行成功</h3>
+
+<pre><code>some_command
+if [ $? -eq 0 ]; then
+    echo OK
+else
+    echo FAIL
+fi
+</code></pre>
+
+<blockquote>
+<p>The return value is stored in $?. 0 indicates success, others indicates error.</p>
+</blockquote>
+
+<h3 id="比對檔案是否有符合字串">比對檔案是否有符合字串</h3>
+
+<pre><code>grep &quot;127.0.1.1&quot; /tmp/hosts &gt; /dev/null 2&gt;&amp;1
+if [ $? -eq 0 ]; then
+    echo 'match'
+fi
+</code></pre>
+
+<h3 id="function">function</h3>
+
+<p>的第一種寫法，並返回值</p>
+
+<pre><code>function test ()
+{
+    return 255
+}
+
+test
+echo $?
+</code></pre>
+
+<blockquote>
+<p>結果 : 255
+return 範圍是 0~255，超過的話 : 256 為 0    257 為 1
+使用 <code>$?</code> 取得 return 的值</p>
+</blockquote>
+
+<p>第二種寫法，傳值並返回</p>
+
+<pre><code>test2 () {
+ echo $1$2
+}
+
+string=$(test2 &quot;Hello&quot; &quot; World!&quot;)
+echo $string
+</code></pre>
+
+<blockquote>
+<p>結果 : Hello World!
+function 並不像 php 一樣順序可以放在執行後，shell script 的 function 必須放在執行前</p>
+</blockquote>
+
+<h3 id="背景執行不顯示-output">背景執行不顯示 output</h3>
+
+<pre><code>host www.google.com &gt; /dev/null 2&gt;&amp;1
+</code></pre>
+
+<h3 id="將-command-結果存入陣列">將 command 結果存入陣列</h3>
+
+<pre><code>function test_dev_list()
+{
+    echo &quot;/dev/sda5&quot;
+    echo &quot;/dev/sda6&quot;
+    echo &quot;/dev/sda7&quot;
+    echo &quot;/dev/sda10&quot;
+    echo &quot;/dev/sda11&quot;
+    echo &quot;/dev/sda14&quot;
+}
+
+dev_array=(`echo $(test_dev_list) | cut  -d &quot; &quot; --output-delimiter=&quot; &quot; -f 1-`)
+for ((i=0; i&lt;${#dev_array[@]}; i++)); do
+    echo $i : ${dev_array[$i]}
+done
+</code></pre>
+
+<p>結果:</p>
+
+<pre><code>0 : /dev/sda5
+1 : /dev/sda6
+2 : /dev/sda7
+3 : /dev/sda10
+4 : /dev/sda11
+5 : /dev/sda14
+</code></pre>
+
+<h3 id="減法">減法</h3>
+
+<pre><code>a=5
+b=3
+c=$(($a-$b))
+echo $c
+</code></pre>
+
+<blockquote>
+<p>結果 : 2</p>
+</blockquote>
+
+<h3 id="輸出顏色文字及控制背景顏色">輸出顏色文字及控制背景顏色</h3>
+
+<pre><code>printf &quot;\33[0;35;44m&quot;
+echo &quot; Menu of available command:&quot;
+printf &quot;\33[0m&quot;
+printf &quot;\E[0;31;40m&quot;
+echo &quot; Menu of available command:&quot;
+printf &quot;\E[0m&quot;
+printf &quot;\e[0;36;43m&quot;
+echo &quot; Menu of available command:&quot;
+printf &quot;\e[0m&quot;
+</code></pre>
+
+<blockquote>
+<p><code>\33</code> = <code>\E</code> = <code>\e</code>
+用 <code>printf</code> 來輸出，而不是一般的 <code>echo</code></p>
+</blockquote>
+
+<p>註 :</p>
+
+<ul>
+<li>Syntx : <code>\E[樣式;文字顏色;背景顏色m</code></li>
+<li>輸出文字 : <code>\E[0m</code></li>
+</ul>
+
+<p>樣式：</p>
+
+<ul>
+<li>0 一般樣式</li>
+<li>1 粗體</li>
+<li>4 加底線</li>
+<li>5 灰底</li>
+<li>7 文字及背景顏色對調</li>
+</ul>
+
+<p>文字顏色：</p>
+
+<pre><code>30 黑色    90 暗灰
+31 紅色    91 亮紅
+32 綠色    92 亮綠
+33 黃色    93 亮黃
+34 藍色    94 亮藍
+35 紫色    95 亮紫
+36 青藍綠  96 亮青藍綠
+37 亮灰    97 白
+</code></pre>
+
+<p>背景顏色：</p>
+
+<pre><code>40 黑色    100 暗灰
+41 紅色    101 亮紅
+42 綠色    102 亮綠
+43 黃色    103 亮黃
+44 藍色    104 亮藍
+45 紫色    105 亮紫
+46 青藍綠  106 亮青藍綠
+47 亮灰    107 白
+</code></pre>
+
+<p>ref :
+<a href="http://misc.flogisoft.com/bash/tip_colors_and_formatting">參考顏色</a>
+<a href="http://mark528.pixnet.net/blog/post/7267334-shell-script%3A-%E6%8E%A7%E5%88%B6%E6%96%87%E5%AD%97%E9%A1%8F%E8%89%B2">http://mark528.pixnet.net/blog/post/7267334-shell-script%3A-%E6%8E%A7%E5%88%B6%E6%96%87%E5%AD%97%E9%A1%8F%E8%89%B2</a></p>
+
+<h3 id="printf-read">printf + read</h3>
+
+<pre><code>printf &quot;Choose Monkey, are you sure (y/n) ? &quot;
+read xfs_choice_confirm
+</code></pre>
+
+<blockquote>
+<p>read 後面不需接 <code>-p</code></p>
+</blockquote>
+
+<h3 id="補充-if-參數">補充 if 參數</h3>
+
+<ul>
+<li><code>n1 -lt n2</code> : n1 小於 n2 (less than)</li>
+<li><code>-a</code> file : True if file exists.</li>
+<li><code>-b</code> file : True if file exists and is a block special file.</li>
+<li><code>-c</code> file : True if file exists and is a character special file.</li>
+<li><code>-d</code> file : True if file exists and is a directory.</li>
+<li><code>-e</code> file : True if file exists.</li>
+<li><code>-f</code> file : True if file exists and is a regular file.</li>
+<li><code>-g</code> file : True if file exists and is set-group-id.</li>
+<li><code>-h</code> file : True if file exists and is a symbolic link.</li>
+<li><code>-k</code> file : True if file exists and its ‘‘sticky’’ bit is set.</li>
+<li><code>-p</code> file : True if file exists and is a named pipe (FIFO).</li>
+<li><code>-r</code> file : True if file exists and is readable.</li>
+<li><code>-s</code> file : True if file exists and has a size greater than zero.</li>
+<li><code>-t</code> fd : True if file descriptor fd is open and refers to a terminal.</li>
+<li><code>-u</code> file : True if file exists and its set-user-id bit is set.</li>
+<li><code>-w</code> file : True if file exists and is writable.</li>
+<li><code>-x</code> file : True if file exists and is executable.</li>
+<li><code>-O</code> file : True if file exists and is owned by the effective user id.</li>
+<li><code>-G</code> file : True if file exists and is owned by the effective group id.</li>
+<li><code>-L</code> file : True if file exists and is a symbolic link.</li>
+<li><code>-S</code> file : True if file exists and is a socket.</li>
+<li><code>-N</code> file : True if file exists and has been modified since it was last read.</li>
+<li>file1 <code>-nt</code> file2 : True if file1 is newer (according to modification date) than file2, or if file1 exists and file2 does not.</li>
+<li>file1 <code>-ot</code> file2 : True if file1 is older than file2, or if file2 exists and file1 does not.</li>
+
+<li><p>file1 <code>-ef</code> file2 : True if file1 and file2 refer to the same device and inode numbers.</p></li>
+
+<li><p>[ -b $file ]  True if file exists and is block special.</p></li>
+
+<li><p>[ -c $file ]  True if file exists and is character special.</p></li>
+
+<li><p>[ -d $file ]  True if file exists and is a directory.</p></li>
+
+<li><p>[ -e $file ]  True if file exists.</p></li>
+
+<li><p>[ -f $file ]  True if file exists and is a regular file.</p></li>
+
+<li><p>[ -g $file ]  True if file exists and is set-group-id.</p></li>
+
+<li><p>[ -k $file ]  True if file has its ``sticky&rdquo; bit set.</p></li>
+
+<li><p>[ -L $file ]  True if file exists and is a symbolic link.</p></li>
+
+<li><p>[ -p $file ]  True if file exists and is a named pipe.</p></li>
+
+<li><p>[ -r $file ]  True if file exists and is readable.</p></li>
+
+<li><p>[ -s $file ]  True if file exists and has a size greater than zero.</p></li>
+
+<li><p>[ -S $file ]  True if file exists and is a socket.</p></li>
+
+<li><p>[ -t $fd  ] True if fd is opened on a terminal.</p></li>
+
+<li><p>[ -u $file ]  True if file exists and its set-user-id bit is set.</p></li>
+
+<li><p>[ -w $file ]  True if file exists and is writable.</p></li>
+
+<li><p>[ -x $file ]  True if file exists and is executable.</p></li>
+
+<li><p>[ -O $file ]  True if file exists and is owned by the effective user id.</p></li>
+
+<li><p>[ -G $file ]  True if file exists and is owned by the effective group id.</p></li>
+</ul>
+
+<p>ref:
+<a href="http://www.troubleshooters.com/linux/quickhacks.htm#ShellscriptFileTests">http://www.troubleshooters.com/linux/quickhacks.htm#ShellscriptFileTests</a></p>
+
+<h3 id="確認是否要執行以下指令">確認是否要執行以下指令</h3>
+
+<pre><code>confirm() {
+    echo &quot;Press ENTER to continue, or ^C to cancel.&quot;;
+    read -e ignored
+}
+confirm
+</code></pre>
+
+<h3 id="判斷-ubuntu-版本">判斷 Ubuntu 版本</h3>
+
+<pre><code>LTS=&quot;Ubuntu 10.04&quot;
+ISSUE=`cat /etc/issue`
+if [[ $ISSUE != Ubuntu* ]]; then
+    echo &quot;This script is intended for use on Ubuntu, but this system appears
+    echo &quot;to be something else. Your results may vary.&quot;
+    echo
+elif [[ `expr match &quot;$ISSUE&quot; &quot;$LTS&quot;` -eq ${#LTS} ]]; then
+    echo &quot;what&quot;
+fi
+</code></pre>
+
+<h3 id="是否擁有-sudo-權限">是否擁有 sudo 權限</h3>
+
+<pre><code>echo &quot;Testing sudo...&quot;
+sudo true
+if [ $? -ne 0 ]
+then
+    echo &quot;ERROR: You must be able to sudo to run this script.&quot;;
+    exit 1;
+fi;
+</code></pre>
+
+<h3 id="動態偵測輸入變數">動態偵測輸入變數</h3>
+
+<pre><code>for TOKEN in $*
+do
+   echo $TOKEN
+done
+</code></pre>
+
+<h3 id="判斷第幾個參數">判斷第幾個參數</h3>
+
+<pre><code>if [ $# -lt 1 ]; then
+</code></pre>
+
+<h3 id="line-10-php-command-not-found"><code>line 10: php: command not found</code></h3>
+
+<p>在使用 shell 的 bash 指令裡使用 php 指令記得要用絕對路徑</p>
+
+<p>可使用 <code>which php</code> 查路徑在哪</p>
+
+<h3 id="指定-user-執行命令">指定 USER 執行命令</h3>
+
+<pre><code>/usr/bin/sudo -H -u $USER bash -c &quot;php -l qq.php&quot;
+</code></pre>
+
+<h3 id="截取目錄名">截取目錄名</h3>
+
+<pre><code>test@106-185-47-26:~/dockerfile/33-fsx$ echo ${PWD#*-}
+fsx
+</code></pre>
+
+<h3 id="當使用-echo-增加資料發生permission-denied">當使用<code>echo</code> 增加資料發生Permission denied</h3>
+
+<pre><code>$ sudo echo 'xxx' &gt;&gt; /etc/projects
+-bash: /etc/projects: Permission denied
+</code></pre>
+
+<p>解決方法：</p>
+
+<pre><code>sudo echo 'xxx' | sudo tee -a /etc/projects
+</code></pre>
+
+<h3 id="multi-commands">multi commands</h3>
+
+<pre><code>alias lock='gnome-screensaver; gnome-screensaver-command --lock'
+</code></pre>
+
+<p>or</p>
+
+<pre><code>lock() {
+    gnome-screensaver
+    gnome-screensaver-command --lock
+}
+</code></pre>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="每秒執行一次">每秒執行一次</h3>
+
+<pre><code>while true
+do
+    /bin/sleep 1s
+done
+</code></pre>
+
+<h3 id="add-cron-by-command-line">Add cron by command line</h3>
+
+<p>先印出已存在的 crontab, 然候新增你要的存進去</p>
+
+<pre><code>(crontab -l; echo &quot;0 * * * * your_command&quot;) |uniq - | crontab -
+</code></pre>
+
+<p>or</p>
+
+<pre><code>echo &quot;0   0  *  *  * your_command&quot; | sudo tee -a /var/spool/cron/crontabs/test
+</code></pre>
+
+<h3 id="remove-cron-by-command-line">Remove cron by command line</h3>
+
+<p>先印出已存在的 crontab, 再用 sed 去刪除</p>
+
+<pre><code>crontab -l | sed &quot;/pattern/d&quot; | crontab -
+</code></pre>
+
+<p>other way</p>
+
+<pre><code>sudo sed -i &quot;/pattern/.*$/d&quot; /var/spool/cron/crontabs/test
+</code></pre>
+
+<h3 id="取得網卡-mac">取得網卡 mac</h3>
+
+<pre><code>pi@raspbmc:~$ ifconfig |awk '/eth/{print $1,$5}'
+eth0 b8:27:eb:7e:6e:3f
+</code></pre>
+
+<h3 id="測試複製-cp-速度">測試複製(cp)速度</h3>
+
+<pre><code>#!/bin/bash
+begin=`date &quot;+%s%N&quot;`
+cp /test/iso /test/qq/iso
+end=`date &quot;+%s%N&quot;`
+rel=$(($end-$begin))
+echo $rel
+</code></pre>
+
+<blockquote>
+<ul>
+<li>顯示結果為奈秒。</li>
+<li><code>date &quot;+%s%N&quot;</code> 為奈秒</li>
+</ul>
+</blockquote>
+
+<h3 id="shell-script-判斷套件是否已安裝-如果未安裝自動安裝-自動輸入yes">shell script 判斷套件是否已安裝, 如果未安裝自動安裝(自動輸入yes)</h3>
+
+<pre><code>if dpkg -s ${package} | grep -q installed; then
+    echo &quot;${package} installed&quot;
+else
+    echo &quot;${package} isn't installed.&quot;
+    echo &quot;Install ${package}..&quot;
+    sudo apt-get --force-yes --yes install ${package}
+fi
+</code></pre>
+
+<h3 id="取得-route-ip-gateway-ip">取得 route IP (Gateway IP)</h3>
+
+<pre><code>route -n | grep 'UG[ \t]' | awk '{print $2}'
+</code></pre>
+
+<p>or :</p>
+
+<pre><code>ip r | awk '/^def/{print $3}'
+</code></pre>
+
+<p>or :</p>
+
+<pre><code>netstat -rn |awk '{if($1==&quot;0.0.0.0&quot;) print $2}'
+</code></pre>
+
+<h3 id="檢查是否能上網">檢查是否能上網</h3>
+
+<pre><code>router_ip=$(netstat -rn |awk '{if($1==&quot;0.0.0.0&quot;) print $2}')
+ping -c1 ${router_ip} &gt;&gt; /dev/null 2&gt;&amp;1
+if [ $? -eq 0 ]; then
+    echo OK
+else
+    echo FAIL
+fi
+</code></pre>
+
+<h3 id="檢查-dns-是否運作正常">檢查 dns 是否運作正常</h3>
+
+<pre><code># Check DNS
+set +e
+echo &quot;Check DNS ...&quot;
+function check_dns()
+{
+    is_successful=0
+    for ((i=0; i&lt;2; i++)); do
+        host www.google.com &gt; /dev/null 2&gt;&amp;1
+        if [ $? -eq 0 ]; then
+            is_successful=1
+            break;
+        else
+            echo &quot;DNS can't function ...&quot;
+            echo &quot;Restart networking and check again ...&quot;
+            sudo service networking restart
+        fi
+    done
+    return $is_successful
+}
+check_dns
+if [ $? == 0 ]; then
+    echo &quot;DNS can't function ...&quot;
+    exit
+fi
+set -e
+</code></pre>
+
+<h3 id="選擇-partition-private">選擇 partition (private)</h3>
+
+<pre><code>set +e
+dev_array=(`echo $(sudo fdisk -l | grep -E '^\/dev\/sda([3-9]|\d{2})' | awk '{print $1}') | cut  -d &quot; &quot; --output-delimiter=&quot; &quot; -f 1-`)
+dev_array_count=$((${#dev_array[@]}-1))
+until [ &quot;${xfs_choice_confirm}&quot; == &quot;y&quot; ] || [ &quot;${xfs_choice_confirm}&quot; == &quot;Y&quot; ]
+do
+    df
+    sudo fdisk -l
+    echo -e &quot;\nDevice list :&quot;
+    echo &quot;----------------------&quot;
+    for ((i=0; i&lt;=$dev_array_count; i++)); do
+        printf &quot; \E[0;33;40m${i}\E[0m : ${dev_array[$i]}\n&quot;
+    done
+    echo &quot;----------------------&quot;
+    printf &quot;Please choose XFS partition by entering a number : &quot;
+    read  dev_choice
+    echo &quot;${dev_choice}&quot; | grep -o &quot;^[0-9]*$&quot; &gt;&gt; /dev/null 2&gt;&amp;1
+    if [ ! $? -eq 0 ] || [ -z ${dev_array[${dev_choice}]} ]; then
+        continue
+    fi
+    printf &quot;You choose \E[0;33;40m${dev_array[${dev_choice}]}\E[0m, are you sure \E[0;31;40m(y/n)\E[0m ? &quot;
+    read xfs_choice_confirm
+done
+xfs_partition=${dev_array[${dev_choice}]}
+set -e
+</code></pre>
+
+<h3 id="顯示資料夾下的檔案及空間">顯示資料夾下的檔案及空間</h3>
+
+<p>d.sh :</p>
+
+<pre><code>for x in `find /tmp/destination -type f | sort`
+do
+  sum_y=`sum $x`
+  echo &quot;$sum_y $x&quot;;
+done
+</code></pre>
+
+<p>顯示結果</p>
+
+<pre><code>$ bash d.sh
+34198    19 /tmp/destination/dd.php
+63612     3 /tmp/destination/qq/fff/ffddxx.php
+53866     2 /tmp/destination/qq/fff/pp.php
+07572     1 /tmp/destination/qq/qq.php
+</code></pre>
+
+<blockquote>
+<p>第一列數字不清楚
+第二列數字(19, 3, 2, 1)是換送成kb的容量</p>
+</blockquote>
+
+<h3 id="php-syntax-checking">php syntax checking</h3>
+
+<pre><code>#!/bin/bash
+
+# For checking php and js syntax
+
+if [ -z $1 ]; then
+    echo
+    echo &quot;  ***Missing arguments&quot;
+    echo
+    exit
+fi
+for PATH in $*
+do
+    reg=&quot;.*(\.php|\.js)&quot;
+    if [[ $PATH =~ $reg  ]]; then
+        if [ ${BASH_REMATCH[1]} == &quot;.php&quot; ]; then
+            printf &quot;\33[0;35;44m$PATH : \33[0m\n&quot;
+            /usr/bin/php -l $PATH
+            echo &quot;-------------------&quot;
+        elif [ ${BASH_REMATCH[1]} == &quot;.js&quot; ]; then
+            printf &quot;\33[0;36;44m$PATH : \33[0m\n&quot;
+            /usr/bin/sudo -H -u $USER bash -c &quot;$HOME/test_project/bin/jslint -f $PATH&quot;
+            echo &quot;-------------------&quot;
+        fi
+    fi
+done
+</code></pre>
+
+<h3 id="產生亂數字串">產生亂數字串</h3>
+
+<p>This method uses SHA to hash the date, runs through base64, and then outputs the top 32 characters.</p>
+
+<pre><code>test@test:~$ date +%s | sha256sum | base64 | head -c 32 ; echo
+MmM1MWFjMDVhYzBkMzk3ODRjM2JiZTQ5
+</code></pre>
+
+<p>This method used the built-in /dev/urandom feature, and filters out only characters that you would normally use in a password. Then it outputs the top 32.</p>
+
+<pre><code>test@test:~$ &lt; /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+udqgTdSRa_zWN1m6E_1iKMzCjvqXUUpD
+</code></pre>
+
+<p>This one uses openssl’s rand function, which may not be installed on your system. Good thing there’s lots of other examples, right?</p>
+
+<pre><code>test@test:~$ openssl rand -base64 32
+39iFjCtPB+4zjjsdJJ+FtFjBYPD3GUDRIZtXld5UyRM=
+</code></pre>
+
+<p>This one works a lot like the other urandom one, but just does the work in reverse. Bash is very powerful!</p>
+
+<pre><code>test@test:~$ tr -cd '[:alnum:]' &lt; /dev/urandom | fold -w30 | head -n1
+Rz27w5YH3FF8D4ughqbgHkHIcgds9T
+</code></pre>
+
+<p>Here’s an even simpler version of the urandom one.</p>
+
+<pre><code>test@test:~$ &lt; /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6
+RA0g58
+</code></pre>
+
+<p>You can even create a random left-hand password, which would let you type your password with one hand.</p>
+
+<pre><code>test@test:~$ &lt;/dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c8; echo &quot;&quot;
+ZBFC@#AB
+</code></pre>
+
+<p>And here’s the easiest way to make a password from the command line, which works in Linux, Windows with Cygwin, and probably Mac OS X. I’m sure that some people will complain that it’s not as random as some of the other options, but honestly, it’s random enough if you’re going to be using the whole thing.</p>
+
+<pre><code>test@test:~$ date | md5sum
+642a1b5de18a71b8585cfe87831d45a5  -
+</code></pre>
+
+<p>ref: <a href="http://www.howtogeek.com/howto/30184/10-ways-to-generate-a-random-password-from-the-command-line/">random string</a></p>
+
+<h3 id="shell-scripting-and-regular-expression">shell scripting and regular expression</h3>
+
+<pre><code>echo &quot;$password&quot; | grep -q &quot;[a-z]*[0-9][a-z]*&quot;
+if [ $? -eq 0 ] ;then
+    echo &quot;match found&quot;
+else
+    echo &quot;match not found&quot;
+fi
+</code></pre>
+
+<blockquote>
+<ul>
+<li>-q, &ndash;quiet, &ndash;silent</li>
+<li>Quiet;  do not write anything to standard output.  Exit immediately with zero status if any match is found, even if</li>
+<li>an error was detected.  Also see the -s or &ndash;no-messages option.  (-q is specified by POSIX.)</li>
+</ul>
+</blockquote>
+
+<h3 id="match-1">match $1</h3>
+
+<pre><code>reg=&quot;.*(\.php)&quot;
+if [[ $PATH =~ $reg  ]]; then
+    echo ${BASH_REMATCH[1]}
+fi
+</code></pre>
+
+<p>input : <code>t.php</code></p>
+
+<p>result : <code>.php</code></p>
+
+<h3 id="多行取代">多行取代</h3>
+
+<p><code>sed &quot;N;s/xxx/ccc/g&quot; filename</code> 因為加上 <code>N</code> 參數確實可以多行 matching, 但是當你要取代一個範圍(可能預期 match 到 3~6 行做取代) 卻是沒有辦法的..暈</p>
+
+<p>那我將一個檔案讀取出來處理完再存到另一個檔案總沒問題了吧? 原則上是這樣沒錯..但是有一個小問題是行首的空白會不見.. 原來 bash shell 預設斷行是 space, tabs, new line(<code>\n</code>), 不過我們可以控制斷行的字元 - <strong>IFS(nternal Field Separator)</strong> 這個變數, 當 shell 內部讀取每一行時一遇到 <code>\n</code> 就中斷, 即可解決此問題, 請看以下程式碼 :</p>
+
+<pre><code># 將檔案儲存到陣列
+c=0
+OLD_IFS=$IFS
+IFS=$'\n'
+while read -r line
+do
+    bashrcArray[$c]=$line
+    c=$(expr $c + 1)
+done &lt; bashrc
+
+# 這邊不做取代細節, 直接將陣列儲存成檔案
+for i in &quot;${bashrcArray[@]}&quot;
+do
+    echo $i &gt;&gt; bashrcqq
+done
+IFS=$OLD_IFS
+</code></pre>
+
+<blockquote>
+<ul>
+<li>注意 read 要加上 <code>-r</code> 參數, 否則反斜線(<code>\</code>)會被忽略</li>
+<li><code>-r</code> : If this option is given, backslash does not act as an escape character. The backslash is considered to be part of the line. In particular, a backslash-newline pair may not be used as a line continuation.</li>
+</ul>
+</blockquote>
+
+<p>沒想到 shell script 處理多行取代居然會那麼麻煩</p>
+
+</article>
+
+
+
+</html>

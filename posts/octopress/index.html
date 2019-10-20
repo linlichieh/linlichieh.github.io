@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>jekyll Octopress | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/octopress/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/octopress/">jekyll Octopress</a></h1>
+    <p class="meta"><time datetime="2015-03-24T10:27:48Z">March 24, 2015</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p>一個寫 blog 的 framework, 使用 markdown 語法快速的記下筆記, 再利用 generate 指令幫你生成 html,
+你可以 deploy 到 github, 直接使用 github 當作你的 host, 就不需要自己再去找主機架設了,
+並且使用 git 做版控, 未來要搬家到其他支援 markdown 語法的服務都非常方便, 也不怕文章遺失問題,
+唯一缺點就是有點使用門檻</p>
+
+<p>目前最新版本是 3.0</p>
+
+<h2 id="運作原理">運作原理</h2>
+
+<p>source 存放著主程式，當 generate 時會產生在 <code>/public</code> 下，如果執行 preview 其實是看到這資料夾底下的檔案</p>
+
+<p>當執行 deploy 時，會將原本的 <code>_deploy</code> 刪除，並將 <code>/public</code> 資料 copy 為 <code>_deploy</code> 並且 push 到 master</p>
+
+<p>所以 github 上的 master 就是你的 <code>_deploy</code> 資料夾，在這資料夾外面，包含根目錄等等都是 source</p>
+
+<p>而你輸入 <code>example.github.io</code> 就會連到 <code>example.github.io</code> 的 <code>master</code> branch</p>
+
+<h2 id="octopress-3-0">Octopress 3.0</h2>
+
+<h3 id="install">Install</h3>
+
+<pre><code>gem install octopress
+</code></pre>
+
+<p>New a blog</p>
+
+<pre><code>octopress new username.github.io
+</code></pre>
+
+<h3 id="config-modify-config-yml">[Config] Modify <code>_config.yml</code></h3>
+
+<ul>
+<li>title</li>
+<li>email</li>
+<li>description</li>
+<li>url</li>
+<li>github_username</li>
+</ul>
+
+<h3 id="deploy-deploy-github-page-as-your-host">[Deploy] Deploy github page as your host.</h3>
+
+<p>1) Set repo</p>
+
+<pre><code>octopress deploy init git git@github.com:username/username.github.io
+</code></pre>
+
+<blockquote>
+<ul>
+<li>I already had a website on github, so I use another repository as this demonstration instead of username.github.io.</li>
+<li>Octopress 3.0 supports two ways to let you deploy to host, which are github and s3.</li>
+</ul>
+</blockquote>
+
+<p>2) Since using github page, change <code>git_branch</code> from <code>master</code> to <code>gh-pages</code> in <code>_deploy.yml</code>.</p>
+
+<blockquote>
+<p>It will generate a file <code>_deploy.yml</code> for deploy config.</p>
+</blockquote>
+
+<p>3) Git init and commit. And Set remote branch</p>
+
+<pre><code>git init
+git add .
+git commit -m &quot;First commit&quot;
+git remote add origin git@github.com:username/username.github.io.git
+</code></pre>
+
+<p>4) Build &amp; deploy</p>
+
+<pre><code>jekyll build             # It will create `_site`.
+octopress deploy         # It will copy `_site` to `.deploy` and push `.deploy` to remote branch `gh-pages`
+</code></pre>
+
+<p>5) Done! You will see that <code>username.github.io/username.github.io</code> works!</p>
+
+<h3 id="source-push-source-to-source-remote-for-the-first-time">[Source] Push source to source remote for the first time.</h3>
+
+<blockquote>
+<p>Remember to add <code>.deploy</code> to <code>.gitignore</code> before you push.</p>
+</blockquote>
+
+<p>Your current branch may be <code>master</code>, rename to <code>source</code> and push to github</p>
+
+<pre><code>git branch -m source
+git add .
+git commit -m &quot;Second commit&quot;
+git push origin source
+</code></pre>
+
+<h3 id="deploy-custom-domain">[Deploy] Custom domain</h3>
+
+<p>1) Add a DNS record: (CNAME) blog -&gt; username.github.io</p>
+
+<p>2) Create CNAME : <code>echo &quot;blog.example.com&quot; &gt; CNAME</code></p>
+
+<p>3) Build and deploy. You will see that <code>blog.example.com</code> works.</p>
+
+<h3 id="config-change-url-path-recommended">[Config] Change url path (Recommended)</h3>
+
+<p>The default url path is like this <code>/jekyll/update/2017/01/08/welcome-to-jekyll.html</code>.</p>
+
+<p>The categories defined in your post will be created as a folder when you build.</p>
+
+<pre><code>categories: jekyll update
+</code></pre>
+
+<p>So your url path will seem very long. Let&rsquo;s change it shorter.</p>
+
+<p><code>_config.yml</code> :</p>
+
+<pre><code>permalink: /:title/
+</code></pre>
+
+<p>or octopress 2.0 default :</p>
+
+<pre><code>permalink: /blog/:year/:month/:day/:title/
+</code></pre>
+
+<h3 id="command-create-a-new-post">[Command] Create a new post</h3>
+
+<blockquote>
+<p>You must be at the root path, because it will create <code>_post</code> and post file on your current path.</p>
+</blockquote>
+
+<pre><code>octopress new post &quot;writing&quot;
+</code></pre>
+
+<h3 id="command-preview">[Command] Preview</h3>
+
+<pre><code>jekyll serve
+</code></pre>
+
+<blockquote>
+<p>localhost:4000</p>
+</blockquote>
+
+<h3 id="change-theme">Change theme</h3>
+
+<ul>
+<li><a href="https://github.com/planetjekyll/awesome-jekyll-themes">https://github.com/planetjekyll/awesome-jekyll-themes</a></li>
+<li>google jekyll theme</li>
+</ul>
+
+<h3 id="custom-css">Custom CSS</h3>
+
+<p>Create <code>assets/main.scss</code> and copy below:</p>
+
+<pre><code>---
+---
+
+@import &quot;{{ site.theme }}&quot;;
+
+/* custom css */
+pre &gt; code {
+    font-family: Menlo;
+}
+</code></pre>
+
+<p>jekyll build or serve will generate new css and replace <code>_site/assets/main.css</code></p>
+
+<h2 id="octopress-2-0">Octopress 2.0</h2>
+
+<h3 id="install-1">Install</h3>
+
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
+bundle install
+rake install        安裝預設主題
+</code></pre>
+
+<blockquote>
+<p>bundle 指令 - 要先有 rvm 安裝 ruby 及 gem，再使用 gem 安裝 bundler 才能使用，安裝 gem 可參考<a href="/posts/ruby-on-rails-installation-and-deployment/">此篇前半部</a></p>
+</blockquote>
+
+<h3 id="deploy-佈署到github上">[Deploy] 佈署到Github上</h3>
+
+<p>[1] 到Github點選<a href="https://github.com/new">New Repository</a>, Repository name 輸入 username.github.com</p>
+
+<p>[2] 輸入指令</p>
+
+<pre><code>rake setup_github_pages    ( 輸入 git@github.com:username/username.github.io.git
+rake generate
+rake deploy                ( push到Github
+</code></pre>
+
+<p>[3] 檢查是否成功, 到 github 提供的網域 (ex: <a href="https://username.github.io/">https://username.github.io/</a>)</p>
+
+<h3 id="deploy-新增文章及-push-到-github">[Deploy] 新增文章及 push 到 github</h3>
+
+<p>因為 deploy 只會 push generate 出來的前端靜態檔, 但文章檔案還是在本機的, 所以要自動手動 push</p>
+
+<pre><code>git add .
+git commit -m &quot;First commit&quot;
+git push origin source
+</code></pre>
+
+<h3 id="deploy-在其他電腦部署己存在的-octopress">[Deploy] 在其他電腦部署己存在的 octopress</h3>
+
+<pre><code>git clone -b source git@github.com:username/username.github.com.git octopress
+cd octopress
+bundle install          (才能使用 rake new_post['xxx'] 指令)
+git clone git@github.com:username/username.github.com.git _deploy
+rake generate
+rake deploy
+</code></pre>
+
+<h3 id="deploy-同步不同電腦的-octopress">[Deploy] 同步不同電腦的 octopress</h3>
+
+<pre><code>git pull                    ( 只會同步 _deploy
+git pull origin source      ( 同步 source/_post
+</code></pre>
+
+<h3 id="deploy-將-domain-指向-github-page">[Deploy] 將 Domain 指向 github page</h3>
+
+<p>新增一筆新的 DNS record : <code>CNAME</code>, subdomain: <code>blog</code> 指到 <code>username.github.io</code></p>
+
+<p>新增 CNAME 檔案在 source 目錄下</p>
+
+<pre><code>cd source
+echo &quot;blog.example.com&quot; &gt; CNAME
+</code></pre>
+
+<h3 id="command-建立文章">[Command] 建立文章</h3>
+
+<pre><code>rake new_post['article_title']
+</code></pre>
+
+<blockquote>
+<p>會產生 <code>.markdown</code> 的檔案, BLOG內容直接打在虛線下面</p>
+</blockquote>
+
+<h3 id="command-轉成網頁檔">[Command] 轉成網頁檔</h3>
+
+<pre><code>rake generate
+</code></pre>
+
+<h3 id="command-預覽發佈">[Command] 預覽發佈</h3>
+
+<pre><code>rake preview
+</code></pre>
+
+<blockquote>
+<p>輸入完指令打開瀏覽器網址列輸入 <a href="http://127.0.0.1:4000/">http://127.0.0.1:4000/</a></p>
+</blockquote>
+
+<h3 id="command-發佈到網站">[Command] 發佈到網站</h3>
+
+<pre><code>rake deploy
+</code></pre>
+
+<h3 id="command-generate-deploy">[Command] generate + deploy</h3>
+
+<pre><code>rake gen_deploy
+</code></pre>
+
+<h3 id="theme-安裝主題">[Theme] 安裝主題</h3>
+
+<pre><code>git submodule add git://github.com/octopress-themes/classic-light.git .themes/light
+rake install[light]
+rake generate
+rake deploy
+</code></pre>
+
+<h3 id="theme-移除主題">[Theme] 移除主題</h3>
+
+<p>1) 刪除 .gitmodules</p>
+
+<pre><code>[submodule &quot;.themes/dark&quot;]
+  path = .themes/dark
+  url = https://github.com/octopress-themes/classic-dark.git
+</code></pre>
+
+<p>2) 刪除 .git/config</p>
+
+<pre><code>[submodule &quot;.themes/dark&quot;]
+  url = https://github.com/octopress-themes/classic-dark.git
+</code></pre>
+
+<p>刪除 theme files</p>
+
+<pre><code>git rm  --cached .themes/dark
+</code></pre>
+
+<h3 id="layout-remove-sidebar">[Layout] Remove sidebar</h3>
+
+<p><code>_config.yml</code>:</p>
+
+<ol>
+<li>註解 default_asides (<code># default_asides: [custom/asides/about.html, ...</code>)</li>
+<li>加上 <code>sidebar: collapse</code></li>
+</ol>
+
+<h3 id="layout-補充-layout-對應的檔案路徑">[Layout] 補充 : layout 對應的檔案路徑</h3>
+
+<ul>
+<li>navigation (Blog / Archieve) 那條的連結 : <code>_includes/custom/navigation.html</code></li>
+<li>右邊關於我 (A little something about me.) : <code>_includes/custom/asides/about.html</code>，但會被 load 主要是在 <code>_config.yml</code> 中設定的 <code>default_asides: [custom/asides/about.html, ..</code></li>
+</ul>
+
+<h3 id="layout-在-navigation-新增-about-me">[Layout] 在 navigation 新增 about me</h3>
+
+<p>1) octopress/source/_includes/custom/navigation.html :</p>
+
+<pre><code>&lt;li&gt;&lt;a href=&quot;{{ root_url }}/about&quot;&gt;About me&lt;/a&gt;&lt;/li&gt;
+</code></pre>
+
+<p>2) <code>rake new_page[&quot;about&quot;]</code></p>
+
+<p>會產生 <code>source/about/index.markdown</code></p>
+
+<h3 id="layout-在側欄增加大頭像">[Layout] 在側欄增加大頭像</h3>
+
+<p>1) 將圖片放到 <code>octopress/source/images/about_me/sidebar.jpg</code></p>
+
+<p>2) octopress/source/_includes/custom/asides/about.html :</p>
+
+<pre><code>&lt;section&gt;
+    &lt;h1&gt;test&lt;/h1&gt;
+    &lt;img alt=&quot;me&quot; src=&quot;/images/about_me/sidebar.jpg&quot;&gt;
+    &lt;p&gt;Backend Engineer&lt;/p&gt;
+&lt;/section&gt;
+</code></pre>
+
+<p><code>_config.yml</code> :</p>
+
+<pre><code>default_asides: [custom/asides/about.html, ...(略)...]
+</code></pre>
+
+<h3 id="config-修改網站標題及描述">[Config] 修改網站標題及描述</h3>
+
+<p>修改 <code>_config.yml</code>, 記得要 <strong>generate</strong> 及 <strong>deploy</strong> 才會生效</p>
+
+<h3 id="config-ga">[Config] GA</h3>
+
+<p><code>_config.yml</code> :</p>
+
+<pre><code>google_analytics_tracking_id: UA-23414877-5
+</code></pre>
+
+<h3 id="troubleshooting-如果-deploy-後接到-github-的錯誤信關於-theme-有問題">[Troubleshooting] 如果 deploy 後接到 github 的錯誤信關於 theme 有問題</h3>
+
+<pre><code>The page build failed with the following error:
+
+The submodule `.themes/justin-kelly-theme` was not properly initialized with a `.gitmodules` file. For more information, see https://help.github.com/articles/page-build-failed-missing-submodule.
+
+For information on troubleshooting Jekyll see:
+
+  https://help.github.com/articles/troubleshooting-jekyll-builds
+
+If you have any questions you can contact us by replying to this email.
+</code></pre>
+
+<p>有可能是你的 master (_deploy 的個資料夾)的 <code>.themes</code> 跟你的 source 的 <code>.themes</code> 不一樣，建議刪除 <code>_deploy/.themes</code> 再 copy <code>.themes</code> 過去</p>
+
+<h3 id="troubleshooting-如果你安裝-3-0-後-使用-octopress-command-發生錯誤">[Troubleshooting] 如果你安裝 3.0 後，使用 octopress command 發生錯誤</h3>
+
+<pre><code>/Users/test/.rvm/rubies/ruby-2.3.0/lib/ruby/2.3.0/rubygems/specification.rb:2158:in `method_missing': undefined method `this' for #&lt;Gem::Specification:0x3ff51a403e78 mercenary-0.3.6&gt; (NoMethodError)
+</code></pre>
+
+<p>表示你需要升級你的 gem 了 :</p>
+
+<pre><code>gem install rubygems-update
+update_rubygems
+gem update --system
+</code></pre>
+
+<h2 id="how-to-create-multiple-github-pages">How to create multiple github pages?</h2>
+
+<p>By default, <a href="http://username.github.io">http://username.github.io</a> will point to master branch of <code>username.github.io</code>.</p>
+
+<p><code>username.github.io/{repository_name}</code> will point to <strong>gh-pages</strong> branch of this repository if it’s available.</p>
+
+<blockquote>
+<p>Your first github page&rsquo;s repo name has to be named <code>username.github.io</code>. You can name anything you want for second page&rsquo;s repo name.</p>
+</blockquote>
+
+<ol>
+<li>Create a new repository and name <code>custom-name</code> as a example.</li>
+<li>Create file <code>index.html</code> in master and push to github, but website won&rsquo;t be activated in master. So you need to rename from <code>master</code> to <code>gh-pages</code>.</li>
+<li>Then you will see that <code>http://username.github.io/custom-name/</code> is available in Settings page.</li>
+</ol>
+
+<p>How to point <code>custom-name.example.com</code> to <code>http://username.github.io/custom-name/</code> ?</p>
+
+<ol>
+<li>Add a record to your DNS. CNAME custom-name -&gt; <code>username.github.io</code></li>
+<li>Create <code>CNAME</code> file and add <code>custom-name.example.com</code>.</li>
+<li>Then you will see it <code>custom-name.example.com</code> works.</li>
+</ol>
+
+</article>
+
+
+
+</html>

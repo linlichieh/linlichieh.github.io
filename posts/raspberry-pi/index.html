@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Raspberry Pi, Installation, XBMC, Samba | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/raspberry-pi/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/raspberry-pi/">Raspberry Pi, Installation, XBMC, Samba</a></h1>
+    <p class="meta"><time datetime="2013-12-15T21:09:00Z">December 15, 2013</time></p>
+  </header>
+  
+
+<h2 id="介紹">介紹</h2>
+
+<p><img src="/images/posts/raspberry-pi.jpg" alt="raspberry-pi.jpg" /></p>
+
+<p>Raspberry Pi 是一台小型的電腦, 幾乎一般 linux 電腦能做到的事它也都能做到, 而它最大的優勢就是體型非常的小, 小到你可以方便攜帶, 而功能一點也不陽春, 非常適合拿它來作媒體中心或小型的運算。</p>
+
+<p>如果還沒有 Raspberry Pi(以下簡稱 rpi) 不知道哪些要買的可以參考本文末的推薦清單</p>
+
+<h2 id="安裝-os-作業系統">安裝 OS(作業系統)</h2>
+
+<h3 id="下載-os-映像檔">[下載 OS 映像檔]</h3>
+
+<p><a href="http://www.raspberrypi.org/downloads/">下載 Raspberry Pi 的 OS</a> 選擇 Raspbian 版本是 wheezy</p>
+
+<p>下載完後解壓縮出來是一個 2013-09-25-wheezy-raspbian.img 檔</p>
+
+<h3 id="將-raspbian-os-燒錄到-sd-卡">[將 Raspbian OS 燒錄到 SD 卡]</h3>
+
+<p>不同的作業系統要用不同的方式燒到 SD 卡, 先將 SD 卡插入到電腦</p>
+
+<p>如果是 Windows <a href="http://sourceforge.net/projects/win32diskimager/">下載 Win32 Disk Imager</a>, 解壓縮完是一個資料夾, 執行 Win32DiskImager, Image File 選擇 2013-09-25-wheezy-raspbian.img</p>
+
+<p>Device 選擇 SD 卡, 按 write, 就會進行燒錄了</p>
+
+<h3 id="安裝-raspbian">[安裝 Raspbian]</h3>
+
+<p>將燒錄好的 SD 卡插入 Raspberry pi, 並且將電源線插上插座, 鍵盤接上, HDMI線接上電視或電腦螢幕,</p>
+
+<p>就可以開始使用了,基本上 SD 卡燒進去的檔案已安裝的差不多了, 剩下的只是一些設定的調整,</p>
+
+<p>例如第一項是檢查你的 SD 卡有沒有讓整個 OS 使用, 還有修改密碼的設定, 其他的可以不用設定直接跳過</p>
+
+<hr />
+
+<p>如果像我一樣接上螢幕沒有畫面, 試試看 rpi 把 SD 卡拔出來再插到你的電腦, 打開 SD 卡的 config.txt 並加上 :</p>
+
+<pre><code>sdtv_mode = 0
+sdtv_aspect = 3
+hdmi_group = 1
+hdmi_mode = 1
+sdtv_aspect=3  16:9
+</code></pre>
+
+<p>再插回 rpi 開機後螢幕應該就會有畫面了</p>
+
+<hr />
+
+<blockquote>
+<ul>
+<li>Raspberry Config GUI : <code>sudo raspi-config</code></li>
+<li>預設帳密 : pi/raspberry</li>
+</ul>
+</blockquote>
+
+<h2 id="安裝-raspbmc-也就是-raspberry-版的-xbmc">安裝 Raspbmc (也就是 Raspberry 版的 XBMC)</h2>
+
+<p>跟作業系統一樣下載完要燒到 SD 卡裡, <a href="http://www.raspbmc.com/wiki/user/windows-installation/">點我下載</a></p>
+
+<p>所以要安裝前先關機, 將 SD 卡從 rpi 拔下來, 然候再插到你的電腦,</p>
+
+<p>接著打開剛剛下載的軟體, 在上面選擇你的 SD 卡位置, 及下面打勾 <code>Install Raspbmc to a USB drive</code> 將 raspbmc 燒進 SD 卡</p>
+
+<p>然候再把 SD 卡插到 rpi, 如果有接上螢幕開機後就會自動安裝, 並且進入到 XBMC 畫面了</p>
+
+<hr />
+
+<p>如果發生錯誤: <code>Raspbmc cannot be installed to a USB drive, because it cannot detect it!</code></p>
+
+<p>將 SD 卡插到你電腦然候檢查 SD 卡有沒有檔名叫做 usb 的檔案, 有的話刪除它, 再重新插回 rpi 啟動就能自動安裝了</p>
+
+<hr />
+
+<h3 id="搖控-xbmc-的方式">[搖控 XBMC 的方式]</h3>
+
+<p><em>Remote default port : 9090</em>, 如果有設定防火牆要記得打開 9090 port</p>
+
+<p>[瀏覽器] :</p>
+
+<p>Chrome extension 安裝 <a href="https://chrome.google.com/webstore/detail/xbmc-remote-control/jgannjdjlpnoibphpbmmfjkejcfhcmjp?utm_source=chrome-ntp-icon">XBMC</a></p>
+
+<p>先用鍵盤在 XBMC 操控, 因為要開啟遠端遙控, 才可以用 chrome 的 extension 控制</p>
+
+<p>系統設定 -&gt; 服務 -&gt; 遠端遙控 -&gt; 允許其他電腦連接</p>
+
+<p>在開啟 chrome 的 extenstion -&gt; IP 輸入 rpi 的 ip (如果不知道可以到 系統設定 -&gt; 系統資訊 看 ip 是什麼,</p>
+
+<p>[手機] :</p>
+
+<p>手機用 wifi 連到家裡的無線網路 (為了要跟 rpi 同一個 lan 下)</p>
+
+<p>下載 Official XBMC Remote 這個 app, IP 輸入後就可以操控了</p>
+
+<h3 id="操作界面">[操作界面]</h3>
+
+<p>滑鼠操作</p>
+
+<pre><code>system -&gt; settings -&gt; appearance -&gt; skin 改為 `Touched`
+</code></pre>
+
+<p>鍵盤操作</p>
+
+<pre><code>system -&gt; settings -&gt; appearance -&gt; skin 改為 `Raspbmc Confluence Mod`
+</code></pre>
+
+<h3 id="xbmc-中文語系">[XBMC 中文語系]</h3>
+
+<p>如果亂碼, 有些操作的項目根本無法顯示, 跟著以下操作至少能切回英文</p>
+
+<pre><code>system -&gt; settings(第一項) -&gt; appearance(第一項) -&gt; International(第二項) -&gt; Language 改為 `English(US)`
+</code></pre>
+
+<p>改成中文語系前先將 Fonts 由 <code>Skin Default</code> 改為 <code>Arial based</code> 才不會改了中文後就變成亂碼了</p>
+
+<pre><code>system -&gt; settings -&gt; appearance -&gt; skin -&gt; Fonts 改為 `Arial Based`
+</code></pre>
+
+<p>改成中文語系</p>
+
+<pre><code>system -&gt; settings -&gt; appearance -&gt; international -&gt; Language 改為 Chinese(Tranditional)
+</code></pre>
+
+<h3 id="xbmc-指令">[XBMC 指令]</h3>
+
+<ul>
+<li><code>sudo initctl start xbmc</code></li>
+<li><code>sudo initctl stop xbmc</code></li>
+<li><code>sudo initctl restart xbmc</code></li>
+</ul>
+
+<h3 id="用-xbmc-看線上影片-ex-pps">[用 XBMC 看線上影片(ex: PPS)]</h3>
+
+<p>[下載觀看線上影片的套件]</p>
+
+<p>到<a href="https://code.google.com/p/xbmc-addons-chinese/downloads/list">xbmc-addons-chinese</a> 選擇 repository.googlecode.xbmc-addons-chinese-eden.zip 複製連結網址</p>
+
+<p>下載到 rpi 裡</p>
+
+<pre><code>cd /tmp
+wget https://xbmc-addons-chinese.googlecode.com/files/repository.googlecode.xbmc-addons-chinese-eden.zip
+</code></pre>
+
+<hr />
+
+<p>在下載時會發現有分 eden 與 Dharma 版, 它們是指版本代號, Dharma 是 10, eden 是 11</p>
+
+<p>像我的是 12.2 版, 安裝 eden 沒問題</p>
+
+<p>如果要查看 XBMC 版本 : <strong>XBMC 啟動後 -&gt; 系統設定 -&gt; 糸統資訊</strong> 就會顯示你的 XBMC 版本</p>
+
+<hr />
+
+<p>[安裝套件]</p>
+
+<p>系統設定 -&gt; 附加元件 -&gt; 從 zip 檔案安裝 -&gt; 檔案系統 -&gt; 剛是下載到 /tmp 所以選擇 /tmp -&gt; repository.googlecode.xbmc-addons-chinese-eden.zip</p>
+
+<p>[啟用你想開啟的服務 (ex: pps)]</p>
+
+<p>系統設定 -&gt; 附加元件 -&gt; 取得附加元件 -&gt; 全部附加元件 -&gt; 視訊附加元件 -&gt; 往下找 PPStream (最下面是中文的服務, 騰訊視頻等等)</p>
+
+<blockquote>
+<ul>
+<li>撥放含有字幕檔的影片也沒有問題, 將 XXX.mkv XXX.srt 放在同一個目錄, 撥放時 XBMC 自動會載入字幕</li>
+<li>不支援 .rmvb 的檔, 播放時只會有聲音不會有畫面</li>
+</ul>
+</blockquote>
+
+<h3 id="從-xbmc-回到-terminal">[從 XBMC 回到 terminal]</h3>
+
+<p>在 XBMC 的介面左下角有電源的 icon, 點它並選擇第一個 &ldquo;關閉&rdquo;, 然候再按 esc, 就</p>
+
+<p>可以回到 terminal 介面了</p>
+
+<blockquote>
+<p><code>ctrl</code>+<code>alt</code>+<code>F1</code> 似乎也行(沒試過)</p>
+</blockquote>
+
+<h2 id="安裝及設定-samba">安裝及設定 samba</h2>
+
+<p>如果 windows 要丢檔案到 rpi 裡就可以透過 samba, 例如把影片丢進去再使用 XBMC 播放在電視上看</p>
+
+<p>參考 <a href="/posts/samba/">samba 安裝</a></p>
+
+<p><code>\\192.168.74.65\share</code>), 安裝完後在 <code>/home/pi</code> 下建立資料夾 samba</p>
+
+<p>在 <code>/etc/samba/smb.conf</code> 最下面加入</p>
+
+<pre><code>[samba]
+    path = /home/pi/samba
+    public = yes
+    writable = yes
+    printable = no
+</code></pre>
+
+<p>重啟</p>
+
+<pre><code>sudo service samba restart
+</code></pre>
+
+<blockquote>
+<ul>
+<li>如果有設定防火牆記得開 445 port</li>
+<li>網址 : <code>\\192.168.1.10\samba</code></li>
+</ul>
+</blockquote>
+
+<h2 id="設定無線網路">設定無線網路</h2>
+
+<p><code>ifconfig -a</code> 看有沒有 wlan0, 這個就是你的無線網卡, 如果沒有執行 <code>lsusb</code> 看 usb 的無線網卡有讀到嗎?</p>
+
+<pre><code>pi@raspbmc:~$ lsusb
+Bus 001 Device 002: ID 0424:9512 Standard Microsystems Corp.
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp.
+Bus 001 Device 004: ID 0bda:8176 Realtek Semiconductor Corp. RTL8188CUS 802.11n WLAN Adapter
+</code></pre>
+
+<blockquote>
+<p>這是我的 usb 無線網卡 : <code>RTL8188CUS 802.11n WLAN Adapter</code></p>
+</blockquote>
+
+<p>如果都有確定有讀到就可以開始設定無線網路了, 可參考<a href="/posts/wireless-network-setting/">設定無線網路</a></p>
+
+<h2 id="推薦購買的清單">推薦購買的清單 :</h2>
+
+<p>Raspberry pi 主機板 Model B (512mb) : $1390</p>
+
+<blockquote>
+<p>另一個版本 Model A(256mb), 硬體相對較小, usb 插槽只有一個</p>
+</blockquote>
+
+<p>壓克力外殼(6片裝密合式) + 3個散熱片 : $100</p>
+
+<blockquote>
+<p>另一種是開放式的, 上下各一片壓克力, 4 個角落以柱子固定</p>
+</blockquote>
+
+<p>電源(5V2A, micro usb 線) : $100</p>
+
+<blockquote>
+<p>建議買, 否則就得用電腦透過 usb 線供電給主機板</p>
+</blockquote>
+
+<p>8GB SD卡 : $200</p>
+
+<blockquote>
+<p>必買! 對 Raspberry Pi 來說, 它就相當於一般電腦的硬碟</p>
+</blockquote>
+
+<p>Mini wifi 無線網卡(802.11N) : $200</p>
+
+<blockquote>
+<ul>
+<li>注意! 網卡需與主機版相容</li>
+<li>非必要買, 可直接用網路線接主機版</li>
+</ul>
+</blockquote>
+
+<p>HDMI v1.4 傳輸線 : $100</p>
+
+<blockquote>
+<p>如果要輸出到電視上看, 而且電視也支授 HDMI 的話就要買</p>
+</blockquote>
+
+<p>USB PC 搖控器 : $200</p>
+
+<blockquote>
+<p>建議買, 不然就得接鍵盤到主機板或者透過 chrome extension - xbmc 才能操作 XBMC</p>
+</blockquote>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="鍵盤輸入某些符號-ex-keycode錯亂">鍵盤輸入某些符號(ex: #, @)keycode錯亂</h3>
+
+<pre><code>sudo dpkg-reconfigure keyboard-configuration
+</code></pre>
+
+<p>選擇 <code>Generic 105-key (Intl) PC</code> -&gt; 裡面的選項都是 UK , 所以選擇 <code>Other</code>
+-&gt; <code>English (US)</code> -&gt; layout, 選擇 <code>English (US)</code> -&gt; <code>The default for the keyboard layout</code> (default)
+-&gt; <code>No compose key</code> (default) -&gt; 組合鍵 X server, <code>選擇 Yes</code></p>
+
+<p>重開機</p>
+
+<pre><code>sudo shutdown -r now
+</code></pre>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Windows | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/windows/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/windows/">Windows</a></h1>
+    <p class="meta"><time datetime="2013-10-20T23:27:00Z">October 20, 2013</time></p>
+  </header>
+  
+
+<h2 id="修改-win8-host-c-windows-system32-drivers-etc">修改 win8 host (C:\Windows\System32\Drivers\etc)</h2>
+
+<p>[1] 修改編輯權限</p>
+
+<p>選擇 hosts 右鍵-&gt;內容-&gt;安全性-&gt;點擊&rdquo;群組或使用者名稱&rdquo;下面的編輯-&gt;修改 ALL APPLICATION PACKAGES 權限-&gt;將&rdquo;修改&rdquo;勾選允許</p>
+
+<p>[2] notepad++ 以系統管理員執行身份</p>
+
+<p><code>C:\Program Files (x86)\Notepad++\notepad++.exe</code> 右鍵-&gt;以系統管理員身份執行</p>
+
+<p>[3] 就可以在 hosts 加入要對應的 ip 跟 domain</p>
+
+<h2 id="發生-ping-不是內部或外部命令-可執行的程式或批次檔">發生 <code>'ping' 不是內部或外部命令、可執行的程式或批次檔。</code></h2>
+
+<p>發生原因 : <code>C:\Windows\system32</code> 放一些如 ping.exe, 所以當 PATH 路徑未指到 <code>C:\Windows\system32</code></p>
+
+<p>解決方法1 :</p>
+
+<pre><code>cd C:\Windows\system32
+ping www.google.com.tw
+</code></pre>
+
+<p>解決方法2 :</p>
+
+<p>將 PATH 全域變數指向 <code>%SystemRoot%\system32;%SystemRoot%</code></p>
+
+<blockquote>
+<ul>
+<li>如果 PATH 本身已有設定值, 以 <code>;</code> 分隔</li>
+<li><code>%systemRoot%</code> 是 <code>C:\Windows</code></li>
+</ul>
+</blockquote>
+
+<h2 id="bat-語法">.bat 語法</h2>
+
+<ul>
+<li><code>pause</code> : 暫停, 當指令執行完不要直接關閉視窗</li>
+</ul>
+
+<h2 id="清除-dns-cache">清除 dns cache</h2>
+
+<pre><code>ipconfig /flushdns
+</code></pre>
+
+<h3 id="清除瀏覽器指令">清除瀏覽器指令 :</h3>
+
+<ul>
+<li>chrome : <code>chrome://net-internals/#dns</code></li>
+<li>firefox : <code>about:config</code> -&gt; <code>network.dnsCacheExpiration</code> = 0</li>
+</ul>
+
+<h2 id="顯示環境變數">顯示環境變數</h2>
+
+<pre><code>echo %PATH%
+</code></pre>
+
+<h2 id="查看本機網卡-mac">查看本機網卡 mac</h2>
+
+<pre><code>ipconfig/all
+</code></pre>
+
+<h2 id="檢查連線">檢查連線</h2>
+
+<pre><code>ping 192.168.1.2 -n 1 -w 200
+</code></pre>
+
+<blockquote>
+<ul>
+<li><code>-n</code> : count, 要傳送的 echo 要求數目</li>
+<li><code>-w</code> : timeout, 每個回覆的等候逾時(毫秒)</li>
+</ul>
+</blockquote>
+
+<h2 id="迴圈執行-ping">迴圈執行 ping</h2>
+
+<pre><code>for /L %i in (1,1,254) do ping 192.168.128.%i -n 1 -w 200 &gt; NUL
+</code></pre>
+
+<h2 id="arp">ARP</h2>
+
+<h3 id="清除記憶體的網卡紀錄">清除記憶體的網卡紀錄</h3>
+
+<pre><code>arp -d *
+</code></pre>
+
+<h2 id="判斷幾位元">判斷幾位元</h2>
+
+<pre><code>systeminfo
+</code></pre>
+
+<ul>
+<li>x64-based PC =&gt; 64bits</li>
+<li>x86-based PC =&gt; 32bits</li>
+</ul>
+
+<h2 id="dos-指令">Dos 指令</h2>
+
+<p>Unix / Dos 對照表</p>
+
+<pre><code>Unix        Dos
+------------------
+cd          cd
+mkdir       md          mkdir 也是可以的
+rmdir       rd          rmdir 也是可以的
+pwd         cd
+env         set
+setenv      set
+rm          del
+cat/more    type
+ls          dir
+lp          print
+cp          copy
+date        date/time
+mv          ren
+man         help
+clear       cls
+
+dir /p 只出現一頁, 按 enter 到下一頁
+dir /w 只顯示檔案名稱
+dir /s xxx.txt 搜尋檔案
+
+FORMAT C:                               格式化 C:\
+COPY　A:　lmi.txt　C:　hsuyin.txt       COPY 檔案
+COPY　A:　*.EXE　C:                     COPY 檔案
+dir &gt; 1.txt                             將 dir 的內容傳到 1.txt
+</code></pre>
+
+</article>
+
+
+
+</html>

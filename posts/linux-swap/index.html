@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux Swap | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-swap/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-swap/">Linux Swap</a></h1>
+    <p class="meta"><time datetime="2013-05-17T08:22:00Z">May 17, 2013</time></p>
+  </header>
+  
+
+<h2 id="swap-指令">swap 指令</h2>
+
+<ul>
+<li>通常安裝主機都會設定 swap</li>
+<li>但如果沒有 swap 或要增加 swap 可自行設定</li>
+</ul>
+
+<p>開</p>
+
+<pre><code>sudo swapon -a
+</code></pre>
+
+<p>關</p>
+
+<pre><code>sudo swapoff -a
+</code></pre>
+
+<p>釋放 swap</p>
+
+<pre><code>sudo swapoff -a
+sudo swapon -a
+</code></pre>
+
+<p>查看 swap 狀態</p>
+
+<pre><code>swapon -s
+</code></pre>
+
+<p>另種方式看 Swap 的狀態</p>
+
+<pre><code>$ free -m
+             total       used       free     shared    buffers     cached
+Mem:           992        711        281          0         83        418
+-/+ buffers/cache:        209        782
+Swap:            0          0          0
+</code></pre>
+
+<h3 id="建立-增加-swap">建立/增加 swap</h3>
+
+<p>建立 1G swap</p>
+
+<pre><code>sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+</code></pre>
+
+<p>掛載這個 Swap</p>
+
+<pre><code>sudo mkswap /swapfile
+sudo swapon /swapfile
+</code></pre>
+
+<p>Swap 確實設定好了</p>
+
+<pre><code>swapon -s
+Filename                                Type            Size    Used    Priority
+/dev/xvdb                               partition       262140  133804  -1
+/swapfile                               file            1048572 0       -2
+
+
+$ free -m
+             total       used       free     shared    buffers     cached
+Mem:           992        896         95          0         18        660
+-/+ buffers/cache:        217        775
+Swap:         1023          0       1023
+</code></pre>
+
+<p>確寶每一次 swap 都會被啟動</p>
+
+<p><code>/etc/fstab</code> :</p>
+
+<pre><code>/swapfile   none         swap    sw      0       0
+</code></pre>
+
+<p>為了避免太差的效能, <code>swappiness</code> 應該設定 10, 可以讓 swap 作為緊急緩衝區, 預防用光記憶體導致 crash</p>
+
+<pre><code>echo 10 | sudo tee /proc/sys/vm/swappiness
+echo vm.swappiness = 10 | sudo tee -a /etc/sysctl.conf
+</code></pre>
+
+<p>設定正確權限給 swap file</p>
+
+<pre><code>sudo chown root:root /swapfile
+sudo chmod 0600 /swapfile
+</code></pre>
+
+<p>ref : <a href="https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-12-04">https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-12-04</a></p>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux grep | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/grep/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/grep/">Linux grep</a></h1>
+    <p class="meta"><time datetime="2013-11-26T21:39:00Z">November 26, 2013</time></p>
+  </header>
+  
+
+<h2 id="一般用法">一般用法</h2>
+
+<pre><code>grep -R '時間' *
+</code></pre>
+
+<ul>
+<li>-r, &ndash;recursive           like &ndash;directories=recurse</li>
+<li>-R, &ndash;dereference-recursive  likewise, but follow all symlinks</li>
+<li>&ndash;include=FILE_PATTERN  search only files that match FILE_PATTERN</li>
+<li>&ndash;exclude=FILE_PATTERN  skip files and directories matching FILE_PATTERN</li>
+<li>&ndash;exclude-from=FILE   skip files matching any file pattern from FILE</li>
+<li>&ndash;exclude-dir=PATTERN  directories that match PATTERN will be skipped.</li>
+<li>&ndash;exclude-dir={dir1,dir2,dir3}  directories that match PATTERN will be skipped.</li>
+<li>-i, &ndash;ignore-case         ignore case distinctions</li>
+<li>-P, &ndash;perl-regexp</li>
+<li>-o, &ndash;only-matching</li>
+</ul>
+
+<p><code>grep ^d</code>：過濾出資料夾</p>
+
+<h2 id="or">OR</h2>
+
+<p>沒有任何 option, 必須使用 <code>\|</code> 來分隔 pattern :</p>
+
+<pre><code>grep 'pattern1\|pattern2' filename
+grep 'Tech\|Sales' employee.txt
+</code></pre>
+
+<p>使用 option <code>-E</code> (extended regexp), 使用 <code>|</code> 分隔 pattern :</p>
+
+<pre><code>grep -E 'pattern1|pattern2' filename
+grep -E 'Tech|Sales' employee.txt
+</code></pre>
+
+<p>使用 <code>egrep</code> 指令, 相當於使用 <code>grep -E</code> :</p>
+
+<pre><code>egrep 'pattern1|pattern2' filename
+egrep 'Tech|Sales' employee.txt
+</code></pre>
+
+<p>使用 option <code>-e</code>, 但 pattern 必須分開寫</p>
+
+<pre><code>grep -e pattern1 -e pattern2 filename
+grep -e Tech -e Sales employee.txt
+</code></pre>
+
+<h2 id="and">AND</h2>
+
+<p>AND 在 grep 沒有操作符, 可以使用 <code>-E</code> 達成 :</p>
+
+<pre><code>grep -E 'pattern1.*pattern2' filename
+grep -E 'pattern1.*pattern2|pattern2.*pattern1' filename
+grep -E 'Dev.*Tech' employee.txt
+grep -E 'Manager.*Sales|Sales.*Manager' employee.txt
+</code></pre>
+
+<p>使用 linux 原生指令 <code>|</code> 來達成 :</p>
+
+<pre><code>grep -E 'pattern1' filename | grep -E 'pattern2'
+grep Manager employee.txt | grep Sales
+</code></pre>
+
+<h2 id="not">NOT</h2>
+
+<p>使用 <code>-v</code> (invert match) 達成, 它會顯示除了符合 pattern 以外的搜尋結果</p>
+
+<pre><code>grep -v 'pattern1' filename
+grep -v Sales employee.txt
+egrep 'Manager|Developer' employee.txt | grep -v Sales
+</code></pre>
+
+<h2 id="others">Others</h2>
+
+<h3 id="只過濾出符合的部份">只過濾出符合的部份</h3>
+
+<pre><code>echo 'hello world' | grep -oP 'hello \K(world)'
+</code></pre>
+
+<p>ref :
+<a href="http://www.thegeekstuff.com/2011/10/grep-or-and-not-operators/">http://www.thegeekstuff.com/2011/10/grep-or-and-not-operators/</a></p>
+
+</article>
+
+
+
+</html>

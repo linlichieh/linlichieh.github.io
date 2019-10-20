@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Rails Installation And Deployment | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-on-rails-installation-and-deployment/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-on-rails-installation-and-deployment/">Rails Installation And Deployment</a></h1>
+    <p class="meta"><time datetime="2013-09-26T11:49:37&#43;08:00">September 26, 2013</time></p>
+  </header>
+  
+
+<h2 id="installation">Installation</h2>
+
+<p>(最後更新: 2016-04-14)</p>
+
+<h3 id="1-update-upgrade">[1] Update &amp; Upgrade</h3>
+
+<pre><code>sudo apt-get update
+sudo apt-get upgrade -y
+</code></pre>
+
+<h3 id="2-install-rvm-ruby-version-manager">[2]  Install RVM (Ruby Version Manager)</h3>
+
+<p>Install curl (MacOS doesn&rsquo;t need to execute this)</p>
+
+<pre><code>sudo apt-get install curl
+</code></pre>
+
+<p>Install RVM</p>
+
+<pre><code>\curl -sSL https://get.rvm.io | bash -s stable
+</code></pre>
+
+<p>讀取 rvm</p>
+
+<pre><code>source ~/.rvm/scripts/rvm
+</code></pre>
+
+<p>安裝 rvm 自己相依的東西</p>
+
+<pre><code>rvm requirements
+</code></pre>
+
+<h3 id="3-install-ruby">[3] Install Ruby</h3>
+
+<pre><code>rvm install ruby
+rvm use ruby --default
+</code></pre>
+
+<h3 id="4-install-rubygems">[4] Install RubyGems</h3>
+
+<pre><code>rvm rubygems current
+</code></pre>
+
+<h3 id="5-install-rails">[5] Install rails</h3>
+
+<pre><code>gem install rails
+</code></pre>
+
+<blockquote>
+<p>安裝 rails 的 doc 很久, 可以加上 <code>-no-rdoc --no-ri</code> 忽略 doc</p>
+</blockquote>
+
+<h3 id="6-安裝-node-js">[6] 安裝 node.js</h3>
+
+<pre><code>sudo apt-get install nodejs
+</code></pre>
+
+<p>or mac</p>
+
+<pre><code>brew install node
+</code></pre>
+
+<h3 id="7-test">[7] Test</h3>
+
+<pre><code>cd /tmp
+rails new rails_test
+cd rails_test
+rails s
+</code></pre>
+
+<blockquote>
+<p>預設 port 是 3000</p>
+</blockquote>
+
+<h3 id="upgrade-己存在專案的-rails-版本">Upgrade 己存在專案的 Rails 版本</h3>
+
+<p>安裝最新版本的 Rails</p>
+
+<pre><code>gem install rails
+</code></pre>
+
+<p>修改 Gemfile, 改成指定版本</p>
+
+<pre><code>gem 'rails', '4.2.3'
+</code></pre>
+
+<p>Update 專案引入的套件</p>
+
+<pre><code>bundle update
+</code></pre>
+
+<h2 id="deployment">Deployment</h2>
+
+<p>(最後更新: 2016-04-14)</p>
+
+<h3 id="1-安裝-passenger-nginx">[1] 安裝 Passenger + Nginx</h3>
+
+<p>安裝 passenger</p>
+
+<pre><code>sudo apt-get install libcurl4-openssl-dev       # passenger 需要
+gem install passenger
+</code></pre>
+
+<p>安裝 nginx</p>
+
+<pre><code>rvmsudo passenger-install-nginx-module          # 用 passenger 安裝 nginx
+</code></pre>
+
+<ul>
+<li>安裝在預設路徑 <code>/opt/nginx</code>, 千萬不要改, 免得 nginx 指令會無效</li>
+<li>如果有出現 <code>export rvmsudo_secure_path=1</code> 執行它</li>
+<li>記憶體太少可能會導致安裝失敗, 如果顯示要你增加 swap 可<a href="/posts/linux-swap/">參考此篇</a></li>
+</ul>
+
+<h4 id="如果安裝-passenger-install-nginx-module-發生錯誤">如果安裝 <code>passenger-install-nginx-module</code> 發生錯誤</h4>
+
+<pre><code>/home/web-admin/.rvm/rubies/ruby-2.3.0/lib/ruby/2.3.0/rubygems/specification.rb:2158:in `method_missing': undefined method `this' for #&lt;Gem::Specification:0xdf627c passenger-5.0.27&gt; (NoMethodError)
+from /home/web-admin/.rvm/rubies/ruby-2.3.0/lib/ruby/2.3.0/rubygems/specification.rb:1057:in `find_active_stub_by_path'
+from /home/web-admin/.rvm/rubies/ruby-2.3.0/lib/ruby/2.3.0/rubygems/core_ext/kernel_require.rb:64:in `require'
+from /home/web-admin/.rvm/gems/ruby-2.3.0/gems/passenger-5.0.27/bin/passenger-install-nginx-module:33:in `&lt;top (required)&gt;'
+from /home/web-admin/.rvm/gems/ruby-2.3.0/bin/passenger-install-nginx-module:23:in `load'
+from /home/web-admin/.rvm/gems/ruby-2.3.0/bin/passenger-install-nginx-module:23:in `&lt;main&gt;'
+from /home/web-admin/.rvm/gems/ruby-2.3.0/bin/ruby_executable_hooks:15:in `eval'
+from /home/web-admin/.rvm/gems/ruby-2.3.0/bin/ruby_executable_hooks:15:in `&lt;main&gt;'
+</code></pre>
+
+<p>看起來可能是我預設用 ruby-2.3 發生問題，所以先降回 ruby-2.2</p>
+
+<pre><code>rvm install ruby-2.2.4
+rvm use ruby-2.2 --default
+</code></pre>
+
+<p>再安裝一次就成功了!</p>
+
+<h3 id="2-安裝成功後設定根目錄">[2] 安裝成功後設定根目錄</h3>
+
+<p>建立 <code>/var/www</code> 目錄</p>
+
+<p>設定 <code>/opt/nginx/conf/nginx.conf</code>, 將 <code>location / {</code> 範圍內註解掉, 並在 <code>http {</code> 內加上 :</p>
+
+<pre><code>error_log /var/www/rails_app/log/nginx_error.log;
+access_log /var/www/rails_app/log/nginx_access.log;
+server {
+    listen 80;
+    server_name 106.185.47.26;  # or domain name
+    root /var/www/rails_app/public;
+    passenger_enabled on;
+}
+</code></pre>
+
+<blockquote>
+<ul>
+<li>nginx 執行時的 user 可以不用特別指定, 預設是</li>
+<li>如果要跑 development 環境則加上 <code>rails_env development;</code></li>
+</ul>
+</blockquote>
+
+<h3 id="3-安裝-nginx-指令">[3] 安裝 nginx 指令</h3>
+
+<p>如果有開 tmux 記得關掉再執行 :</p>
+
+<pre><code>cd /tmp
+wget -O init-deb.sh https://www.linode.com/docs/assets/660-init-deb.sh
+sudo mv init-deb.sh /etc/init.d/nginx
+sudo chmod +x /etc/init.d/nginx
+sudo /usr/sbin/update-rc.d -f nginx defaults
+</code></pre>
+
+<p>start</p>
+
+<pre><code>sudo /etc/init.d/nginx start
+or
+sudo service nginx start
+</code></pre>
+
+<h3 id="4-把-code-放到-var-www">[4] 把 code 放到 /var/www</h3>
+
+<pre><code>bundle install
+</code></pre>
+
+<blockquote>
+<p>如果顯示 bundle 沒安裝，執行：<code>gem install bundle</code></p>
+</blockquote>
+
+<h3 id="5-環境">[5] 環境</h3>
+
+<p>development :</p>
+
+<pre><code>rake db:migrate RAILS_ENV=development
+</code></pre>
+
+<p>production :</p>
+
+<p>1) 產生 Key</p>
+
+<pre><code>rake secret             # 產生key
+</code></pre>
+
+<p>2) 設定 secret, 有兩種方式, 擇一就好</p>
+
+<p>第一種</p>
+
+<pre><code>config/secrets.yml
+    production:
+      secret_key_base: cf2d4472039660a31a002b21cd3ded0cf7cc2c5a0d82f24dcdf5097b79c1900241f97eb85542f8e4a349f32fac37b618bc663b21f16de2706bb897885d6cc3f0
+</code></pre>
+
+<p>第二種</p>
+
+<pre><code>1) nginx.conf :
+    passenger_env_var SECRET_KEY_BASE &quot;cf2d4472039660a31a002b21cd3ded0cf7cc2c5a0d82f24dcdf5097b79c1900241f97eb85542f8e4a349f32fac37b618bc663b21f16de2706bb897885d6cc3f0&quot;;
+
+2) config/secrets.yml
+    production:
+      secret_key_base: &lt;%= ENV[&quot;SECRET_KEY_BASE&quot;] %&gt;
+</code></pre>
+
+<p>3) DB migrate + Assets precompile</p>
+
+<p>First time :</p>
+
+<pre><code>RAILS_ENV=production rake db:create
+RAILS_ENV=production rake db:migrate
+</code></pre>
+
+<p>Update code :</p>
+
+<pre><code>RAILS_ENV=production bundle exec rake assets:precompile
+</code></pre>
+
+<p>4) Restart web server</p>
+
+<pre><code>sudo service nginx restart
+</code></pre>
+
+<h3 id="troubleshootings">Troubleshootings</h3>
+
+<h4 id="出現錯誤-500-we-re-sorry-but-something-went-wrong">出現錯誤 500 <code>We're sorry, but something went wrong.</code></h4>
+
+<p>1) 判斷是 nginx 的 500 還是 Rails 的 500  (看頁面的 html 及 css 可以判斷)</p>
+
+<p>2) 500 的話先看, 目錄權限有沒有問題, <code>www.example.com/robots.txt</code> 讀取 <code>public/robots.txt</code> 看通不通</p>
+
+<p>注意, 如果放在 <code>/root</code> 下, 因為 <code>/root</code> 的權限還是 root 的, 即使網站 foler 改成 <code>www-data</code> 也沒用, 建議放在 <code>/var/www</code> 下, <code>/var/www</code> 權限記得要給 <code>www-data</code></p>
+
+<blockquote>
+<p>nginx 預設 user 是 nobody, 建議改成 www-data, 並且確定網站根目錄的權限也是 www-data</p>
+</blockquote>
+
+<p>3) 當 nginx 及 rails log 都沒有異樣, 執行 <code>RAILS_ENV=production rails c</code> 看有沒有錯誤, 如果有錯誤會導致 nginx 的 500</p>
+
+<p>4) 檢查在 development 環境是否正常 <code>rails s -b 0.0.0.0</code></p>
+
+<p>5) 檢查 production 是否正常 <code>RAILS_ENV=production rails s -b 0.0.0.0</code></p>
+
+<p>確定有做 assets precompile, 如果 <code>public/assets</code> 有檔案但 404</p>
+
+<p>environments/production.rb, 改成 true :</p>
+
+<pre><code>config.assets.compile = true
+</code></pre>
+
+<p>確定網頁都沒有 404 等等之類的問題</p>
+
+<p>6) 再回去看 <code>log/production.log</code> 有沒有異常</p>
+
+<p>很有可能會發生內建的 http server : WEBrick 執行的權限是夠的, 但 nginx 執行權限不夠導致錯誤</p>
+
+<p>I18n 導致錯誤</p>
+
+<pre><code>I, [2015-08-22T06:53:22.272463 #7927]  INFO -- : Completed 500 Internal Server Error in 490ms (ActiveRecord: 0.0ms)
+F, [2015-08-22T06:53:22.273759 #7927] FATAL -- :
+I18n::InvalidLocaleData (can not load translations from /usr/local/rvm/gems/ruby-2.2.1/gems/devise-i18n-views-0.3.4/lib/../locales/pt-PT.yml: #&lt;Errno::EACCES: Permission denied @ rb_sysopen - /usr/local/rvm/gems/ruby-2.2.1/gems/devise-i18n-views-0.3.4/lib/../locales/pt-PT.yml&gt;):
+  app/controllers/application_controller.rb:18:in `set_locale'
+</code></pre>
+
+<p>調整權限</p>
+
+<pre><code>chmod -R 777 /usr/local/rvm/gems/ruby-2.2.1/gems
+</code></pre>
+
+<p>沒有 permission 問題後, 網頁就能 work 了</p>
+
+<h4 id="403-forbidden">403 Forbidden</h4>
+
+<p>以下有幾個方向可以找出問題在哪裡 :</p>
+
+<ul>
+<li>重啟 nginx 看看有沒有出現什麼異常的訊息，有可能 <code>passenger_root</code> 路徑設定錯導致找不到檔</li>
+<li>確定網站根目錄的權限是 nginx 可以執行的</li>
+<li>去 nginx 的 error log 看看有沒有線索</li>
+</ul>
+
+<h3 id="完整的-nginx-conf">完整的 nginx.conf</h3>
+
+<ul>
+<li>區分 dev (3000 port) / production 環境 / ssl</li>
+<li>passenger_root : 可用 <code>passenger-config --root</code> 得知</li>
+<li>passenger_ruby : 可用 <code>passenger-config --ruby-command</code> 得知</li>
+</ul>
+
+<p><code>/opt/nginx/conf/nginx.conf</code> :</p>
+
+<pre><code>user web-admin;
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    passenger_root /usr/local/rvm/gems/ruby-2.2.1/gems/passenger-5.0.15;
+    passenger_ruby /usr/local/rvm/gems/ruby-2.2.1/wrappers/ruby;
+
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    server {
+        listen 443 ssl;
+        ssl_certificate /opt/nginx/ssl/example_combined.crt;
+        ssl_certificate_key /opt/nginx/ssl/example.key;
+
+        client_max_body_size       50M;
+
+        listen       80;
+        server_name  example.com;
+
+        # non-www redirect to www
+        if ($host = $server_name) {
+            return 301 https://www.$server_name$request_uri;
+        }
+
+        # 將 http 導到 https
+        if ($scheme = http) {
+            return 301 https://www.$server_name$request_uri;
+        }
+
+        # 注意 owner 可能引發 500
+        root /var/www/example/public;
+        passenger_enabled on;
+        rails_env production;
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+
+    server {
+        listen 3000;
+        server_name dev.example.com;
+
+        client_max_body_size       50M;
+
+        # 注意 owner 可能引發 500
+        root /var/www/example/public;
+        passenger_enabled on;
+        rails_env development;
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+</code></pre>
+
+<h3 id="其他">其他</h3>
+
+<h4 id="關閉-development-環境的錯誤訊息">關閉 Development 環境的錯誤訊息</h4>
+
+<p>config/environments/development.rb</p>
+
+<pre><code>config.consider_all_requests_local       = false
+</code></pre>
+
+<h4 id="重啟-rails-app">重啟 Rails app</h4>
+
+<p>在網站根目錄下新增</p>
+
+<pre><code>touch tmp/restart.txt
+</code></pre>
+
+<p>Reload 頁面就會觸發重新啟動</p>
+
+<blockquote>
+<p>Once Passenger has noticed that the file&rsquo;s timestamp has changed, it will restart the application.</p>
+</blockquote>
+
+</article>
+
+
+
+</html>

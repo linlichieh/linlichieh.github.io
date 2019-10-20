@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Go Installation | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/go-installation/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/go-installation/">Go Installation</a></h1>
+    <p class="meta"><time datetime="2014-01-20T22:23:00Z">January 20, 2014</time></p>
+  </header>
+  
+
+<h2 id="linux-mac">Linux ／ Mac</h2>
+
+<p>(最後更新: 2016-03-28)</p>
+
+<h3 id="1-download-golang-source-http-golang-org-dl">[1] <a href="http://golang.org/dl/">download golang source</a></h3>
+
+<p>Linux : <code>https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz</code></p>
+
+<p>Mac : <code>https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz</code></p>
+
+<h3 id="2-install">[2] Install</h3>
+
+<p>Linux : <code>sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz</code></p>
+
+<p>Mac : <code>sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz</code></p>
+
+<blockquote>
+<p>如果要重安裝直接 remove <code>/usr/local/go</code> 再執行上面指令就可以了</p>
+</blockquote>
+
+<h3 id="3-create-essential-folders">[3] Create essential folders</h3>
+
+<p>在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin</p>
+
+<ul>
+<li>src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方</li>
+<li>pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它</li>
+<li>bin 是程式編譯後產生的 binary 執行檔</li>
+</ul>
+
+<p>.bashrc(linux) / .bash_profile(mac) :</p>
+
+<pre><code>export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+</code></pre>
+
+<p>Linux exec : <code>source ~/.bashrc</code></p>
+
+<p>Mac exec : <code>source ~/.bash_profile</code></p>
+
+<blockquote>
+<p>解壓縮完且 <code>.bashrc</code> 設定好以上就算安裝完成了, 可用 <code>go version</code> 測試是否安裝成功</p>
+</blockquote>
+
+<h3 id="upgrade-go-version">Upgrade go version</h3>
+
+<ol>
+<li>移除 <code>/usr/local/go</code></li>
+<li>將官網載下來的 go 解壓縮到 <code>/usr/local</code></li>
+<li>Done!</li>
+</ol>
+
+<h4 id="mac-upgrade-go-version-後還是顯示舊的版本">Mac upgrade go version 後還是顯示舊的版本</h4>
+
+<p>可能是曾經有用過 <code>brew</code> 安裝過 go, 即使你更新完 <code>/usr/local/go</code> version 還是顯示舊版的</p>
+
+<p>使用 <code>which go</code> 可以發現它的指令是指到 <code>/usr/local/bin/go</code> 而它又是 link 到 <code>/usr/local/Cellar/go/{舊版號}/bin/go</code></p>
+
+<p>建議直接執行 <code>brew uninstall go</code>, 它會幫你把 <code>/usr/local/Cellar/go</code> 移除掉 (<code>Uninstalling /usr/local/Cellar/go/1.7... (6,435 files, 250.6MB)</code>)</p>
+
+<p>再 <code>go version</code> 後的版本就會是正常了</p>
+
+<h3 id="註-編譯">[註] 編譯</h3>
+
+<p>在本機編譯 :</p>
+
+<pre><code>go build
+</code></pre>
+
+<p>假如要編譯給 windows 的電腦執行 :</p>
+
+<pre><code># 32 位元
+GOOS=windows GOARCH=386 go build -o test.exe
+
+# 64 位元
+GOOS=windows GOARCH=amd64 go build -o test.exe
+</code></pre>
+
+<p>假如你的 project 有引入 C 程式則需要使用 CGO 來編譯 :</p>
+
+<pre><code>CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o test.exe
+</code></pre>
+
+<h2 id="windows">windows :</h2>
+
+<p><a href="http://golang.org/dl/">go 下載頁面</a> 按照電腦的 OS 選擇你要下載的, 下載完直接安裝</p>
+
+<p>安裝好 GO 後, 還需要 GCC 編譯環境, 因為 Mac 的 Xcode 本身就有 GCC, windows 沒有, 所以選擇了 mingw 這個輕量型的 GCC</p>
+
+<p>參考<a href="/posts/windows-install-gcc-compiler-mingw/">安裝 MinGW</a></p>
+
+<p>設定 GOPATH, 這是放一些你自己或 <code>go get</code> from github 存放的地方</p>
+
+<ol>
+<li>在 <code>c:\Go</code> 下建立 mygo 資料夾, 並且在 mygo 下建立三個資料夾 src, pkg, bin</li>
+<li>設定環境變數</li>
+</ol>
+
+<p>GOROOT : <code>C:\Go</code>
+GOPATH : <code>C:\Go\mygo</code>
+PATH : 在最後面加上 <code>;%GOROOT%\bin;%GOPATH%\bin;C:\Program Files (x86)\Git\bin</code></p>
+
+<blockquote>
+<p>除了加上 GOROOT\bin、GOPATH\bin, 也可視需求加上 git bin 的路徑</p>
+</blockquote>
+
+<p>重新啟動 cmd 使變數生效</p>
+
+<p>編譯本機系統 GO 的編譯環境, 直接以滑鼠點擊執行 <code>C:\Go\src\all.bat</code></p>
+
+<p>跑完後, 建立自定義檔名的 <code>.bat</code> 檔, 如 <code>C:\Go\src\test.bat</code> :</p>
+
+<pre><code>set CGO_ENABLED=0
+set GOARCH=386
+set GOOS=windows
+call make.bat --no-clean
+pause
+</code></pre>
+
+<p>雙擊它執行</p>
+
+<p>然候在 <code>C:\Go\bin</code> 建立自定義檔名的 <code>.bat</code> 檔, 如 exec.bat :</p>
+
+<pre><code>set GOARCH=386
+set GOOS=windows
+go build
+</code></pre>
+
+<p>然候新增一個 hello.go 的檔案測試</p>
+
+<pre><code>package main
+import (
+    &quot;fmt&quot;
+    &quot;bufio&quot;
+    &quot;os&quot;
+)
+func main() {
+    fmt.Printf(&quot;Hello, world\n&quot;)
+    bufio.NewReader(os.Stdin).ReadBytes('\n') // 在 windows 結束後讓它停留在最後一行, 不要直接關掉
+}
+</code></pre>
+
+<p>雙擊 exec.bat, 應該會在 <code>C:\Go\bin</code> 下出現 <code>bin.exe</code> 這個可執行檔</p>
+
+<p>或者是在 cmd 到 <code>c:\Go\bin</code>, <code>go build hello.go</code></p>
+
+<p>執行它如果出現 Hello, world 恭喜你~設定完成!</p>
+
+<h2 id="hello-world">Hello World!</h2>
+
+<p>hello.go :</p>
+
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    fmt.Printf(&quot;Hello, world\n&quot;)
+}
+</code></pre>
+
+<blockquote>
+<p>Package fmt implements formatted I/O with functions analogous to C&rsquo;s printf and scanf. The format &lsquo;verbs&rsquo; are derived from C&rsquo;s but are simpler.
+Read <a href="http://golang.org/pkg/fmt/">detail</a></p>
+</blockquote>
+
+<p>execute :</p>
+
+<pre><code>$ go run hello.go
+Hello, world
+</code></pre>
+
+<h2 id="編譯成執行檔">編譯成執行檔</h2>
+
+<p>除了使用 <code>go build</code> 自動幫我們生成好執行檔, 我們也可以手動編譯及連結</p>
+
+<h3 id="ubuntu-手動編譯">ubuntu 手動編譯</h3>
+
+<pre><code>/usr/lib/go/pkg/tool/linux_amd64/6g -o hello.6 hello.go
+/usr/lib/go/pkg/tool/linux_amd64/6l -o hello hello.6
+./hello
+</code></pre>
+
+<h3 id="mac-手動編譯">Mac 手動編譯</h3>
+
+<pre><code>/usr/local/go/pkg/tool/darwin_amd64/6g -o hello.6 hello.go
+/usr/local/go/pkg/tool/darwin_amd64/6l -o hello hello.6
+./hello
+</code></pre>
+
+<h2 id="編譯器">編譯器</h2>
+
+<p>5g : ARM
+6g : AMD 64 (x86-64)
+8g : Intel 386 (X86)</p>
+
+<blockquote>
+<p>386 : x86 架構的 32 位元 cpu 指令集, 簡稱 i386
+AMD 64 : AMD 擴展 x86 的 64 位元指令集</p>
+</blockquote>
+
+<h3 id="20140309-golang編譯器">[20140309] golang編譯器 :</h3>
+
+<ul>
+<li>6g(X86-64)、8g(X86)、5g(arm) (及其支援工具，總稱為 gc)用 C 寫成，使用 yacc/Bison 作為解析器。Gccgo 是一個使用標準GCC作為後端的Go編譯器</li>
+<li>6g 是amd64的go編譯器，它生成的是 .6 檔案</li>
+<li>而 386 使用 8g 命令，它生成的一般是 .8 格式的檔案</li>
+<li>5g 是用於 arm 的 cpu，同理 amd64 用 6l，386 用 8l, arm 用 5l 的鏈接器！)</li>
+</ul>
+
+</article>
+
+
+
+</html>

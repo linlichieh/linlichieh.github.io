@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Debugging Tools | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/debugging-tools/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/debugging-tools/">Debugging Tools</a></h1>
+    <p class="meta"><time datetime="2018-07-17T09:12:14&#43;08:00">July 17, 2018</time></p>
+  </header>
+  
+
+<h2 id="strace">strace</h2>
+
+<h3 id="installation">Installation</h3>
+
+<pre><code>$ sudo apt install strace   #Debian/Ubuntu
+# yum install strace        #RHEL/CentOS
+# dnf install strace        #Fedora 22+
+</code></pre>
+
+<h3 id="trace-linux-command">Trace linux command</h3>
+
+<p>Simply run a command with strace, tracing of all system calls, e.g. <code>df -h</code>.</p>
+
+<pre><code>sudo strace df -h
+</code></pre>
+
+<h3 id="trace-pid">Trace PID</h3>
+
+<pre><code>sudo strace -p 5206
+</code></pre>
+
+<h3 id="get-summary-of-process">Get summary of process</h3>
+
+<p>Generate a report of total time, calls, and errors for each system call.</p>
+
+<pre><code>sudo strace -c -p 5206
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 90.41    0.001141         163         7           futex
+  1.82    0.000023           4         6           write
+  ...
+  0.00    0.000000           0         2           gettimeofday
+  0.00    0.000000           0         1           sendmmsg
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.001262                    80         1 total
+</code></pre>
+
+<h3 id="print-command-time-spent-in-system-calls">Print command time spent in system calls</h3>
+
+<pre><code>sudo strace -T ls
+
+open(&quot;/proc/filesystems&quot;, O_RDONLY)     = 3 &lt;0.000024&gt;
+fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0 &lt;0.000006&gt;
+</code></pre>
+
+<h3 id="trace-only-specific-system-calls">Trace only specific system calls</h3>
+
+<pre><code>sudo strace -e trace=write df -h
+sudo strace -e trace=open,close df -h
+sudo strace -e trace=open,close,read,write df -h
+sudo strace -e trace=all df -h
+</code></pre>
+
+<blockquote>
+<p>qualifier: signal, abbrev, verbose, raw, read, or write</p>
+</blockquote>
+
+<h3 id="trace-system-calls-based-on-a-certain-condition">Trace system calls based on a certain condition</h3>
+
+<p>Trace all system calls involving process management.</p>
+
+<pre><code>sudo strace -e trace=process ls
+
+execve(&quot;/bin/ls&quot;, [&quot;ls&quot;], [/* 17 vars */]) = 0
+arch_prctl(ARCH_SET_FS, 0x7fb0a721f840) = 0
+astra-worker  conf  jobctl  library  logs  main.go  README.md  service  test  topic  utility  vendor
+...
+</code></pre>
+
+<p>Trace all system calls that take a filename as an argument</p>
+
+<pre><code>sudo strace -e trace=file ls
+
+execve(&quot;/bin/ls&quot;, [&quot;ls&quot;], [/* 17 vars */]) = 0
+access(&quot;/etc/ld.so.nohwcap&quot;, F_OK)      = -1 ENOENT (No such file or directory)
+access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
+...
+</code></pre>
+
+<p>Trace all system calls involving memory mapping, type.</p>
+
+<pre><code>sudo strace -e trace=memory ls
+
+brk(0)                                  = 0x62b000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f9c0b0a1000
+mmap(NULL, 26186, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f9c0b09a000
+...
+</code></pre>
+
+<p>Trace all network related system calls</p>
+
+<pre><code>sudo strace -e trace=network curl google.com
+
+socket(PF_INET6, SOCK_DGRAM, IPPROTO_IP) = 3
+socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+setsockopt(3, SOL_SOCKET, SO_KEEPALIVE, [1], 4) = 0
+...
+</code></pre>
+
+<p>Trace all signals related system calls</p>
+
+<pre><code>sudo strace -e trace=signal -p 5206
+
+--- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=16988, si_uid=0} ---             // `sudo kill 5206` trigger this line
++++ exited with 0 +++
+</code></pre>
+
+<h3 id="other-arguments">Other arguments</h3>
+
+<p>Help</p>
+
+<pre><code>sudo strace -h ls
+</code></pre>
+
+<p>Print instruction pointer during system call</p>
+
+<pre><code>sudo strace -i ls
+
+[00007f2d6f9f81e0] openat(AT_FDCWD, &quot;.&quot;, O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC) = 3
+</code></pre>
+
+<p>Show time for each output line</p>
+
+<pre><code>sudo strace -t ls
+
+01:37:47 getdents(3, /* 16 entries */, 32768) = 464
+</code></pre>
+
+<p>Redirect output to file</p>
+
+<pre><code>sudo strace -o /tmp/ls.log ls
+</code></pre>
+
+<p>Show debugging information for strace tool</p>
+
+<pre><code>sudo strace -d ls
+</code></pre>
+
+<h3 id="todo">TODO</h3>
+
+<p>System call</p>
+
+<pre><code>...
+open(&quot;/etc/ld.so.cache&quot;, O_RDONLY|O_CLOEXEC) = 3
+...
+</code></pre>
+
+<blockquote>
+<p><code>type of system call</code>(<code>argument</code>) = <code>return value</code></p>
+</blockquote>
+
+<ul>
+<li>epoll_wait(5, {}, 128, 0)               = 0</li>
+<li>clock_gettime(CLOCK_MONOTONIC, {1696036, 90909291}) = 0</li>
+<li>futex(0x1178818, FUTEX_WAKE, 1)         = 1</li>
+</ul>
+
+<p>ref:</p>
+
+<ul>
+<li><a href="https://www.tecmint.com/strace-commands-for-troubleshooting-and-debugging-linux/">strace</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

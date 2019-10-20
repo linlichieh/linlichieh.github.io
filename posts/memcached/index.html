@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>memcached | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/memcached/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/memcached/">memcached</a></h1>
+    <p class="meta"><time datetime="2014-06-12T10:15:07&#43;08:00">June 12, 2014</time></p>
+  </header>
+  
+
+<h2 id="connect-to-memcached-server">connect to memcached server</h2>
+
+<pre><code>$ telnet localhost 11211
+Trying ::1...
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+</code></pre>
+
+<h2 id="get-key">get key</h2>
+
+<pre><code>get flag123
+</code></pre>
+
+<h2 id="set-key">set key</h2>
+
+<p>設 key &ldquo;flag123&rdquo; 值為 1</p>
+
+<pre><code>set flag123 0 86400 1       &lt;= enter
+1                           &lt;= enter
+STORED
+
+set flag123 0 86400 5
+hello
+STORED
+</code></pre>
+
+<blockquote>
+<p>set <key> <flags> <exptime> <bytes></p>
+</blockquote>
+
+<h2 id="delete-key">delete key</h2>
+
+<pre><code>delete flag123
+DELETED
+</code></pre>
+
+<p>ref :
+<a href="http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary">http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary</a></p>
+
+</article>
+
+
+
+</html>

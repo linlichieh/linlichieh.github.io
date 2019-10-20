@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>MySQL | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/mysql/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/mysql/">MySQL</a></h1>
+    <p class="meta"><time datetime="2013-08-06T15:24:00Z">August 06, 2013</time></p>
+  </header>
+  
+
+<p>(最後更新: 2016-04-14)</p>
+
+<h2 id="install">Install</h2>
+
+<p>ubuntu :</p>
+
+<pre><code>sudo apt-get install mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
+</code></pre>
+
+<p>mac :</p>
+
+<pre><code>brew install mysql
+mysql.server restart
+
+// client only
+brew install mysql --client-only
+</code></pre>
+
+<p>mac : 開機自動啟動</p>
+
+<pre><code>mkdir -p ~/Library/LaunchAgents
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+</code></pre>
+
+<h2 id="登入不用密碼">登入不用密碼</h2>
+
+<blockquote>
+<p>如果你連 mysql 都進不去，從步驟[1]開始，如果你可以進到 mysql console 從步驟[3]開始</p>
+</blockquote>
+
+<p>[1] 停止 mysql deamon</p>
+
+<pre><code>sudo /etc/init.d/mysql stop
+</code></pre>
+
+<p>[2] 加上 <code>--skip-grant-tables</code> option 啟動 mysql 指令</p>
+
+<pre><code>sudo /usr/sbin/mysqld --skip-grant-tables --skip-networking &amp;
+</code></pre>
+
+<p>[3] edit password</p>
+
+<pre><code>mysql -u root
+FLUSH PRIVILEGES;
+</code></pre>
+
+<p>修改密碼</p>
+
+<pre><code>SET PASSWORD FOR root@'localhost' = PASSWORD('');
+或
+UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
+</code></pre>
+
+<p>[4] Flush privileges:</p>
+
+<pre><code>FLUSH PRIVILEGES;
+</code></pre>
+
+<p>[5] Restart mysql</p>
+
+<pre><code>sudo service mysql restart
+</code></pre>
+
+<h2 id="設定-修改密碼">設定/修改密碼</h2>
+
+<p>設定 root 密碼 (安裝時沒有設定過密碼)</p>
+
+<pre><code>mysqladmin -u root password
+</code></pre>
+
+<p>修改 root 密碼</p>
+
+<pre><code>mysqladmin -u root -p password
+
+Enter password:
+New password:
+Confirm new password:
+</code></pre>
+
+<h2 id="解除只有本機-ip-能連到-mysql-的限制">解除只有本機 IP 能連到 MySQL 的限制</h2>
+
+<p>[1] 預設 MySQL 的 3306 port 只有監聽本機的連結</p>
+
+<pre><code>root@test:/etc/apache2# netstat -an | grep 3306
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
+</code></pre>
+
+<p>[2] 修改 <code>/etc/mysql/my.cnf</code>, 註解 <code>bind-address = 127.0.0.1</code></p>
+
+<pre><code># bind-address      = 127.0.0.1
+</code></pre>
+
+<p>[3] 重啟</p>
+
+<pre><code>/etc/init.d/mysql restart
+</code></pre>
+
+<p>如果有使用 phpmyadmin, 要修改設定</p>
+
+<p><code>權限</code>→<code>登錄資料</code>→<code>主機改成任意主機(%)</code></p>
+
+<p>[4] 現在port就已經開啟讓外部ip可以連入了</p>
+
+<pre><code>root@test:/etc/mysql# netstat -an | grep 3306
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN
+</code></pre>
+
+<p>[5] Done!</p>
+
+<p>[error] 如果phpmyadmin沒辦法登入, 直接command登入也出現錯誤:</p>
+
+<pre><code>ERROR 1045 (28000): Access denied for user 'test'@'localhost' (using password: YES)
+</code></pre>
+
+<p>可能原因是host改成 <code>%</code> (任意主機)，但批對不到localhost造成本機沒辦法登入</p>
+
+<p>解決 : 再去phpmyadmin將主機改成localhost, 這時候host資料就有兩筆了<code>%</code>及<code>localhost</code>, 就可以登入了</p>
+
+<h3 id="access-denied-for-user-worker-10-0-21-77-using-password-yes"><code>Access denied for user 'worker'@'10.0.21.77' (using password: YES)</code></h3>
+
+<p>有可能是你正在轉移 DB, 但轉移時並不會幫你把 account 的密碼也轉移過去, 所以必須到修改 account 的密碼把密碼填上</p>
+
+<h3 id="host-172-18-0-4-is-not-allowed-to-connect-to-this-mysql-server"><code>Host '172.18.0.4' is not allowed to connect to this MySQL server</code></h3>
+
+<p>修改 root 的 host</p>
+
+<pre><code>USE mysql;
+mysql&gt; SELECT user,host FROM user WHERE User='root';
++------+-----------+
+| user | host      |
++------+-----------+
+| root | localhost |
++------+-----------+
+mysql&gt; UPDATE user SET host='%' WHERE user='root';
+mysql&gt; FLUSH PRIVILEGES;
+mysql&gt; SELECT user,host FROM user WHERE User='root';
++------+------+
+| user | host |
++------+------+
+| root | %    |
++------+------+
+</code></pre>
+
+<h2 id="slow-query">Slow query</h2>
+
+<p>目的 : 將拖慢速度的 query 找出來, 進一步改善效能</p>
+
+<h3 id="開啟-slow-query">開啟 slow query</h3>
+
+<h4 id="1-etc-mysql-mysql-conf-d-mysqld-cnf">1) <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> :</h4>
+
+<pre><code># 將原本被註解的 slow query 參數打開
+slow-query-log = 1
+slow_query_log_file = /var/log/mysql/mysql-slow.log     # slow query記錄檔的路儲存路徑
+long_query_time = 1                                     # query超過1秒時，則會記錄
+log-queries-not-using-indexes                           # 會記錄沒有索引的記錄
+</code></pre>
+
+<blockquote>
+<p>注意!! The <code>--log-slow-queries</code> option was removed in MySQL 5.6.1</p>
+</blockquote>
+
+<h4 id="2-重啟動後就會在-var-log-mysql-下看到這個檔案了-mysql-slow-log">2) 重啟動後就會在 <code>/var/log/mysql/</code> 下看到這個檔案了 : <code>mysql-slow.log</code></h4>
+
+<h3 id="分析-slow-query">分析 Slow query</h3>
+
+<p>安裝 mysql-server 就會有 mysqldumpslow 這個工具了</p>
+
+<pre><code>mysqldumpslow /var/log/mysql/mysql-slow.log
+</code></pre>
+
+<p>找出花最多時間的 5 個 queries</p>
+
+<pre><code>mysqldumpslow -a -s r -t 5 /var/log/mysql/mysql-slow.log
+</code></pre>
+
+<p>依最常執行的 query 做排序</p>
+
+<pre><code>mysqldumpslow -a -s c -t 5 /var/log/mysql/mysql-slow.log
+</code></pre>
+
+<p>參數 :</p>
+
+<pre><code>-t NUM       just show the top n queries
+-a           don't abstract all numbers to N and strings to 'S'
+-s ORDER     what to sort by (al, at, ar, c, l, r, t), 'at' is default
+              al: average lock time
+              ar: average rows sent
+              at: average query time
+               c: count
+               l: lock time
+               r: rows sent
+               t: query time
+</code></pre>
+
+<p>其他分析工具 : <code>pt-query-digest</code>, <code>mysqlsla</code></p>
+
+<h3 id="尋找-slow-query">尋找 slow query</h3>
+
+<p>找出排名前 5 筆花最久時間的 query</p>
+
+<pre><code>SELECT * FROM slow_log ORDER BY query_time DESC LIMIT 5;
+</code></pre>
+
+<p>找出某天前 5 筆花最久時間的 query</p>
+
+<pre><code>SELECT * FROM slow_log WHERE start_time BETWEEN '2018-06-28 00:00:00' AND '2018-06-29 00:00:00' ORDER BY query_time DESC LIMIT 5;
+</code></pre>
+
+<h3 id="do-not-use-select">Do not use <code>select *</code></h3>
+
+<p>Especially you have a field with long string, it might cause you a slow query even you have narrowed down the scope in <code>WHERE</code>.</p>
+
+<p>Let&rsquo;s look at this query it took me for 1 min for only 60k records.</p>
+
+<pre><code>SELECT * FROM event WHERE expired_at &lt;= 1566226900 AND type != 'system';
+</code></pre>
+
+<p>The root cause is one of fields whose type is <code>json</code> and in some records, they might be big but I don&rsquo;t think they are more than 1k,
+but it is enough to make the query slow. It doesn&rsquo;t matter how well I narrow down the scope in <code>WHERE</code> condition.
+To sum up, you should not use <code>*</code> in case you don&rsquo;t notice that you include a big field.</p>
+
+<h2 id="binlog">Binlog</h2>
+
+<p>目的 : 將執行過的 query 紀錄下來, 當有一天操作失誤或數據遺失還可以復原回來</p>
+
+<h3 id="開啟-binlog">開啟 binlog</h3>
+
+<h4 id="1-etc-mysql-mysql-conf-d-mysqld-cnf-1">1) <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> :</h4>
+
+<pre><code># 將原本被註解的 log_bin 打開
+log_bin = /var/log/mysql/mysql-bin.log
+</code></pre>
+
+<p>其他 :</p>
+
+<pre><code># 只紀錄指定的 databases
+binlog-do-db=db_name1
+binlog-do-db=db_name2
+
+# 忽略指定的 database
+binlog-ignore-db=db_name1
+
+# 限制 binlog 上限 size
+max_binlog_size=100M
+
+# 10 天後自動清除 binlog
+expire_logs_days=10
+</code></pre>
+
+<h4 id="2-重啟動後就會在-var-log-mysql-下看到這兩個檔案了-mysql-bin-index-mysql-bin-000001">2) 重啟動後就會在 <code>/var/log/mysql/</code> 下看到這兩個檔案了 : <code>mysql-bin.index</code> <code>mysql-bin.000001</code></h4>
+
+<h4 id="3-測試">3) 測試</h4>
+
+<p>隨意 Inster 兩筆資料</p>
+
+<p>使用 mysqlbinlog 指令將 binglog 輸出成 SQL</p>
+
+<pre><code>mysqlbinlog --start-datetime=&quot;2015-05-25 00:00:00&quot;  --stop-datetime=&quot;2015-05-26 9:00:00&quot; /var/log/mysql/mysql-bin.000001 &gt; test_binlog_is_working.sql
+</code></pre>
+
+<p>執行還原</p>
+
+<pre><code>mysql&gt; SOURCE test_binlog_is_working.sql;
+</code></pre>
+
+<h3 id="其他指令">其他指令</h3>
+
+<p>查看狀態</p>
+
+<pre><code>SHOW MASTER STATUS
+</code></pre>
+
+<p>重置</p>
+
+<pre><code>RESET MASTER
+</code></pre>
+
+<p>刪除指定日期以前的 binlog</p>
+
+<pre><code>PURGE BINARY LOGS BEFORE '2015-05-24 07:00:00';
+</code></pre>
+
+<p>刪除某個流水號以前的 binlog</p>
+
+<pre><code>PURGE BINARY LOGS TO ‘mysql-bin.000113′;
+</code></pre>
+
+<p>將超過 n 天的 binlog</p>
+
+<pre><code>FLUSH LOGS
+</code></pre>
+
+<p>輸出 mysql-bin 為檔案</p>
+
+<pre><code>mysqlbinlog /var/log/mysql/mysql-bin.000001 &gt; qq.txt
+</code></pre>
+
+<h3 id="恢復數據">恢復數據</h3>
+
+<h4 id="1-確定-binlog-是否有開啟-如果有找出-binlog-位置">1) 確定 binlog 是否有開啟, 如果有找出 binlog 位置</h4>
+
+<pre><code>SHOW VARIABLES LIKE 'log_bin'
+</code></pre>
+
+<ul>
+<li>如果回應為 ON, 表示有開啟, 到 <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> 尋找 <code>log-bin</code> 的值</li>
+<li>回應為 OFF 則表示沒有開啟, 不用執行以下步驟, 因為無法恢復了</li>
+</ul>
+
+<p>假設 my.cnf 記錄著 :</p>
+
+<pre><code>log_bin = /var/log/mysql/mysql-bin.log  # 檔名前綴字串
+</code></pre>
+
+<p><code>/var/log/mysql</code> :</p>
+
+<pre><code>(..略..)
+-rw-rw----  1 mysql mysql  12967 May 24 01:19 mysql-bin.000001
+-rw-rw----  1 mysql mysql     32 May 24 01:01 mysql-bin.index
+</code></pre>
+
+<h4 id="2-恢復最近一次備份的數據-optional">2) 恢復最近一次備份的數據 (Optional)</h4>
+
+<p>如果 Server 之前有輩份, 先還原</p>
+
+<pre><code>mysql&gt; SOURCE my_db.bak.sql
+</code></pre>
+
+<h4 id="3-用-mysqlbinlog-輸出-binlog">3) 用 mysqlbinlog 輸出 binlog</h4>
+
+<p>[1] 輸出整個 database</p>
+
+<p>mysqlbinlog 無法直接輸出 table, 只能是一整個 database, 所以先取得 database 再到裡面找 table</p>
+
+<p>指令需要指定 <code>--database</code>, <code>--start-date</code>, <code>--stop-date</code>, 在這期間內可能跨了很多 binlog</p>
+
+<pre><code>mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  --stop-datetime=&quot;2015-05-26 9:00:00&quot; /var/log/mysql/mysql-bin.000001 &gt; my_db.sql
+
+//如果跨越了幾個 binlog, 採用追加的方式加到 bbs.sql
+mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  --stop-datetime=&quot;2015-05-26 9:00:00&quot; /var/log/mysql/mysql-bin.000001 &gt;&gt; my_db.sql
+</code></pre>
+
+<blockquote>
+<p>也可以用 <code>/var/log/mysql/mysql-bin.00012*</code> 模糊比對的方式指定多個 binlog 文件</p>
+</blockquote>
+
+<p>[2] 取得指定的 table</p>
+
+<pre><code>cat my_db.sql | grep 'comment' &gt; comment.sql
+</code></pre>
+
+<h4 id="4-執行要恢復的-table-的-binlog">4) 執行要恢復的 table 的 binlog</h4>
+
+<p>[1] 找出 comment.sql 誤操作的語法並刪除, 如果只是要恢復數據可以不用做動作</p>
+
+<p>[2] 執行 <code>mysql&gt; SOURCE comment.sql</code></p>
+
+<p>ref : 參考<a href="http://ifxoxo.com/mysql_binlog.html">恢復數據</a></p>
+
+<h2 id="mariadb">MariaDB</h2>
+
+<p>MariaDB 是 mysql 的分支，效能比 MySQL 好，吃的資源也較少，用法與 MySQL 一模一樣，可以直接拿它來替代 MySQL</p>
+
+<h3 id="install-1">Install</h3>
+
+<pre><code>sudo apt-get install mariadb-server mariadb-client
+</code></pre>
+
+<p>test :</p>
+
+<pre><code>mysql -u root
+</code></pre>
+
+<h3 id="啟動">啟動</h3>
+
+<pre><code>sudo service mysql start
+</code></pre>
+
+<h2 id="index">INDEX</h2>
+
+<h3 id="為什麼要建立索引">為什麼要建立索引:</h3>
+
+<p>適當的設定index可以有效的降低資料庫查詢的時間, 但這是以空間爭取時間的做法, 所以建立索引必須先考量到常被查詢的欄位</p>
+
+<p>如果查詢時判斷多個欄位, 建立多組欄位的索引也要考量優先順序, 才能有效降低索引所佔用的資料庫空間</p>
+
+<h3 id="索引的規則">索引的規則:</h3>
+
+<p>假設有一組索引是uid+gid+ctime</p>
+
+<ul>
+<li>where條件不分先後順序, 假設ctime先再來是uid及gid, 也是符合的</li>
+<li>這組索引的重要順序也是依你設定的順序為主, 假設你的索引是uid+ctime, 那麼這組索引只有uid對你有效</li>
+<li>如果條件是gid+ctime這組索引是沒有效用的, 因為這組索引是由uid先開始排</li>
+<li>換句話說條件為uid+uname的話, 這組索引至少也可以幫你減少搜尋uid的時間n 但uname沒在索引上, 所以mysql還是得一行一行找</li>
+</ul>
+
+<h3 id="使用-explain-來檢查執行命令後索引的使用狀況">使用 <code>EXPLAIN</code> 來檢查執行命令後索引的使用狀況</h3>
+
+<pre><code>EXPLAIN SELECT *
+FROM  `user_log`
+WHERE uid =2
+AND gid =2
+AND ctime &gt;0
+</code></pre>
+
+<p>結果：（只列出重要的）</p>
+
+<pre><code>key : uid+gid+ctime  （使用到的索引）
+raw : 4              （查詢筆數）
+</code></pre>
+
+<p>參考來源：夯哥</p>
+
+<h3 id="排序-order-by">排序(ORDER BY)</h3>
+
+<p>mysql 排序是按照該欄位的編碼, 例如 utf8_unicode_ci 就是按照 UTF8(unicode) 的順序去排 <code>數 &gt; 英 &gt; 日 &gt; 中 &gt; 韓</code></p>
+
+<p>也可以用 <code>COLLATE</code> 指定排序的編碼</p>
+
+<p><a href="http://dev.networkerror.org/utf8/">utf8(unicode) table</a></p>
+
+<h3 id="不會使用到-index-的狀況-innodb">不會使用到 index 的狀況 (innodb)</h3>
+
+<p>如果 where 多個已經有建 index 的欄位, 不會使用到 index</p>
+
+<pre><code>user_id = 'A01' or user_id = 'A02'
+IN('A01','A02')
+</code></pre>
+
+<p>單個才會使用到 index</p>
+
+<pre><code>user_id = 'A01'
+IN('A01')
+</code></pre>
+
+<h3 id="欄位優化">欄位優化</h3>
+
+<h4 id="ip-用-int-unsigned-存">IP 用 int unsigned 存</h4>
+
+<pre><code>&gt; echo ip2long('10.0.115.80');
+&gt; 167801680
+</code></pre>
+
+<h3 id="修改大-table-innno-db">修改大 TABLE (Innno DB)</h3>
+
+<h4 id="新增欄位">新增欄位</h4>
+
+<p>目前測試的量沒有很多, 但可以參考看看</p>
+
+<p>環境: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
+
+<p>MySQL 5.6 以前不支援 ALTER table without locking table, 如果是 5.6 又是 InnoDB 的話，可以放心 alter，TABLE 不會被 lock</p>
+
+<p>130 萬筆資料庫的檔案大約需要 67s，cpu 會吃 35%，一直 insert 也很順, 不會影響到服務</p>
+
+<blockquote>
+<p>不建議建立另一個沒 data 的 TABLE, 先 ALTER 後再 copy 舊 TABLE 到新的, 因為 cpu 會吃到 80% 以上, 操作也略為複雜</p>
+</blockquote>
+
+<h4 id="修改欄位屬性-alter-table">修改欄位屬性 (ALTER TABLE)</h4>
+
+<p>這個動作會 lock table, INSERT / UPDATE / SELECT 都會, 它會先執行 <code>copy to tmp table</code>, 所以會整個會卡死</p>
+
+<p>300 萬筆就足夠 lock 30 分以上</p>
+
+<h4 id="加欄位跟index">加欄位跟index</h4>
+
+<p>不會 lock table</p>
+
+<blockquote>
+<ul>
+<li>新開一個 m3.medium RDS (與 prod 等級相同) 來測試新增一個 index (只 index 一個欄位), 將近 580 萬筆的 table, 需 <code>10 min 40.88 sec</code> CPU 會上升 20%, 但在 prod 實際執行時只需 <code>2 min 33.05 sec</code> CPU 一樣上升 20% (目前還不清楚為什麼 prod 需要的時間短很多)</li>
+</ul>
+</blockquote>
+
+<h4 id="create-drop-index">Create/Drop index</h4>
+
+<p>這個動作不會 lock table, <a href="https://dev.mysql.com/doc/refman/5.6/en/innodb-online-ddl-operations.html">see more</a></p>
+
+<h3 id="對大-table-做-crud-的效能參考">對大 table 做 CRUD 的效能參考</h3>
+
+<h4 id="860-萬的-table">860 萬的 table</h4>
+
+<p>SELECT</p>
+
+<pre><code>SELECT count(*) FROM `call_cv_history` WHERE event_at &lt;= '2018-03-19 23:59:59';
+</code></pre>
+
+<ul>
+<li>event_at 範圍是1天的話是 <code>1 row in set (0.50 sec)</code></li>
+<li>event_at 範圍是10天的話是 <code>1 row in set (5.14 sec)</code></li>
+</ul>
+
+<blockquote>
+<p>event_at 有設 idnex, type 為 datetime</p>
+</blockquote>
+
+<p>DELETE</p>
+
+<pre><code>DELETE FROM `call_cv_history` WHERE event_at &lt;= '2018-03-20 23:59:59' LIMIT 50000;
+</code></pre>
+
+<ul>
+<li>LIMIT 是 10,000 的話是 <code>Query OK, 10000 rows affected (0.91 sec)</code></li>
+<li>LIMIT 是 50,000 的話是 <code>Query OK, 50000 rows affected (13.26 sec)</code></li>
+</ul>
+
+<blockquote>
+<p>最後採取每次刪 10,000 每 2~3 秒刪一次, 避免 cpu 飆高</p>
+</blockquote>
+
+<p>INSERT 非常快無需擔心</p>
+
+<h3 id="count-count-1-初淺效能比較">COUNT(*) &amp; COUNT(1) 初淺效能比較</h3>
+
+<p>先給結論: 無差別</p>
+
+<p>測試環境: AWS RDS MySQL db.t2.small</p>
+
+<p>Table 筆數: 近 570 萬</p>
+
+<p>執行 query 所花時間差不多都是 0.75 秒</p>
+
+<h3 id="can-i-speed-up-like-queries-by-adding-an-index">Can I speed up LIKE queries by adding an index?</h3>
+
+<p>will be faster with an index</p>
+
+<pre><code>SELECT * FROM foo WHERE field LIKE &quot;bar%&quot;
+</code></pre>
+
+<p>will not be faster with an index</p>
+
+<pre><code>SELECT * FROM foo WHERE field LIKE &quot;%bar%&quot;
+</code></pre>
+
+<p>ref: <a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></p>
+
+<h2 id="troubleshootings">Troubleshootings</h2>
+
+<h3 id="某些中文字無法存入問題">某些中文字無法存入問題</h3>
+
+<p>unicode 編碼一般常用字都是 3bytes, 但因為它是 4 byte 而無法寫入, 例如 : <code>𡟛</code><a href="https://zh.wiktionary.org/zh-hant/%F0%A1%9F%9B">參考 wiki</a></p>
+
+<pre><code>Mysql2::Error: Incorrect string value: '\xF0\xA1\x9F\x9B'
+</code></pre>
+
+<p>(未試過) 解法方法 <a href="http://dev.mysql.com/doc/refman/5.5/en/charset-unicode-utf8mb4.html">The utf8mb4 Character Set (4-Byte UTF-8 Unicode Encoding)</a></p>
+
+<h3 id="如果-mysql-ram-吃到-45">如果 MySQL Ram 吃到 45%+</h3>
+
+<p>在一台乾淨的 EC2 t1.micro 1G Ram，居然被吃到 45%，而執行 Rails app 後 Memory 就快被吃快了，網頁也變很頓，簡單的登入登出就會掛掉，</p>
+
+<p>接著我試著增加 Swap，解決此問題，指令請到<a href="/posts/linux-swap/">這篇增加 Swap 那段</a>照著執行，</p>
+
+<p>再執行一次 mysql start，一樣 Memory 是衝到爆，但它會自動分配一些到 swap，之後 MySQL 的 Memory 降到 26% -&gt; 19% -&gt; 16% ..</p>
+
+<h3 id="欄位-type">欄位 Type</h3>
+
+<ul>
+<li>Datetime 後面可以接長度，多出來的長度是小數點，可以細到毫秒以上 e.g. datetime(3) = <code>2017-06-28 03:14:35.280</code></li>
+</ul>
+
+<h3 id="select-及-select-特定欄位-的差別">SELECT <code>*</code> 及 SELECT {特定欄位} 的差別</h3>
+
+<p>當取出來的資料只有 1 筆可能還沒什麼差別, 但當資料有 1000, Query 的時間會微變慢,</p>
+
+<p>但更慢的是當從 MySQL 取出來的資料傳輸到程式裡所花的時間, 而時間取決於 Query 出來的資料量大小, 很容易有 2s+ 的差距, 需要注意!</p>
+
+<h3 id="區分-全形-半形-大小寫">區分 : 全形 半形 大小寫</h3>
+
+<p>在某些情況下, 需要全形半形 db 的欄位 collation 就不要用 <code>utf8_unicode_ci</code></p>
+
+<p>要改用 <code>utf8_general_ci</code></p>
+
+<p>如果要區分大小寫就改用 <code>utf8_bin</code></p>
+
+<h3 id="qps-tps">QPS &amp; TPS</h3>
+
+<ul>
+<li>QPS：Queries Per Second 查詢量/秒, 是一台服務器每秒能夠相應的查詢次數, 是對一個特定的查詢服務器在規定時間內所處理查詢量多少的衡量標準</li>
+<li>TPS : Transactions Per Second 是事務數/秒, 是一台數據庫服務器在單位時間內處理的事務的個數</li>
+</ul>
+
+<p>查詢方法是在 MySQL console 輸入 <code>SHOW STATUS;</code>, 並指到以下對應的欄位</p>
+
+<ul>
+<li>QPS = Questions</li>
+<li>TPS = Com_commit/s + Com_rollback/s</li>
+</ul>
+
+</article>
+
+
+
+</html>

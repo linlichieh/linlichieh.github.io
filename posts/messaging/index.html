@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Messaging API | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/messaging/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/messaging/">Messaging API</a></h1>
+    <p class="meta"><time datetime="2016-11-06T00:12:00&#43;08:00">November 06, 2016</time></p>
+  </header>
+  
+
+<h2 id="slack">Slack</h2>
+
+<h3 id="申請">申請</h3>
+
+<p><a href="https://api.slack.com/docs/oauth-test-tokens">登入後到此頁產生 token</a></p>
+
+<h3 id="golang-example">Golang example</h3>
+
+<blockquote>
+<p>使用 <a href="https://github.com/nlopes/slack">nlopes/slack</a> 這個 package</p>
+</blockquote>
+
+<p>填入 Token 並 New 它的 client</p>
+
+<pre><code>api := slack.New(&quot;xoxp-5*******************************************************************a&quot;)
+</code></pre>
+
+<p>Group</p>
+
+<pre><code>groups, err := api.GetGroups(false)
+if err != nil {
+    fmt.Printf(&quot;%s\n&quot;, err)
+    return
+}
+for _, group := range groups {
+    fmt.Printf(&quot;ID: %s, Name: %s\n&quot;, group.ID, group.Name)
+}
+</code></pre>
+
+<p>Channel</p>
+
+<pre><code>channels, err := api.GetChannels(false)
+if err != nil {
+    fmt.Printf(&quot;%s\n&quot;, err)
+    return
+}
+for _, channel := range channels {
+    fmt.Printf(&quot;Name: %s, ID: %s\n&quot;, channel.Name, channel.ID)
+}
+</code></pre>
+
+<p>Message</p>
+
+<pre><code>params := slack.PostMessageParameters{}
+channelID, timestamp, err := api.PostMessage(&quot;G*******0&quot;, &quot;Message from golang&quot;, params)
+if err != nil {
+    fmt.Printf(&quot;%s\n&quot;, err)
+    return
+}
+fmt.Printf(&quot;Message successfully sent to channel %s at %s\n&quot;, channelID, timestamp)
+</code></pre>
+
+<p>Image</p>
+
+<pre><code>attachment := slack.Attachment{
+    Title:    &quot;Test&quot;,
+    ImageURL: &quot;https://www.google.com.tw/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png&quot;,
+}
+params := slack.PostMessageParameters{
+    Username:    &quot;Log Reporter&quot;,
+    Attachments: []slack.Attachment{attachment},
+}
+_, _, err = api.PostMessage(&quot;G*******0&quot;, &quot;Message from golang&quot;, params)
+</code></pre>
+
+</article>
+
+
+
+</html>

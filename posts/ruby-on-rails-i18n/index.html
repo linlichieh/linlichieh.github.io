@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Rails I18n | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-on-rails-i18n/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-on-rails-i18n/">Rails I18n</a></h1>
+    <p class="meta"><time datetime="2015-07-11T13:10:16&#43;08:00">July 11, 2015</time></p>
+  </header>
+  
+
+<h2 id="introduction">Introduction</h2>
+
+<p>當網站會需要多國語言顯示的話, 就會用到 i18n</p>
+
+<h3 id="使用-ui-介面方便翻譯人員協助翻譯">使用 UI 介面方便翻譯人員協助翻譯</h3>
+
+<ul>
+<li><a href="https://github.com/tolk/tolk">tolk</a>, open source, 蠻好用的, 較直覺</li>
+<li><a href="https://github.com/prograils/lit">lit</a>, open source</li>
+<li><a href="https://www.localeapp.com">localeapp</a>, 線上服務</li>
+<li><a href="https://phraseapp.com">Phraseapp</a>, 線上服務</li>
+</ul>
+
+<h2 id="原生基本用法">原生基本用法</h2>
+
+<p>config/locales/en.yml :</p>
+
+<pre><code>en:
+  posts: 'Posts'
+</code></pre>
+
+<p>config/locales/zh-TW.yml :</p>
+
+<pre><code>'zh-TW':
+  posts: '文章'
+</code></pre>
+
+<p>controllers/welcome_controller.rb :</p>
+
+<pre><code>before_action :set_locale
+def set_locale
+  if params[:locale] &amp;&amp; I18n.available_locales.include?(params[:locale].to_sym)
+    session[:locale] = params[:locale]
+  end
+
+  I18n.locale = session[:locale] || I18n.default_locale
+  @current_lang = session[:locale].nil? ? 'zh-TW' : session[:locale]
+end
+</code></pre>
+
+<p>view :</p>
+
+<pre><code>&lt;%= link_to &quot;繁體中文&quot;, locale: &quot;zh-TW&quot; %&gt;
+&lt;%= link_to &quot;English&quot;, locale: &quot;en&quot; %&gt;
+&lt;p&gt;&lt;%= t('posts') %&gt;&lt;/p&gt;
+</code></pre>
+
+<h3 id="對應-db-欄位">對應 DB 欄位</h3>
+
+<pre><code>activerecord:
+  attributes:
+    user:
+      real_name: '真實姓名'
+      nickname: '暱稱'
+</code></pre>
+
+<blockquote>
+<p>當 validate 失敗後的 <code>errors.full_messages</code> 就會把它的 i18n 帶上了</p>
+</blockquote>
+
+<h3 id="lazy-lookup">Lazy Lookup</h3>
+
+<p>app/views/books/index.html.erb</p>
+
+<pre><code>&lt;%= t '.title' %&gt;
+</code></pre>
+
+<p>config/locales/en.yml</p>
+
+<pre><code>es:
+  books:
+    index:
+      title: &quot;Título&quot;
+</code></pre>
+
+<h3 id="支援子目錄">支援子目錄</h3>
+
+<p>假如語系分成子目錄, ex: <code>locales/zh-TW/welcome.yml</code></p>
+
+<p>config/application.rb</p>
+
+<pre><code>class Application &lt; Rails::Application
+    config.i18n.load_path += Dir[&quot;#{Rails.root.to_s}/config/locales/**/*.{rb,yml}&quot;]
+end
+</code></pre>
+
+<h2 id="tolk-https-github-com-tolk-tolk"><a href="https://github.com/tolk/tolk">tolk</a></h2>
+
+<h3 id="install">Install</h3>
+
+<pre><code>gem 'will_paginate'
+group :development do
+    gem 'tolk'
+end
+</code></pre>
+
+<h3 id="1-init">1) Init</h3>
+
+<pre><code>$ rake tolk:setup
+
+    ?  Do you want to install the optional configuration file (to change mappings, locales dump location etc..) ? Press &lt;enter&gt; for [Y] &gt;
+        create  config/initializers/tolk.rb
+        create  db/migrate/20150712075442_create_tolk_tables.rb
+    ?  Where do you want to mount tolk? Press &lt;enter&gt; for [tolk] &gt;
+        gsub  config/routes.rb
+        gsub  config/routes.rb
+        route  mount Tolk::Engine =&gt; '/tolk', :as =&gt; 'tolk'
+    (自動執行 db:migrate)
+    (讀取 zh-TW.yml)
+</code></pre>
+
+<h4 id="選-限制-tolk-只能用在-dev-環境-routes-rb">(選) 限制 tolk 只能用在 dev 環境, routes.rb</h4>
+
+<pre><code>if Rails.env.development?
+    mount Tolk::Engine =&gt; '/tolk', :as =&gt; 'tolk'
+end
+</code></pre>
+
+<h4 id="選-將-zh-tw-為主要的語言-取決開發上方便使用的語言">(選) 將 zh-TW 為主要的語言(取決開發上方便使用的語言)</h4>
+
+<p>config/initializers/tolk.rb  (貼在 <code>Tolk.config do |config|</code> 外面)</p>
+
+<pre><code>Tolk::Locale.primary_locale_name = 'zh-TW'
+</code></pre>
+
+<h3 id="2-重新啟動-rails-到-http-127-0-0-1-3000-tolk">2) 重新啟動 Rails, 到 <code>http://127.0.0.1:3000/tolk</code></h3>
+
+<p>看是否可以正常看到 tolk 頁面</p>
+
+<h3 id="更新翻譯">更新翻譯</h3>
+
+<blockquote>
+<p>它會將主要語言的 yml 檔為主做更新(例如我設 zh-TW 我主要), 如果 key 不存在了, tolk 的資料庫也會清除</p>
+</blockquote>
+
+<pre><code>rake tolk:sync
+</code></pre>
+
+<p>再到 <code>/tolk</code> 頁面, 如果沒有看到顯示<code>未翻譯</code>的數量 (蠻常發生這個狀況), 就重新啟動 Rails</p>
+
+<p>翻譯完成後按 save change, 最後把 yml 檔匯出</p>
+
+<pre><code>rake tolk:dump_all
+</code></pre>
+
+<p>它會產生所有非 tolk 預設語言的 yml 檔, 匯出在 <code>config/locales</code></p>
+
+<h3 id="後記">後記</h3>
+
+<p>如果 zh-TW 是子目錄裡面檔案依 controller name 分 i18n, 在 dump 後的 en 會是將所有 key 合在 en.yml 的</p>
+
+<h3 id="建議">建議</h3>
+
+<p>因為 tolk dump 出來的東西會包含其他 gem 的 i18n, 並且以英文字母作為排序,</p>
+
+<p>假如我是以 zh-TW 做主要開發的語言, 那麼就不要 dump zh-TW,</p>
+
+<p>以免這份檔被加入其他 gem 的 i18n 給搞髒了</p>
+
+<h3 id="其他-不常用-dump-指定語言的-yaml">(其他, 不常用) dump 指定語言的 yaml</h3>
+
+<pre><code>rake tolk:dump_yaml[&quot;zh-TW&quot;]
+</code></pre>
+
+<h3 id="其他-不常用-重新-import">(其他, 不常用) 重新 import</h3>
+
+<pre><code>rake tolk:import
+</code></pre>
+
+<h2 id="lit-https-github-com-prograils-lit"><a href="https://github.com/prograils/lit">lit</a></h2>
+
+<h3 id="介紹">介紹</h3>
+
+<p>當翻譯需要別人參與且需要讓他可以使用 Web UI 協助翻譯, 可以使用這個套件</p>
+
+<h3 id="get-started">Get started</h3>
+
+<h4 id="1-gemfile">1) Gemfile :</h4>
+
+<pre><code>gem 'lit'
+</code></pre>
+
+<p>Init :</p>
+
+<pre><code>rails g lit:install
+What's the authentication function, ie. :authenticate_user! : :authenticate_user!           # 使用 devise 做驗證
+What's the key value engine? ([hash] OR redis): hash
+</code></pre>
+
+<blockquote>
+<p>for production/staging environment redis is suggested as key value engine. hash will not work in multi process environment</p>
+</blockquote>
+
+<h4 id="2-接著它會自動做以下這些事">2) 接著它會自動做以下這些事</h4>
+
+<ul>
+<li>產生 lit 所需的 migrate 檔並執行 <code>db:migrate</code></li>
+<li>routes 會自動地被加上 lit 的 path</li>
+<li>create  <code>config/initializers/lit.rb</code></li>
+</ul>
+
+<h4 id="3-讓-lit-知道哪些語言需要翻譯">3) 讓 lit 知道哪些語言需要翻譯</h4>
+
+<p>在 <code>config/application.rb</code> 加上 :</p>
+
+<pre><code>config.i18n.available_locales = [:&quot;zh-TW&quot;, :en]
+</code></pre>
+
+<blockquote>
+<p>之後如果要增/減支援的語言也是改這個地方, 如果減一個語言, 頁面上沒有更新, 就把整個 db 環境重 build 再重新 rails</p>
+</blockquote>
+
+<h4 id="3-重啟-rails-再回到首頁">3) 重啟 Rails, 再回到首頁</h4>
+
+<p>在 Rails startup 時會預先載入 <code>config/locale/*.yml</code> 裡的 Keys</p>
+
+<p>接著點擊到的頁面上如果有使用到 <code>I18n.t()</code> 的地方 (例如 devise 的 users/sign_in), 也會建立 key / value 到 lit 的資料庫裡</p>
+
+<h4 id="4-到-http-127-0-0-1-3000-lit-看是否頁面正常顯示">4) 到 <code>http://127.0.0.1:3000/lit/</code>, 看是否頁面正常顯示</h4>
+
+<p>因為先前使用 <code>:authenticate_user!</code> 驗證是否登入, 沒登入會被導到 <code>users/sign_in</code></p>
+
+<p>登入後裡面只會看到 <code>en</code> 及 <code>zh-TW</code>, 兩種語言</p>
+
+<h4 id="5-測試">5) 測試</h4>
+
+<p>1) 新增 <code>comments</code> i18n key</p>
+
+<p>2) 到 view 顯示, 它會自動進到 lit db</p>
+
+<p>3) 在 lit 後台就會看到了, 翻譯完後, 雖然頁面正常顯示, 但 <code>zh-TW.yml</code> 還是一樣沒變</p>
+
+<blockquote>
+<p>因為 lit 只負責幫你把翻譯的字串寫到它的資料表中</p>
+</blockquote>
+
+<p>4) 匯出在 lit 後台翻譯好的結果：<code>LOCALES=en,zh-TW rake lit:export</code></p>
+
+<pre><code>$ LOCALES=en,zh-TW rake lit:export
+
+I, [2015-07-12T14:19:13.790566 #14791]  INFO -- : initializing Lit
+Successfully exported config/locales/lit.yml.
+</code></pre>
+
+</article>
+
+
+
+</html>

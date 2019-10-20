@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>JSON and JSONP | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/json-and-jsonp/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/json-and-jsonp/">JSON and JSONP</a></h1>
+    <p class="meta"><time datetime="2013-02-19T17:25:00Z">February 19, 2013</time></p>
+  </header>
+  
+
+<h2 id="json-中文被編碼問題">JSON 中文被編碼問題</h2>
+
+<p>如果 ajax 設定值沒有 dataType 的話, 就代表是以預設方式接收, 此時接收到 php 回傳的 json 格式時,
+中文會被編碼, 長得像 :</p>
+
+<pre><code>\u518d\u807d\u9019\u9996\u6b4c\u7684\u9ede
+</code></pre>
+
+<h3 id="有四種方式可以解決">有四種方式可以解決:</h3>
+
+<h4 id="第一種-在-jquery-的-ajax-的屬性裡-將-datatype-指定為-json">第一種 : 在 jQuery 的 <code>$.ajax({</code> 的屬性裡 , 將 dataType 指定為 json</h4>
+
+<pre><code>$.ajax({
+    url: 'index.php/ajax_load/content_loading/',
+    type: &quot;POST&quot;,
+    dataType: &quot;json&quot;,
+    (以下略..)
+</code></pre>
+
+<p>則 ajax 回傳的 json 格式就會自動被轉換成物件了, 所以就可以用一般我們使用陣列的方式來取值</p>
+
+<p>例如使用foreach來alert出陣列裡的資料 :</p>
+
+<pre><code>for(qq in response)                (註 : response 為 php 回傳的 json 資料)
+{
+    alert(response[qq]);
+}
+</code></pre>
+
+<h4 id="第二種-與第一種原理一樣-只不過我們手動把-json-轉為物件">第二種 : 與第一種原理一樣, 只不過我們手動把 json 轉為物件</h4>
+
+<pre><code>response = JSON.parse(response);
+</code></pre>
+
+<p>這時 response 已被轉換為物件了, 就可以用陣列的方式來取值了</p>
+
+<h4 id="第三種-在-php-轉換-json-格式時動手腳-php-在轉換-json-時多加一個屬性-使它不將-unicode-轉碼">第三種 : 在 php 轉換 json 格式時動手腳, php 在轉換 json 時多加一個屬性 , 使它不將 unicode 轉碼</h4>
+
+<p>將</p>
+
+<pre><code>echo json_encode($json);
+</code></pre>
+
+<p>改成</p>
+
+<pre><code>echo json_encode($json, JSON_UNESCAPED_UNICODE);
+</code></pre>
+
+<p>中文就會正常地顯示了!</p>
+
+<h4 id="第四種-將-php-轉換json前的資料做urlencode-jquery收到再urldecode">第四種 : 將 php 轉換json前的資料做urlencode ,  jQuery收到再urldecode</h4>
+
+<h2 id="什麼是jsonp-json-with-padding">什麼是JSONP (JSON with Padding) :</h2>
+
+<p>目前以 ajax 傳輸資料首選的方法是用JSON格式 , 但是不同的網域就必須要以 JSONP 來跨域 , JSONP 不是一個新技術 , 是一種讓不同網域傳輸資料的方法 , 可以不必受限同源策略的限制 , 而達到不同網域以 ajax 傳輸資料的方法</p>
+
+<h3 id="未使用jsonp時-會遇到的問題">未使用JSONP時, 會遇到的問題</h3>
+
+<p>假設我用localhost 以 ajax 請求一個線上網域的PHP檔, 來模擬不同網域 , 並且希望接收到回傳的JSON字串</p>
+
+<p>localhost :</p>
+
+<pre><code>var car = new Array('toyota','BenZ','mazada');
+var json = JSON.stringify(car);
+$(document).ready(function(){
+        $.ajax({
+                url: 'http://test.com/test/jsonp_response.php',
+                type: &quot;json&quot;,
+                dataType: &quot;json&quot;,
+                contentType: &quot;application/json; charset=utf-8&quot;,
+                data: json,
+                success: function(response) {
+                        alert(response);
+                }
+        });
+});
+</code></pre>
+
+<p>遠端PHP檔(放在線上) :</p>
+
+<pre><code>$value = json_decode(file_get_contents('php://input'));
+echo json_encode($value);
+</code></pre>
+
+<p>結果 : 什麼回應都沒有, 因為同源策略的限制, 所以沒辦法取得到json資料</p>
+
+<h3 id="使用-jsonp">使用 JSONP</h3>
+
+<p>localhost :</p>
+
+<pre><code>&lt;script type='text/javascript'&gt;
+function ajax(){
+        $.ajax({
+                url: 'http://test.com/test/jsonp_response2.php',
+                data: {name: 'test'},
+                dataType: &quot;jsonp&quot;,
+                jsonp: 'callback',
+                jsonpCallback: 'jsonpCallback',
+                success: function() {
+                        alert('success');
+                }
+        });
+}
+function jsonpCallback(data){
+        alert(data.message);
+}
+&lt;/script&gt;
+&lt;input type='button' value='click' onclick='ajax();'/&gt;
+</code></pre>
+
+<p>遠端PHP檔(放在線上) :</p>
+
+<pre><code>&lt;?php
+    header(&quot;content-type: text/javascript&quot;);
+
+    if(isset($_GET['name']) &amp;&amp; isset($_GET['callback']))
+    {
+        $obj-&gt;name = $_GET['name'];
+        $obj-&gt;message = &quot;你好 &quot; . $obj-&gt;name;
+
+        echo $_GET['callback']. '(' . json_encode($obj) . ');';
+    }
+?&gt;
+</code></pre>
+
+<p>結果 : OK!!  點擊 click按鈕 就會alert遠端回傳來的資料了!</p>
+
+</article>
+
+
+
+</html>

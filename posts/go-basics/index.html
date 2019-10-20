@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Go Basics | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/go-basics/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/go-basics/">Go Basics</a></h1>
+    <p class="meta"><time datetime="2014-01-20T22:25:00Z">January 20, 2014</time></p>
+  </header>
+  
+
+<h2 id="declare">Declare</h2>
+
+<pre><code>var t *T = new(T)   // t := new(T)
+var a uint64 = 22   // a := uint64(22)
+a := 0x12           // 18
+</code></pre>
+
+<p>Multiple variables</p>
+
+<pre><code>ff, xx := 3, &quot;cc&quot;
+</code></pre>
+
+<p>[]interface{}</p>
+
+<pre><code>hMap := make(map[string]interface{})
+hMap[&quot;ID&quot;] = &quot;06&quot;
+hMap[&quot;Info&quot;] = map[string]string{
+    &quot;Name&quot;:       &quot;Jack&quot;
+}
+
+resque2 := map[string]interface{}{
+    &quot;class&quot;: &quot;hnap&quot;,
+    &quot;args&quot;:  []interface{}{hMap},
+}
+</code></pre>
+
+<p>map[string]interface{}</p>
+
+<pre><code>x := map[string]interface{}{
+    &quot;foo&quot;: []string{&quot;a&quot;,&quot;b&quot;},
+    &quot;bar&quot;: &quot;foo&quot;,
+    &quot;baz&quot;: 10.4,
+}
+</code></pre>
+
+<p>map[string]interface{}</p>
+
+<pre><code>t := map[string]interface{}{}
+t[&quot;id&quot;] = 312
+t[&quot;type&quot;] = &quot;realtime&quot;
+t[&quot;data&quot;] = []map[string]string{
+    {
+        &quot;did&quot;:    &quot;did1&quot;,
+        &quot;action&quot;: &quot;action1&quot;,
+    },
+    {
+        &quot;did&quot;:    &quot;did2&quot;,
+        &quot;action&quot;: &quot;action2&quot;,
+    },
+}
+
+但不可以, 無法這樣給值
+var t map[string]interface{}
+t[&quot;xxx&quot;] = &quot;xxx&quot;
+</code></pre>
+
+<p>map[string]map[string]string</p>
+
+<pre><code>elements := map[string]map[string]string{
+    &quot;A&quot;: map[string]string{
+        &quot;field1&quot;: &quot;val1&quot;,
+        &quot;field2&quot;: &quot;val2&quot;,
+    },
+    &quot;B&quot;: map[string]string{
+        &quot;field1&quot;: &quot;val1&quot;,
+        &quot;field2&quot;: &quot;val2&quot;,
+    },
+}
+</code></pre>
+
+<p>[]struct</p>
+
+<pre><code>type Target struct {
+    Topic   string `json:&quot;topic&quot;`
+    Message string `json:&quot;message&quot;`
+}
+type Payload struct {
+    Targets []Target `json:&quot;targets&quot;`
+    From    string   `json:&quot;from&quot;`
+}
+
+var payload = Payload{
+    Targets: []Target{
+        Target{
+            Topic:   &quot;topic1&quot;,
+            Message: &quot;message1&quot;,
+        },
+        Target{
+            Topic:   &quot;topic2&quot;,
+            Message: &quot;message2&quot;,
+        },
+    },
+    From: &quot;api&quot;,
+}
+</code></pre>
+
+<h3 id="declare-empty-slice-var-vs">Declare empty slice - <code>var</code> vs <code>:=</code></h3>
+
+<p>宣告出來為 nil, 長度 0 (建議)</p>
+
+<pre><code>var q []string
+</code></pre>
+
+<p>宣告出來為 <code>[]</code>, 長度 0, 如果要 json encode 想避免生成 <code>null</code> 的話, 建議使用這個</p>
+
+<pre><code>q := []string{}
+</code></pre>
+
+<h3 id="const-對應-int-有點像-enum">const 對應 int (有點像 enum)</h3>
+
+<pre><code>const (
+    LevelCritical = iota    // 0
+    LevelError
+    LevelWarning
+    LevelNotice
+    LevelInfo               // 4
+    LevelDebug
+)
+</code></pre>
+
+<h2 id="pointer">Pointer</h2>
+
+<ul>
+<li><code>&amp;</code> : 對變數取址</li>
+<li><code>*</code> : 對指針取值, 將指標取回一般變數</li>
+</ul>
+
+<p>Example :</p>
+
+<pre><code>package main
+import &quot;fmt&quot;
+func main() {
+    var a int = 1
+    var b *int = &amp;a
+    var c **int = &amp;b
+    var x int = *b
+    fmt.Println(&quot;a = &quot;,a)                           // 1
+    fmt.Println(&quot;&amp;a = &quot;,&amp;a)                         // &amp;a =  0xf840037100
+    fmt.Println(&quot;*&amp;a = &quot;,*&amp;a)                       // *&amp;a =  1
+    fmt.Println(&quot;b = &quot;,b)                           // b =  0xf840037100
+    fmt.Println(&quot;&amp;b = &quot;,&amp;b)                         // &amp;b =  0xf840037108
+    fmt.Println(&quot;*&amp;b = &quot;,*&amp;b)                       // *&amp;b =  0xf840037100
+    fmt.Println(&quot;*b = &quot;,*b)                         // *b =  1
+    fmt.Println(&quot;c = &quot;,c)                           // c =  0xf840037108
+    fmt.Println(&quot;*c = &quot;,*c)                         // *c =  0xf840037100
+    fmt.Println(&quot;&amp;c = &quot;,&amp;c)                         // &amp;c =  0xf840037110
+    fmt.Println(&quot;*&amp;c = &quot;,*&amp;c)                       // *&amp;c =  0xf840037108
+    fmt.Println(&quot;**c = &quot;,**c)                       // **c =  1
+    fmt.Println(&quot;***&amp;*&amp;*&amp;*&amp;c = &quot;,***&amp;*&amp;*&amp;*&amp;*&amp;c)     // ***&amp;*&amp;*&amp;*&amp;c =  1
+    fmt.Println(&quot;x = &quot;,x)                           // x =  1
+}
+</code></pre>
+
+<h3 id="什麼時候用指標">什麼時候用指標？</h3>
+
+<ol>
+<li>When calling struct&rsquo;s function by value, it copy itself. If struct is big, use pointer.</li>
+<li>If function has to changed its struct&rsquo;s value outside, use pointer.</li>
+<li>Make code consistent (if call by value or reference mixed up), use pointer.</li>
+</ol>
+
+<h3 id="指標行為">指標行為</h3>
+
+<p>code :</p>
+
+<pre><code>func main() {
+    a := QQ{}
+    b := &amp;a
+    c := *b
+
+    fmt.Printf(&quot;a: %p\n&quot;, &amp;a)
+    fmt.Printf(&quot;b: %p (address same as a) \n&quot;, b)
+    fmt.Printf(&quot;c: %p (different address from a, b)\n&quot;, &amp;c)
+
+    d := xx()
+    fmt.Printf(&quot;d: %p (different address from x)\n&quot;, &amp;d)
+
+    e := zz()
+    fmt.Printf(&quot;e: %p (different address from z)\n&quot;, &amp;e)
+}
+
+func xx() QQ {
+    x := QQ{}
+    fmt.Printf(&quot;x: %p (return instance)\n&quot;, &amp;x)
+    return x
+}
+
+func zz() *QQ {
+    z := QQ{}
+    fmt.Printf(&quot;z: %p (return pointer)\n&quot;, &amp;z)
+    return &amp;z
+}
+</code></pre>
+
+<p>如果 struct 定義沒有欄位, 結果 :</p>
+
+<pre><code>type QQ struct {}
+
+a: 0x1127a88
+b: 0x1127a88 (address same as a)
+c: 0x1127a88 (different address from a, b)
+x: 0x1127a88 (return instance)
+d: 0x1127a88 (different address from x)
+z: 0x1127a88 (return pointer)
+e: 0xc42000c030 (different address from z)
+</code></pre>
+
+<p>如果 struct 定義有欄位, 結果 :</p>
+
+<pre><code>type QQ struct {
+    Name string
+}
+
+a: 0xc42000e290
+b: 0xc42000e290 (address same as a)
+c: 0xc42000e2a0 (different address from a, b)
+x: 0xc42000e2e0 (return instance)
+d: 0xc42000e2d0 (different address from x)
+z: 0xc42000e2f0 (return pointer)
+e: 0xc42000c030 (different address from z)
+</code></pre>
+
+<blockquote>
+<p>關於回傳 instance or pointer 的記憶體 : call func 拿到的都是新的記憶體, 不管 func 裡面回傳的是不是指標</p>
+</blockquote>
+
+<h2 id="swtich">swtich</h2>
+
+<h3 id="map-switch">map + switch</h3>
+
+<pre><code>m := map[string]int{&quot;foo&quot;:1}
+f := func(key string) bool { _, ok := m[key]; return ok }
+switch {
+    case f(key):
+        // whatever
+</code></pre>
+
+<h3 id="or">or</h3>
+
+<pre><code>switch category {
+case
+    &quot;auto&quot;,
+    &quot;news&quot;,
+    &quot;sport&quot;,
+    &quot;music&quot;:
+    return true
+}
+</code></pre>
+
+<h3 id="斷言-type-assertion">斷言 (type assertion)</h3>
+
+<p>分辨型別</p>
+
+<pre><code>var anything interface{} = &quot;string&quot;
+switch v := anything.(type) {
+case string:
+    fmt.Println(v)
+case int32, int64:
+    fmt.Println(v)
+case interface{}:
+    fmt.Println(v)
+default:
+    fmt.Println(&quot;unknown&quot;)
+}
+</code></pre>
+
+<p>已知道是什麼型別</p>
+
+<pre><code>value, ok := a.(string)
+if !ok {
+    fmt.Println(&quot;It's not ok for type string&quot;)
+    return
+}
+
+// or
+if str, ok := a.(string); ok {
+</code></pre>
+
+<h2 id="轉型">轉型</h2>
+
+<p>int to int64</p>
+
+<pre><code>i64 := int64(23)
+</code></pre>
+
+<p>int to float64</p>
+
+<pre><code>i := 5;
+f := float64(i)
+</code></pre>
+
+<p>int to string</p>
+
+<pre><code>s := strconv.Itoa(123)
+</code></pre>
+
+<p>int64 to int</p>
+
+<pre><code>i := int64(5)
+int(i)
+</code></pre>
+
+<p>int64 to string</p>
+
+<pre><code>s := strconv.FormatInt(int64(5), 10)
+</code></pre>
+
+<p>int64 to float64</p>
+
+<pre><code>float64(1)
+</code></pre>
+
+<p>int64 to uint64</p>
+
+<pre><code>u, err := strconv.ParseUint(strconv.FormatInt(int64(123), 10), 10, 64)
+</code></pre>
+
+<p>float64 to string</p>
+
+<pre><code>s64 := strconv.FormatFloat(v, 'E', -1, 64)
+</code></pre>
+
+<p>float64 to int64</p>
+
+<pre><code>var f float64 = 55.3
+i = int64(f)
+</code></pre>
+
+<p>float64 to uint</p>
+
+<pre><code>uint(user[&quot;age&quot;].(float64))
+</code></pre>
+
+<p>string to byte</p>
+
+<pre><code>dd := &quot;dcf&quot;
+fmt.Println([]byte(dd))
+</code></pre>
+
+<blockquote>
+<p>result : <code>[100 99 102]</code></p>
+</blockquote>
+
+<p>string to int</p>
+
+<pre><code>v, err = strconv.Atoi(s)
+</code></pre>
+
+<p>string to int64</p>
+
+<pre><code>v, err := strconv.ParseInt(s, 10, 64)
+</code></pre>
+
+<p>string to uint32/uint64</p>
+
+<pre><code>v := &quot;42&quot;
+if s, err := strconv.ParseUint(v, 10, 32); err == nil {
+    fmt.Printf(&quot;%T, %v\n&quot;, s, s)
+}
+if s, err := strconv.ParseUint(v, 10, 64); err == nil {
+    fmt.Printf(&quot;%T, %v\n&quot;, s, s)
+}
+</code></pre>
+
+<p>string to float64</p>
+
+<pre><code>v, err := strconv.ParseFloat(&quot;55.74&quot;, 64)
+</code></pre>
+
+<p>*string to string</p>
+
+<pre><code>value := *pointer_str
+</code></pre>
+
+<p>byte to string</p>
+
+<pre><code>s := string(byteArray)
+s := string(byteArray[:])
+</code></pre>
+
+<p>rune to string</p>
+
+<pre><code>r := rune('a')
+fmt.Println(reflect.TypeOf(r))  // int32
+fmt.Println(r, string(r))       // 97 a
+</code></pre>
+
+<p>array to slice</p>
+
+<pre><code>x[:]
+</code></pre>
+
+<p>interface{} to int</p>
+
+<pre><code>a := job[&quot;retryTimes&quot;].(int)
+</code></pre>
+
+<p>[]interface{} 轉成 interface{}</p>
+
+<pre><code>interface{}([]interface{}{reactor, sensor})
+</code></pre>
+
+<p>[]interface{} to []int ref : <a href="https://github.com/golang/go/wiki/InterfaceSlice">InterfaceSlice</a></p>
+
+<pre><code>var dataSlice []int = foo()
+var interfaceSlice []interface{} = make([]interface{}, len(dataSlice))
+for i, d := range dataSlice {
+    interfaceSlice[i] = d  // 或用 append 的方式
+}
+</code></pre>
+
+<p>interface{} conver to <code>bytes.Buffer</code></p>
+
+<pre><code>switch v := any.(type) {
+case bytes.Buffer:          // return as is
+    return v.String()       // Here v is of type bytes.Buffer
+}
+</code></pre>
+
+<p>interfacer{} (*Server) to (*Server)</p>
+
+<pre><code>type Server struct {
+    Name string
+}
+
+var v interface{}
+if v == nil {
+    v = &amp;Server{Name: &quot;xx&quot;}
+}
+fmt.Println(reflect.TypeOf(v))      // *main.Server
+s := v.(*Server)
+fmt.Println(s.Name)                 // xx
+</code></pre>
+
+<p>map[string]interface{} 變成陣列 []interface{}</p>
+
+<pre><code>[]interface{}{reactor, sensor}
+</code></pre>
+
+<p>struct to another struct</p>
+
+<pre><code>type A struct{ Name string }
+type B struct{ Name string }
+a := A{&quot;aa&quot;}
+b := B(a)
+b.Name = &quot;bb&quot;
+fmt.Println(a)
+fmt.Println(b)
+</code></pre>
+
+<p>bytes to io.Reader</p>
+
+<pre><code>bytes.NewReader(b)
+</code></pre>
+
+<p>bytes.Buffer to io.Writer</p>
+
+<pre><code>var b bytes.Buffer
+writer := bufio.NewWriter(&amp;b)
+</code></pre>
+
+<p>strings to io.Reader</p>
+
+<pre><code>strings.NewReader(s)
+</code></pre>
+
+<p>file to bytes</p>
+
+<pre><code>b, err := ioutil.ReadFile(&quot;/tmp/ff.tmp&quot;)
+</code></pre>
+
+<p>file to io.Writer</p>
+
+<pre><code>file, err = os.Open(&quot;/tmp/ff.tmp&quot;)
+defer file.Close()
+</code></pre>
+
+<p>image to bytes</p>
+
+<pre><code>buf := new(bytes.Buffer)
+err := jpeg.Encode(buf, new_image, nil)
+send_s3 := buf.Bytes()
+</code></pre>
+
+<p>convert to another interface</p>
+
+<pre><code>dimg, ok := img.(draw.Image)
+</code></pre>
+
+<p>指標(pointer)轉實體</p>
+
+<pre><code>*f is msg := sqs.Message(*m)
+
+(*f)[&quot;cc&quot;]
+
+(map[string]interface{})(*f)[&quot;cc&quot;]
+
+msg := sqs.Message(*m)
+
+a := (map[string]interface{})(args[0].(interface{}).(map[string]interface{}))
+</code></pre>
+
+<h2 id="loop">loop</h2>
+
+<p>Infinite</p>
+
+<pre><code>for {
+    // ...
+}
+</code></pre>
+
+<p>Range, like other languages</p>
+
+<pre><code>for i:=1; i&lt;=5; i++ {
+    // ...
+}
+</code></pre>
+
+<p>Until the specific time</p>
+
+<pre><code>for time.Now().Unix() &lt; 1481089195 {
+    time.Sleep(1 * time.Second)
+}
+</code></pre>
+
+<h2 id="slice">slice</h2>
+
+<h3 id="slice-https-blog-golang-org-go-slices-usage-and-internals-結構"><a href="https://blog.golang.org/go-slices-usage-and-internals">slice</a>結構</h3>
+
+<p>結構</p>
+
+<pre><code>     []byte
+     ---------
+ptr  | *elem |
+     ---------
+len  |  int  |
+     ---------
+cap  |  int  |
+     ---------
+</code></pre>
+
+<p>a slice with five elements</p>
+
+<pre><code>s := make([]byte, 5)  // 指定 len, 不指定 cap
+
+     []byte
+     ---------
+ptr  |       |  -&gt; [5] bytes | 0 | 0 | 0 | 0 | 0 |
+     ---------
+len  |  5    |
+     ---------
+cap  |  5    |
+     ---------
+</code></pre>
+
+<p>nil slice</p>
+
+<pre><code>var s []byte
+
+     []byte
+     ---------
+ptr  |  nil  |
+     ---------
+len  |   0   |
+     ---------
+cap  |   0   |
+     ---------
+</code></pre>
+
+<h3 id="cap-and-len">cap and len</h3>
+
+<ul>
+<li>cap: capacity of the underlying array.</li>
+<li>len: how many items are in the array.</li>
+</ul>
+
+<p>The slice abstraction in Go will resize the underlying array for you.</p>
+
+<p>Example:</p>
+
+<pre><code>s := make([]int, 0, 3)
+for i := 0; i &lt; 5; i++ {
+    s = append(s, i)
+    fmt.Printf(&quot;cap %v, len %v, %p\n&quot;, cap(s), len(s), s)
+}
+</code></pre>
+
+<p>output:</p>
+
+<pre><code>cap 3, len 1, 0xc000088000
+cap 3, len 2, 0xc000088000
+cap 3, len 3, 0xc000088000
+cap 6, len 4, 0xc00006a030
+cap 6, len 5, 0xc00006a030
+</code></pre>
+
+<h3 id="the-difference-in-performance-between-a-and-b">The difference in performance between A and B.</h3>
+
+<p>Code</p>
+
+<pre><code>// var numbers []int
+// numbers := make([]int, 5)
+for i := 0; i &lt; 5; i++ {
+    numbers = append(numbers, i)
+    fmt.Printf(&quot;address: %p, length: %d, capacity: %d, items: %v\n&quot;, numbers, len(numbers), cap(numbers), numbers)
+}
+</code></pre>
+
+<p>var numbers []int:</p>
+
+<pre><code>2019-09-30 12:58:34 jack@jack-lin /tmp $ go run slice.go
+address: 0xc0000140c0, length: 1, capacity: 1, items: [0]
+address: 0xc0000140f0, length: 2, capacity: 2, items: [0 1]
+address: 0xc000094000, length: 3, capacity: 4, items: [0 1 2]
+address: 0xc000094000, length: 4, capacity: 4, items: [0 1 2 3]
+address: 0xc00009a000, length: 5, capacity: 8, items: [0 1 2 3 4]
+</code></pre>
+
+<p>numbers := make([]int, 5):</p>
+
+<pre><code>2019-09-30 12:58:44 jack@jack-lin /tmp $ go run slice.go
+address: 0xc000096000, length: 6, capacity: 10, items: [0 0 0 0 0 0]
+address: 0xc000096000, length: 7, capacity: 10, items: [0 0 0 0 0 0 1]
+address: 0xc000096000, length: 8, capacity: 10, items: [0 0 0 0 0 0 1 2]
+address: 0xc000096000, length: 9, capacity: 10, items: [0 0 0 0 0 0 1 2 3]
+address: 0xc000096000, length: 10, capacity: 10, items: [0 0 0 0 0 0 1 2 3 4]
+</code></pre>
+
+<h3 id="基本操作">基本操作</h3>
+
+<p>append item</p>
+
+<pre><code>list = append(list, item)
+</code></pre>
+
+<p>append slice</p>
+
+<pre><code>list = append(list, list2...)
+</code></pre>
+
+<p><a href="https://github.com/golang/go/wiki/SliceTricks">其他</a></p>
+
+<h3 id="重新切一個-slice-新-slice-會使用原本-slice-的底層-改成使用-copy-才會是一個新的-slice">重新切一個 slice, 新 slice 會使用原本 slice 的底層, 改成使用 <code>copy</code> 才會是一個新的 slice</h3>
+
+<pre><code>func main() {
+    data := get()
+    fmt.Println(len(data), cap(data), &amp;data[0])
+}
+
+func get() []byte {
+    raw := make([]byte, 10000)
+    fmt.Println(len(raw), cap(raw), &amp;raw[0])
+    return raw[:3]
+}
+// 10000 10000 0xc42005e000
+// 3 10000 0xc42005e000     (記憶體位置一樣)
+
+func get() (res []byte) {
+    raw := make([]byte, 10000)
+    fmt.Println(len(raw), cap(raw), &amp;raw[0])
+    res = make([]byte, 3)
+    copy(res, raw[:3])
+    return
+}
+// 10000 10000 0xc42005e000
+// 3 3 0xc42000e280
+</code></pre>
+
+<h3 id="array-vs-slice">array vs slice</h3>
+
+<ul>
+<li>See <a href="https://blog.golang.org/go-slices-usage-and-internals">this great official article about them</a></li>
+</ul>
+
+<p>差別主要是 array 是有固定長度, slice 沒有</p>
+
+<p>code:</p>
+
+<pre><code>// array
+var List = [2]int{1, 2}  // or [...]int{1,2}
+copyList := List
+copyList[1] = 4
+fmt.Printf(&quot;new=%v, old=%v\n&quot;, copyList, List)
+
+// slice
+var oldSlice = []int{1, 2, 3, 4}
+newSlice := oldSlice
+newSlice[3] = 10
+newSlice = append(newSlice, 100)
+fmt.Printf(&quot;new=%v, old=%v\n&quot;, newSlice, oldSlice)
+</code></pre>
+
+<p>result:</p>
+
+<pre><code>new=[1 4], old=[1 2]
+new=[1 2 3 10 100], old=[1 2 3 10]
+</code></pre>
+
+<blockquote>
+<p>array 是直接操作記憶體位置</p>
+</blockquote>
+
+<h3 id="傳遞-slice-是傳遞記憶體位置">傳遞 slice 是傳遞記憶體位置</h3>
+
+<p>感謝 chris:</p>
+
+<ul>
+<li>記得 slice map 的變數 只是一個參照</li>
+<li>slice 跟 map 的變數 參照的 值都是隔開的</li>
+<li>但是底層運作是使用 指標</li>
+<li>裡面真正的值 是存在記憶體</li>
+<li>關鍵字: 淺拷貝/深拷貝</li>
+</ul>
+
+<p>Example</p>
+
+<pre><code>func main() {
+    d := []string{&quot;xxx&quot;}
+    fmt.Println(&quot;original:&quot;, d)
+    nonPointer(d)
+    fmt.Println(&quot;non-pointer:&quot;, d)
+    change(d)
+    fmt.Println(&quot;change:&quot;, d)
+    pointer(&amp;d)
+    fmt.Println(&quot;pointer:&quot;, d)
+}
+
+func nonPointer(d []string) {
+    d = append(d, &quot;vvvv&quot;)
+}
+
+func change(d []string) {
+    d[0] = &quot;ccc&quot;                // 可修改到外部
+}
+
+func pointer(d *[]string) {
+    *d = append(*d, &quot;vvvv&quot;)
+}
+</code></pre>
+
+<p>Result</p>
+
+<pre><code>original: [xxx]
+non-pointer: [xxx]
+change: [ccc]
+pointer: [ccc vvvv]
+</code></pre>
+
+<p>Example 2</p>
+
+<pre><code>func main() {
+    d := [][]string{
+        []string{&quot;foo&quot;, &quot;bar&quot;},
+        []string{&quot;foo1&quot;, &quot;bar1&quot;},
+    }
+    byValue(d)
+    fmt.Println(d) // [[foo bar] [foo1 baz1]]
+    byRef(&amp;d)
+    fmt.Println(&amp;d) // &amp;[[foo bar] [foo1 baz2]]
+}
+
+func byValue(d [][]string) {
+    d[1][1] = &quot;baz1&quot;
+    fmt.Println(d) // [[foo bar] [foo1 baz1]]
+}
+
+func byRef(d *[][]string) {
+    (*d)[1][1] = &quot;baz2&quot;
+    fmt.Println(d) // &amp;[[foo bar] [foo1 baz2]]
+}
+</code></pre>
+
+<h3 id="array-is-passed-by-value-by-default-not-like-slice-by-reference-by-default">Array is passed by value by default, not like slice by reference by default</h3>
+
+<pre><code>func main() {
+    d := [2]string{&quot;foo&quot;, &quot;bar&quot;}
+    byValue(d)
+    fmt.Println(d) // foo, bar
+    byRef(&amp;d)
+    fmt.Println(&amp;d) // foo, baz
+}
+
+func byValue(d [2]string) {
+    d[1] = &quot;baz&quot;
+    fmt.Println(d) // foo, baz
+}
+
+func byRef(d *[2]string) {
+    d[1] = &quot;baz&quot;
+    fmt.Println(d) // foo, baz
+}
+</code></pre>
+
+<h3 id="宣告獨立乾淨的-slice">宣告獨立乾淨的 slice</h3>
+
+<p>不論是參數傳遞 (call by value) 還是 assign 給一個新的變數, *elem (pointer) 都會指向同一個, 而改其中一個也會改動到另一個</p>
+
+<p>如果沒有 append 新的 item, 只改變原本 slice 長度內的值 e.g. s[2] = 3 (如果s總長度是5), 都會一直是共用指標</p>
+
+<p>如果要打破這個規則, 就將其中一個 append 新的 item 那麼 *elem (pointer) 就會是不同的</p>
+
+<p>如果要將 slice 指給一個新的變數, 但又不想要將原本的 *elem (pointer) 參照到原本的變數, 除了用 make 也可以 new 全新的再用 append 給值</p>
+
+<p>code</p>
+
+<pre><code>s := []int{1, 2, 3}
+
+// Old *elem
+s1 := s
+
+// New *elem
+s2 := s
+s2 = append(s2, 4)
+
+// New *elem
+s3 := []int{}
+s3 = append(s3, s...)
+
+// New *elem
+s4 := make([]int, 0)
+s4 = append(s4, s...)
+
+s[1] = 999
+
+fmt.Println(s)      // [1 999 3]
+fmt.Println(s1)     // [1 999 3]
+fmt.Println(s2)     // [1 2 3 4]
+fmt.Println(s3)     // [1 2 3]
+fmt.Println(s4)     // [1 2 3]
+</code></pre>
+
+<h3 id="check-if-two-slices-are-the-same">check if two slices are the same</h3>
+
+<pre><code>reflect.DeepEqual(tmp, item.ans)
+</code></pre>
+
+<h2 id="map-others">map others</h2>
+
+<p>傳入接收 <code>actionData map[string]interface{}</code> 參數的 func</p>
+
+<pre><code>send_var(jobData[&quot;ActionData&quot;].(map[string]interface{}))
+
+func send_var(actionData []interface{}) (err error) {
+    fmt.Println(actionData[0].(map[string]interface{})[&quot;Did&quot;])
+</code></pre>
+
+<p>[]map[string]interface{} 傳入型態接受  []interface{} 的 func</p>
+
+<pre><code>test(&amp;map[string]interface{})
+...
+func test(rec *[]interface{})
+</code></pre>
+
+<blockquote>
+<p>用指標方式傳入可避免型態轉換發生的問題</p>
+</blockquote>
+
+<p>map[string]interface{} 一直輸出它的 index 順序不一定會一樣</p>
+
+<pre><code>qq := map[string]interface{}{
+    &quot;0&quot;: &quot;111111&quot;,
+    &quot;1&quot;: &quot;xxxxxxxx&quot;,
+}
+</code></pre>
+
+<blockquote>
+<p>[]interface{} 一直輸出它的 index 順序會一樣</p>
+</blockquote>
+
+<p>用 mi 定義 type, 讓 code 更乾淨</p>
+
+<pre><code>type mi map[string]interface{}
+res[&quot;Envelope&quot;].(interface{}).(mi)[&quot;Body&quot;].(interface{}).(mi)[actionData[&quot;Name&quot;].(string)+&quot;Response&quot;].(interface{})
+</code></pre>
+
+<p><code>assignment to entry in nil map</code> : 會發生此原因是你在賦值給 map 時沒有初始化</p>
+
+<pre><code>var d []map[string]interface{}
+
+(Wrong)
+    var f map[string][]map[string]interface{}
+    f[&quot;ss&quot;] = d
+
+(Correct)
+    f := map[string][]map[string]interface{}{}
+    f[&quot;ss&quot;] = d
+
+(Correct)
+    var f map[string][]map[string]interface{}
+    f = make(map[string][]map[string]interface{})
+    f[&quot;ss&quot;] = d
+</code></pre>
+
+<p>map 是否為空</p>
+
+<pre><code>if len(map) == 0 {
+    ....
+}
+</code></pre>
+
+<p>判斷 key 是否存在, 如果不存在不會造成 error</p>
+
+<pre><code>a := map[string]interface{}{
+    &quot;a&quot;: &quot;A&quot;,
+}
+
+if t1, matched := a[&quot;a&quot;]; matched {
+    fmt.Println(t1.(string))
+}
+
+if t2 := a[&quot;a&quot;]; t2 != nil {
+    fmt.Println(t2.(string))
+}
+</code></pre>
+
+<p>判斷 key 及型態</p>
+
+<pre><code>a := map[string]interface{}{&quot;fff&quot;: &quot;xx&quot;}
+ff, ok := a[&quot;fff&quot;].(int)   // 即使來源跟對象的型態不一樣, 不會造成 panic
+if !ok {
+    fmt.Println(&quot;no&quot;)
+    // return
+}
+fmt.Println(ff)
+
+// result
+no
+0
+</code></pre>
+
+<p><a href="https://github.com/golang/go/wiki/SliceTricks">Slice Tricks</a></p>
+
+<p>判斷 slice key 是否存在</p>
+
+<pre><code>a := []string{&quot;zero&quot;, &quot;one&quot;, &quot;two&quot;}
+fmt.Println(a, len(a))
+x, v := 3, &quot;nothing&quot;
+if len(a)-1 &gt;= x  {
+    v = a[x]
+}
+fmt.Printf(&quot;%s&quot;, v)
+</code></pre>
+
+<p>type <code>*map[string]interface {}</code> does not support indexing</p>
+
+<pre><code>func tt(dd *map[string]interface{}) {
+    (*dd)[&quot;qq&quot;] = &quot;qqqq&quot;
+}
+</code></pre>
+
+<h3 id="傳遞-map-是傳址非傳值">傳遞 map 是傳址非傳值</h3>
+
+<pre><code>func main() {
+    dd := map[string]interface{}{
+        &quot;ff&quot;: &quot;ffff&quot;,
+    }
+    fmt.Printf(&quot;original, mem: %p val: %v\n&quot;, &amp;dd, dd)
+    nonPointer(dd)
+    fmt.Printf(&quot;non-pointer, val: %v\n&quot;, dd)
+    change(dd)
+    fmt.Printf(&quot;change, val: %v\n&quot;, dd)
+    pointer(&amp;dd)
+    fmt.Printf(&quot;pointer, val: %v\n&quot;, dd)
+    newMap(dd)
+    fmt.Printf(&quot;newMap, val: %v\n&quot;, dd)
+    makeMap(dd)
+    fmt.Printf(&quot;makeMap, val: %v\n&quot;, dd)
+}
+
+// 會修改到外部
+func nonPointer(dd map[string]interface{}) {
+    fmt.Printf(&quot;non-pointer, mem: %p\n&quot;, &amp;dd)
+    dd[&quot;dd&quot;] = &quot;ddd&quot;
+}
+
+// 會修改到外部
+func change(dd map[string]interface{}) {
+    fmt.Printf(&quot;non-pointer, mem: %p\n&quot;, &amp;dd)
+    dd[&quot;ff&quot;] = &quot;cccc&quot;
+}
+
+// 會修改到外部
+func pointer(dd *map[string]interface{}) {
+    fmt.Printf(&quot;pointer, mem: %p\n&quot;, &amp;dd)
+    (*dd)[&quot;qq&quot;] = &quot;qqqq&quot;
+}
+
+// 即使 qq 裡, new 一個新變數 ff, 並將 dd 的值給 ff, 修改仍會改到外面傳進來的 map
+func newMap(dd map[string]interface{}) {
+    ff := dd
+    ff[&quot;ff&quot;] = &quot;zzzz&quot;
+}
+
+// 必須要用 make new 一個實體, 才不會參照到原本的記憶體位址
+func makeMap(dd map[string]interface{}) {
+    cc := make(map[string]interface{})
+    for k, v := range dd {
+        cc[k] = v
+    }
+    cc[&quot;bbb&quot;] = &quot;bbb&quot;
+}
+</code></pre>
+
+<p>結果</p>
+
+<pre><code>original, mem: 0xc42000c028 val: map[ff:ffff]
+non-pointer, mem: 0xc42000c038
+non-pointer, val: map[ff:ffff dd:ddd]
+non-pointer, mem: 0xc42000c040
+change, val: map[ff:cccc dd:ddd]
+pointer, mem: 0xc42000c048
+pointer, val: map[ff:cccc dd:ddd qq:qqqq]
+newMap, val: map[dd:ddd qq:qqqq ff:zzzz]
+makeMap, val: map[dd:ddd qq:qqqq ff:zzzz]
+</code></pre>
+
+<h2 id="func-params">func params</h2>
+
+<h3 id="傳入-接收-map-pointer">傳入/接收 map pointer</h3>
+
+<p>error: <code>(type *map[string]interface {} does not support indexing)</code></p>
+
+<p>solution:</p>
+
+<pre><code>func main() {
+    a := map[string]interface{}{
+        &quot;xxx&quot;: &quot;XXX&quot;,
+    }
+
+    qq(&amp;a)
+}
+
+func qq(tmp *map[string]interface{}) {
+    fmt.Println((*tmp)[&quot;xxx&quot;])
+}
+</code></pre>
+
+<h3 id="傳入-接收-map-pointer-1">傳入/接收 map pointer</h3>
+
+<pre><code>var args = map[string]interface{}{
+    &quot;A&quot;: &quot;1&quot;,
+    &quot;B&quot;: &quot;2&quot;,
+}
+foo(&amp;args)
+func foo(args *map[string]interface{}) {
+    options := (map[string]interface{})(*args)
+    fmt.Println(options[&quot;A&quot;])
+}
+
+foo(args)
+func foo(name string, ...args map[string]interface{}) {
+    options := (map[string]interface{})(args[0])
+    fmt.Println(options[&quot;A&quot;])
+}
+</code></pre>
+
+<h3 id="傳入-optional-參數">傳入 Optional 參數</h3>
+
+<pre><code>T1(&quot;A&quot;, &quot;B&quot;)
+func T1(str ...string) {
+    fmt.Println(str[0]) // A
+}
+
+T2([]string{&quot;A&quot;, &quot;B&quot;})
+func T2(str ...[]string) {
+    fmt.Println(str[0]) // [A B]
+}
+</code></pre>
+
+<p>map</p>
+
+<pre><code>test(&quot;test&quot;)
+test(&quot;test&quot;, map[string]interface{}{&quot;dd&quot;: &quot;DD&quot;, &quot;cc&quot;: &quot;CC&quot;})
+
+func test(required string, optional ...map[string]interface{}) {
+    fmt.Println(required)
+    fmt.Println(len(optional))
+    if len(optional) &gt; 0 {
+        if val, existed := optional[0][&quot;dd&quot;]; existed {
+            fmt.Println(val)
+        }
+    }
+}
+</code></pre>
+
+<h3 id="將-slice-params-傳入-args">將 slice params 傳入 args&hellip;</h3>
+
+<pre><code>func echo(strings ...string) {
+    for _, s := range strings {
+        fmt.Println(s)
+    }
+}
+
+func main() {
+    strings := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+    echo(strings...) // Treat input to function as variadic
+}
+</code></pre>
+
+<h2 id="interface-struct">interface &amp; struct</h2>
+
+<h3 id="behaviours">Behaviours</h3>
+
+<pre><code>scenario                        by value    by reference
+pointer method                      yes         yes
+value method                        yes         yes
+interface pointer method            no          yes
+interface value method              yes         yes
+</code></pre>
+
+<p>ref:</p>
+
+<ul>
+<li><a href="https://suraj.io/post/golang-methods-interfaces/">https://suraj.io/post/golang-methods-interfaces/</a></li>
+<li><a href="https://www.ardanlabs.com/blog/2017/07/interface-semantics.html">https://www.ardanlabs.com/blog/2017/07/interface-semantics.html</a></li>
+</ul>
+
+<h3 id="struct-成員大小寫">[struct] 成員大小寫</h3>
+
+<p>跟 func 一樣，大寫代表 public，小寫是 private</p>
+
+<h3 id="struct-map">[struct] map</h3>
+
+<pre><code>type AWS struct {
+   SQS  map[string]*aws_sqs.SQS
+}
+
+var qq AWS
+qq.SQS = make(map[string]*aws_sqs.SQS)
+qq.SQS[xx] = &amp;ws_sqs.SQS{ ... }
+</code></pre>
+
+<h3 id="struct-function-pointer">[struct] function pointer</h3>
+
+<pre><code>type Job struct {
+    Done func() error
+}
+
+var job Job
+job.Done = done
+
+func done() error {
+
+}
+</code></pre>
+
+<h3 id="struct-定義-賦值">[struct] 定義 + 賦值</h3>
+
+<pre><code>resp := Music{
+    Genre: struct {
+        Country string
+        Rock    string
+    }{
+        Country: &quot;Taylor Swift&quot;,
+        Rock:    &quot;Aimee&quot;,
+    },
+}
+</code></pre>
+
+<h3 id="assign-a-struct-to-an-interface">Assign a struct to an interface</h3>
+
+<pre><code>type Interface interface{}
+
+type Struct struct{}
+
+func main() {
+        var ps *Struct
+        var pi *Interface
+        pi = new(Interface)
+        *pi = ps
+
+        _, _ = pi, ps
+}
+</code></pre>
+
+<h3 id="關於-interface-及-struct-的用法">關於 interface 及 struct 的用法</h3>
+
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+# 用 interface 定義一個抽象層，只負責說這個類別有什麼動作
+type PeopleAction interface {
+    AnimalAction
+    Stand()
+}
+
+# 本身也可以被繼承
+type AnimalAction interface {
+    Run()
+    Eat()
+}
+
+# 定義資料結構
+type Animal struct {
+    Name string
+}
+
+func (animal *Animal) Run() {
+    fmt.Println(animal.Name + &quot; is running&quot;)
+}
+
+func (animal *Animal) Eat() {
+    fmt.Println(animal.Name + &quot; is eatting&quot;)
+}
+
+func (animal *Animal) Stand() {
+    fmt.Println(animal.Name + &quot; is standing&quot;)
+}
+
+func main() {
+    var jack PeopleAction = &amp;Animal{&quot;Jack&quot;}
+    var bob AnimalAction = &amp;Animal{&quot;Bob&quot;}
+    jack.Run()               // Jack is running
+    jack.Eat()               // Jack is eatting
+    jack.Stand()             // Jack is standing
+    bob.Run()               // Bob is running
+    bob.Eat()               // Bob is eatting
+    // bob.Stand()          // bob.Stand()  Error : bob.Stand undefined (type AnimalAction has no field or method Stand)
+}
+</code></pre>
+
+<h3 id="receive-interface-as-param">Receive interface as param</h3>
+
+<pre><code>type A interface{}
+
+type B struct {
+    A
+    Age int
+}
+
+func main() {
+    var a A
+    fmt.Println(&quot;interface A type: &quot;, reflect.TypeOf(a))
+    b := B{a, 30}
+    fmt.Println(&quot;struct B type: &quot;, reflect.TypeOf(b))
+    Show(b)
+}
+
+func Show(a A) {
+    fmt.Println(&quot;show age: &quot;, a.(B).Age)
+    fmt.Println(&quot;interface param type: &quot;, reflect.TypeOf(a.(B)))
+}
+</code></pre>
+
+<p>Result</p>
+
+<pre><code>interface A type:  &lt;nil&gt;
+struct B type:  main.B
+show age:  30
+interface param type:  main.B
+</code></pre>
+
+<h3 id="type-t-satisfies-interface-i-defined-in-the-first-snippet-values-of-type-t-can-be-f-ex-passed-to-any-function-accepting-i-as-a-parameter">Type T satisfies interface I defined in the first snippet. Values of type T can be f.ex. passed to any function accepting I as a parameter</h3>
+
+<pre><code>type I interface {
+    M() string
+}
+type T struct {
+    name string
+}
+func (t T) M() string {
+    return t.name
+}
+func Hello(i I) {
+    fmt.Printf(&quot;Hi, my name is %s\n&quot;, i.M())
+}
+func main() {
+    Hello(T{name: &quot;Michał&quot;}) // &quot;Hi, my name is Michał&quot;
+}
+</code></pre>
+
+<h3 id="single-type-can-implement-many-interfaces">single type can implement many interfaces</h3>
+
+<pre><code>type I1 interface {
+    M1()
+}
+type I2 interface {
+    M2()
+}
+type T struct{}
+func (T) M1() { fmt.Println(&quot;T.M1&quot;) }
+func (T) M2() { fmt.Println(&quot;T.M2&quot;) }
+func f1(i I1) { i.M1() }
+func f2(i I2) { i.M2() }
+func main() {
+    t := T{}
+    f1(t) // &quot;T.M1&quot;
+    f2(t) // &quot;T.M2&quot;
+}
+</code></pre>
+
+<h3 id="different-structs-call-same-name-but-different-func">different structs, call same name but different func</h3>
+
+<pre><code>type I interface {
+    M() string
+}
+type T1 struct{ Name string }
+type T2 struct{ Name string }
+
+func main() {
+    // Different structs call its own func
+    var i I
+
+    t1 := T1{Name: &quot;t1&quot;}
+    t2 := T2{Name: &quot;t2&quot;}
+    i = &amp;t1 // Must use pointer
+    fmt.Println(i.M())
+    i = &amp;t2
+    fmt.Println(i.M())
+}
+
+func (t *T1) M() string { return t.Name + &quot; T1&quot; }
+func (t *T2) M() string { return t.Name + &quot; T2&quot; }
+</code></pre>
+
+<h3 id="same-interface-different-structs-call-same-func">same interface, different structs, call same func</h3>
+
+<p>No, you can&rsquo;t!</p>
+
+<h3 id="difference-between-passing-by-reference-and-passing-by-value">Difference between passing by reference and passing by value</h3>
+
+<pre><code>var a = &amp;A{Val: &quot;aaa&quot;}
+fmt.Println(&quot;a: &quot;, a)
+fmt.Println(&quot;b = a&quot;)
+b := a
+b.Val = &quot;bbb&quot;
+fmt.Println(&quot;b: &quot;, b, &quot; (set new value to b)&quot;)
+fmt.Println(&quot;a: &quot;, a, &quot; (affected by b)&quot;)
+
+var c = &amp;A{Val: &quot;ccc&quot;}
+fmt.Println(&quot;c: &quot;, c)
+fmt.Println(&quot;b = c&quot;)
+b = c
+b.Val = &quot;bbbbbbbbbbb&quot;
+fmt.Println(&quot;b: &quot;, b, &quot; (set new value to b)&quot;)
+fmt.Println(&quot;c: &quot;, c, &quot; (affected by b)&quot;)
+fmt.Println(&quot;a: &quot;, a, &quot; (unaffected)&quot;)
+</code></pre>
+
+<p>Result:</p>
+
+<pre><code>a:  &amp;{aaa}
+b = a
+b:  &amp;{bbb}  (set new value to b)
+a:  &amp;{bbb}  (affected by b)
+c:  &amp;{ccc}
+b = c
+b:  &amp;{bbbbbbbbbbb}  (set new value to b)
+c:  &amp;{bbbbbbbbbbb}  (affected by b)
+a:  &amp;{bbb}  (unaffected)
+</code></pre>
+
+<h3 id="struct-json">struct + json</h3>
+
+<pre><code>json.Marshal(struct {
+        Data     *MyStruct   `json:&quot;data,omitempty&quot;`
+        Status   string      `json:&quot;status,omitempty&quot;`
+        Reason   string      `json:&quot;reason,omitempty&quot;`
+    }{
+        Data:   &amp;r.Data,
+        Status: r.Status,
+        Reason: r.Reason,
+    })
+}
+</code></pre>
+
+<h3 id="assign-func">Assign func</h3>
+
+<pre><code>type Job struct {
+    ID string
+    Do func(*Job)
+}
+
+func main() {
+    var j1 = &amp;Job{ID: &quot;J01&quot;, Do: do}
+    var j2 = &amp;Job{ID: &quot;J02&quot;, Do: do}
+    j1.Do(j1)
+    j2.Do(j2)
+}
+
+func do(j *Job) {
+    fmt.Println(&quot;Job ID:&quot;, j.ID)
+}
+</code></pre>
+
+<h3 id="巢狀">巢狀</h3>
+
+<pre><code>type Resp struct {
+    UserID struct {
+    } `json:&quot;user_id&quot;`
+    Data struct {
+        Info struct {
+            Name        string   `json:&quot;name&quot;`
+            Friends     []Friend `json:&quot;friends&quot;`
+        } `json:&quot;info&quot;`
+    } `json:&quot;data&quot;`
+}
+</code></pre>
+
+<p>輸出</p>
+
+<pre><code>&quot;user_id&quot;: {},
+&quot;data&quot;: {
+    &quot;info&quot;: {
+        &quot;name&quot;: &quot;XXX&quot;,
+        &quot;friends&quot;: [
+            { },
+            { },
+        ],
+    },
+},
+</code></pre>
+
+<h3 id="傳遞參數不像-map-及-slice-以指標傳遞-而是傳遞實體">傳遞參數不像 map 及 slice 以指標傳遞, 而是傳遞實體</h3>
+
+<pre><code>func main() {
+    q := qq{name: &quot;ori&quot;}
+    fmt.Println(q)
+    dd(q)
+    fmt.Println(q)
+    cc(&amp;q)
+    fmt.Println(q)
+}
+
+func dd(q qq) {
+    q.name = &quot;xx&quot;
+}
+
+func cc(q *qq) {
+    q.name = &quot;zz&quot;
+}
+</code></pre>
+
+<p>result</p>
+
+<pre><code>{ori}
+{ori}
+{zz}
+</code></pre>
+
+<h3 id="json-tag-補充">JSON tag 補充</h3>
+
+<pre><code>// 接收跟輸出都會忽略
+Field int `json:&quot;-&quot;`
+
+// Field appears in JSON as key &quot;myName&quot; and the field is omitted from the object if its value is empty, as defined above.
+Field int `json:&quot;myName,omitempty&quot;`
+
+// Field appears in JSON as key &quot;Field&quot; (the default), but the field is skipped if empty.
+Field int `json:&quot;,omitempty&quot;`
+
+type Ticket struct {
+    Places []Place `json:&quot;places&quot;`  // json 傳過來時的 places 也要是陣列
+    Name string `json:&quot;name&quot;`       // 單純接收字串
+    UID string                      // 注意! 即使沒設定 tag, 如果傳進來是 &quot;uid&quot;: &quot;123&quot; 這樣也會 map 得到
+    FriendID string                 // 如果傳進來是 &quot;friend_id&quot;: &quot;123&quot; 這樣 map 不到
+}
+</code></pre>
+
+<h3 id="nested-struct-即使有設-omitempty-也-json-仍會輸出-field-解決方法是指定-pointer-給-struct">Nested struct 即使有設 omitempty 也 json 仍會輸出 <code>&quot;field&quot;: {}</code>, 解決方法是指定 <code>pointer</code> 給 <code>struct</code></h3>
+
+<pre><code>type A struct { Val  L2 `json:&quot;val,omitempty&quot;` }
+type B struct { Val *L2 `json:&quot;val,omitempty&quot;` }        // pointer 是關鍵
+type L2 struct { Val string `json:&quot;val,omitempty&quot;` }
+</code></pre>
+
+<p><code>json.Marshal</code> 輸出 :</p>
+
+<pre><code>a := &amp;A{Val: L2{Val: &quot;&quot;}}   // {&quot;val&quot;:{}}
+a := &amp;A{}                   // {&quot;val&quot;:{}}
+a := &amp;B{}                   // {}
+</code></pre>
+
+<h3 id="避免空的-slice-json-marshal-後為-null">避免空的 slice json marshal 後為 <code>null</code></h3>
+
+<pre><code>var users []map[string]interface{}
+if users == nil {
+    users = make([]map[string]interface{}, 0)
+}
+</code></pre>
+
+<h2 id="import">import</h2>
+
+<h3 id="運作流程">運作流程</h3>
+
+<p>當 import A 時, 會先執行 A 的 init(), 但如果 A 裡面還有 import B, 則會優先執行 B 的 init(),</p>
+
+<p>當 package 的 init() 都執行完後, 才會執行 main 的 init(), 最後才會執行 main()</p>
+
+<h4 id="import-的幾種類型">import 的幾種類型</h4>
+
+<p>1) 正常引入</p>
+
+<pre><code>import(
+    &quot;fmt&quot;
+)
+</code></pre>
+
+<p>這是我們平常最常引入的方法</p>
+
+<p>2) 省略前綴的 package name</p>
+
+<pre><code>import (
+    . &quot;fmt&quot;
+)
+</code></pre>
+
+<p>ex : <code>fmt.Println(&quot;hello world&quot;)</code> 可以省略寫成 <code>Println(&quot;hello world&quot;)</code></p>
+
+<p>3) Alias</p>
+
+<pre><code>import (
+    f &quot;fmt&quot;
+)
+</code></pre>
+
+<p>ex : <code>f.Println(&quot;hello world&quot;)</code></p>
+
+<p>4) 不引用 package 內部函數</p>
+
+<pre><code>import (
+    _ &quot;fmt&quot;
+)
+</code></pre>
+
+<p>當引入這個 package 只會執行它的 init()</p>
+
+<h2 id="套件管理">套件管理</h2>
+
+<h3 id="dep-官方">dep (官方)</h3>
+
+<ul>
+<li><code>dep init</code>: 第一次才會用到, 會產生 Gopkg.toml, Gopkg.lock (不要理它), vendor (安裝好 package)</li>
+<li><code>dep ensure</code>: install, Gopkg.toml 裡面設定的 package. 另外如果要新增套件到 Gopkg.toml 也是用這個指令, 不用指定套件它會自已去掃</li>
+<li><code>dep ensure -update</code>: 升級所有套件到最新的</li>
+<li><code>dep ensure -add github/aaa/bbb@{tag or commit_id}</code>: 新增套件到 Gopkg.toml / Gopkg.lock and vendor</li>
+<li><code>dep status</code>: 顯示你目前的版本跟最新的版本</li>
+<li>升級某個套件版本要改 Gopkg.toml, 再執行 dep ensure</li>
+</ul>
+
+<h3 id="vendor">Vendor</h3>
+
+<p><a href="https://github.com/kardianos/govendor">govendor</a>，用起來挺直覺的，如果使用過 npm 或 gem 的經驗，它的概念是一樣的</p>
+
+<p><a href="https://github.com/kardianos/govendor/wiki/Govendor-CheatSheet">govendor cheat sheet</a></p>
+
+<p>第一次使用</p>
+
+<pre><code>govendor init               # 會產生 vendor/vendor.json, 但裡面是空的
+govendor add +external      # 幫你把目前使用到 GOPATH 套件版本填到 vendor.json，也會產生 github.com, etc. 第三方套件
+</code></pre>
+
+<p>第 N 次使用, 更新 govendor.json</p>
+
+<pre><code>govendor remove +v          # 清空 `vendor.json` 及刪除 `github.com`, .. etc.
+govendor add +external      # 再重加有使用到的套件
+</code></pre>
+
+<p>依據 <code>vendor/vendor.json</code> 使用到的套件從 local 的 <code>GOPATH</code> 加到 <code>vendor/</code>, 如果 local 沒有要先下 <code>go get</code></p>
+
+<pre><code>govendor sync
+</code></pre>
+
+<p>如果 github 某個套件更新了, 想更新 vendor 這個套件</p>
+
+<pre><code>govendor fetch golang.org/x/net/context
+</code></pre>
+
+<h4 id="error-remotes-failed-for"><code>Error: Remotes failed for</code></h4>
+
+<p>如果有個 local repo (private repo) 加不進 <code>vendor/</code> 下</p>
+
+<pre><code>$ govendor sync
+Error: Remotes failed for:
+        Failed for &quot;relog&quot; (failed to ping remote repo): unrecognized import path &quot;relog&quot;
+</code></pre>
+
+<p>直接 <code>add</code> 那個 local repo</p>
+
+<pre><code>govendor add relog
+</code></pre>
+
+<h4 id="升級某一套件版本">升級某一套件版本</h4>
+
+<pre><code>govendor fetch github.com/satori/go.uuid
+</code></pre>
+
+<p>(不要採用, 僅保留)</p>
+
+<ol>
+<li>先從 govendor 移除掉 <code>govendor remove github.com/parnurzeal/gorequest</code></li>
+<li>移除 local 的 <code>github.com/parnurzeal/gorequest</code></li>
+<li><code>go get github.com/parnurzeal/gorequest</code></li>
+<li><code>govendor add +external</code> 更新到 <code>vendor.json</code></li>
+</ol>
+
+<h4 id="不管怎麼重-build-code-一直是舊的">不管怎麼重 build, code 一直是舊的</h4>
+
+<p>有可能你將目前專案加到 <code>vendor/</code> 下了, 把它刪掉, 再重編就可以了</p>
+
+<h2 id="panic-and-recover">Panic and Recover</h2>
+
+<h3 id="攔截並印出-error">攔截並印出 error</h3>
+
+<p>如果不想因為程式發生 <code>index out of range</code> 或由 panic 擲出的 error 導致整個程序強制中止的話可以用 recover 來攔截,
+另外有時候程式的 error message 不夠明確時, 用 recover 有時候可以得到較明確的訊息</p>
+
+<pre><code>defer func() {
+    if e := recover(); e != nil {
+        // e is the interface{} typed-value we passed to panic()
+        fmt.Println(&quot;Whoops: &quot;, e) // Prints &quot;Whoops: boom!&quot;
+    }
+}()
+var qq []string
+fmt.Println(qq[0]) // 或直接用 panic(&quot;boom!&quot;)
+fmt.Println(&quot;This will never be called&quot;)
+</code></pre>
+
+<blockquote>
+<p><code>recover()</code> 要寫在最前面，否則會無法攔截到</p>
+</blockquote>
+
+<h3 id="將-stack-裡的東西印出來">將 stack 裡的東西印出來</h3>
+
+<pre><code>func main() {
+    defer func() {
+        if e := recover(); e != nil {
+            for i := 1; ; i++ {
+                _, file, line, ok := runtime.Caller(i)
+                if !ok {
+                    break
+                }
+                log.Println(fmt.Sprintf(&quot;%s:%d&quot;, file, line))
+            }
+        }
+    }()
+    qq() // :21
+    log.Println(&quot;Done!&quot;)
+}
+
+func qq() {
+    ff() // :26
+}
+
+func ff() {
+    panic(&quot;ff&quot;) // :30
+}
+</code></pre>
+
+<p>Result:</p>
+
+<pre><code>2017/09/20 19:16:22 /usr/local/go/src/runtime/asm_amd64.s:514
+2017/09/20 19:16:22 /usr/local/go/src/runtime/panic.go:489
+2017/09/20 19:16:22 /tmp/qq.go:30
+2017/09/20 19:16:22 /tmp/qq.go:26
+2017/09/20 19:16:22 /tmp/qq.go:21
+2017/09/20 19:16:22 /usr/local/go/src/runtime/proc.go:185
+2017/09/20 19:16:22 /usr/local/go/src/runtime/asm_amd64.s:2197
+</code></pre>
+
+<h2 id="其他">其他</h2>
+
+<h3 id="tag">tag</h3>
+
+<pre><code>type User struct {
+    _    struct{} `type:&quot;structure&quot;`
+    name string   `json:&quot;name-field&quot;`
+    age  int
+}
+
+func main() {
+    user := &amp;User{name: &quot;John Doe The Fourth&quot;, age: 20}
+
+    if field, ok := reflect.TypeOf(user).Elem().FieldByName(&quot;_&quot;); ok {
+        fmt.Println(field.Tag)
+    } else {
+        panic(&quot;Field not found&quot;)
+    }
+
+    if field, ok := reflect.TypeOf(user).Elem().FieldByName(&quot;name&quot;); ok {
+        fmt.Println(field.Tag)
+    } else {
+        panic(&quot;Field not found&quot;)
+    }
+}
+</code></pre>
+
+<p>結果:</p>
+
+<pre><code>type:&quot;structure&quot;
+json:&quot;name-field&quot;
+</code></pre>
+
+<h3 id="runtime">runtime</h3>
+
+<ul>
+<li>The runtime library implements garbage collection, concurrency, stack management, and other critical features of the Go language.</li>
+<li>The Go runtime manages scheduling, garbage collection, and the runtime environment for goroutines.</li>
+</ul>
+
+<h3 id="pointer-guildeline">Pointer guildeline</h3>
+
+<ul>
+<li>struct call func by value 會複製自已一份, 如果 struct 很大的話用 pointer</li>
+<li>如果 func 裡面需要改變本身 struct 的值的話用 pointer</li>
+<li>有些 func 雖然不需要用 pointer, 但為了一致性還是使用 pointer 較好</li>
+<li>Slices, maps and channels are reference types that do not require the extra indirection of an allocation with new</li>
+<li>If the receiver is large, a big struct for instance, it will be much cheaper to use a pointer receiver.</li>
+<li>If some of the methods of the type must have pointer receivers, the rest should too, so the method set is consistent regardless of how the type is used.</li>
+<li>For types such as basic types, slices, and small structs, a value receiver is very cheap so unless the semantics of the method requires a pointer, a value receiver is efficient and clear.</li>
+</ul>
+
+<h3 id="盡量減少在其他子-package-用-var-定義全域變數">盡量減少在其他子 package 用 var 定義全域變數</h3>
+
+<p>多使用全域來定義 <code>struct</code>, <code>func</code>, <code>const</code>，不得以才用 var 定義全域變數；如果有共用的 func 都會用到共同的變數，就用 struct 定義，否則容易產生 Memory Leak 的問題</p>
+
+<h3 id="go-env">go env</h3>
+
+<pre><code>$ go env
+GOARCH=&quot;amd64&quot;
+GOBIN=&quot;&quot;
+GOCHAR=&quot;6&quot;
+GOEXE=&quot;&quot;
+GOHOSTARCH=&quot;amd64&quot;
+GOHOSTOS=&quot;darwin&quot;
+GOOS=&quot;darwin&quot;
+GOPATH=&quot;&quot;
+GORACE=&quot;&quot;
+GOROOT=&quot;/usr/local/go&quot;
+GOTOOLDIR=&quot;/usr/local/go/pkg/tool/darwin_amd64&quot;
+CC=&quot;gcc&quot;
+GOGCCFLAGS=&quot;-g -O2 -fPIC -m64 -pthread -fno-common&quot;
+CGO_ENABLED=&quot;1&quot;
+</code></pre>
+
+<h3 id="show-variable-type">show variable type</h3>
+
+<pre><code>import &quot;reflect&quot;
+fmt.Println(reflect.TypeOf(tst))
+</code></pre>
+
+<h3 id="判斷-interface-是否是-slice">判斷 interface{} 是否是 slice</h3>
+
+<pre><code>if reflect.TypeOf(test[&quot;slice&quot;]).Kind() == reflect.Slice {
+
+}
+</code></pre>
+
+<h3 id="debug">debug</h3>
+
+<p>如同 PHP 的 <code>print_r()</code>, <code>var_dump()</code>, <code>var_export()</code>, 如果型態是 map 它也會把 key value 印出來</p>
+
+<pre><code>fmt.Printf(&quot;%v&quot;, whatever)
+</code></pre>
+
+<p>用上面的不會 struct 的欄位名稱，如果印出 struct 的欄位及值要用 :</p>
+
+<pre><code>fmt.Printf(&quot;%+v&quot;, whatever)
+</code></pre>
+
+<h3 id="string-literals-are-character-sequences">string literals are character sequences</h3>
+
+<pre><code>string(&quot;Hello&quot;[1])                  // ASCII only       e
+string([]rune(&quot;Hello, 世界&quot;)[1])    // UTF-8            e
+string([]rune(&quot;Hello, 世界&quot;)[8])    // UTF-8            界
+</code></pre>
+
+<h3 id="指令">指令</h3>
+
+<ul>
+<li>syntax checking : <code>gofmt -e xx.go</code></li>
+<li>透過傳遞參數的方式改變 main.go 裡面 var 變數 : <code>go build -ldflags '-X main.BUILD_ID=1'</code></li>
+<li>當 <code>go build</code> 時太多 error 時你只會看到幾行然候其他就被省略成 <code>too many errors</code>, 改用 <code>go build -gcflags=&quot;-e&quot;</code> 就可印出全部的 error</li>
+</ul>
+
+<h3 id="在-if-裡面-new-參數無法傳遞到外面">在 if 裡面 new 參數無法傳遞到外面</h3>
+
+<p>裡面有 new</p>
+
+<pre><code>var a bool
+if true {
+    a := true
+    fmt.Println(a)
+}
+fmt.Println(a)
+
+true
+false
+</code></pre>
+
+<p>裡面沒 new</p>
+
+<pre><code>var a bool
+if true {
+    a = true
+    fmt.Println(a)
+}
+fmt.Println(a)
+
+true
+true
+</code></pre>
+
+<h3 id="mysql-null">MySQL NULL</h3>
+
+<p>null</p>
+
+<pre><code>string sql.NullString
+int64 sql.NullInt64
+float64 sql.NullFloat64
+</code></pre>
+
+<p>time 加上 tag</p>
+
+<pre><code>time.Time `sql:&quot;default:null&quot;`
+</code></pre>
+
+<p>或是用指標</p>
+
+<pre><code>string *string
+</code></pre>
+
+<h3 id="for-range-下在傳遞指標-pointer-需要注意">for range 下在傳遞指標(pointer)需要注意</h3>
+
+<pre><code>ii := []int{1, 2, 3}
+dd := map[int]*int{}
+dd2 := map[int]*int{}
+for k, i := range ii {      // 不要使用 for range new 出來的 value, 因為最後都會指向同一個位置
+    dd[k] = &amp;i
+}
+for k, _ := range ii {      // 明確指定記憶體位址
+    dd2[k] = &amp;ii[k]
+}
+fmt.Println(dd)         // map[0:0x41602c 1:0x41602c 2:0x41602c]
+fmt.Println(dd2)        // map[0:0x416020 1:0x416024 2:0x416028]
+</code></pre>
+
+</article>
+
+
+
+</html>

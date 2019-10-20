@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux systemd | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-systemd/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-systemd/">Linux systemd</a></h1>
+    <p class="meta"><time datetime="2018-01-31T21:20:29&#43;08:00">January 31, 2018</time></p>
+  </header>
+  
+
+<h2 id="設定檔">設定檔</h2>
+
+<p><code>/etc/systemd/system/test.service</code>:</p>
+
+<pre><code>[Unit]
+Description=test
+
+[Service]
+User=ec2-user
+ExecStart=/bin/sh -c &quot;/home/ec2-user/my_app/test &gt;&gt; /tmp/test.log 2&gt;&amp;1&quot;
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>其他 <code>[Service]</code> 參數</p>
+
+<pre><code>WorkingDirectory=/home/ec2-user/my_app
+</code></pre>
+
+<blockquote>
+<ul>
+<li>config 權限 <code>root 644</code> 測試沒問題</li>
+<li>WantedBy: directive is the most common way to specify how a unit should be enabled.</li>
+</ul>
+</blockquote>
+
+<h3 id="其他參數">其他參數</h3>
+
+<p>主機啟動時在 network 後才啟動</p>
+
+<pre><code>[Unit]
+After=syslog.target network.target remote-fs.target nss-lookup.target
+</code></pre>
+
+<h2 id="指令">指令</h2>
+
+<p>重讀設定檔(修改後都要執行)</p>
+
+<pre><code>sudo systemctl daemon-reload
+</code></pre>
+
+<p>查看 systemd 執行 log</p>
+
+<pre><code>sudo systemctl status test
+</code></pre>
+
+<p>Enable it to run at boot:</p>
+
+<pre><code>sudo systemctl enable test
+</code></pre>
+
+<p>Start it</p>
+
+<pre><code>sudo systemctl start test
+</code></pre>
+
+<p>Stop it</p>
+
+<pre><code>sudo systemctl stop test
+</code></pre>
+
+<h2 id="log">log</h2>
+
+<h3 id="預設-systemd-log-路徑">預設 systemd log 路徑</h3>
+
+<pre><code>/var/log/syslog
+</code></pre>
+
+<h3 id="將標準輸出指定到指定的路徑">將標準輸出指定到指定的路徑</h3>
+
+<p>解法是拿 shell 包一層, 程式裡面的輸出會輸出到你指定的位置, 但 syslog 就不會有了, 只會剩 systemd 的一些 log</p>
+
+<pre><code>User=ec2-user   (指定 log 的 user)
+ExecStart=/bin/sh -c &quot;/app_path/test &gt;&gt; /tmp/test.log 2&gt;&amp;1&quot;
+</code></pre>
+
+<p>以下的方式是沒有用的</p>
+
+<pre><code>ExecStart=/app_path/test &gt;&gt; /tmp/test.log
+</code></pre>
+
+</article>
+
+
+
+</html>

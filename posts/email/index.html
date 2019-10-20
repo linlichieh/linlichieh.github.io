@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux sendmail | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/email/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/email/">Linux sendmail</a></h1>
+    <p class="meta"><time datetime="2014-07-29T14:48:05&#43;08:00">July 29, 2014</time></p>
+  </header>
+  
+
+<h2 id="sendmail">sendmail</h2>
+
+<p>使用本機寄信的套件</p>
+
+<h3 id="安裝">安裝</h3>
+
+<pre><code>sudo apt-get install sendmail
+</code></pre>
+
+<h3 id="測試">測試</h3>
+
+<pre><code>sendmail xxx@example.com
+Subject: Test from example.com
+Hello~anyone!
+.
+</code></pre>
+
+<h3 id="troubleshootings">Troubleshootings</h3>
+
+<h4 id="如果網站-hostname-有改過-會發現寄信很慢-甚至要一分鐘以上">如果網站 hostname 有改過, 會發現寄信很慢, 甚至要一分鐘以上</h4>
+
+<p>在 <code>/etc/hosts</code> 的 <code>127.0.1.1</code> 加上以下兩個 hostname :</p>
+
+<pre><code>127.0.1.1   ubuntu 106-185-47-26 106-185-47-26.localhost
+</code></pre>
+
+<h4 id="如果-example-com-當作-gmail-的信箱-主機-hostname-又設定成-example-com-的話">如果 example.com 當作 gmail 的信箱, 主機 <code>hostname</code> 又設定成 example.com 的話</h4>
+
+<p>如果寄到</p>
+
+<pre><code>sendmail xxx@example.com
+Subject: Test from example.com
+Hello~anyone!
+.
+</code></pre>
+
+<p>就會得到寄不出信的錯誤</p>
+
+<p><code>/home/jxxx/dead.letter... Saved message in /home/jxxx/dead.letter</code></p>
+
+<p><code>/var/log/mail.log</code> 也會報錯</p>
+
+<pre><code>sm-mta[17354]: s6T7p65B017354: Milter (opendkim): error connecting to filter: Connection refused by localhost
+</code></pre>
+
+<p>會有這樣的訊息, 是因為主機認為是寄到 localhost 的, 所以就不會寄出</p>
+
+<p>解決方法是把 hostname 改掉</p>
+
+<pre><code>echo &quot;newHostname&quot; &gt; /etc/hostname
+hostname -F /etc/hostname
+</code></pre>
+
+<p><code>/etc/hosts</code> 記得也要設對 :</p>
+
+<pre><code>127.0.0.1       localhost
+127.0.1.1       newHostname newHostname.localhost
+</code></pre>
+
+<p>然候就能順利寄信了</p>
+
+<h3 id="如果找不出問題">如果找不出問題</h3>
+
+<p>可以用 sendmail 指令寄信並觀查 <code>/var/log/mail.log</code> 出現什麼</p>
+
+<h2 id="使用-mailgun">使用 mailgun</h2>
+
+<p><a href="https://mailgun.com/">mailgun</a>是一個可以幫你寄送 email 的服務, 你或許不想用本機的寄,</p>
+
+<p>可能考量到容易被當垃圾信或是不希望 server 在寄信時被 block 住,</p>
+
+<p>那麼你可以考慮用 mailgun, 它的好處有 :</p>
+
+<ul>
+<li>建立在 HTTP 協定, 所有 API 都是 RESTful 的, 白話點就是用 curl 就能寄信了</li>
+<li><a href="https://documentation.mailgun.com/libraries.html#libraries">提供主流語言的 library</a>, 使用 Package management 裝完就可以直接用了</li>
+<li>免費 10,000 封 email 幫你寄, <em>不需預綁信用卡</em></li>
+<li>Custom domain</li>
+</ul>
+
+<h3 id="使用自己的-domain">使用自己的 domain</h3>
+
+<p>點選 <code>Add New Domain</code>, 輸入 <code>example.com</code>, 接著以下步驟照著他頁面上的指示設定</p>
+
+<p>登入你的 domain 代管網站 (ex: godaddy), 到 DNS ZONE 那設定</p>
+
+<p>CName (Alias)</p>
+
+<pre><code>Host        Points To
+---------------------
+email       mailgun.org
+</code></pre>
+
+<p>MX (Mail Exchanger)</p>
+
+<pre><code>Priority    Host    Points To
+-----------------------------
+10          @       mxa.mailgun.org
+10          @       mxb.mailgun.org
+</code></pre>
+
+<p>TXT (Text)</p>
+
+<pre><code>Host            TXT Value
+-------------------------
+@               v=spf1 include:mailgun.org ~all
+k1._domainkey   k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcRvHyhPC9tltbqtKqUCNxJ39l5QAqQm7NWipFV40XG4KF2WVm0brd6U360VDng97vzlHBkEBS+chpa11L+grAhxFiGewFYRQ3rATl90eA1NKpGSBlm4yqig0P+fo++1j1EiA2Gn3KllTdPnVrWsRLaPN+***************cKQIDAQAB
+</code></pre>
+
+<p>接下來等 mailgun 那邊都生效就完成了, MX 會稍微比較久一點才會 active</p>
+
+<h3 id="test">Test</h3>
+
+<p><a href="https://documentation.mailgun.com/quickstart-sending.html#send-via-api">使用 CURL 寄信測試</a>, 將以下指令中的這行 <code>-F to=your_email@gmail.com</code> 改成你 gamil 帳號</p>
+
+<pre><code>curl -s --user 'api:key-7******************************5' \
+    https://api.mailgun.net/v3/example.com/messages \
+    -F from='Contact &lt;contact2@example.com&gt;' \
+    -F to=test@gmail.com \
+    -F subject='Hello' \
+    -F text='Testing some Mailgun awesomness!'
+</code></pre>
+
+<p>如果收到以下回覆代表 mailgun 回覆成功, 到 gmail 信箱查看信是否成功收到</p>
+
+<pre><code>{
+  &quot;id&quot;: &quot;&lt;20150520110053.16306.14890@example.com&gt;&quot;,
+  &quot;message&quot;: &quot;Queued. Thank you.&quot;
+}
+</code></pre>
+
+<p>可以到 <code>https://mailgun.com/app/logs/&lt;your domain&gt;</code> 下查看寄信的狀況</p>
+
+<h2 id="將-godaddy-購買的-domain-綁到自己的-gmail">將 GoDaddy 購買的 domain 綁到自己的 Gmail</h2>
+
+<blockquote>
+<p>gmail 必須為企業版, 一個月一個帳號 5 美金</p>
+</blockquote>
+
+<p>1) <a href="https://www.google.com/intx/zh-Hant/work/apps/business/">先到 google apps for work 註冊</a></p>
+
+<p>2) <a href="https://support.google.com/a/answer/33353?hl=zh-Hant">為 GoDaddy 代管的網域建立 MX 記錄</a>, 登入後設定 DNS</p>
+
+<p>在 MX 紀錄那把預設的資料刪除, 加上以下設定</p>
+
+<pre><code>Priority    Host    Points To
+10          @       ASPMX.L.GOOGLE.COM
+20          @       ALT1.ASPMX.L.GOOGLE.COM
+30          @       ALT2.ASPMX.L.GOOGLE.COM
+40          @       ASPMX2.GOOGLEMAIL.COM
+50          @       ASPMX3.GOOGLEMAIL.COM
+</code></pre>
+
+<blockquote>
+<p>如果有用 mailgun 或他服務寄信直接刪掉之前 MX, 新增 Gmail MX 就好了, mailgun 依然可以寄信</p>
+</blockquote>
+
+<h2 id="簡易方式避免被分到垃圾郵件">簡易方式避免被分到垃圾郵件</h2>
+
+<p>1) 使用 Gmail SMTP 寄信, 但一天最多寄 100 封 (Web UI 的話一天是 500 封)</p>
+
+<p>2) 設定 <code>From</code> <code>Reply-To</code>, 並且確認 server 與 domain 是在同一個地方</p>
+
+<pre><code>From: Robot&lt;robot@example.com&gt;
+Reply-To: contact@example.com
+</code></pre>
+
+<h3 id="ref">ref :</h3>
+
+<ul>
+<li><a href="https://support.google.com/a/answer/33353?hl=zh-Hant">GoDaddy MX 紀錄 with Gmail</a></li>
+<li><a href="https://www.youtube.com/watch?v=feWcBIM8uKA">youtube - GoDaddy MX 紀錄 with Gmail</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

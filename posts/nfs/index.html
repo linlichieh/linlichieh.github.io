@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>NFS (Network FileSystem) | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/nfs/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/nfs/">NFS (Network FileSystem)</a></h1>
+    <p class="meta"><time datetime="2013-11-26T15:54:00Z">November 26, 2013</time></p>
+  </header>
+  
+
+<h2 id="分享目錄的-server-安裝及設定">分享目錄的 server 安裝及設定</h2>
+
+<p>server 安裝:</p>
+
+<pre><code>sudo apt-get update
+sudo apt-get install nfs-kernel-server
+</code></pre>
+
+<p>設定 /etc/exports :</p>
+
+<p><strong>建議直接設定<code>*</code>, 在防火牆再限 ip, 不然因為 nfs port 是浮動的不好設定</strong></p>
+
+<pre><code>/my_ugc *(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check)
+/home/me/test *(ro)
+/my_ugc 10.170.189.142(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check)
+/my_ugc 10.170.189.0/24(rw,sync,all_squash,anonuid=1000,anongid=1000,insecure,subtree_check)
+</code></pre>
+
+<blockquote>
+<ul>
+<li><code>*</code> : 代表任意主機</li>
+<li>ro : 唯讀，是預設值</li>
+<li>rw : 允許讀、寫</li>
+<li>sync : 預設值。同步 I/O，也就是在資料異動時，會同步寫入記憶體與磁碟之中</li>
+<li>all_squash : 所有client 端的user 都對應成 nobody(一般設定)</li>
+<li>anonuid : 為 nobody 帳號設 uid</li>
+<li>anongid : 為 nobody 帳號設 gid</li>
+<li>insecure : 允許主機不需認證即可存取</li>
+<li>subtree_check (或 no_subtree_check, 不加上會有 error) : If a subdirectory of a filesystem is exported, but the whole filesystem isn&rsquo;t then whenever a NFS request arrives, the server must check not only that the accessed file is in the appropriate filesystem (which is easy) but also that it is in the exported tree (which is harder)</li>
+<li><a href="http://linux.die.net/man/5/exports">更多官方文件參數說明</a></li>
+</ul>
+</blockquote>
+
+<h2 id="啟動">啟動</h2>
+
+<p>啟動 server</p>
+
+<pre><code>sudo service nfs-kernel-server start
+</code></pre>
+
+<p>查看是否成功啟動</p>
+
+<pre><code>$ showmount -e localhost
+Export list for localhost:
+/my_ugc/cms-me/doc *
+</code></pre>
+
+<blockquote>
+<p>-e or &ndash;exports : Show the NFS server&rsquo;s export list.</p>
+</blockquote>
+
+<h2 id="開啟-nfs-port">開啟 nfs port</h2>
+
+<pre><code>-A INPUT -p tcp -s 10.161.132.121   -m state --state NEW --dport 111  -j ACCEP    // nfs
+-A INPUT -p tcp -s 10.161.132.121   -m state --state NEW --dport 2049  -j ACCEP   // nfs
+</code></pre>
+
+<p>測試 port 是否如預期</p>
+
+<pre><code>$ rpcinfo -p
+   program vers proto   port  service
+    100000    4   tcp    111  portmapper
+    100000    3   tcp    111  portmapper
+    100000    2   udp    111  portmapper
+    100003    2   tcp   2049  nfs
+    100003    4   tcp   2049  nfs
+    100227    2   tcp   2049
+    100227    3   tcp   2049
+    100021    1   udp  51575  nlockmgr
+    100021    3   udp  51575  nlockmgr
+    100021    4   tcp  55701  nlockmgr
+    100005    1   udp  35019  mountd
+    100005    1   tcp  37799  mountd
+</code></pre>
+
+<p>server 開機自動 mount, /etc/fstab:</p>
+
+<pre><code>/dev/xvdb /my_ugc ext4  defaults       0 0
+</code></pre>
+
+<h2 id="client-掛載遠端目錄">client 掛載遠端目錄</h2>
+
+<p>client 安裝:</p>
+
+<pre><code>sudo apt-get install nfs-common
+</code></pre>
+
+<p>mount :</p>
+
+<pre><code>sudo mount devm3:/my_ugc /my_ugc
+</code></pre>
+
+<p>df 查看 :</p>
+
+<pre><code>devm3:/my_ugc 236058624  48626176 175434752  22% /my_ugc
+</code></pre>
+
+<p>client 開機自動掛載, /etc/fstab:</p>
+
+<pre><code>base:/my_ugc /my_ugc nfs rw,soft,nosuid,noexec,nodev,bg,rsize=32768,wsize=32768     0 0
+</code></pre>
+
+<blockquote>
+<ul>
+<li>timeo : specifies the number of seconds to pass before the error is reported.</li>
+<li>intr : Allows NFS requests to be interrupted if the server goes down or cannot be reached.</li>
+<li>rsize=num and wsize=num — These settings speed up NFS communication for reads (rsize) and writes (wsize) by setting a larger data block size, in bytes, to be transferred at one time. Be careful when changing these values; some older Linux kernels and network cards do not work well with larger block sizes. For NFSv2 or NFSv3, the default values for both parameters is set to 8192. For NFSv4, the default values for both parameters is set to 32768.</li>
+</ul>
+</blockquote>
+
+<p>ref :
+<a href="http://bryanw.tk/2012/specify-nfs-ports-ubuntu-linux/">固定 nfs server port</a></p>
+
+</article>
+
+
+
+</html>

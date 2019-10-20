@@ -1,0 +1,3363 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Go Built-in Packages | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/go-built-in-packages/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/go-built-in-packages/">Go Built-in Packages</a></h1>
+    <p class="meta"><time datetime="2014-01-20T13:05:03&#43;08:00">January 20, 2014</time></p>
+  </header>
+  
+
+<h2 id="fmt">fmt</h2>
+
+<h3 id="輸出固定長度">輸出固定長度</h3>
+
+<pre><code>fmt.Printf(&quot;ID : %-10s&quot;, id)    // 十個字元的長度, 向左對齊
+fmt.Printf(&quot;ID : %10s&quot;, id)     // 十個字元的長度, 向右對齊
+fmt.Printf(&quot;ID : %.10s&quot;, id)    // 印出頭十個字元
+fmt.Printf(&quot;%q&quot;, []string{&quot;a&quot;,&quot;b&quot;}) // 印 slice `[&quot;a&quot; &quot;b&quot;]`
+</code></pre>
+
+<h3 id="前面補-0">前面補 0</h3>
+
+<pre><code>fmt.Sprintf(&quot;%02d:%02d&quot;, 5, 3)  // 05:03
+</code></pre>
+
+<h3 id="接收-command-輸入的值">接收 command 輸入的值</h3>
+
+<pre><code>fmt.Print(&quot;Enter a number: &quot;)
+var input float64
+fmt.Scanf(&quot;%f&quot;, &amp;input)
+</code></pre>
+
+<h3 id="印出顏色">印出顏色</h3>
+
+<pre><code>fmt.Println(&quot;\x1b[31;1mHello, World!\x1b[0m&quot;)
+</code></pre>
+
+<h3 id="最簡單的方法-不過有個缺點是它會是-string">最簡單的方法, 不過有個缺點是它會是 string</h3>
+
+<pre><code>fmt.Sprintf(&quot;%.7f&quot;, 123.123456789)                              // 123.1234568
+</code></pre>
+
+<h3 id="不改變本身的型態">不改變本身的型態</h3>
+
+<pre><code>val := 123.123456789
+pow10_n := math.Pow10(7)                                        // 1e7 = 10000000
+d := math.Trunc(val*pow10_n) / pow10_n                          // 123.1234567
+</code></pre>
+
+<h3 id="如果已知位數-可簡化">如果已知位數, 可簡化</h3>
+
+<pre><code>math.Trunc(123.1234567*1e5) / 1e5                               // 123.12345
+</code></pre>
+
+<h3 id="不改變本身的型態且4捨5入">不改變本身的型態且4捨5入</h3>
+
+<pre><code>val := 123.123456789
+pow10_n := math.Pow10(7)
+d := math.Trunc((val+0.5/pow10_n)*pow10_n) / pow10_n            // 123.1234568
+</code></pre>
+
+<h2 id="log">log</h2>
+
+<h3 id="儲存成-file">儲存成 file</h3>
+
+<pre><code>// open a file
+f, err := os.OpenFile(&quot;dev.log&quot;, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+if err != nil {
+    log.Printf(&quot;Create log file error: %v&quot;, err)
+}
+
+// don't forget to close it
+defer f.Close()
+
+// assign it to the standard logger
+log.SetOutput(f)
+
+// 以下的 log 都會進到 log file 裡
+log.Println(&quot;test&quot;)
+log.Println(&quot;testr2&quot;)
+log.Println(&quot;testr3&quot;)
+</code></pre>
+
+<h3 id="將-log-內容暫存在-buffer">將 log 內容暫存在 buffer</h3>
+
+<pre><code>var buf bytes.Buffer
+logger := log.New(&amp;buf, &quot;logger: &quot;, log.Lshortfile)
+logger.Print(&quot;Hello, log file!&quot;)
+
+fmt.Print(&amp;buf)
+</code></pre>
+
+<h3 id="攔截-log-的內容">攔截 log 的內容</h3>
+
+<pre><code>var buf bytes.Buffer
+logger := log.New(&amp;buf, &quot;&quot;, log.Lshortfile)
+go func() {
+    for {
+        if buf.Len() &gt; 0 {
+            fmt.Print(&amp;buf)
+            buf.Reset()
+        }
+    }
+}()
+fmt.Println(0)
+logger.Print(&quot;Hello, log file!1&quot;)
+logger.Print(&quot;Hello, log file!2&quot;)
+logger.Print(&quot;Hello, log file!3&quot;)
+
+dd := make(chan int)
+&lt;-dd
+</code></pre>
+
+<h3 id="寫到-syslog">寫到 syslog</h3>
+
+<pre><code>// Configure logger to write to the syslog. You could do this in init(), too.
+logwriter, e := syslog.New(syslog.LOG_NOTICE, &quot;myprog&quot;)
+if e == nil {
+    log.SetOutput(logwriter)
+}
+
+// Now from anywhere else in your program, you can use this:
+log.Print(&quot;Hello Logs!&quot;)
+</code></pre>
+
+<p><code>/var/log/system.log</code> :</p>
+
+<pre><code>Nov  4 08:19:33 testde-MacBook-Pro myprog[90449]: 2016/11/04 08:19:33 Hello Logs!
+</code></pre>
+
+<h2 id="net">net</h2>
+
+<h3 id="取得本機上的-mac">取得本機上的 Mac</h3>
+
+<pre><code>interfaces, err := net.Interfaces()
+if err != nil {
+    panic(&quot;Poor soul, here is what you got: &quot; + err.Error())
+}
+for _, inter := range interfaces {
+    fmt.Println(inter.Name, inter.HardwareAddr)
+}
+</code></pre>
+
+<h3 id="header-status-etc">header / status / etc.</h3>
+
+<p>header</p>
+
+<pre><code>resp, _ := http.Get(url)
+// &amp;{200 OK 200 HTTP/1.1 1 1 map[Connection:[keep-alive] Server:[nginx] Accept-Ranges:[bytes] Content-Length:[994291] Date:[Sat, 25 Jan 2014 19:13:51 GMT] Etag:[&quot;4e28a21e-f2bf3&quot;] Content-Type:[video/x-flv] Last-Modified:[Thu, 21 Jul 2011 22:03:10 GMT]] 0xf8400c2a00 994291 [] false map[] 0xf8400c0240}
+</code></pre>
+
+<p>Status</p>
+
+<pre><code>resp.Status             // 200 OK
+resp.StatusCode         // 200
+</code></pre>
+
+<p>size</p>
+
+<pre><code>resp.Header.Get(&quot;Content-Length&quot;)
+// 994291
+</code></pre>
+
+<p>body</p>
+
+<pre><code>source, _ := ioutil.ReadAll(resp.Body)
+// source 為 131 239 216 100 96 184 2 221 171 162 131 49 17 33 17 39 152 176 194 18 19 62 40 124 93 230 48 58 9 (..略..)
+</code></pre>
+
+<blockquote>
+<p>len(source) 結果會和 header 的 Content-Length 一樣</p>
+</blockquote>
+
+<h3 id="net-url-解析-url">net/url 解析 URL</h3>
+
+<pre><code>s := &quot;postgres://user:pass@host.com:5432/path?k=v#f&quot;
+u, err := url.Parse(s)
+fmt.Println(u.Scheme)                   // postgres
+fmt.Println(u.User)                     // user:pass
+fmt.Println(u.User.Username())          // user
+p, _ := u.User.Password()
+fmt.Println(p)                          // pass
+fmt.Println(u.Host)                     // host.com:5432
+h := strings.Split(u.Host, &quot;:&quot;)
+fmt.Println(h[0])                       // host.com
+fmt.Println(h[1])                       // 5432
+fmt.Println(u.Path)                     // /path
+fmt.Println(u.Fragment)                 // f
+fmt.Println(u.RawQuery)                 // k=v
+m, _ := url.ParseQuery(u.RawQuery)
+fmt.Println(m)                          // map[k:[v]]
+fmt.Println(m[&quot;k&quot;][0])                  // v
+
+u, _ := url.Parse(&quot;http://www.test.com/xxx.mp3?foo=bar&amp;foo=baz#this_is_fragment&quot;)
+fmt.Println(&quot;full uri:&quot;, u.String())  // full uri: http://www.test.com/xxx.mp3?foo=bar&amp;foo=baz#this_is_fragment
+fmt.Println(&quot;scheme:&quot;, u.Scheme)      // scheme: http
+fmt.Println(&quot;opaque:&quot;, u.Opaque)      // opaque:
+fmt.Println(&quot;Host:&quot;, u.Host)          // Host: www.test.com
+fmt.Println(&quot;Path&quot;, u.Path)           // Path /xxx.mp3
+fmt.Println(&quot;Fragment&quot;, u.Fragment)   // Fragment this_is_fragment
+fmt.Println(&quot;RawQuery&quot;, u.RawQuery)   // RawQuery foo=bar&amp;foo=baz
+fmt.Printf(&quot;query: %#v\n&quot;, u.Query()) // query: url.Values{&quot;foo&quot;:[]string{&quot;bar&quot;, &quot;baz&quot;}}
+</code></pre>
+
+<h3 id="url-組-query">url 組 query</h3>
+
+<pre><code>u, _ := url.Parse(&quot;https://example.com&quot;)
+u.Path += &quot;/api/v1/user/event&quot;
+query := url.Values{}
+query.Add(&quot;a&quot;, &quot;12+3&quot;)
+query.Add(&quot;b&quot;, &quot;4&amp;D&quot;)
+u.RawQuery = query.Encode()
+</code></pre>
+
+<p>output</p>
+
+<pre><code>example.com
+/api/v1/user/event?a=12%2B3&amp;b=4%26D
+a=12%2B3&amp;b=4%26D
+https://example.com/api/v1/user/event?a=12%2B3&amp;b=4%26D
+</code></pre>
+
+<blockquote>
+<p>It Urlencoded automatically.</p>
+</blockquote>
+
+<h3 id="已存在的-url-再新增-query-param">已存在的 url 再新增 query param</h3>
+
+<pre><code>var u *url.URL
+u, _ = url.Parse(&quot;https://example.com/ccccc/ffff.jpg?a=aa&amp;c=cc&quot;)
+q := u.Query()
+q.Set(&quot;q&quot;, &quot;golang&quot;)
+u.RawQuery = q.Encode()
+fmt.Println(u.String())
+</code></pre>
+
+<h3 id="自組-post-body-要-escape">自組 post body 要 escape</h3>
+
+<p>Post body 規則像 url, 要 url encode, 否則 <code>+</code> 等等的符號會被當成是 <code>space</code></p>
+
+<pre><code>body := fmt.Sprintf(&quot;p=%s&amp;iv=%s&quot;, url.QueryEscape(p_64), url.QueryEscape(iv_64))
+</code></pre>
+
+<h3 id="net-http-download-file">net/http Download file</h3>
+
+<pre><code>out, err := os.Create(&quot;output.txt&quot;)
+defer out.Close()
+resp, err := http.Get(&quot;http://example.com/&quot;)
+defer resp.Body.Close()
+n, err := io.Copy(out, resp.Body)
+</code></pre>
+
+<h3 id="只取得-response-的-header">只取得 response 的 Header</h3>
+
+<pre><code>res, _ := http.Head(url)
+maps := res.Header
+</code></pre>
+
+<blockquote>
+<p>它連完線馬上就會斷了，不需要手動關掉</p>
+</blockquote>
+
+<h3 id="get-filename-from-url-path">Get filename from url path</h3>
+
+<pre><code>import (
+    &quot;net/url&quot;
+    &quot;path/filepath&quot;
+)
+
+s := &quot;https://talks.golang.org/2012/splash/appenginegophercolor.jpg&quot;
+u, _ := url.Parse(s)
+fmt.Println(filepath.Base(u.Path))
+</code></pre>
+
+<h3 id="get-method">GET method</h3>
+
+<pre><code>import (
+  &quot;http&quot;
+  &quot;io/ioutil&quot;
+  &quot;os&quot;
+)
+
+response, _, err := http.Get(&quot;http://golang.org/&quot;)
+if err != nil {
+    fmt.Printf(&quot;%s&quot;, err)
+    os.Exit(1)
+} else {
+    defer response.Body.Close()
+    contents, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+        fmt.Printf(&quot;%s&quot;, err)
+        os.Exit(1)
+    }
+    fmt.Printf(&quot;%s\n&quot;, string(contents))
+}
+</code></pre>
+
+<p>ref : <a href="https://gist.github.com/ijt/950790">https://gist.github.com/ijt/950790</a></p>
+
+<h3 id="get-另一種寫法-指定-header">Get 另一種寫法，指定 header</h3>
+
+<pre><code>client := http.Client{
+  Timeout: time.Second * 5,
+}
+req, err := http.NewRequest(&quot;GET&quot;, &quot;http://www.google.com/dd&quot;, nil)
+req.Close = true        // Note !!  避免發生 POST EOF 問題
+req.Header.Set(&quot;Content-Type&quot;, &quot;text/plain&quot;)
+req.Header.Add(&quot;Content-Type&quot;, &quot;text/plain&quot;)
+resp, err := client.Do(req)
+if err != nil {
+    return err.Error()
+}
+defer resp.Body.Close()
+
+if resp.StatusCode != http.StatusOK {
+  err = errors.New(&quot;Server return non-200 status&quot;)
+  return
+}
+contents, _ := ioutil.ReadAll(resp.Body)
+fmt.Println(string(contents))
+return
+</code></pre>
+
+<p>post :</p>
+
+<pre><code>http.NewRequest(&quot;GET&quot;, &quot;http://www.google.com/dd&quot;, strings.NewReader(&quot;name=cjb&quot;))
+</code></pre>
+
+<h3 id="post-form-data-json">Post (form-data / json)</h3>
+
+<pre><code>// New request
+req, err := http.NewRequest(&quot;POST&quot;, c.URL, bytes.NewBuffer([]byte(c.PostData)))
+req.Close = true
+for k, v := range c.Header {
+    req.Header.Set(k, v)
+}
+
+// 根據不同 Post type 加上對應的 header
+switch strings.ToUpper(c.PostType) {
+case &quot;FORM&quot;:
+    req.Header.Set(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;)
+case &quot;JSON&quot;:
+    req.Header.Set(&quot;Content-Type&quot;, &quot;application/json&quot;)
+}
+
+// Send request
+resp, err = client.Do(req)
+if err != nil {
+    return
+}
+defer resp.Body.Close()
+</code></pre>
+
+<h3 id="post-file">Post (file)</h3>
+
+<pre><code>// 模擬 form 的一個 選項, 現在是空的
+bodyBuf := &amp;bytes.Buffer{}
+bodyWriter := multipart.NewWriter(bodyBuf)
+
+// 設定要上傳的檔案到 form 裡
+fileWriter, err := bodyWriter.CreateFormFile(c.FileFieldName, c.FileFieldName)  // 一個是 file name, 一個是 field name, 都用 field name 就好了
+if err != nil {
+    err = errors.New(&quot;Failed to create form file&quot;)
+    return
+}
+
+// 支援 file path 及 file bytes
+var file *os.File
+if c.FilePath != &quot;&quot; {
+    // File path
+    file, err = os.Open(c.FilePath)
+    if err != nil {
+        err = errors.New(&quot;Failed to open &quot; + c.FilePath)
+        return
+    }
+    defer file.Close()
+
+    if _, err = io.Copy(fileWriter, file); err != nil {
+        return
+    }
+} else {
+    // Bytes
+    r := bytes.NewReader(c.Bytes)
+    if _, err = io.Copy(fileWriter, r); err != nil {
+        return
+    }
+}
+
+// 設定其他 form-data 的欄位跟值
+// 它一定要在 bodyWriter.Close() 前, 因為這 close 完畢就是 boundary 的結尾, 有些在實作這功能時看到這個結尾就不會再繼續 parse 接下來 form-data 的欄位了 (Go Echo 上是這樣, 但 php 沒問題)
+for key, val := range c.Params {
+    if err = bodyWriter.WriteField(key, val); err != nil {
+        return
+    }
+}
+
+bodyWriter.Close()
+
+// New request
+req, err := http.NewRequest(&quot;POST&quot;, c.URL, bodyBuf)
+// req.Close = true
+for k, v := range c.Header {
+    req.Header.Set(k, v)
+}
+req.Header.Set(&quot;Content-Type&quot;, bodyWriter.FormDataContentType()) // 取得上傳檔案的 Content-Type 的值, e.g. multipart/form-data; boundary=001e5fc50cf83d32c170bfef235709ba9016b0468c93ad2f108551a9f48c
+
+// Send request
+resp, err = client.Do(req)
+if err != nil {
+    return
+}
+defer resp.Body.Close()
+</code></pre>
+
+<h3 id="http-建立-api">Http 建立 API</h3>
+
+<pre><code>http.HandleFunc(&quot;/&quot;, Index)
+err := http.ListenAndServe(&quot;:5555&quot;, nil)
+if err != nil {
+    log.Fatal(&quot;ListenAndServe: &quot;, err)
+}
+
+func Index(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, string(&quot;index&quot;))
+    // w.Write([]byte(&quot;Time: &quot; + time.Now().Format(time.RFC1123)))
+}
+</code></pre>
+
+<p>也可以改由這樣連線, 先建立 linstener</p>
+
+<pre><code>http.HandleFunc(&quot;/&quot;, Index)
+s := &amp;http.Server{}
+l, err := net.Listen(&quot;tcp&quot;, &quot;:5555&quot;)
+if err != nil {
+    panic(err)
+}
+panic(s.Serve(l))
+</code></pre>
+
+<h3 id="connstate-可以截取-connection-的狀態">ConnState 可以截取 connection 的狀態</h3>
+
+<p>總共有這五種狀態 <code>StateNew</code> <code>StateActive</code> <code>StateIdle</code> <code>StateHijacked</code> <code>StateClosed</code></p>
+
+<pre><code>func main() {
+    http.HandleFunc(&quot;/&quot;, myHandler)
+    s := &amp;http.Server{
+        Addr:           &quot;:8081&quot;,
+        ReadTimeout:    10 * time.Second,
+        WriteTimeout:   10 * time.Second,
+        MaxHeaderBytes: 1 &lt;&lt; 20,
+        ConnState:      ConnStateListener,
+    }
+    panic(s.ListenAndServe())
+}
+
+func ConnStateListener(c net.Conn, cs http.ConnState) {
+    fmt.Printf(&quot;CONN STATE: %v, %v\n&quot;, cs, c)
+    // 如果想要直接結束 connection : c.Close()
+}
+</code></pre>
+
+<p>ref : <a href="http://siddontang.com/2015/01/25/stop-server-gracefully/">http://siddontang.com/2015/01/25/stop-server-gracefully/</a></p>
+
+<h3 id="handle-connection-created-at-27-dec-2013">handle connection (created at 27 Dec 2013)</h3>
+
+<pre><code>ln, err := net.Listen(&quot;tcp&quot;, &quot;:8080&quot;)
+if err != nil {
+    log.Fatal(&quot;Starting error&quot;, err)
+}
+conn, err := ln.Accept() // this blocks until connection or error
+if err != nil {
+    fmt.Println(&quot;Create connection failure!&quot;)
+}
+handleConnection(conn)
+
+func handleConnection(conn net.Conn) {
+    reader := bufio.NewReader(os.Stdin)
+    for {
+        fmt.Print(&quot;Please enter a message : &quot;)
+        str, err := reader.ReadString('\n')
+        if err != nil {
+            break
+        }
+        if str != &quot;&quot; {
+            str := fmt.Sprintf(&quot;HTTP/1.1 200 OK\nContent-Length: %d\nContent-Type: text/html\n\n%s&quot;, len(str) - 1 , str)
+            conn.Close() // shut down the connection
+            break
+        }
+    }
+    bufio.NewReader(os.Stdin).ReadBytes('\n')
+}
+</code></pre>
+
+<h3 id="tcp-example">TCP example</h3>
+
+<p>TCP server</p>
+
+<pre><code>func launchTCPserver() {
+    // Listen for incoming connections.
+    l, err := net.Listen(&quot;tcp&quot;, &quot;:8081&quot;)
+    if err != nil {
+        fmt.Println(&quot;Error listening:&quot;, err.Error())
+        os.Exit(1)
+    }
+    // Close the listener when the application closes.
+    defer l.Close()
+    fmt.Println(&quot;Listening on &quot; + CONN_HOST + &quot;:&quot; + CONN_PORT)
+    for {
+        // Listen for an incoming connection.
+        conn, err := l.Accept()
+        if err != nil {
+            fmt.Println(&quot;Error accepting: &quot;, err.Error())
+            os.Exit(1)
+        }
+        // Handle connections in a new goroutine.
+        go handleRequest(conn)
+    }
+}
+
+// Handles incoming requests.
+func handleRequest(conn net.Conn) {
+    OuterLoop:
+        for {
+            // will listen for message to process ending in newline (\n)
+            message, err := bufio.NewReader(conn).ReadString('\n')
+            switch err {
+            case io.EOF:
+                fmt.Printf(&quot;client disconnected: %v\n&quot;, err)
+                break OuterLoop
+            case nil:
+            default:
+                fmt.Println(err)
+                break OuterLoop
+            }
+            // output message received
+            fmt.Print(&quot;[server] Message Received:&quot;, string(message))
+            // Processing
+            time.Sleep(1 * time.Second)
+            // send new string back to client
+            conn.Write([]byte(string(message) + &quot;\n&quot;))
+        }
+}
+</code></pre>
+
+<p>TCP client</p>
+
+<pre><code>conn, _ := net.Dial(&quot;tcp&quot;, &quot;127.0.0.1:8081&quot;)
+for {
+    // read in input from stdin
+    reader := bufio.NewReader(os.Stdin)
+    fmt.Println(&quot;-----&quot;)
+    fmt.Print(&quot;Text to send: &quot;)
+    text, _ := reader.ReadString('\n')
+    // send to socket
+    fmt.Fprintf(conn, text+&quot;\n&quot;)
+    // listen for reply
+    message, _ := bufio.NewReader(conn).ReadString('\n')
+    fmt.Print(&quot;[Client] Message from server: &quot; + message)
+}
+</code></pre>
+
+<p>or</p>
+
+<pre><code>reply := make([]byte, 1024)
+_, err = conn.Read(reply)
+if err != nil {
+    println(&quot;Write to server failed:&quot;, err.Error())
+}
+fmt.Println(string(reply))
+</code></pre>
+
+<h3 id="api-custom-handler">API Custom Handler</h3>
+
+<pre><code>type timeHandler struct {
+  format string
+}
+
+func (th *timeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+  tm := time.Now().Format(th.format)
+  w.Write([]byte(&quot;The time is: &quot; + tm))
+}
+
+func main() {
+  mux := http.NewServeMux()
+
+  th := &amp;timeHandler{format: time.RFC1123}
+  mux.Handle(&quot;/time&quot;, th)
+
+  log.Println(&quot;Listening...&quot;)
+  http.ListenAndServe(&quot;:3000&quot;, mux)
+}
+</code></pre>
+
+<p>or</p>
+
+<pre><code>func (th *timeHandler) CustomName(w http.ResponseWriter, r *http.Request) {}
+
+mux.HandleFunc(&quot;/time&quot;, th.CustomName)
+</code></pre>
+
+<h3 id="net-http-x509-certificate-signed-by-unknown-authority">net/http - x509: certificate signed by unknown authority</h3>
+
+<p>Post 到一個 https 的 URL 得到 <code>x509: certificate signed by unknown authority</code></p>
+
+<p>會發生這個原因主要是 golang 的 client 端會自動地對 server 傳來的 certificate 做驗證，但因為它是由不知名的 CA 簽發的，所以有 error</p>
+
+<p>網路其中解法之一 : To fix this problem, you must add certificates of &ldquo;COMODO RSA Domain Validation Secure Server CA&rdquo; to your certififcate served from server, also see full report at <a href="https://www.ssllabs.com/ssltest/analyze.html?d=catchchat.catchchatchina.com">https://www.ssllabs.com/ssltest/analyze.html?d=catchchat.catchchatchina.com</a></p>
+
+<p>另一個解法是不要去驗證它</p>
+
+<pre><code>import (&quot;net/http&quot;; &quot;crypto/tls&quot;)
+
+tr := &amp;http.Transport{
+    TLSClientConfig: &amp;tls.Config{InsecureSkipVerify : true},
+}
+client := &amp;http.Client{Transport: tr}
+resp, err := client.Get(&quot;https://someurl:443/)
+</code></pre>
+
+<p>更好的解法是對 server 的 certificate 做驗證, 這邊有點超越我的能力了, <a href="http://studygolang.com/articles/2946">請參考這</a></p>
+
+<h3 id="net-http-client-request-得到-eof-原因">net/http client request 得到 EOF 原因</h3>
+
+<pre><code>Post https://xxxxx.com/wait/: EOF
+</code></pre>
+
+<p>有可能是這個 request 需要比較久的時間，即使你的 http client 的 timeout 設很長，
+也會因為 server timeout 太短先把你踢掉，所以你會得到這個 Error</p>
+
+<h3 id="get-lan-ip">Get lan ip</h3>
+
+<pre><code>func GetLocalIP() string {
+    addrs, err := net.InterfaceAddrs()
+    if err != nil {
+        return &quot;&quot;
+    }
+    for _, address := range addrs {
+        // check the address type and if it is not a loopback the display it
+        if ipnet, ok := address.(*net.IPNet); ok &amp;&amp; !ipnet.IP.IsLoopback() {
+            if ipnet.IP.To4() != nil {
+                return ipnet.IP.String()
+            }
+        }
+    }
+    return &quot;&quot;
+}
+</code></pre>
+
+<h3 id="proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example">Proper way to test CIDR membership of an IP 4 or 6 address example</h3>
+
+<p>ref: <a href="https://www.socketloop.com/tutorials/golang-proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example">https://www.socketloop.com/tutorials/golang-proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example</a></p>
+
+<pre><code>package main
+
+import (
+        &quot;fmt&quot;
+        &quot;net&quot;
+        &quot;os&quot;
+)
+
+func main() {
+        // generate a range of IP version 4 addresses from a Classless Inter-Domain Routing address
+        ipAddress, ipNet, err := net.ParseCIDR(&quot;123.45.67.64/27&quot;)
+
+        if err != nil {
+                fmt.Println(err)
+                os.Exit(1)
+        }
+
+        // generate a range of IPv4 addresses from the CIDR address
+        var ipAddresses []string
+
+        for ipAddress := ipAddress.Mask(ipNet.Mask); ipNet.Contains(ipAddress); inc(ipAddress) {
+                //fmt.Println(ipAddress)
+                ipAddresses = append(ipAddresses, ipAddress.String())
+        }
+
+        // list out the ipAddresses within range
+        for key, ipAddress := range ipAddresses {
+                fmt.Printf(&quot;[%v] %s\n&quot;, key, ipAddress)
+        }
+
+        //test for IP version 4 address for membership
+
+        // WRONG WAY!!
+        fmt.Println(&quot;Contains 123.45.67.69 : &quot;, ipNet.Contains([]byte(&quot;123.45.67.69&quot;)))
+
+        // CORRECT / PROPER WAY!
+        fmt.Println(&quot;Contains 123.45.67.69 : &quot;, ipNet.Contains(net.ParseIP(&quot;123.45.67.69&quot;)))
+
+}
+
+func inc(ip net.IP) {
+        for j := len(ip) - 1; j &gt;= 0; j-- {
+                ip[j]++
+                if ip[j] &gt; 0 {
+                        break
+                }
+        }
+}
+</code></pre>
+
+<p>output :</p>
+
+<pre><code>[0] 123.45.67.64
+[1] 123.45.67.65
+...略...
+[9] 123.45.67.73
+...略...
+[31] 123.45.67.95
+Contains 123.45.67.69 :  false
+Contains 123.45.67.69 :  true
+</code></pre>
+
+<h2 id="io">io</h2>
+
+<p>pipe</p>
+
+<pre><code>pr, pw := io.Pipe()
+go func() {
+    defer pw.Close()
+    for i := 1; i &lt;= 3; i++ {
+        _, err := fmt.Fprintf(pw, &quot;Hello %d\n&quot;, i)
+        if err != nil {
+            panic(err)
+        }
+        time.Sleep(1 * time.Second)
+    }
+}()
+
+_, err := io.Copy(os.Stdout, pr)
+if err != nil {
+    panic(err)
+}
+</code></pre>
+
+<h2 id="io-ioutil-bufio">io/ioutil/bufio</h2>
+
+<h3 id="將下載的資料轉成-io-reader-型態">將下載的資料轉成 io.Reader 型態</h3>
+
+<pre><code>var source io.Reader
+source = resp.Body
+buffer := make([]byte, 1024)
+for {
+    cBytes, _ := source.Read(buffer)
+    (...略...)
+</code></pre>
+
+<p>等同於</p>
+
+<pre><code>buffer := make([]byte, 1024)
+for {
+    cBytes,_ := resp.Body.Read(buffur)
+    (...略...)
+</code></pre>
+
+<h3 id="read-file">Read File</h3>
+
+<pre><code>var img64 []byte
+img64, _ = ioutil.ReadFile(&quot;/home/ubuntu/mygo/src/pushImage/google.png&quot;)
+</code></pre>
+
+<h3 id="read-last-line-of-file-ref-here-https-www-socketloop-com-tutorials-golang-simulate-tail-f-or-read-last-line-from-log-file-example">Read last line of file (ref: <a href="https://www.socketloop.com/tutorials/golang-simulate-tail-f-or-read-last-line-from-log-file-example">here</a>)</h3>
+
+<pre><code>func readLastLine(filename string) {
+    var previousOffset int64 = 0
+
+    file, err := os.Open(filename)
+    if err != nil {
+            panic(err)
+    }
+
+    defer file.Close()
+
+    reader := bufio.NewReader(file)
+
+    // we need to calculate the size of the last line for file.ReadAt(offset) to work
+
+    // NOTE : not a very effective solution as we need to read
+    // the entire file at least for 1 pass :(
+
+    lastLineSize := 0
+
+    for {
+            line, _, err := reader.ReadLine()
+
+            if err == io.EOF {
+                    break
+            }
+
+            lastLineSize = len(line)
+    }
+
+    fileInfo, err := os.Stat(filename)
+
+    // make a buffer size according to the lastLineSize
+    buffer := make([]byte, lastLineSize)
+
+    // +1 to compensate for the initial 0 byte of the line
+    // otherwise, the initial character of the line will be missing
+
+    // instead of reading the whole file into memory, we just read from certain offset
+
+    offset := fileInfo.Size() - int64(lastLineSize+1)
+    numRead, err := file.ReadAt(buffer, offset)
+
+    if previousOffset != offset {
+
+            // print out last line content
+            buffer = buffer[:numRead]
+            fmt.Printf(&quot;%s \n&quot;, buffer)
+
+            previousOffset = offset
+    }
+
+}
+</code></pre>
+
+<h3 id="get-last-modified-time-of-file">Get last-modified time of file</h3>
+
+<pre><code>// Get file list from dir
+files, err := ioutil.ReadDir(&quot;/tmp&quot;)
+if err != nil {
+    return
+}
+
+for _, file := range files {
+    // Skip dir
+    if file.IsDir() {
+        continue
+    }
+
+    fmt.Printf(&quot;%s %s\n&quot;, file.Name(), file.ModTime())
+}
+</code></pre>
+
+<h3 id="line-counter">Line counter</h3>
+
+<pre><code>func lineCounter(r io.Reader) (int, error) {
+    buf := make([]byte, 32*1024)
+    count := 0
+    lineSep := []byte{'\n'}
+
+    for {
+        c, err := r.Read(buf)
+        count += bytes.Count(buf[:c], lineSep)
+
+        switch {
+        case err == io.EOF:
+            return count, nil
+
+        case err != nil:
+            return count, err
+        }
+    }
+}
+
+file, err := os.Open(&quot;/tmp/test.log&quot;)
+if err != nil {
+    return
+}
+defer file.Close()
+count, err := lineCounter(file)
+</code></pre>
+
+<h3 id="有效率的-monitor-file-並取得最新內容-類似-tail-指令">有效率的 monitor file 並取得最新內容 (類似 tail 指令)</h3>
+
+<ol>
+<li>先 new File</li>
+<li>用兩個 int 變數記錄上一次及偵測到檔案變更的位置 (也就是檔案大小, 用 os.Stat 取得)</li>
+<li>使用 fsnotify/fsnotify 偵測變更, 有變更就取最新內容 (用 file.ReadAt 在上一次的位置開始讀取, 讀取的長度用目前的size減上一次size</li>
+</ol>
+
+<p>code:</p>
+
+<pre><code>for {
+        select {
+        case event := &lt;-watcher.Events:
+                if event.Op&amp;fsnotify.Write == fsnotify.Write {
+                        // log.Println(&quot;modified file:&quot;, event.Name)
+                        info, err := file.Stat()
+                        if err != nil {
+                                log.Println(&quot;failed to get file size, err: &quot;, err)
+                                break
+                        }
+                        curr_size = info.Size()
+                        last_line, err := readLastLine(file, prev_size, curr_size)
+                        if err != nil {
+                                log.Println(&quot;failed to get last line, err: &quot;, err)
+                                continue
+                        }
+                        prev_size = curr_size
+                        if last_line != &quot;&quot; {
+                                log.Println(last_line)
+                        }
+                }
+        case err := &lt;-watcher.Errors:
+                log.Println(&quot;error:&quot;, err)
+                return
+        }
+}
+
+func readLastLine(file *os.File, prev int64, curr int64) (last_line string, err error) {
+        // start reading from the end of the file
+        buf := make([]byte, curr-prev)
+        n, err := file.ReadAt(buf, prev)
+        if err != nil &amp;&amp; err != io.EOF {
+                return &quot;&quot;, err
+        }
+        return string(buf[:n]), nil
+}
+</code></pre>
+
+<h2 id="io-read-into-byte-from-another-byte">io - Read into []byte from another []byte</h2>
+
+<p>io.Copy (900MB, 1s)</p>
+
+<pre><code>b2 := bytes.NewBuffer(nil)
+_, err = io.Copy(b2, bytes.NewReader(b))
+if err != nil {
+    panic(err)
+}
+</code></pre>
+
+<p>ioutil.ReadAll (900MB 3s)</p>
+
+<pre><code>b3, err := ioutil.ReadAll(bytes.NewReader(b))
+if err != nil {
+    panic(err)
+}
+</code></pre>
+
+<p>buffer read (900MB, 3s)</p>
+
+<pre><code>buf := make([]byte, 4*1024)
+br := bufio.NewReader(bytes.NewReader(b))
+b2 := bytes.NewBuffer(nil)
+for {
+    n, err := br.Read(buf)
+    if err != nil {
+        if err == io.EOF {
+            break
+        }
+        panic(err)
+    }
+    if n == 0 {
+        break
+    }
+
+    if _, err := b2.Write(buf[:n]); err != nil {
+        panic(err)
+    }
+}
+</code></pre>
+
+<p>buffer pipe read (900MB, 4s)</p>
+
+<pre><code>pr, pw := io.Pipe()
+go func() {
+    defer pw.Close()
+    buf := make([]byte, 4*1024)
+    br := bufio.NewReader(bytes.NewReader(b))
+    for {
+        n, err := br.Read(buf)
+        if err != nil {
+            if err == io.EOF {
+                break
+            }
+            panic(err)
+        }
+        if n == 0 {
+            break
+        }
+
+        if _, err := pw.Write(buf[:n]); err != nil {
+            panic(err)
+        }
+    }
+}()
+
+b2 := bytes.NewBuffer(nil)
+_, err = io.Copy(b2, pr)
+if err != nil {
+    panic(err)
+}
+</code></pre>
+
+<h2 id="string">string</h2>
+
+<h3 id="基本處理">基本處理</h3>
+
+<p>String to Array</p>
+
+<pre><code>strings.Split(&quot;a/b/c&quot;,  &quot;/&quot;)
+</code></pre>
+
+<p>Array to String (join)</p>
+
+<pre><code>s := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+fmt.Println(strings.Join(s, &quot;/&quot;))
+</code></pre>
+
+<h2 id="os">os</h2>
+
+<h3 id="外部參數">外部參數</h3>
+
+<ul>
+<li>command : <code>go run t.go dd</code></li>
+<li>t.go : <code>fmt.Println(os.Args[1])</code></li>
+</ul>
+
+<h3 id="main-main-函數並沒有返回值">&ldquo;main.main&rdquo; 函數並沒有返回值</h3>
+
+<p>如果想返回一個出錯信息，可用系統調用強制退出：</p>
+
+<pre><code>os.Exit(1)
+
+# Stop
+os.Exit(0)
+</code></pre>
+
+<h3 id="檔案-目錄-是否存在">檔案 / 目錄 是否存在</h3>
+
+<p>檔案或目錄是否存在</p>
+
+<pre><code>if _, err := os.Stat(filename); os.IsNotExist(err) {
+    fmt.Printf(&quot;no such file or directory: %s&quot;, filename)
+    return
+}
+</code></pre>
+
+<p>檔案資訊</p>
+
+<pre><code>func GetFileInfo(path string) (isExistent bool, fileInfo os.FileInfo) {
+    fileInfo, err := os.Stat(path)
+    if err != nil {
+        // no such file or dir
+        return false, nil
+    }
+    if fileInfo.IsDir() {
+        // it's a directory
+        return false, nil
+    }
+    // it's a file
+    return true, fileInfo
+}
+</code></pre>
+
+<p>目錄是否存在</p>
+
+<pre><code>func DirExists(path string) (bool) {
+    fileInfo, err := os.Stat(path)
+    if err != nil {
+        // no such file or dir
+        return false
+    }
+    if fileInfo.IsDir() {
+        // it's a directory
+        return true
+    }
+    // it's a file
+    return false
+}
+</code></pre>
+
+<p>檔案是否存在</p>
+
+<pre><code>func FileExists(path string) (bool) {
+    fileInfo, err := os.Stat(path)
+    if err != nil {
+        // no such file or dir
+        return false
+    }
+    if fileInfo.IsDir() {
+        // it's a directory
+        return false
+    }
+    // it's a file
+    return true
+}
+</code></pre>
+
+<p>目前位置</p>
+
+<pre><code>dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+if err != nil {
+        log.Fatal(err)
+}
+fmt.Println(dir)
+</code></pre>
+
+<p>列出指定路徑下的檔案或目錄</p>
+
+<pre><code>files, err := ioutil.ReadDir(&quot;./&quot;)
+if err != nil {
+    log.Fatal(err)
+}
+for _, f := range files {
+        fmt.Println(f.Name())
+}
+</code></pre>
+
+<h3 id="file-指定寫入位置">file - 指定寫入位置</h3>
+
+<pre><code>file, _ := os.OpenFile(&quot;tt&quot;, os.O_RDWR|os.O_APPEND, 0660)
+n, err := file.WriteAt([]byte(&quot;中Start&quot;), 3)
+if err != nil {
+    fmt.Println(err.Error())
+}
+fmt.Println(n)
+</code></pre>
+
+<blockquote>
+<p>返回的 n 是寫入的字節大小, 中文字佔 3 btyes, 英文 1 bytes</p>
+</blockquote>
+
+<p>檔案 tt 寫入後的結果 : <code>^@^@^@中Start</code></p>
+
+<p>其中 <code>^@</code> 為空字元, 共有 3 組 <code>^@</code> 是因為 WriteAt 指定從 3 開始寫入,</p>
+
+<p>但檔案位置是從 0 開始算, 所以會有 3 組 <code>^@</code></p>
+
+<p>寫入改成 <code>n, err := file.WriteAt([]byte(&quot;678&quot;), 6)</code></p>
+
+<p>結果為 : <code>^@^@^@中678rt</code></p>
+
+<blockquote>
+<p>註 : <code>^@</code> 佔 1byte, <code>中</code> 佔 3 bytes</p>
+</blockquote>
+
+<h3 id="create-folder">Create folder</h3>
+
+<pre><code> import (
+   //&quot;fmt&quot;
+   &quot;os&quot;
+   &quot;path/filepath&quot;
+ )
+
+ func main() {
+   // create a TestDir directory on current working directory
+   os.Mkdir(&quot;.&quot; + string(filepath.Separator) + &quot;TestDir&quot;,0777)
+ }
+</code></pre>
+
+<h3 id="在-windows-下執行可執行檔-exe-後視窗停留不關閉">在 windows 下執行可執行檔(.exe)後視窗停留不關閉</h3>
+
+<p>引入 :</p>
+
+<pre><code>import (
+    &quot;bufio&quot;
+    &quot;os&quot;
+)
+</code></pre>
+
+<p>最後一行執行 :</p>
+
+<pre><code>bufio.NewReader(os.Stdin).ReadBytes('\n')
+</code></pre>
+
+<p>當執行 .exe 檔後視窗就不會關閉了</p>
+
+<p>或用另一種寫法</p>
+
+<pre><code>b := make([]byte, 1)
+os.Stdin.Read(b)
+</code></pre>
+
+<h3 id="不同作業系統取得不同-path-separator-slash-斜線">不同作業系統取得不同 path separator (slash, 斜線)</h3>
+
+<pre><code>string(filepath.Separator)
+</code></pre>
+
+<h3 id="progress-bar">progress bar</h3>
+
+<pre><code>package main
+import (
+  &quot;fmt&quot;
+  &quot;strings&quot;
+  &quot;time&quot;
+  &quot;os&quot;
+)
+func main() {
+  for i := 0; i &lt; 50; i++ {
+    time.Sleep(100 * time.Millisecond)
+    h := strings.Repeat(&quot;=&quot;, i) + strings.Repeat(&quot; &quot;, 49-i)
+    fmt.Printf(&quot;\r%.0f%%[%s]&quot;, float64(i)/49*100, h)
+    os.Stdout.Sync()
+  }
+  fmt.Println(&quot;\nAll System Go!&quot;)
+}
+</code></pre>
+
+<h3 id="讓字一個一個-print-出來">讓字一個一個 print 出來</h3>
+
+<pre><code>func main() {
+    text := &quot;Hello World!&quot;
+    printSlowly(text, 200)
+
+    bufio.NewReader(os.Stdin).ReadBytes('\n')
+}
+
+func printSlowly(text string, speed int) {
+    text_rune := []rune(text)
+
+    for i := 0; i &lt; len(text_rune); i++ {
+        time.Sleep(time.Duration(speed) * time.Millisecond)
+        fmt.Printf(&quot;\r%s&quot;, string(text_rune[0:i+1]))
+        os.Stdout.Sync()
+    }
+    fmt.Print(&quot;\n&quot;)
+}
+</code></pre>
+
+<h3 id="os-exec">os/exec</h3>
+
+<h4 id="取得執行中的-binary-路徑">取得執行中的 binary 路徑</h4>
+
+<pre><code>[binary path]
+os.Args[0]                      # /home/apps/go/src/test/test
+
+[dir path]
+filepath.Dir(os.Args[0])        # /home/apps/go/src/test
+</code></pre>
+
+<h4 id="執行外部指令">執行外部指令</h4>
+
+<pre><code>output, err := exec.Command(&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;).Output()
+if err != nil {
+    return &quot;unknown&quot;
+}
+fmt.Println(string(output))
+</code></pre>
+
+<blockquote>
+<p>output 最後會含一個 ascii: <code>10</code> (hex: <code>0A</code>) 的換行字元, 它並不是 <code>\n</code> 字元</p>
+</blockquote>
+
+<h2 id="signal">signal</h2>
+
+<h3 id="接收中止訊號-kill-signal">接收中止訊號(kill signal)</h3>
+
+<p>當程式執行後會停在 <code>&lt;-sigc</code>，如果收到 kill 指令則會繼續往下走</p>
+
+<pre><code>sigc := make(chan os.Signal, 1)
+signal.Notify(sigc, os.Interrupt, os.Kill)
+&lt;-sigc
+log.Println(&quot;Abort!&quot;)
+</code></pre>
+
+<h3 id="發送-signal">發送 signal</h3>
+
+<p>重啟 signal</p>
+
+<pre><code>syscall.Kill(syscall.Getpid(), syscall.SIGHUP)
+</code></pre>
+
+<p>Kill process signal</p>
+
+<pre><code>syscall.Kill(syscall.Getpid(), syscall.SIGTERM)
+</code></pre>
+
+<h3 id="what-would-it-be-if-both-of-main-program-and-sub-program-try-to-capture-the-signals-at-the-same-time">What would it be if both of main program and sub-program try to capture the signals at the same time?</h3>
+
+<p>Both of them will capture that signal at the same time.</p>
+
+<h2 id="time">time</h2>
+
+<p>Datetime</p>
+
+<pre><code>time.Now()                  // 2016-12-29 17:33:23.784617257 +0800 CST
+</code></pre>
+
+<p>Format</p>
+
+<pre><code> time.Now().Format(time.RFC3339)                            // 2017-02-14T06:59:21Z   可以以 string 型態被解到 time.Time 型態
+ time.Now().Local().Format(&quot;2006-01-02 15:04:05 +0800&quot;)     // 2014-06-30 14:23:38 +0800
+ time.Now().Format(&quot;2006-01-02 15:04:05&quot;)                   // 2015-02-03 04:16:54
+ time.Now().String()                                        // 2017-01-10 06:51:14.271079336 +0000 UTC
+ time.Now().UTC().String()                                  // 轉成 UTC+0
+</code></pre>
+
+<p>Timestamp</p>
+
+<pre><code>time.Now().Unix()           // 1483004003
+</code></pre>
+
+<p>Convert timestamp to time</p>
+
+<pre><code>tm := time.Unix(1484032609, 0)
+</code></pre>
+
+<p>Convert string to time</p>
+
+<pre><code>today := &quot;2017-01-10 16:57:28&quot;
+t, err := time.Parse(&quot;2006-01-02 15:04:05&quot;, today)
+</code></pre>
+
+<p>Convert string to time in timezone</p>
+
+<pre><code>// 將指定的時間跟 timezone 轉成 time.Time
+l, _ := time.LoadLocation(&quot;Asia/Taipei&quot;)
+t, _ := time.ParseInLocation(&quot;2006-01-02 15:04:05&quot;, &quot;2019-01-02 17:04:43&quot;, l)
+fmt.Println(t.In(time.UTC).Format(&quot;2006-01-02 15:04:05&quot;)) // 2019-01-02 09:04:43
+fmt.Println(t.In(l).Format(&quot;2006-01-02 15:04:05&quot;))        // 2019-01-02 17:04:43
+</code></pre>
+
+<blockquote>
+<p>UTC: time.LoadLocation(&ldquo;UTC&rdquo;)</p>
+</blockquote>
+
+<p>Convert string to time in RFC3339</p>
+
+<pre><code>ts, err := time.Parse(time.RFC3339, src)
+</code></pre>
+
+<p>Convert time to time in timezone</p>
+
+<pre><code>t := time.Now()
+loc, err := time.LoadLocation(&quot;Asia/Taipei&quot;)
+fmt.Println(t.String())             // 2017-01-10 08:41:19.833220416 +0000 UTC
+fmt.Println(t.In(loc))              // 2017-01-10 16:41:19.833220416 +0800 CST
+fmt.Println(t.In(loc).Format(&quot;2006-01-02 15:04:05&quot;))
+</code></pre>
+
+<p>year, month, day, hour, min, sec</p>
+
+<pre><code>year, month, day := t2.Date()
+fmt.Printf(&quot;Date : [%d]year : [%d]month : [%d]day \n&quot;, year, month, day)
+// Date : [2017]year : [1]month : [10]day
+
+hr, min, sec := t2.Clock()
+fmt.Printf(&quot;Clock : [%d]hour : [%d]minutes : [%d] seconds \n&quot;, hr, min, sec)
+// Clock : [16]hour : [57]minutes : [28] seconds
+</code></pre>
+
+<p>first/last day of month</p>
+
+<pre><code>y, m, _ := time.Now().Date()
+first := time.Date(y, m, 1, 0, 0, 0, 0, loc)
+last := first.AddDate(0, 1, 0).Add(-time.Nanosecond)
+</code></pre>
+
+<h3 id="parse-time-的非預期狀況">Parse time 的非預期狀況</h3>
+
+<pre><code>timeTest := &quot;20:36&quot;
+timezone := &quot;Asia/Tokyo&quot;
+loc, err := time.LoadLocation(timezone)
+if err != nil {
+    log.Fatal(err)
+}
+t, err := time.ParseInLocation(&quot;15:04&quot;, timeTest, loc)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(t.Format(&quot;15:04&quot;))
+fmt.Println(t.UTC().Format(&quot;15:04&quot;))
+</code></pre>
+
+<p>在某些主機會是預期結果</p>
+
+<pre><code>20:36
+11:36
+</code></pre>
+
+<p>某些會是:</p>
+
+<pre><code>20:36
+11:17
+</code></pre>
+
+<p>似乎也不是 go 版本不同的問題, 不知道確切發生的原因, 但如果將指定的時間用完整一點可以解決此問題</p>
+
+<pre><code>timeTest := time.Now().Format(&quot;2006-01-02&quot;) + &quot; &quot; + &quot;20:36&quot;
+timezone := &quot;Asia/Tokyo&quot;
+
+loc, err := time.LoadLocation(timezone)
+if err != nil {
+    log.Fatal(err)
+}
+t, err := time.ParseInLocation(&quot;2006-01-02 15:04&quot;, timeTest, loc)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(t.Format(&quot;15:04&quot;))
+fmt.Println(t.UTC().Format(&quot;15:04&quot;))
+</code></pre>
+
+<h3 id="comapare">Comapare</h3>
+
+<p>After / Before</p>
+
+<pre><code>time1 := &quot;2016-05-15 12:22:00&quot;
+time2 := &quot;2017-05-15 12:22:00&quot;
+t1, err := time.Parse(&quot;2006-01-02 15:04:05&quot;, time1)
+t2, err := time.Parse(&quot;2006-01-02 15:04:05&quot;, time2)
+if err == nil &amp;&amp; t1.Before(t2) {
+    fmt.Println(&quot;true&quot;)
+}
+</code></pre>
+
+<h3 id="延遲">延遲</h3>
+
+<pre><code>time.Sleep(3 * time.Second)
+
+time.Sleep(500 * time.Millisecond)
+
+speed := 500
+time.Sleep(time.Duration(speed) * time.Millisecond)
+</code></pre>
+
+<h3 id="時間相加-相減">時間相加／相減</h3>
+
+<p>兩時間相減</p>
+
+<pre><code>startTime := time.Now()                     // 2014-01-26 18:17:22.185125 +0800 CST
+time.Sleep(3 * time.Second)
+endTime := time.Now()                       // 2014-01-26 18:17:25.186307 +0800 CST
+
+var durationTime time.Duration = endTime.Sub(startTime)
+fmt.Println(durationTime.String())
+</code></pre>
+
+<p>加減(日時秒)</p>
+
+<pre><code>timein := time.Now().Add(time.Hour * time.Duration(1))      // Add 1 hour
+timein := time.Now().Add(time.Minute * time.Duration(1))    // Add 1 minute
+timein := time.Now().Add(time.Second * time.Duration(1))    // Add 1 second
+
+// 減的話一樣是用 Add 但在 Duration 上加上負號
+timein := time.Now().Add(time.Minute * time.Duration(-10))
+
+
+then := time.Now().AddDate(0, 0, 1)     // +1 day
+then := time.Now().AddDate(0, 0, -1)    // -1 day
+then := time.Now().AddDate(1, 1, 0)     // +1 year and 1 month
+</code></pre>
+
+<p>timestamp plus 30 seconds</p>
+
+<pre><code>time.Now().Unix() + 30
+</code></pre>
+
+<p>Week</p>
+
+<pre><code>time.Now().Weekday()            // Tuesday
+int(time.Now().Weekday())       // 2 (Day of the week)
+</code></pre>
+
+<p>相減算時間差</p>
+
+<pre><code>time_start := time.Now()
+// do something
+log.Printf(&quot;elasped time: %s&quot;, time.Since(time_start))
+</code></pre>
+
+<h3 id="3-time-second">3 * time.Second</h3>
+
+<p>如果前面的 int 從 string 轉型，是會噴錯的，要改成 :</p>
+
+<pre><code>time.Duration(params[&quot;idle_timeout&quot;].(int)) * time.Second
+</code></pre>
+
+<h3 id="印出到小數的-timestamp-datetime-e-g-2017-06-28-02-58-46-452-0000-utc">印出到小數的 timestamp/datetime (e.g. <code>2017-06-28 02:58:46.452 +0000 UTC</code>)</h3>
+
+<pre><code>func main() {
+        fmt.Println(unixMilli(time.Unix(0, 123400000)))
+        fmt.Println(unixMilli(time.Unix(0, 123500000)))
+        m := makeTimestampMilli()
+        fmt.Println(m)
+        fmt.Println(time.Unix(m/1e3, (m%1e3)*int64(time.Millisecond)/int64(time.Nanosecond)))
+}
+
+func unixMilli(t time.Time) int64 {
+        return t.Round(time.Millisecond).UnixNano() / (int64(time.Millisecond) / int64(time.Nanosecond))
+}
+
+func makeTimestampMilli() int64 {
+        return unixMilli(time.Now())
+}
+</code></pre>
+
+<p>Result:</p>
+
+<pre><code>123
+124
+1498618861845
+2017-06-28 03:01:01.845 +0000 UTC
+</code></pre>
+
+<p>Timestamp with three decimal places</p>
+
+<pre><code>fmt.Sprintf(&quot;%f&quot;, float64(time.Now().UnixNano())/1000000000) // 1483004003.785
+</code></pre>
+
+<h2 id="math-rand">math/rand</h2>
+
+<h3 id="產生-0-7-每一次產生不一樣的變數">產生 0~7  (每一次產生不一樣的變數)</h3>
+
+<pre><code>rand.Seed(time.Now().UnixNano())
+r := rand.Intn(8)
+</code></pre>
+
+<p>等於</p>
+
+<pre><code>r := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+f := r.Intn(8)
+</code></pre>
+
+<h3 id="產生一串隨機數值-ex-7572000213564998818">產生一串隨機數值 (ex: 7572000213564998818)</h3>
+
+<pre><code>r := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+f := r.Int63()
+</code></pre>
+
+<h3 id="unique-key">Unique key</h3>
+
+<p>32 bytes HEX</p>
+
+<pre><code>key := make([]byte, 16)       // 16 會產生 32 個字元
+_, err := rand.Read(key)
+if err != nil {
+    log.Fatal(err)
+}
+mk := fmt.Sprintf(&quot;%X&quot;, key)  //小寫
+mk := fmt.Sprintf(&quot;%X&quot;, key)  // 大寫
+fmt.Println(mk)
+</code></pre>
+
+<h2 id="sync">sync</h2>
+
+<h3 id="pool-特性">pool 特性</h3>
+
+<ul>
+<li>臨時暫存的 pool (有點像 cache 的感覺)</li>
+<li>GC 會把 pool 清空, 也因為如此, 不要用 pool 來當 connection pool (TCP, DB, Redis, etc.)</li>
+<li>A Pool is safe for use by multiple goroutines simultaneously.</li>
+<li>減少 GC 成本, 提高效能</li>
+<li>a dynamically-sized store of temporary output buffers, 會根據壓力下自已變大縮小</li>
+</ul>
+
+<h3 id="pool-是會被gc的">pool 是會被GC的</h3>
+
+<pre><code>p := &amp;sync.Pool{
+    New: func() interface{} {
+        var i interface{}
+        return i
+    },
+}
+p.Put(1)
+p.Put(2)
+
+a := p.Get()
+b := p.Get()
+p.Put(a)
+p.Put(b)
+fmt.Println(&quot;Before GC:&quot;, a, b) // 1,2
+runtime.GC()
+
+a = p.Get()
+b = p.Get()
+p.Put(a)
+p.Put(b)
+fmt.Println(&quot;After GC: &quot;, a, b) // nil, nil
+</code></pre>
+
+<p>result:</p>
+
+<pre><code>Before GC: 1 2
+After GC:  &lt;nil&gt; &lt;nil&gt;
+</code></pre>
+
+<h3 id="pool-first-in-first-out">Pool (First In, First out)</h3>
+
+<pre><code>var pool sync.Pool
+type Item struct {
+    Order string
+}
+v := pool.Get() // You get nothing if pool is empty.
+if v == nil {
+    v = &amp;Item{Order: &quot;first&quot;}
+}
+pool.Put(v)                      // Put the first item
+pool.Put(&amp;Item{Order: &quot;second&quot;}) // Put the second item
+q := pool.Get()                  // You'll get the first item
+fmt.Println(q.(*Item).Order)     // &quot;first&quot;
+q = pool.Get()                   // You'll get the second item
+fmt.Println(q.(*Item).Order)     // &quot;second&quot;
+</code></pre>
+
+<h3 id="pool-乎不會比較快-或許-example-寫的不夠複雜">Pool 乎不會比較快 (或許 example 寫的不夠複雜)</h3>
+
+<pre><code>// Pool for our struct A
+var pool *sync.Pool
+
+// A dummy struct with a member
+type A struct {
+    Name string
+}
+
+// Func to init pool
+func initPool() {
+    pool = &amp;sync.Pool{
+        New: func() interface{} {
+            return new(A)
+        },
+    }
+}
+
+// Main func
+func main() {
+    count := 100000
+    fmt.Println(&quot;count: &quot;, count)
+
+    // Initializing pool
+    initPool()
+    for i := 1; i &lt; 5; i++ {
+        d := pool.New().(*A)
+        d.Name = &quot;Init00&quot; + strconv.Itoa(i)
+        // fmt.Printf(&quot;%d -&gt; d.Name = %s\n&quot;, i, d.Name)
+        pool.Put(d)
+    }
+    var wg sync.WaitGroup
+    a := time.Now()
+    for i := 0; i &lt; count; i++ {
+        wg.Add(1)
+        go func(i int) {
+            d := pool.Get().(*A)
+            if d.Name == &quot;&quot; {
+                d.Name = &quot;NewXX&quot; + strconv.Itoa(i)
+            } else {
+                d.Name = d.Name + &quot;-&quot; + strconv.Itoa(i)
+            }
+            _ = d
+            // fmt.Printf(&quot;%d -&gt; d.Name = %s\n&quot;, i, d.Name)
+            pool.Put(d)
+            defer wg.Done()
+        }(i)
+    }
+    wg.Wait()
+    fmt.Println(&quot;with pool: &quot;, time.Since(a))
+
+    var wg2 sync.WaitGroup
+    b := time.Now()
+    for i := 0; i &lt; count; i++ {
+        wg2.Add(1)
+        go func(i int) {
+            d := A{Name: &quot;NewXX&quot; + strconv.Itoa(i)}
+            _ = d
+            // fmt.Printf(&quot;%d -&gt; d.Name = %s\n&quot;, i, d.Name)
+            defer wg2.Done()
+        }(i)
+    }
+    wg2.Wait()
+    fmt.Println(&quot;without pool: &quot;, time.Since(b))
+}
+</code></pre>
+
+<p>result:</p>
+
+<pre><code>count:  100000
+with pool:  150.17869ms
+without pool:  40.754878ms
+</code></pre>
+
+<h3 id="sync-waitgroup">Sync WaitGroup</h3>
+
+<p>當同一時間同步做很多事，但希望全部 goroutine 做完事才進行下一步</p>
+
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var wg sync.WaitGroup
+    for q := 0; q &lt; 10; q++ {
+        wg.Add(1)               # flag
+        go func(i int) {
+            fmt.Println(i)
+            defer wg.Done()     # 通報這個 goroutine 做完了
+        }(q)
+    }
+    wg.Wait()                   # 程式會在這裡等全部 goroutine 做完
+}
+</code></pre>
+
+<h3 id="mutex-與-rwmutex-差別">Mutex 與 RWMutex 差別</h3>
+
+<p>Mutex</p>
+
+<ul>
+<li>A global lock.</li>
+<li>It only allows one R or W at once.</li>
+</ul>
+
+<p>RWMutex</p>
+
+<ul>
+<li>The lock can be held by an arbitrary number of readers or a single writer. The zero value for a RWMutex is an unlocked mutex.</li>
+<li>Readers don&rsquo;t have to wait for each other. They only have to wait for writers holding the lock.</li>
+<li>Preferable for data that is mostly read.</li>
+<li>There is no <code>WLock()</code>; instead, use <code>Lock()</code>, but it does have <code>RLock()</code></li>
+</ul>
+
+<h3 id="mutex">Mutex</h3>
+
+<pre><code>a := 0
+var wg sync.WaitGroup
+for i := 0; i &lt; 10000; i++ {
+    wg.Add(1)
+    go func() {
+        a++
+        defer wg.Done()
+    }()
+}
+wg.Wait()
+fmt.Printf(&quot;a = %d\n&quot;, a)     // a = 9222  &lt; 10000 because of race condition
+</code></pre>
+
+<p>use <code>-race</code> to verify</p>
+
+<pre><code> ==================
+WARNING: DATA RACE
+Read at 0x00c420084008 by goroutine 7:
+  main.main.func1()
+      /tmp/mutex.go:17 +0x3f
+
+Previous write at 0x00c420084008 by goroutine 6:
+  main.main.func1()
+      /tmp/mutex.go:17 +0x58
+
+Goroutine 7 (running) created at:
+  main.main()
+      /tmp/mutex.go:15 +0xfb
+
+Goroutine 6 (finished) created at:
+  main.main()
+      /tmp/mutex.go:15 +0xfb
+==================
+a = 9978
+Found 1 data race(s)
+exit status 66
+</code></pre>
+
+<p>use lock</p>
+
+<pre><code>a := 0
+var wg sync.WaitGroup
+var l sync.Mutex
+for i := 0; i &lt; 10000; i++ {
+    wg.Add(1)
+    go func() {
+        l.Lock()
+        a++
+        l.Unlock()
+        defer wg.Done()
+    }()
+}
+wg.Wait()
+fmt.Printf(&quot;a = %d\n&quot;, a)      // a = 10000
+</code></pre>
+
+<h3 id="sync-atomic">sync/atomic</h3>
+
+<pre><code>var atomicCounter uint64
+var safeCounter int64
+var unsafeCounter int64
+var l sync.Mutex
+
+for i := 0; i &lt; 5000; i++ {
+    go func() {
+        atomic.AddUint64(&amp;atomicCounter, 1)
+    }()
+    go func() {
+
+        unsafeCounter++
+    }()
+    go func() {
+        l.Lock()
+        defer l.Unlock()
+        safeCounter++
+    }()
+}
+
+time.Sleep(time.Second)
+
+fmt.Println(&quot;atomic counter:&quot;, atomic.LoadUint64(&amp;atomicCounter))
+fmt.Println(&quot;unsafe counter:&quot;, unsafeCounter)
+fmt.Println(&quot;safe counter:&quot;, safeCounter)
+</code></pre>
+
+<p>output:</p>
+
+<pre><code>atomic counter: 5000
+unsafe counter: 4924
+safe counter: 5000
+</code></pre>
+
+<h2 id="encoding">encoding</h2>
+
+<h3 id="組出-soap">組出 SOAP</h3>
+
+<pre><code>package main
+
+import &quot;fmt&quot;
+import &quot;encoding/xml&quot;
+
+type MyRespEnvelope struct {
+    XMLName xml.Name
+    Body    Body
+}
+
+type Body struct {
+    XMLName     xml.Name
+    GetResponse completeResponse `xml:&quot;activationPack_completeResponse&quot;`
+}
+
+type completeResponse struct {
+    XMLName xml.Name `xml:&quot;activationPack_completeResponse&quot;`
+    Id      string   `xml:&quot;Id,attr&quot;`
+    MyVar   string   `xml:&quot;activationPack_completeResult&quot;`
+}
+
+func main() {
+
+    Soap := []byte(`&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+                    &lt;soap:Envelope SOAP-ENV:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot; xmlns:SOAP-ENV=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:SOAP-ENC=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;
+                    &lt;soap:Body&gt;
+                    &lt;activationPack_completeResponse Id=&quot;http://tempuri.org/&quot;&gt;
+                    &lt;activationPack_completeResult xsi:type=&quot;xsd:string&quot;&gt;Active&lt;/activationPack_completeResult&gt;
+                    &lt;/activationPack_completeResponse&gt;
+                    &lt;/soap:Body&gt;
+                    &lt;/soap:Envelope&gt;`)
+
+    res := &amp;MyRespEnvelope{}
+    if err := xml.Unmarshal(Soap, res); err != nil {
+        fmt.Println(err.Error())
+    }
+
+    var val completeResponse = res.Body.GetResponse
+    fmt.Println(val.MyVar)
+}
+</code></pre>
+
+<p>ref : <a href="http://play.golang.org/p/957GWzfdvN">http://play.golang.org/p/957GWzfdvN</a></p>
+
+<h3 id="parse-xml-into-struct">Parse xml into struct</h3>
+
+<p>Person.xml :</p>
+
+<pre><code>&lt;Person&gt;
+    &lt;FullName&gt;Grace R. Emlin&lt;/FullName&gt;
+    &lt;Company&gt;Example Inc.&lt;/Company&gt;
+    &lt;Email where=&quot;home&quot;&gt;
+        &lt;Addr&gt;gre@example.com&lt;/Addr&gt;
+    &lt;/Email&gt;
+    &lt;Email where='work'&gt;
+        &lt;Addr&gt;gre@work.com&lt;/Addr&gt;
+    &lt;/Email&gt;
+    &lt;Group&gt;
+        &lt;Value&gt;Friends&lt;/Value&gt;
+        &lt;Value&gt;Squash&lt;/Value&gt;
+    &lt;/Group&gt;
+    &lt;City&gt;Hanga Roa&lt;/City&gt;
+    &lt;State&gt;Easter Island&lt;/State&gt;
+&lt;/Person&gt;
+</code></pre>
+
+<p>code :</p>
+
+<pre><code>package main
+
+import (
+    &quot;encoding/xml&quot;
+    &quot;fmt&quot;
+    &quot;io/ioutil&quot;
+    &quot;os&quot;
+)
+
+type Email struct {
+    Where string `xml:&quot;where,attr&quot;`
+    Addr  string
+}
+
+type Address struct {
+    City, State string
+}
+
+type Result struct {
+    XMLName xml.Name `xml:&quot;Person&quot;`
+    Name    string   `xml:&quot;FullName&quot;`
+    Phone   string
+    Email   []Email
+    Groups  []string `xml:&quot;Group&gt;Value&quot;`
+    Address
+}
+
+func main() {
+
+    var v Result
+    xmlFile1, err := ioutil.ReadFile(&quot;Person.xml&quot;)
+    if err != nil {
+        fmt.Println(&quot;Error opening file: &quot;, err)
+        return
+    }
+
+    err1 := xml.Unmarshal(xmlFile1, &amp;v)
+    if err1 != nil {
+        fmt.Printf(&quot;error: %v&quot;, err)
+        return
+    }
+    fmt.Println(v)
+
+    // 用 streaming 形式解析, 較容易處理大數據的 xml
+    xmlFile, err := os.Open(&quot;Person.xml&quot;)
+    if err != nil {
+        fmt.Println(&quot;Error opening file: &quot;, err)
+        return
+    }
+    defer xmlFile.Close()
+    decoder := xml.NewDecoder(xmlFile)
+    for {
+        t, _ := decoder.Token()
+        if t == nil {
+            break
+        }
+        switch se := t.(type) {
+        case xml.StartElement:
+            if se.Name.Local == &quot;Person&quot; {
+                var d Result
+                decoder.DecodeElement(&amp;d, &amp;se)
+                fmt.Println(d)
+            }
+        }
+    }
+
+    fmt.Println(v.XMLName)
+    fmt.Printf(&quot;Name=%s \n&quot;, v.Name)
+    fmt.Printf(&quot;Where=%s   Addr=%s  \n&quot;, v.Email[0].Where, v.Email[0].Addr)
+    fmt.Printf(&quot;Where=%s   Addr=%s  \n&quot;, v.Email[1].Where, v.Email[1].Addr)
+    fmt.Printf(&quot;Groups : %s,  %s\n&quot;, v.Groups[0], v.Groups[1])
+    fmt.Printf(&quot;City=%s,  State=%s  \n&quot;, v.Address.City, v.Address.State)
+}
+</code></pre>
+
+<p>ref : <a href="http://www.cnblogs.com/yuanershi/archive/2013/01/29/2881192.html">http://www.cnblogs.com/yuanershi/archive/2013/01/29/2881192.html</a></p>
+
+<h3 id="parse-xml-into-map-clbanning-mxj-github-com-clbanning-mxj"><a href="github.com/clbanning/mxj">Parse xml into map - clbanning/mxj</a></h3>
+
+<pre><code>var xml = `
+    &lt;Person&gt;
+        &lt;FullName&gt;Grace R. Emlin&lt;/FullName&gt;
+        &lt;Company&gt;Example Inc.&lt;/Company&gt;
+        &lt;Email where=&quot;home&quot;&gt;
+            &lt;Addr&gt;gre@example.com&lt;/Addr&gt;
+        &lt;/Email&gt;
+        &lt;Email where='work'&gt;
+            &lt;Addr&gt;gre@work.com&lt;/Addr&gt;
+        &lt;/Email&gt;
+        &lt;Group&gt;
+            &lt;Value&gt;Friends&lt;/Value&gt;
+            &lt;Value&gt;Squash&lt;/Value&gt;
+        &lt;/Group&gt;
+        &lt;City&gt;Hanga Roa&lt;/City&gt;
+        &lt;State&gt;Easter Island&lt;/State&gt;
+    &lt;/Person&gt;`
+res, err := mxj.NewMapXml([]byte(xml))
+if err != nil {
+    fmt.Println(err)
+}
+fmt.Println(res)
+fmt.Println(res[&quot;Person&quot;].(interface{}).(map[string]interface{})[&quot;FullName&quot;])
+fmt.Println(res[&quot;Person&quot;].(interface{}).(map[string]interface{})[&quot;Email&quot;].([]interface{})[1].(map[string]interface{})[&quot;Addr&quot;])
+</code></pre>
+
+<p>result :</p>
+
+<pre><code>map[Person:map[FullName:Grace R. Emlin Company:Example Inc. Email:[map[-where:home Addr:gre@example.com] map[Addr:gre@work.com -where:work]] Group:map[Value:[Friends Squash]] City:Hanga Roa State:Easter Island]]
+Grace R. Emlin
+gre@work.com
+</code></pre>
+
+<h3 id="parse-json-struct-map">Parse json (struct, map)</h3>
+
+<p>方法1 : Json 放進預先定義好的 Struct 裡</p>
+
+<pre><code>type Test struct {
+    JsonTag string `json:&quot;field1&quot;` // 利用 Tag mapping 到欄位名稱
+    Field2  []struct {
+        SubField1 string
+        SubField2 string
+    }
+}
+
+res := &amp;Test{}
+if err := json.Unmarshal([]byte(jsonString), res); err != nil {
+    fmt.Println(err)
+}
+fmt.Println(res.JsonTag)
+fmt.Println(res.Field2[0].SubField1)
+fmt.Println(res.Field2[1].SubField2)
+</code></pre>
+
+<p>方法2 : 以 map 方式將 json 讀進來</p>
+
+<pre><code>var res2 map[string]interface{}
+if err := json.Unmarshal([]byte(jsonString), &amp;res2); err != nil {
+    fmt.Println(err)
+}
+fmt.Println(res2[&quot;field1&quot;])
+fmt.Println(res2[&quot;field2&quot;].([]interface{})[0].(map[string]interface{})[&quot;subField1&quot;])
+fmt.Println(res2[&quot;field2&quot;].([]interface{})[1].(map[string]interface{})[&quot;subField2&quot;])
+</code></pre>
+
+<h3 id="json-unmarshal-預設數字讓它是-int64-而不是-float64">json unmarshal 預設數字讓它是 int64 而不是 float64</h3>
+
+<p>json 字串裡面有 <code>&quot;visible_at&quot;:1483079819</code>，但 unmarshal 完 int 變成 <code>1.483079819e+09</code></p>
+
+<p>解決方法 :</p>
+
+<pre><code>var data = `{
+    &quot;id&quot;: 12423434,
+    &quot;Name&quot;: &quot;Fernando&quot;
+}`
+d := json.NewDecoder(strings.NewReader(data))
+d.UseNumber()
+var x interface{}
+if err := d.Decode(&amp;x); err != nil {
+    log.Fatal(err)
+}
+fmt.Printf(&quot;decoded to %#v\n&quot;, x)
+</code></pre>
+
+<h3 id="base64-加解密">base64 加解密</h3>
+
+<pre><code>data := &quot;abc123!?$*&amp;()'-=@~&quot;
+
+sEnc := b64.StdEncoding.EncodeToString([]byte(data))
+fmt.Println(sEnc)           # YWJjMTIzIT8kKiYoKSctPUB+
+
+sDec, _ := b64.StdEncoding.DecodeString(sEnc)
+fmt.Println(string(sDec))   # abc123!?$*&amp;()'-=@~
+</code></pre>
+
+<p>POST base64 with form-data</p>
+
+<pre><code>body := fmt.Sprintf(&quot;p=%s&amp;iv=%s&quot;, url.QueryEscape(crypt.Base64Encode(p_bytes)), url.QueryEscape(crypt.Base64Encode(iv_bytes)))
+</code></pre>
+
+<h3 id="json-marshal-不要-escape-某些字元">json.Marshal 不要 escape 某些字元</h3>
+
+<p>當欄位裡面有 url 時，json marshal 會自動地將某些字元(e.g. <code>&amp;</code>) escape 為 <code>\\u0026</code>，為了避免此情形改用 :</p>
+
+<pre><code>type Search struct {
+        Query string `json:&quot;query&quot;`
+}
+data := &amp;Search{Query: &quot;http://google.com/?q=stackoverflow&amp;ie=UTF-8&quot;}
+buf := new(bytes.Buffer)
+enc := json.NewEncoder(buf)
+enc.SetEscapeHTML(false)
+err = enc.Encode(data)
+fmt.Println(string(buf.Bytes()))            // 注意 Encode 會在字尾加上 `\n`
+
+[output]
+    {&quot;query&quot;:&quot;http://google.com/?q=stackoverflow&amp;ie=UTF-8&quot;}
+</code></pre>
+
+<p>或用取代的方式將被脫逸的符號還原</p>
+
+<pre><code>b, err := json.Marshal(v)
+b = bytes.Replace(b, []byte(&quot;\\u003c&quot;), []byte(&quot;&lt;&quot;), -1)
+b = bytes.Replace(b, []byte(&quot;\\u003e&quot;), []byte(&quot;&gt;&quot;), -1)
+b = bytes.Replace(b, []byte(&quot;\\u0026&quot;), []byte(&quot;&amp;&quot;), -1)
+</code></pre>
+
+<h2 id="crypto">crypto</h2>
+
+<h3 id="md5">md5</h3>
+
+<pre><code>h := md5.New()
+io.WriteString(h, &quot;Hello World!&quot;)
+fmt.Printf(&quot;%x&quot;, h.Sum(nil))
+
+hasher := md5.New()
+hasher.Write([]byte(&quot;test&quot;))
+fmt.Println(hex.EncodeToString(hasher.Sum(nil)))
+
+h := md5.Sum([]byte(&quot;test&quot;))
+fmt.Println(hex.EncodeToString(h[:]))
+</code></pre>
+
+<h3 id="sha256">sha256</h3>
+
+<p>方法1</p>
+
+<pre><code>hash := sha256.New()
+hash.Write([]byte(&quot;test&quot;))
+b := hash.Sum(nil)  // byte
+fmt.Println(hex.EncodeToString(b[:]))
+</code></pre>
+
+<p>方法2</p>
+
+<pre><code>b := sha256.Sum256([]byte(&quot;test&quot;))
+fmt.Println(hex.EncodeToString(b[:]))
+</code></pre>
+
+<h3 id="aes-cbc-encrypt">AES CBC encrypt</h3>
+
+<pre><code>plaintext 必須為 aes.Blocksize (16) 的倍數
+
+
+import (
+    &quot;crypto/aes&quot;
+    &quot;crypto/cipher&quot;
+    &quot;crypto/rand&quot;
+    &quot;encoding/base64&quot;
+    &quot;fmt&quot;
+    &quot;io&quot;
+)
+
+func main() {
+    key := []byte(&quot;1234567890123456&quot;)
+    plaintext := pad([]byte(&quot;secret data12345&quot;))
+
+    if len(plaintext)%aes.BlockSize != 0 {
+        panic(&quot;plaintext is not a multiple of the block size&quot;)
+    }
+
+    block, err := aes.NewCipher(key)
+    if err != nil {
+        panic(err)
+    }
+
+    ciphertext := make([]byte, aes.BlockSize+len(plaintext))
+    iv := ciphertext[:aes.BlockSize]
+    if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+        panic(err)
+    }
+
+    mode := cipher.NewCBCEncrypter(block, iv)
+    mode.CryptBlocks(ciphertext[aes.BlockSize:], plaintext)
+    fmt.Println(base64.StdEncoding.EncodeToString(iv))              // iv base64: VGnqCX2VQonnNUL/Hlmk1w==
+    fmt.Println(base64.StdEncoding.EncodeToString(ciphertext[16:])) // encrypt base64: 5ThQKq6RnAiGsLHU/BWm7A==
+}
+
+// plaintext 無法被 aes.Blocksize (16) 要先補位數湊滿
+func pad(in []byte) []byte {
+    padding := aes.BlockSize - (len(in) % aes.BlockSize)
+    if padding == 0 {
+        padding = aes.BlockSize
+    }
+    for i := 0; i &lt; padding; i++ {
+        in = append(in, byte(padding))
+    }
+    return in
+}
+</code></pre>
+
+<p>另種寫法</p>
+
+<pre><code>text := []byte(`secret data12345`)
+sharekey := []byte(`1234567890123456`)
+block, err := aes.NewCipher(sharekey)
+if err != nil {
+    panic(errors.New(&quot;AESEncrypt Create Cipher error: &quot; + err.Error()))
+}
+
+paddingText := pad(text, block.BlockSize())
+iv := make([]byte, aes.BlockSize)
+if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+    panic(err)
+}
+
+mode := cipher.NewCBCEncrypter(block, iv)
+mode.CryptBlocks(paddingText, paddingText)
+fmt.Println(base64.StdEncoding.EncodeToString(iv))
+fmt.Println(base64.StdEncoding.EncodeToString(paddingText))
+
+// 補滿 16 位
+func pad(src []byte, blocksize int) []byte {
+    pdSize := blocksize - (len(src) % blocksize)
+    padBytes := bytes.Repeat([]byte{0x00}, pdSize)
+    src = append(src, padBytes...)
+    return src
+}
+</code></pre>
+
+<h3 id="aes-cbc-decrypt">AES CBC decrypt</h3>
+
+<pre><code>import (
+    &quot;crypto/aes&quot;
+    &quot;crypto/cipher&quot;
+    &quot;encoding/base64&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    key := []byte(&quot;1234567890123456&quot;)
+    iv, _ := base64.StdEncoding.DecodeString(&quot;7/JbVL/5cMvqf9sslD6qdQ==&quot;)                // iv base64
+    ciphertext, _ := base64.StdEncoding.DecodeString(&quot;6AFagV3iLEAqbBuSqvL19Q==&quot;)        // encrypt base64
+
+    block, _ := aes.NewCipher(key)
+    if len(ciphertext) &lt; aes.BlockSize {
+        panic(&quot;ciphertext too short&quot;)
+    }
+    if len(ciphertext)%aes.BlockSize != 0 {
+        panic(&quot;ciphertext is not a multiple of the block size&quot;)
+    }
+    aes := cipher.NewCBCDecrypter(block, iv)
+    aes.CryptBlocks(ciphertext, ciphertext)
+    fmt.Printf(&quot;%s\n&quot;, ciphertext)
+}
+</code></pre>
+
+<h3 id="aes-decrypt-string-相同-同長度及-byte-不同-invalid-character-x00-after-top-level-value">AES Decrypt - String 相同, 同長度及 byte 不同 <code>invalid character '\x00' after top-level value</code></h3>
+
+<p>可能是 AES 加解密後發生的情況，可能在過程中被塞入 padding, 導致解出來後的 byte 數量不一樣</p>
+
+<p>加密前 :</p>
+
+<pre><code>2561953d9ec389715498d44b0c150fec
+len = 32
+[50 53 54 49 57 53 51 100 57 101 99 51 56 57 55 49 53 52 57 56 100 52 52 98 48 99 49 53 48 102 101 99]
+</code></pre>
+
+<p>加密後 :</p>
+
+<pre><code>len = 48
+[50 53 54 49 57 53 51 100 57 101 99 51 56 57 55 49 53 52 57 56 100 52 52 98 48 99 49 53 48 102 101 99 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+</code></pre>
+
+<p>ASCII 對應</p>
+
+<pre><code>50 =&gt; 2
+99 =&gt; c
+0 =&gt; 空字元（Null）
+</code></pre>
+
+<p>解決方法: 將多餘的 <code>\x00</code> 刪除</p>
+
+<pre><code>b = bytes.Trim(b, &quot;\x00&quot;)
+</code></pre>
+
+<p>ref: <a href="http://stackoverflow.com/questions/35953436/golang-why-arent-these-two-strings-equal">類似問題</a></p>
+
+<h3 id="uuid-crypto-rand">UUID (crypto/rand)</h3>
+
+<pre><code>// 一般
+uuid := make([]byte, 16)
+io.ReadFull(rand.Reader, uuid)
+
+// 64 encode
+uuid := Gen()
+ret := base64.URLEncoding.EncodeToString(uuid)
+ret = strings.Replace(ret, &quot;=&quot;, &quot;&quot;, -1)
+
+import uuid &quot;github.com/satori/go.uuid&quot;
+uuid.NewV4()
+</code></pre>
+
+<h2 id="defer">defer</h2>
+
+<h3 id="關於-defer-如何運作">關於 defer 如何運作</h3>
+
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    defer Function3()
+    Function1()
+}
+
+func Function1() {
+    fmt.Println(&quot;Function1 開始&quot;)
+    defer Function2()
+    fmt.Println(&quot;Function1 結束&quot;)
+}
+
+func Function2() {
+    fmt.Println(&quot;Function 2&quot;)
+}
+
+func Function3() {
+    fmt.Println(&quot;Function 3&quot;)
+}
+
+
+執行結果 :
+
+Function1 開始
+Function1 結束
+Function 2
+Function 3
+</code></pre>
+
+<p>ref : <a href="http://ithelp.ithome.com.tw/question/10153473">http://ithelp.ithome.com.tw/question/10153473</a></p>
+
+<h2 id="error">error</h2>
+
+<h3 id="擲出自定義錯誤訊息">擲出自定義錯誤訊息</h3>
+
+<pre><code>err = errors.New(&quot;fail&quot;)
+</code></pre>
+
+<h3 id="比對-error">比對 error</h3>
+
+<p>在另一個 package 用全域變數定義</p>
+
+<pre><code>package fruits
+
+var NoMorePumpkins = errors.New(&quot;No more pumpkins&quot;)
+</code></pre>
+
+<p>就可以比對了</p>
+
+<pre><code>package shop
+
+if err == fruits.NoMorePumpkins {
+     ...
+}
+</code></pre>
+
+<h2 id="runtime">runtime</h2>
+
+<h3 id="detect-os">detect OS</h3>
+
+<pre><code>switch runtime.GOOS {
+    case &quot;windows&quot;:
+    case &quot;darwin&quot;:       //Mac OS
+    case &quot;linux&quot;:
+    default :
+}
+</code></pre>
+
+<h3 id="記憶體使用量">記憶體使用量</h3>
+
+<pre><code>var m0 runtime.MemStats
+runtime.ReadMemStats(&amp;m0)
+fmt.Printf(&quot;Memory: %.2f mb&quot;, float64(m0.Sys)/1024/1024)
+</code></pre>
+
+<h2 id="cpu-usage-沒用到-runtime-package">Cpu Usage (沒用到 runtime package)</h2>
+
+<pre><code>func getCPUSample() (idle, total uint64) {
+    contents, err := ioutil.ReadFile(&quot;/proc/stat&quot;)
+    if err != nil {
+        return
+    }
+    lines := strings.Split(string(contents), &quot;\n&quot;)
+    for _, line := range lines {
+        fields := strings.Fields(line)
+        if fields[0] == &quot;cpu&quot; {
+            numFields := len(fields)
+            for i := 1; i &lt; numFields; i++ {
+                val, err := strconv.ParseUint(fields[i], 10, 64)
+                if err != nil {
+                    fmt.Println(&quot;Error: &quot;, i, fields[i], err)
+                }
+                total += val // tally up all the numbers to get total ticks
+                if i == 4 {  // idle is the 5th field in the cpu line
+                    idle = val
+                }
+            }
+            return
+        }
+    }
+    return
+}
+
+func main() {
+    idle0, total0 := getCPUSample()
+    time.Sleep(3 * time.Second)
+    idle1, total1 := getCPUSample()
+
+    idleTicks := float64(idle1 - idle0)
+    totalTicks := float64(total1 - total0)
+    cpuUsage := 100 * (totalTicks - idleTicks) / totalTicks
+
+    fmt.Printf(&quot;CPU usage is %f%% [busy: %f, total: %f]\n&quot;, cpuUsage, totalTicks-idleTicks, totalTicks)
+}
+</code></pre>
+
+<h2 id="channel">channel</h2>
+
+<h3 id="把-channel-當成-queue-使用">把 Channel 當成 Queue 使用</h3>
+
+<p>它是先進先出，如果要做一個 worker 很好用，直接宣告它的大小是多少，但塞值不需要管它的 index，一直丟就對了</p>
+
+<pre><code>var worker_ch = make(chan string, 10000)
+
+// 用 Goroutine 跑，一個 Worker，它會一直 wait，直到 worker_ch 有值
+for {
+    file_name := &lt;-worker_ch
+    DoSomething(file_name)
+}
+
+// 另一個 Goroutine，假設它是 API 負責塞值給 worker_ch
+func NonBlcok(ctx *fasthttp.RequestCtx, _ fasthttprouter.Params) {
+    file_name := string(ctx.FormValue(&quot;filename&quot;))
+    worker_ch &lt;- file_name
+}
+</code></pre>
+
+<h3 id="用-channel-select-實作-long-lived-concurrent-safe-pools">用 channel &amp; select 實作 long lived, concurrent safe pools</h3>
+
+<pre><code>// Pool holds Clients.
+type Pool struct {
+    pool   chan *Client
+}
+
+// NewPool creates a new pool of Clients.
+func NewPool(max int) *Pool {
+    return &amp;Pool{
+        pool:   make(chan *Client, max),
+    }
+}
+
+// Borrow a Client from the pool.
+func (p *Pool) Borrow() *Client {
+    var c *Client
+    select {
+    case c = &lt;-p.pool:
+    default:
+        c = newClient()
+    }
+    return c
+}
+
+// Return returns a Client to the pool.
+func (p *Pool) Return(c *Client) {
+    select {
+    case p.pool &lt;- c:
+    default:
+        // let it go, let it go...
+    }
+}
+</code></pre>
+
+<h2 id="reflect">reflect</h2>
+
+<h3 id="call-dynamic-func-by-name">Call dynamic func by name</h3>
+
+<pre><code>func Call(m map[string]interface{}, name string, params ...interface{}) (result []reflect.Value, err error) {
+    f := reflect.ValueOf(m[name])
+    if len(params) != f.Type().NumIn() {
+        err = errors.New(&quot;The number of params is not adapted.&quot;)
+        return
+    }
+    in := make([]reflect.Value, len(params))
+    for k, param := range params {
+        in[k] = reflect.ValueOf(param)
+    }
+    result = f.Call(in)
+    return
+}
+</code></pre>
+
+<p>用法 :</p>
+
+<pre><code>// 宣告
+funcs := map[string]interface{}{
+    &quot;qq&quot;: curl.Get,  // index 隨便取, 後面的是 func name  e.g. func QQ() 就填  QQ, 如果是 curl pacakge 的 Get func 就填 curl.Get
+}
+Call(funcs, &quot;qq&quot;, params)  // 如果有參數就傳入 params
+</code></pre>
+
+<h3 id="call-dynamic-struct-function-by-name-string">Call dynamic struct.function by name (string)</h3>
+
+<pre><code>import &quot;fmt&quot;
+import &quot;reflect&quot;
+
+type T struct{}
+
+func (t *T) Test() string {
+    fmt.Println(&quot;test...&quot;)
+    return &quot;ok&quot;
+}
+
+func main() {
+    var t T
+    res := reflect.ValueOf(&amp;t).MethodByName(&quot;Test&quot;).Call([]reflect.Value{})
+    fmt.Println(res[0]) // ok
+}
+</code></pre>
+
+<blockquote>
+<p>res 是一個陣列，即使你的 func 只回傳一個參數，它也是放在陣列裡</p>
+</blockquote>
+
+<h3 id="call-dynamic-function-by-interface">Call dynamic function by interface</h3>
+
+<pre><code>value := reflect.ValueOf(jb)                // jb can be a struct which implemented an interface
+method := value.MethodByName(&quot;Done&quot;)        // func name
+if method.IsValid() {
+    if method.IsValid() {
+        method.Call([]reflect.Value{})
+    }
+}
+</code></pre>
+
+<h3 id="good-example-of-call-dynamic-function-by-either-value-or-pointer">Good example of call dynamic function by either value or pointer</h3>
+
+<pre><code>type Test struct {
+    Start string
+}
+
+// value receiver
+func (t Test) Finish() string {
+    return t.Start + &quot;finish&quot;
+}
+
+// pointer receiver
+func (t *Test) Another() string {
+    return t.Start + &quot;another&quot;
+}
+
+func CallMethod(i interface{}, methodName string) interface{} {
+    var ptr reflect.Value
+    var value reflect.Value
+    var finalMethod reflect.Value
+
+    value = reflect.ValueOf(i)
+
+    // if we start with a pointer, we need to get value pointed to
+    // if we start with a value, we need to get a pointer to that value
+    if value.Type().Kind() == reflect.Ptr {
+        ptr = value
+        value = ptr.Elem()
+    } else {
+        ptr = reflect.New(reflect.TypeOf(i))
+        temp := ptr.Elem()
+        temp.Set(value)
+    }
+
+    // check for method on value
+    method := value.MethodByName(methodName)
+    if method.IsValid() {
+        finalMethod = method
+    }
+    // check for method on pointer
+    method = ptr.MethodByName(methodName)
+    if method.IsValid() {
+        finalMethod = method
+    }
+
+    if (finalMethod.IsValid()) {
+        return finalMethod.Call([]reflect.Value{})[0].Interface()
+    }
+
+    // return or panic, method not found of either type
+    return &quot;&quot;
+}
+
+func main() {
+    i := Test{Start: &quot;start&quot;}
+    j := Test{Start: &quot;start2&quot;}
+
+    fmt.Println(CallMethod(i, &quot;Finish&quot;))
+    fmt.Println(CallMethod(&amp;i, &quot;Finish&quot;))
+    fmt.Println(CallMethod(i, &quot;Another&quot;))
+    fmt.Println(CallMethod(&amp;i, &quot;Another&quot;))
+    fmt.Println(CallMethod(j, &quot;Finish&quot;))
+    fmt.Println(CallMethod(&amp;j, &quot;Finish&quot;))
+    fmt.Println(CallMethod(j, &quot;Another&quot;))
+    fmt.Println(CallMethod(&amp;j, &quot;Another&quot;))
+}
+</code></pre>
+
+<p>Result</p>
+
+<pre><code>startfinish
+startfinish
+startanother
+startanother
+start2finish
+start2finish
+start2another
+start2another
+</code></pre>
+
+<p>ref: <a href="https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type">https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type</a></p>
+
+<h2 id="flag">flag</h2>
+
+<h3 id="auto-flag">auto flag</h3>
+
+<pre><code>config := struct {
+    Name    string        `flag:&quot;queue,queue name&quot;`
+}{
+    Name:    &quot;&quot;,
+}
+autoflags.Define(&amp;config)
+flag.Parse()
+</code></pre>
+
+<h2 id="image">image</h2>
+
+<h3 id="get-image-s-width-and-height">Get image&rsquo;s width and height</h3>
+
+<pre><code>import (
+    &quot;fmt&quot;
+    &quot;image&quot;
+    _ &quot;image/jpeg&quot;
+    &quot;io/ioutil&quot;
+    &quot;os&quot;
+    &quot;path/filepath&quot;
+)
+
+const dir_to_scan string = &quot;/tmp/images&quot;
+
+func main() {
+    files, _ := ioutil.ReadDir(dir_to_scan)
+    for _, imgFile := range files {
+
+        if reader, err := os.Open(filepath.Join(dir_to_scan, imgFile.Name())); err == nil {
+            defer reader.Close()
+            im, _, err := image.DecodeConfig(reader)
+            if err != nil {
+                fmt.Fprintf(os.Stderr, &quot;%s: %v\n&quot;, imgFile.Name(), err)
+                continue
+            }
+            fmt.Printf(&quot;%s %d %d\n&quot;, imgFile.Name(), im.Width, im.Height)
+        } else {
+            fmt.Println(&quot;Impossible to open the file:&quot;, err)
+        }
+    }
+}
+</code></pre>
+
+<h3 id="image-jpg-convert-jpg-to-png">image/jpg Convert jpg to png</h3>
+
+<pre><code>file, err := os.Open(&quot;test.jpg&quot;)
+if err != nil {
+    log.Fatal(&quot;File error&quot;)
+}
+
+img, err := jpeg.Decode(file)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+
+out, err := os.Create(&quot;test.png&quot;)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+err = png.Encode(out, img)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+fmt.Println(&quot;Done!&quot;)
+</code></pre>
+
+<h3 id="image-jpg-convert-jpg-to-bmp">image/jpg Convert jpg to bmp</h3>
+
+<pre><code>// Convert jpg to bmp
+img_file, err := os.Open(&quot;test.jpg&quot;)
+if err != nil {
+    log.Fatal(&quot;File error&quot;)
+}
+defer img_file.Close()
+
+img, err := jpeg.Decode(img_file)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+out_file, err := os.Create(&quot;test.bmp&quot;)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+err = bmp.Encode(out_file, img)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+defer out_file.Close()
+</code></pre>
+
+<h3 id="image-jpg-convert-bmp-to-jpg">image/jpg Convert bmp to jpg</h3>
+
+<pre><code>// Convert jpg to bmp
+img_file, err := os.Open(&quot;test.bmp&quot;)
+if err != nil {
+    log.Fatal(&quot;File error&quot;)
+}
+defer img_file.Close()
+
+img, err := bmp.Decode(img_file)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+out_file, err := os.Create(&quot;test.jpg&quot;)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+
+options := &amp;jpeg.Options{Quality: 50}
+err = jpeg.Encode(out_file, img, options)
+if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+}
+defer out_file.Close()
+</code></pre>
+
+<h3 id="convert-an-image-to-a-black-and-white-image">convert an image to a black and white image</h3>
+
+<pre><code>import (
+    &quot;fmt&quot;
+    &quot;image&quot;
+    &quot;image/draw&quot;
+    &quot;image/jpeg&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    file, err := os.Create(&quot;test-result.jpg&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer file.Close()
+
+    file1, err := os.Open(&quot;test.jpg&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer file1.Close()
+    img, _ := jpeg.Decode(file1)
+
+    jpg := image.NewGray(img.Bounds()) //NewGray
+
+    draw.Draw(jpg, jpg.Bounds(), img, img.Bounds().Min, draw.Src)
+
+    jpeg.Encode(file, jpg, nil)
+
+}
+</code></pre>
+
+<h3 id="draw-a-line-on-an-image">Draw a line on an image</h3>
+
+<pre><code>import (
+    &quot;fmt&quot;
+    &quot;image&quot;
+    &quot;image/color&quot;
+    &quot;image/draw&quot;
+    &quot;image/jpeg&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    file, err := os.Create(&quot;test2.jpg&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer file.Close()
+
+    file1, err := os.Open(&quot;test.jpg&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+    defer file1.Close()
+    img, _ := jpeg.Decode(file1)
+
+    // Create an image with size same as the original image
+    jpg := image.NewRGBA(img.Bounds())    // or you can specify the size: image.NewRGBA(image.Rect(0, 0, 1080, 1080))
+
+    // Put the original image into to the image that we just created
+    draw.Draw(jpg, jpg.Bounds(), img, img.Bounds().Min, draw.Over)
+
+    // Draw a red dot at (2, 3)
+    for x := 1; x &lt; 100; x++ {
+        y := x
+        jpg.Set(x, y, color.RGBA{255, 0, 0, 255})
+    }
+
+    // jpeg.Encode(file, jpg, nil)
+    jpeg.Encode(file, jpg, &amp;jpeg.Options{Quality: 100})
+}
+</code></pre>
+
+<h2 id="unsafe">unsafe</h2>
+
+<h3 id="看變數佔多數記憶體-bytes">看變數佔多數記憶體 (bytes)</h3>
+
+<pre><code>a1 := &quot;xxxdflasjdfl;daskjfdsalfkjasdlfjas&quot;
+a2 := int64(66666)
+a3 := int32(5555)
+a4 := float32(2222.4)
+fmt.Println(unsafe.Sizeof(a1))  // 16
+fmt.Println(unsafe.Sizeof(a2))  // 8
+fmt.Println(unsafe.Sizeof(a3))  // 4
+fmt.Println(unsafe.Sizeof(a4))  // 4
+</code></pre>
+
+<h2 id="utf8">utf8</h2>
+
+<h3 id="count-size-of-utf8-string">Count size of UTF8 string</h3>
+
+<pre><code>utf8.RuneCountInString(&quot;世界&quot;)
+</code></pre>
+
+<h2 id="reflect-1">reflect</h2>
+
+<h3 id="implementation-of-generics">Implementation of generics</h3>
+
+<pre><code>type Animal interface{}
+
+type Body struct {
+    FeetCount int64
+}
+
+type People struct {
+    Name string
+    Body
+}
+
+type Cat struct {
+    Name string
+    Body
+}
+
+func main() {
+    var h People
+    var c Cat
+    setName(&amp;h, &quot;People&quot;) // Must be passed by pointer
+    setFeetCount(&amp;h, 2)
+    fmt.Println(h)
+
+    setName(&amp;c, &quot;Cat&quot;)
+    setFeetCount(&amp;c, 4)
+    fmt.Println(c)
+}
+
+// Set string
+func setName(a Animal, name string) {
+    o := reflect.ValueOf(a).Elem().FieldByName(&quot;Name&quot;)
+    if o.CanSet() {
+        reflect.ValueOf(a).Elem().FieldByName(&quot;Name&quot;).SetString(name)
+        fmt.Println(reflect.ValueOf(a).Elem().FieldByName(&quot;Name&quot;).String())
+    }
+}
+
+// Set struct
+func setFeetCount(a Animal, c int64) {
+    o := reflect.ValueOf(a).Elem().FieldByName(&quot;Body&quot;)
+    if o.CanSet() {
+        o.FieldByName(&quot;FeetCount&quot;).SetInt(c)
+    }
+}
+</code></pre>
+
+<p>output:</p>
+
+<pre><code>People
+{People {2}}
+Cat
+{Cat {4}}
+</code></pre>
+
+<h2 id="sql">SQL</h2>
+
+<p>(last updated at 2016-12-21)</p>
+
+<h3 id="connect">Connect</h3>
+
+<pre><code>conn, err = sql.Open(&quot;mysql&quot;, &quot;root:password@tcp(127.0.0.1:3306)/db_name&quot;)
+或
+conn, err = sql.Open(&quot;mysql&quot;, &quot;root:password@/db_name&quot;)
+if err != nil {
+    os.Exit(1)
+}
+err = conn.Ping()
+if err != nil {
+    os.Exit(1)
+}
+defer db.Close()
+</code></pre>
+
+<h3 id="prepare-prevent-sql-injection">Prepare (prevent sql injection)</h3>
+
+<p>有兩種寫法，第一種是用 <code>Query</code>；第二種是先 <code>Prepare</code> 再 <code>Query</code> 或 <code>Exec</code></p>
+
+<p>SELECT with Query (with Prepare)</p>
+
+<pre><code>rows, err := conn.Query(&quot;SELECT name FROM users WHERE age=?&quot;, req.FormValue(&quot;age)
+defer rows.Close()
+if rows.Next() {
+    var name string
+    err = rows.Scan(&amp;name)
+} else {
+    // no data
+}
+</code></pre>
+
+<p>SELECT with Prepare</p>
+
+<pre><code>stmt, err := conn.Prepare(&quot;SELECT name, address FROM user WHERE age = ? AND name = ?&quot;)
+defer stmt.Close()
+rows, err := stmt.Query(27, &quot;test&quot;) // replace the params
+defer rows.Close()
+for rows.Next() {
+    var name, address string
+    err = rows.Scan(&amp;name, &amp;address)
+    fmt.Println(name, address)
+}
+</code></pre>
+
+<p>使用 Query 要注意 :</p>
+
+<pre><code>// this is safe
+conn.Query(&quot;SELECT name FROM users WHERE age=?&quot;, req.FormValue(&quot;age)
+
+// this allows sql injection.
+conn.Query(&quot;SELECT name FROM users WHERE age=&quot; + req.FormValue(&quot;age&quot;))
+</code></pre>
+
+<p>UPDATE with Prepare</p>
+
+<pre><code>stmt, err := conn.Prepare(&quot;UPDATE user SET name = ?, age = ? WHERE id = ?&quot;)
+defer stmt.Close()
+res, err := stmt.Exec(&quot;test&quot;, 27, 123)   // replace the params
+num, err := res.RowsAffected()          // 判斷是否有成功影響欄位的值
+fmt.Println(num)
+// where 不到，num 是 0
+// where 到，但資料沒變也是 0
+// where 到，但資料有變是 1
+</code></pre>
+
+<h3 id="crud-操作">CRUD 操作</h3>
+
+<p>SELECT 取第一筆</p>
+
+<pre><code>var str string
+err = conn.QueryRow(&quot;SELECT id FROM user&quot;).Scan(&amp;str)
+</code></pre>
+
+<p>SELECT 多筆 (fetch every single row)</p>
+
+<pre><code>var id int
+var name string
+rows, err := conn.Query(&quot;SELECT id, name FROM user&quot;)
+defer rows.Close()
+for rows.Next() {
+    err := rows.Scan(&amp;id, &amp;name)    // do check
+    fmt.Println(id, name)
+}
+err = rows.Err()        // do check
+</code></pre>
+
+<p>Query Row 取第一筆</p>
+
+<pre><code>var name string
+err = db.QueryRow(&quot;SELECT name FROM users WHERE id = ?&quot;, 1).Scan(&amp;name)
+
+stmt, err := db.Prepare(&quot;SELECT name FROM users WHERE id = ?&quot;)
+var name string
+err = stmt.QueryRow(1).Scan(&amp;name)
+</code></pre>
+
+<p>INSERT (TODO)</p>
+
+<pre><code>stmt, err := db.Prepare(&quot;INSERT ... &quot;)
+res, err := stmt.Exec(&quot;A&quot;, &quot;B&quot;)
+id, err := res.LastInsertId()
+</code></pre>
+
+<p>UPDATE (TODO)</p>
+
+<pre><code>stmt, err = db.Prepare(&quot;UPDATE ...&quot;)
+res, err = stmt.Exec(&quot;A&quot;, id)
+affect, err := res.RowsAffected()
+</code></pre>
+
+<p>DELETE (TODO)</p>
+
+<pre><code>stmt, err = db.Prepare(&quot;DELETE ...&quot;)
+res, err = stmt.Exec(id)
+affect, err = res.RowsAffected()
+</code></pre>
+
+<h2 id="unix">unix</h2>
+
+<h3 id="調整系統設定最大讀寫檔案數量-for-currency">調整系統設定最大讀寫檔案數量 (for currency)</h3>
+
+<p>unix 預設一個 process 最多可開 1024 個檔案，也就是能出去的 network currency 數量是 1024</p>
+
+<pre><code>import &quot;golang.org/x/sys/unix&quot;
+
+var rLimit unix.Rlimit
+var max_rlimit uint64 = 50000
+var cur_rlimit uint64 = 50000
+rLimit.Max = max_rlimit
+rLimit.Cur = cur_rlimit
+_ = unix.Setrlimit(unix.RLIMIT_NOFILE, &amp;rLimit)
+</code></pre>
+
+<h1 id="context">context</h1>
+
+<ul>
+<li>It&rsquo;s not for killing a goroutine,</li>
+<li>It is for ending earlier if you don&rsquo;t wanna wait any longer.</li>
+<li>An example to show you how to use <code>WithCancel</code>, <code>WithTimeout</code> and <code>WithDeadline</code>.</li>
+<li>An example to show you how to do nested goroutines with their own context to interact with each other.</li>
+</ul>
+
+<p>Code:</p>
+
+<pre><code>ctxTimeout := 3
+ctx2Timeout := 5
+ctx3Timeout := 7
+
+start := time.Now()
+ctx := context.Background()
+ctx, cancel := context.WithCancel(ctx)
+defer cancel()
+go func() {
+    ctx2, cancel2 := context.WithTimeout(ctx, time.Duration(ctx2Timeout)*time.Second)
+    go func() {
+        ctx3, cancel3 := context.WithDeadline(context.Background(), time.Now().Add(time.Duration(ctx3Timeout)*time.Second))
+        go func() {
+            log.Printf(&quot;ctx3 waiting... timeout: %ds\n&quot;, ctx3Timeout)
+            select {
+            case &lt;-ctx3.Done():
+                log.Printf(&quot;ctx3 done, spent %fs (its own context)\n&quot;, time.Now().Sub(start).Seconds())
+                return
+            }
+        }()
+        log.Printf(&quot;ctx2 waiting... timeout: %ds\n&quot;, ctx2Timeout)
+        select {
+        case &lt;-ctx2.Done():
+            log.Printf(&quot;ctx2 done, spent %fs (ctx2 inherits ctx)\n&quot;, time.Now().Sub(start).Seconds())
+            return
+        }
+        cancel3()
+    }()
+    log.Printf(&quot;ctx  waiting... timeout: %ds\n&quot;, ctxTimeout)
+    select {
+    case &lt;-ctx.Done():
+        log.Printf(&quot;ctx  done, spent %fs\n&quot;, time.Now().Sub(start).Seconds())
+        return
+    }
+    cancel2()
+}()
+
+select {
+case &lt;-time.After(time.Duration(ctxTimeout) * time.Second):
+    cancel()
+}
+time.Sleep(10 * time.Second)
+</code></pre>
+
+<p>Result:</p>
+
+<pre><code>2019/08/28 22:04:58 ctx  waiting... timeout: 3s
+2019/08/28 22:04:58 ctx3 waiting... timeout: 7s
+2019/08/28 22:04:58 ctx2 waiting... timeout: 5s
+2019/08/28 22:05:01 ctx2 done, spent 3.003540s (ctx2 inherits ctx)
+2019/08/28 22:05:01 ctx  done, spent 3.003625s
+2019/08/28 22:05:05 ctx3 done, spent 7.005422s (its own context)
+</code></pre>
+
+<h2 id="template">template</h2>
+
+<p>template 來源可以是字串也可以是一個檔案(html or text) 透過 html/template 或 text/template 將內容取代</p>
+
+<h3 id="取代的-html-template-為字串">取代的 HTML template 為字串</h3>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">package main
+
+import (
+    &quot;html/template&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+)
+
+const tmpl = `
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;{{.Title}}&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        {{.Body}}
+    &lt;/body&gt;
+&lt;/html&gt;`
+
+func tHandler(w http.ResponseWriter, r *http.Request) {
+    t := template.Must(template.New(&quot;ex&quot;).Parse(tmpl))
+    v := map[string]interface{}{
+        &quot;Title&quot;: &quot;Test &lt;b&gt;World&lt;/b&gt;&quot;,
+        &quot;Body&quot;:  template.HTML(&quot;Hello &lt;b&gt;World&lt;/b&gt;&quot;),
+    }
+    t.Execute(w, v)
+}
+
+func main() {
+    http.HandleFunc(&quot;/&quot;, tHandler)
+    err := http.ListenAndServe(&quot;:9090&quot;, nil)
+    if err != nil {
+        log.Fatal(&quot;ListenAndServe: &quot;, err)
+    }
+}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>瀏覽器得到 server 輸出的內容 :</p>
+
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Test &amp;lt;b&amp;gt;World&amp;lt;/b&amp;gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        Hello &lt;b&gt;World&lt;/b&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>可以看到 title 跟 body 的結果截然不同, title 的 html 標籤會被轉義, 而 body 沒有是因為我加上了 <code>template.HTML()</code> 不要轉義 HTML 標籤, 我覺得預設轉義設計是很好的, 防止沒注意而產生了 XSS 漏洞, rails 也是預設轉義的, 但 php 什麼時候才要改!!!??? (怒</p>
+
+<blockquote>
+<p>當改成 <code>t.Execute(os.Stdout, v)</code>, 表示是系統的標準輸出, 所以只會在 terminal 上看到輸出, 瀏覽器則不會有任何內容</p>
+</blockquote>
+
+<h3 id="取代的-html-template-為檔案">取代的 HTML template 為檔案</h3>
+
+<p>將 header 與 footer 做為固定的 template, 並傳入動態內容 :</p>
+
+<pre><code>func tHandler(w http.ResponseWriter, r *http.Request) {
+    t, _ := template.ParseFiles(&quot;header.tmpl&quot;, &quot;body.html&quot;, &quot;footer.tmpl&quot;)
+    var data = map[string] interface{}{
+        &quot;content&quot; : &quot;Do you copy?&quot;,
+    }
+    t.ExecuteTemplate(w, &quot;body&quot;, data)
+    t.Execute(w, nil)
+}
+</code></pre>
+
+<p>header.tmpl :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;header&quot;}}
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Video downloader&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>body.html :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;body&quot;}}
+{{template &quot;header&quot;}}
+&lt;h1 id=&quot;go&quot;&gt;Golang Web Works!&lt;/h1&gt;
+{{.content}}
+{{template &quot;footer&quot;}}
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>footer.tmpl :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;footer&quot;}}
+&lt;/body&gt;
+&lt;/html&gt;
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>最後在瀏覽器顯示的結果是 :</p>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Video downloader&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1 id=&quot;go&quot;&gt;Golang Web Works!&lt;/h1&gt;
+Do you copy?
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<blockquote>
+<p>副檔名不需要一定是 <code>.html</code> <code>.tmpl</code>, 你可以自訂任何你喜歡的
+<code>template.ParseFiles</code> 只負責引入檔案而已, 而真正負責要呈獻出來的內容及 parse 是 <code>t.ExecuteTemplate</code></p>
+</blockquote>
+
+<h3 id="for-loop-template">For loop template</h3>
+
+<p>有時候我們會重覆使用同一個 template 連續印出10次, 作法如下</p>
+
+<h4 id="作法-1-用-range-直接在-template-跑-10-次">作法 1, 用 <code>range</code> 直接在 template 跑 10 次</h4>
+
+<p>view/nameList.tmpl :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;nameList&quot;}}
+Name list :
+{{ range $i, $name := .nameList}}
+{{$i}} -&gt; {{$name}}
+{{end}}
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>func main :</p>
+
+<pre><code>var tmp bytes.Buffer
+var data = map[string]interface{}{}
+t, _ := template.ParseFiles(
+    &quot;view/nameList.tmpl&quot;,
+)
+data[&quot;nameList&quot;] = []string{&quot;Jack&quot;, &quot;Bob&quot;}
+t.ExecuteTemplate(&amp;tmp, &quot;nameList&quot;, data)
+fmt.Println(tmp.String())
+</code></pre>
+
+<h4 id="作法2-先跑-10-次的-template-再將生成後的-html-傳到-body-再輸出">作法2, 先跑 10 次的 template, 再將生成後的 html 傳到 body 再輸出</h4>
+
+<p>建立要重覆的 urlItem.tmpl :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;urlItem&quot;}}
+&lt;li id=&quot;url-{{.num}}&quot;&gt;{{.num}}&lt;/li&gt;
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>body.html :</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">{{define &quot;body&quot;}}
+&lt;ul class=&quot;list-group&quot;&gt;
+    {{.urlItem}}
+&lt;/ul&gt;
+{{end}}
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>完整程式碼 :</p>
+
+<pre><code>// Show view
+var tmplPath string = &quot;view/template/&quot;
+var indexPath string = &quot;view/index/&quot;
+t, _ := template.ParseFiles(
+    tmplPath + &quot;header.tmpl&quot;,
+    indexPath + &quot;body.html&quot;,
+    tmplPath + &quot;index/urlItem.tmpl&quot;,
+    tmplPath + &quot;footer.tmpl&quot;,
+)
+
+// For loop url item
+var tmplBuf bytes.Buffer                            // 建立 buffer, 等等 for loop 的 template 都存&gt;進來
+var nums = map[string] interface{}{}                // 建立 data interface{}
+for num := 1; num &lt;= 10; num++ {
+    nums[&quot;num&quot;] = num
+    t.ExecuteTemplate(&amp;tmplBuf, &quot;urlItem&quot;, nums)    // 將數字帶進 template
+}
+data[&quot;urlItem&quot;] = template.HTML(tmplBuf.String())   // 將 for loop template 的結果存進 urlItem, 並&gt;且不要 escape HTML Tag
+t.ExecuteTemplate(w, &quot;body&quot;, data)
+t.Execute(w, nil)
+</code></pre>
+
+<p>ref :
+<a href="http://play.golang.org/p/Uw8l3M7Qvg">http://play.golang.org/p/Uw8l3M7Qvg</a>
+<a href="https://groups.google.com/forum/#!topic/golang-nuts/8L4eDkr5Q84">https://groups.google.com/forum/#!topic/golang-nuts/8L4eDkr5Q84</a>
+<a href="http://blog.xcai.net/golang/templates">http://blog.xcai.net/golang/templates</a></p>
+
+<h3 id="取代的-text-template-為檔案">取代的 TEXT template 為檔案</h3>
+
+<pre><code>// 讀取資料夾底下的 template (不需要指定檔名)
+var emailBodyTemplates = template.Must(template.ParseGlob(&quot;app/template/email/en/*&quot;))     // 資料夾底下有很多 .txt 的 template 檔案
+var tmp bytes.Buffer
+err = emailBodyTemplates.ExecuteTemplate(&amp;tmp, templateName, replacement)
+if err != nil {
+    return
+}
+
+// 讀取檔案的 template (需要指定檔名)
+var emailLayoutTemplates = template.Must(template.ParseFiles(&quot;app/template/layout/email.html&quot;))
+err = emailLayoutTemplates.Execute(&amp;tmp, replacement)
+</code></pre>
+
+<h3 id="不要脫逸-等-html-符號">不要脫逸 <code>'</code> <code>&quot;</code> 等 HTML 符號</h3>
+
+<p>用 <code>template.HTML</code> 包起來</p>
+
+<p>{% raw %}</p>
+
+<pre><code class="language-go">improt &quot;html/template&quot;
+
+var t = template.Must(template.New(&quot;ex&quot;).Parse(`{{.name}} pen. {{.name2}} pen.`))
+data := map[string]interface{}{
+    &quot;name&quot;:  template.HTML(&quot;Tom's&quot;),
+    &quot;name2&quot;: &quot;Tom's&quot;,
+}
+t.ExecuteTemplate(os.Stdout, &quot;ex&quot;, data)
+</code></pre>
+
+<p>{% endraw %}</p>
+
+<p>result</p>
+
+<pre><code>Tom's pen. Tom&amp;#39;s pen.
+</code></pre>
+
+<blockquote>
+<p><code>'</code> -&gt; <code>&amp;#39;</code></p>
+</blockquote>
+
+<p>解法2: improt 改成 <code>text/template</code>, 就不需要用 <code>template.HTML</code> 防止脫逸了</p>
+
+</article>
+
+
+
+</html>

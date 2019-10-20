@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>FTP server | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ftp/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ftp/">FTP server</a></h1>
+    <p class="meta"><time datetime="2015-05-20T11:48:47&#43;08:00">May 20, 2015</time></p>
+  </header>
+  
+
+<h2 id="使用-vsftpd">使用 vsftpd</h2>
+
+<h3 id="安裝">安裝</h3>
+
+<pre><code>sudo apt-get update
+sudo apt-get install vsftpd
+</code></pre>
+
+<h3 id="設定-etc-vsftpd-conf">設定 /etc/vsftpd.conf</h3>
+
+<pre><code>write_enable=YES
+local_umask=022
+
+chroot_local_user=YES
+allow_writeable_chroot=YES
+</code></pre>
+
+<h3 id="開放-root-帳號登入">開放 root 帳號登入</h3>
+
+<p><code>/etc/ftpusers</code> : 把 root 註解</p>
+
+<h3 id="啟動">啟動</h3>
+
+<pre><code>sudo service vsftpd restart
+</code></pre>
+
+<h3 id="記得開放-21-port">記得開放 21 port</h3>
+
+<p>現在 user 都可以登入到自己家目錄了</p>
+
+<h3 id="指令">指令</h3>
+
+<p>連線</p>
+
+<pre><code>ftp example.com
+sftp example.com
+</code></pre>
+
+<p>操作</p>
+
+<pre><code>ls     查看 Server 端的目錄或檔案
+pwd    查看 Server 端目前所在的目錄
+cd     變更 Server 端目前的目錄
+cdup   變更 Server 端目前的目錄到上一目錄
+lls    查看 Local 端的目錄或檔案
+lcd    變更 Local 端目前的目錄
+asc    設定傳輸模式為文字檔方式
+bin    設定傳輸模式為二進位檔方式
+get    將 Server 端的檔案拷貝至 Local 端現在目錄下
+mget   拷貝多個 Server 端的檔案至 Local 端現在目錄下
+put    將 Local 端的檔案拷貝至 Server 端現在目錄下
+mput   拷貝多個 Local 端的檔案至 Server 端現在目錄下
+delete 刪除 Server 端的檔案
+mkdir  在 Server 端建立目錄
+rmdir  刪除 Server 端的目錄
+!      shell 指令
+
+!ls    查看 Local 端的目錄或檔案
+
+prompt 變換交談模式 (on/off)，
+
+?,help 指令使用說明
+
+bye    結束 FTP
+</code></pre>
+
+<p>其他</p>
+
+<pre><code>!               cr              macdef          proxy           send
+$               delete          mdelete         sendport        status
+account         debug           mdir            put             struct
+append          dir             mget            pwd             sunique
+ascii           disconnect      mkdir           quit            tenex
+bell            form            mls             quote           trace
+binary          get             mode            recv            type
+bye             glob            mput            remotehelp      user
+case            hash            nmap            rename          verbose
+cd              help            ntrans          reset           ?
+cdup            lcd             open            rmdir
+close           ls              prompt          runique
+</code></pre>
+
+<h3 id="ref">ref</h3>
+
+<ul>
+<li><a href="http://www2.nsysu.edu.tw/csmlab/unix/ftp.htm">FTP 指令</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

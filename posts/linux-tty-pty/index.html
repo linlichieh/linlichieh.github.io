@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux TTY/PTY | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/linux-tty-pty/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/linux-tty-pty/">Linux TTY/PTY</a></h1>
+    <p class="meta"><time datetime="2019-01-25T11:02:08&#43;08:00">January 25, 2019</time></p>
+  </header>
+  
+
+<h2 id="what-is-tty-pty">What is TTY/PTY?</h2>
+
+<p>TTY (teletype) is a terminal used to transfer the input and output from devices.</p>
+
+<p>PTY (pseudo-teletype) is a pseudoterminal that provides a terminal emulator like tty does.</p>
+
+<h2 id="how-does-tty-work">How does TTY work?</h2>
+
+<p>Diagram:</p>
+
+<pre><code>┏━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━━┓
+┃  monitor   ┣━━┫     VGA driver    ┣━━┫              ┃  ┃              ┃  ┃              ┣━━┫  User process ┃
+┗━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━━━━━━┛  ┃   Terminal   ┣━━┫     Line     ┣━━┫     TTY      ┃  ┗━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━━━━━━┓  ┃   emulator   ┃  ┃  Discipline  ┃  ┃    driver    ┃  ┏━━━━━━━━━━━━━━━┓
+┃  keyboard  ┣━━┫  Keyboard driver  ┣━━┫              ┃  ┃              ┃  ┃              ┣━━┫  User process ┃
+┗━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━━┛
+</code></pre>
+
+<p>0,1,2 fds are allocated to shell</p>
+
+<pre><code>$ tty
+/dev/ttys028
+$ lsof /dev/ttys028
+COMMAND   PID USER   FD   TYPE DEVICE  SIZE/OFF NODE NAME
+bash     1776 root    0u   CHR  16,28 0t4584881  689 /dev/ttys028        # stdin
+bash     1776 root    1u   CHR  16,28 0t4584881  689 /dev/ttys028        # stdout
+bash     1776 root    2u   CHR  16,28 0t4584881  689 /dev/ttys028        # stderr
+bash     1776 root  255u   CHR  16,28 0t4584881  689 /dev/ttys028
+</code></pre>
+
+<h2 id="how-does-pty-work">How does PTY work?</h2>
+
+<ul>
+<li>PTY consists of ptmx (pseudo-terminal master) and pts (pseudo-terminal slave).</li>
+<li>Each pty master and slave is a separate pair and is joined together in the kernel.</li>
+</ul>
+
+<h3 id="how-does-pts-being-created">How does pts being created?</h3>
+
+<ol>
+<li>Call posix_openpt() to open <code>/dev/ptmx</code> (pty master) and get a unique file descriptor and a <code>/dev/pts/*</code> (pty slave).</li>
+<li>Fork a login shell with pts.</li>
+</ol>
+
+<p>The process that allocates ptmx and pts is given an fd for each side. Then it will typically passes the slave on to a new process and close its file descriptor, something like:</p>
+
+<pre><code>get ptmfd,ptsfd (from /dev/ptmx on Linux)
+if (fork() == 0)
+{
+    /* child */
+    close(ptmfd);
+    dup2(ptsfd, 0);
+    dup2(ptsfd, 1);
+    dup2(ptsfd, 2);
+    execv($SHELL)
+}
+/* parent */
+close(ptsfd);
+proxy data from /dev/tty to ptmfd
+</code></pre>
+
+<h3 id="how-does-sshd-work-with-tty">How does sshd work with tty?</h3>
+
+<p>When ever user connects to server using SSH, sshd will be created and gets a pts and fds, and forks a login shell.</p>
+
+<pre><code>sshd,29496
+  └─bash,29497
+
+$ sudo ls -al /proc/29496/fd
+dr-x------ 2 root    root     0 Jan 23 17:53 .
+dr-xr-xr-x 9 root    root     0 Jan 23 11:51 ..
+lrwx------ 1 root    root    64 Jan 23 17:53 10 -&gt; /dev/ptmx
+lrwx------ 1 root    root    64 Jan 23 17:53 12 -&gt; /dev/ptmx
+lrwx------ 1 root    root    64 Jan 23 17:53 13 -&gt; /dev/ptmx
+
+$ ls -al /proc/29497/fd
+total 0
+dr-x------ 2 root root  0 Jan 24 16:04 .
+dr-xr-xr-x 9 root root  0 Jan 24 16:04 ..
+lrwx------ 1 root root 64 Jan 24 16:04 0 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 Jan 24 16:04 1 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 Jan 24 16:04 2 -&gt; /dev/pts/0
+lrwx------ 1 root root 64 Jan 24 16:05 255 -&gt; /dev/pts/0
+</code></pre>
+
+<p>SSH/TMUX only communicates with ptmx, which internally maintains every session&rsquo;s fds and pts, transfers input/output to corresponding pts.
+Conversely, processes that user runs in login session only wire to pts through which output goes to ptmx.
+You can take ptmx and pts as two-way pipe to transfer input/output.</p>
+
+<p>Diagram:</p>
+
+<pre><code>┏━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   keyboard / monitor  ┃
+┗━━━━━━━━━━━┳━━━━━━━━━━━┛
+┏━━━━━━━━━━━┻━━━━━━━━━━━┓
+┃        terminal       ┃
+┗━━━━━━━━━━━┳━━━━━━━━━━━┛
+┏━━━━━━━━━━━┻━━━━━━━━━━━┓      ┏━━━━━━━━┓
+┃ SSH Server            ┃      ┃        ┃
+┃  ┃                    ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓
+┃  ┣━ sshd (session 1)  ┣━┫fd┣━┫        ┣━┫  pts/0  ┣━┫fd┣━┫  shell  ┃
+┃  ┃                    ┃ ┗━━┛ ┃  PTMX  ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛
+┃  ┃                    ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓
+┃  ┗━ sshd (session 2)  ┣━┫fd┣━┫        ┣━┫  pts/1  ┣━┫fd┣━┫  shell  ┃
+┃                       ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛
+┗━━━━━━━━━━━━━━━━━━━━━━━┛      ┗━━━━━━━━┛
+</code></pre>
+
+<h3 id="how-does-tmux-work-with-tty-over-ssh">How does tmux work with tty over ssh?</h3>
+
+<p>This situation gets a bit tricky. As follows, we can see there is a tmux client that I currently used and a tmux server with 3 bash,
+which comes from 3 windows in a tmux session that I created.
+No matter what I create a window or a pane, tmux server creates a unique pts for each of them.</p>
+
+<pre><code>sshd,29496
+  └─bash,29497                              # /dev/pts/10
+      └─tmux: client,10673 a
+
+tmux: server,28411
+  ├─bash,12923                              # /dev/pts/6
+  ├─bash,13087                              # /dev/pts/7
+  └─bash,28428                              # /dev/pts/5
+</code></pre>
+
+<p>Of course, every bash corresponds to its fd which links to <code>/dev/ptmx</code>.</p>
+
+<pre><code>$ ls -al /proc/28411/fd
+total 0
+dr-x------ 2 root root  0 Jan 21 15:42 .
+dr-xr-xr-x 9 root root  0 Jan 21 15:42 ..
+lrwx------ 1 root root 64 Jan 21 15:42 10 -&gt; /dev/ptmx
+lrwx------ 1 root root 64 Jan 21 15:42 7 -&gt; /dev/pts/10
+lrwx------ 1 root root 64 Jan 21 15:42 8 -&gt; /dev/ptmx
+lrwx------ 1 root root 64 Jan 21 15:42 9 -&gt; /dev/ptmx
+</code></pre>
+
+<p>When I use tmux, I&rsquo;m not actually using the bash (pid: 29497) created by sshd.
+Instead, I&rsquo;m using the bash (one of pids: 19293/13087/28428) created by tmux server.</p>
+
+<p>This is the reason why tmux is so useful.
+If I disconnected, it won&rsquo;t affect any of bash (one of pids: 19293/13087/28428) that I worked on,
+because it seperate the bash (one of pids: 19293/13087/28428) I use from the bash (pid: 29497) that sshd created for me.</p>
+
+<p>Tmux client has two primary roles:
+firstly, to transfer the environment and terminal file descriptors to the server;
+secondly, to occupy the terminal and prevent other processes from using it until the client exits.</p>
+
+<p>Therefore, if you send messages into pts of bash (pid: 29497) or bash (one of pids: 19293/13087/28428), you can see the message with slight different way to display.</p>
+
+<pre><code>echo &quot;Hello&quot; &gt; /dev/pts/10
+echo &quot;Hello&quot; &gt; /dev/pts/5
+</code></pre>
+
+<p>Diagram:</p>
+
+<pre><code>┏━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   keyboard / monitor  ┃
+┗━━━━━━━━━━━┳━━━━━━━━━━━┛
+┏━━━━━━━━━━━┻━━━━━━━━━━━┓
+┃        terminal       ┃
+┗━━━━━━━━━━━┳━━━━━━━━━━━┛
+┏━━━━━━━━━━━┻━━━━━━━━━━━┓      ┏━━━━━━━━┓
+┃ SSH Server            ┃      ┃        ┃
+┃  ┃                    ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓
+┃  ┣━ sshd (session 1)  ┣━┫fd┣━┫        ┣━┫  pts/0  ┣━┫fd┣━┫  shell  ┃
+┃  ┃                    ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛
+┃  ┃                    ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+┃  ┗━ sshd (session 2)  ┣━┫fd┣━┫        ┣━┫  pts/1  ┣━┫fd┣━┫  shell  ┣━┫  tmux client  ┣━┓
+┃                       ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━┳┛ ┗━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━┛      ┃        ┃               ┗━━━━━━━━━━━━━━━━━━━━━━┓         ┃
+┏━━━━━━━━━━━━━━━━━━━━━━━┓      ┃        ┃                                      ┃         ┃
+┃ Tmux Server           ┃      ┃        ┃                                      ┃         ┃
+┃  ┃                    ┃      ┃        ┃                                      ┃         ┃
+┃  ┣━ session 1         ┃      ┃        ┃                                      ┃         ┃
+┃  ┃   ┃                ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓         ┃         ┃
+┃  ┃   ┣━ window 1      ┣━┫fd┣━┫  ptmx  ┣━┫  pts/2  ┣━┫fd┣━┫  shell  ┃         ┃         ┃
+┃  ┃   ┃                ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛         ┃         ┃
+┃  ┃   ┃                ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓         ┃         ┃
+┃  ┃   ┗━ window 2      ┣━┫fd┣━┫        ┣━┫  pts/3  ┣━┫fd┣━┫  shell  ┃         ┃         ┃
+┃  ┃       ┃            ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛         ┃         ┃
+┃  ┃       ┃            ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓         ┃         ┃
+┃  ┃       ┗━ pane 1    ┣━┫fd┣━┫        ┣━┫  pts/4  ┣━┫fd┣━┫  shell  ┃         ┃         ┃
+┃  ┃                    ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛         ┃         ┃
+┃  ┗━ session 2         ┃      ┃        ┃                                      ┃         ┃
+┃      ┃                ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓         ┃         ┃
+┃      ┣━ window 1      ┣━┫fd┣━┫        ┣━┫  pts/5  ┣━┫fd┣━┫  shell  ┃         ┃         ┃
+┃      ┃                ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛         ┃         ┃
+┃      ┃                ┃ ┏━━┓ ┃        ┃ ┏━━━━━━━━━┓ ┏━━┓ ┏━━━━━━━━━┓         ┃         ┃
+┃      ┗━ window 2      ┣━┫fd┣━┫        ┣━┫  pts/6  ┣━┫fd┣━┫  shell  ┃         ┃         ┃
+┃                       ┃ ┗━━┛ ┃        ┃ ┗━━━━━━━━━┛ ┗━━┛ ┗━━━━━━━━━┛         ┃         ┃
+┗━━━━━━┳━━━━━━━━━┳━━━━━━┛      ┗━━━━━━━━┛                                      ┃         ┃
+       ┃         ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛         ┃
+       ┃                               input/output                                      ┃
+       ┃                                                                                 ┃
+       ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+            Unix domain socket (command line arguments, the environment, and 0,1,2 fds)
+</code></pre>
+
+<h2 id="how-does-a-process-standout-show-on-your-screen">How does a process standout show on your screen?</h2>
+
+<p>If you show the file type of standard output (<code>/dev/stdout</code>), you will find that it is a symlink to <code>/proc/self/fd/1</code>.</p>
+
+<pre><code>$ ls -al /dev/stdout
+lrwxrwxrwx 1 root root 15 Dec 12 06:34 /dev/stdout -&gt; /proc/self/fd/1
+</code></pre>
+
+<blockquote>
+<ul>
+<li>see <a href="/posts/os/">here</a> to learn more <code>/proc/self</code></li>
+<li>Every process has three standard fd and ou can find these three fd under the path <code>/proc/{PID}/fd/</code>).</li>
+</ul>
+</blockquote>
+
+<p>Actually, <code>fd/1</code> is also a symlink to <code>/dev/pts/*</code>, which means if you write something into <code>fd/1</code>, you will get the same effect as stdout.</p>
+
+<pre><code>$ ls -al /proc/self/fd/1
+lrwx------ 1 root root 64 Jan 20 09:19 /proc/self/fd/1 -&gt; /dev/pts/1
+</code></pre>
+
+<p>Is <code>/dev/pts/*</code> another symlink? No, Its is character device file.</p>
+
+<pre><code>$ ll -al /dev/pts/1
+crw--w---- 1 root tty 136, 1 Jan 20 09:21 /dev/pts/1
+</code></pre>
+
+<p>What is character device file? It is one of file types that provides a serial stream of input or output.</p>
+
+<p>That is why process output going into stdout (<code>/dev/stdnout</code>) will be shown on your screen.</p>
+
+<p>This flow on linux looks like:</p>
+
+<pre><code>┏━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━┓
+┃  process  ┣━┫  /dev/stdout  ┣━┫  /proc/self/fd/1  ┣━┫  /proc/{PID}/fd/1  ┣━┫  /dev/pts/1  ┣━┫  screen  ┃
+┗━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━┛
+</code></pre>
+
+<h2 id="standard-output-tricks">Standard output tricks</h2>
+
+<h3 id="how-to-send-messages-to-another-pts">How to send messages to another pts?</h3>
+
+<p>There are two ways to do that.</p>
+
+<p>The first is:</p>
+
+<pre><code>echo &quot;Hello&quot; &gt; /dev/pts/10
+</code></pre>
+
+<p>The second is:</p>
+
+<pre><code>write user1 /dev/pts/10
+</code></pre>
+
+<h3 id="how-to-intercept-output-from-another-pts">How to intercept output from another pts?</h3>
+
+<p>There is a way to do that:</p>
+
+<pre><code>cat /dev/pts/10
+</code></pre>
+
+<p>But you cannot receive every input from there, you can only get discontinuous characters.
+It is because there are two processes waiting for the stdout, one is cat, another one is shell.</p>
+
+<h3 id="how-to-redirect-stdout-of-specific-process-to-another-pts">How to redirect stdout of specific process to another pts?</h3>
+
+<p>Run a long process for test:</p>
+
+<pre><code>#!/bin/bash
+for ((i=1; i&lt;222222222; i++)); do
+  echo $i $$
+  /bin/sleep 1s
+done
+</code></pre>
+
+<blockquote>
+<p>Run this bash, and find pid of this bash.</p>
+</blockquote>
+
+<p>Use gdb to redirect the output of specific process.</p>
+
+<pre><code>sudo gdb -p {pid}
+
+(In GDB console)
+(gdb) p (void) dup2(open(&quot;/dev/pts/6&quot;, 1), 1)        // or you can redirect to a file &quot;/tmp/stdout&quot;
+(gdb) detach
+(gdb) quit
+</code></pre>
+
+<p>You can immediately see stdout that has been redirected to pts/6 and <code>fd/1</code> has been changed.</p>
+
+<pre><code>$ ll /proc/{pid}/fd
+total 0
+dr-x------ 2 user1 user1  0 Jan 10 13:16 .
+dr-xr-xr-x 9 user1 user1  0 Jan 10 13:16 ..
+lrwx------ 1 user1 user1 64 Jan 10 13:16 0 -&gt; /dev/pts/0
+l-wx------ 1 user1 user1 64 Jan 10 13:16 1 -&gt; /dev/pts/6      &lt;- here
+lrwx------ 1 user1 user1 64 Jan 10 13:16 2 -&gt; /dev/pts/0
+</code></pre>
+
+<h2 id="others">Others</h2>
+
+<h3 id="list-current-pts-managed-by-ptmx">List current pts managed by ptmx</h3>
+
+<pre><code>$ ls /dev/pt*
+/dev/ptmx
+
+/dev/pts:
+0  1  2  3  4  5  8  ptmx
+</code></pre>
+
+<h3 id="maximum-of-pty">maximum of pty</h3>
+
+<pre><code>$ cat /proc/sys/kernel/pty/max
+4096
+</code></pre>
+
+<h3 id="pseudo-devices">Pseudo-devices</h3>
+
+<ul>
+<li><code>/dev/tty*</code>: PC screen and keyboard</li>
+<li><code>/dev/ttys*</code>: serial, e.g. <code>/dev/ttys033</code> from my macbook</li>
+<li><code>/dev/ttyUSB*</code>: USB</li>
+<li><code>/dev/ptmx</code>: pty master</li>
+<li><code>/dev/pts/*</code>: pty slave</li>
+<li><code>/dev/null</code>: accepts and discards all input; produces no output (always returns an end-of-file indication on a read)</li>
+<li>/dev/zero: accepts and discards all input; produces a continuous stream of NUL (zero value) bytes</li>
+<li><code>/dev/full</code>: produces a continuous stream of NUL (zero value) bytes when read, and returns a &ldquo;disk full&rdquo; message when written to</li>
+<li><code>/dev/random</code> and <code>/dev/urandom</code>: they produce a variable-length stream of pseudo-random numbers.</li>
+</ul>
+
+<p>ref:</p>
+
+<ul>
+<li><a href="https://www.linusakesson.net/programming/tty/">https://www.linusakesson.net/programming/tty/</a></li>
+<li><a href="https://segmentfault.com/a/1190000009082089">https://segmentfault.com/a/1190000009082089</a></li>
+<li><a href="https://unix.stackexchange.com/questions/93531/what-is-stored-in-dev-pts-files-and-can-we-open-them">https://unix.stackexchange.com/questions/93531/what-is-stored-in-dev-pts-files-and-can-we-open-them</a></li>
+<li><a href="http://wanggen.myweb.hinet.net/ech2/ech2.html?MywebPageId=2019101547106613765#proc">http://wanggen.myweb.hinet.net/ech2/ech2.html?MywebPageId=2019101547106613765#proc</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Device_file#Character_devices">https://en.wikipedia.org/wiki/Device_file#Character_devices</a></li>
+<li><a href="https://www.cnblogs.com/johnnyflute/p/3523409.html">https://www.cnblogs.com/johnnyflute/p/3523409.html</a></li>
+<li><a href="https://juejin.im/post/5b36298d51882574a26ea0e2">https://juejin.im/post/5b36298d51882574a26ea0e2</a></li>
+<li><a href="https://blog.csdn.net/dog250/article/details/5692612">https://blog.csdn.net/dog250/article/details/5692612</a></li>
+<li><a href="https://unix.stackexchange.com/questions/79334/how-does-a-linux-terminal-work/79354">https://unix.stackexchange.com/questions/79334/how-does-a-linux-terminal-work/79354</a></li>
+<li><a href="https://askubuntu.com/questions/809870/proc-self-dynamically-changing-a-soft-link">https://askubuntu.com/questions/809870/proc-self-dynamically-changing-a-soft-link</a></li>
+<li><a href="https://www.quora.com/How-do-I-understand-the-tmux-design-architecture-and-internals">https://www.quora.com/How-do-I-understand-the-tmux-design-architecture-and-internals</a></li>
+<li><a href="https://leanpub.com/the-tao-of-tmux/read#leanpub-auto-terminal-emulators">https://leanpub.com/the-tao-of-tmux/read#leanpub-auto-terminal-emulators</a></li>
+<li><a href="https://linux.die.net/man/4/ptmx">https://linux.die.net/man/4/ptmx</a></li>
+<li><a href="https://github.com/tmux/tmux/tree/master/presentations">https://github.com/tmux/tmux/tree/master/presentations</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

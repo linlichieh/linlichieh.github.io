@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Rails Testing | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/ruby-on-rails-testing/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/ruby-on-rails-testing/">Rails Testing</a></h1>
+    <p class="meta"><time datetime="2015-07-08T00:21:43&#43;08:00">July 08, 2015</time></p>
+  </header>
+  
+
+<h2 id="introduction">Introduction</h2>
+
+<ul>
+<li><a href="https://github.com/rspec/rspec-rails">Rspec-rails</a>, 是一套 Rails 的 BDD Testing framework, 非常強大</li>
+<li><a href="https://github.com/thoughtbot/factory_girl_rails">Factory Girl</a>, 產生測試資料</li>
+<li><a href="https://github.com/jnicklas/capybara">Capybara</a>, 用來搭配 Rspec 的測試工具, 可以模擬使用者操作瀏覽器</li>
+<li>(TODO) watchr (存檔馬上測) / rcov(測試涵蓋度) / shoulda (matcher)</li>
+</ul>
+
+<p>Gemfile</p>
+
+<pre><code>group :development, :test do
+  gem &quot;rspec&quot;           # 可以不需要，如果要用原來的 rspec 才需引入
+  gem 'rspec-rails'     # rspec 與 rails 整合的套件
+  gem &quot;factory_girl_rails&quot;
+end
+</code></pre>
+
+<p>安裝 rspec : <code>rails generate rspec:install</code></p>
+
+<h2 id="rspec">Rspec</h2>
+
+<h3 id="關於-bdd">關於 BDD</h3>
+
+<p>BDD 是基於 TDD 發展出來的，不同 TDD 的地方在於 BDD 寫出系統行為的規格，好處是可以盡量避免細節的遺漏、更容易理解及維護。</p>
+
+<h3 id="指令">指令</h3>
+
+<ul>
+<li>執行所有測試 : <code>rspec</code></li>
+<li>只跑 controllers 的測試 : <code>rspec spec/controllers</code></li>
+</ul>
+
+<h3 id="rspec-指令參數"><code>.rspec</code> 指令參數</h3>
+
+<pre><code>當安裝完 rspec 時, `.rspec` 參數檔會自動被建立在網站根目錄
+</code></pre>
+
+<ul>
+<li><code>--color</code> : 在執行測試時的訊息會有顏色方便閱讀</li>
+<li><code>--require spec_helper</code> : 載入 <code>spec/spec_helper.rb</code> 這個檔案</li>
+<li><code>--warning</code> : 為了避免干擾，移除它可以避免 rspec 與其他 gem 不相容的警告 <code>warning: loading in progress, circular require considered harmful</code></li>
+<li><code>-fs</code> : 輸出 specdoc 文件</li>
+<li><code>-fh</code> : 輸出 html 文件</li>
+</ul>
+
+<h3 id="目錄結構">目錄結構</h3>
+
+<ul>
+<li>spec
+
+<ul>
+<li>rails_helper.rb (自動建立的設定檔)</li>
+<li>spec_helper.rb (自動建立的設定檔)</li>
+<li>models (手動建立的，用來測試 models)</li>
+<li>views (手動建立的，用來測試 views)</li>
+<li>controllers (手動建立的，用來測試 controllers)
+
+<ul>
+<li>posts_spec.rb (手動建立的，用來測試 Post controller)</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h3 id="語法">語法</h3>
+
+<ul>
+<li><a href="http://rspec.codeschool.com/">初學可以來這裡玩一下它的教學導引</a></li>
+<li><a href="http://motion-express.com/trainings/rspec-rails-1">特快車 中文教學影片</a></li>
+</ul>
+
+<p>測試檔大致上的架構會是這樣</p>
+
+<pre><code>require 'rails_helper'              # 一定要先加上，用來讀取 rails rspec 的設定檔
+
+# 用 describe 來包 it
+describe '描述大方向要做的事情' do
+  it '要做的事情的細項' do
+    # rspec 的語法
+  end
+end
+</code></pre>
+
+<p>describe (= RSpec.describe) / it</p>
+
+<pre><code>describe '描述大方向要做的事情' do
+describe PostController, type: :controller do
+
+# describe 也可以 包 describe
+describe 'posts/edit.html.erb' do
+  # 一個 it 最好只有一種測試目的
+  it &quot;#index&quot;               # 用 # 代表 instance method
+  it &quot;.index&quot;               # 用 . 代表 class method
+  it &quot;render partial&quot;       # 當錯誤發生時，會顯示 posts/edit.html.erb render partial ，所以 describe / it 命名好可以很快知道哪裡沒通過測試
+
+  # 也可以再包一個 describe
+  describe ' ... '
+end
+</code></pre>
+
+<p>before / after</p>
+
+<pre><code>before(:all) : runs the block one time before all of the examples are run; sets the instance variables one time before all of the &quot;it&quot; blocks are run.
+before(:each) : runs the block one time before each of your specs in the file; resets the instance variables in the before block every time an &quot;it&quot; block is run.
+</code></pre>
+
+<p>expect / to</p>
+
+<pre><code>expect(1+1).to eq(2)                                                        # 相等
+expect{ post :create, post: @post_params }.to change{Post.all.size}.by(1)   # Model 新增成功 ; 判斷 Update 是否成功就直接用 eq 比值
+expect{ post :destroy, id: 1 }.to change{Post.all.count}.by(-1)             # Model 刪除成功
+expect(columns).not_to include('nickname')                                  # hash 是否有 'nickname'
+expect(response).not_to have_http_status(302)                               # http = 200
+expect(response).to render_template(:new)                                   # render 的 view
+expect(response).to redirect_to(posts_path)                                 # redirect 的頁面
+expect(Post.create!).to eq(Post.last)                                       # 驗證是否成功新增一筆資料
+expect { ... }.to rqise_error(NotPaidError)                                 # 例外
+
+# should 是舊語法，盡量改用 expect
+tweet.status.length.should be &lt;= 140
+</code></pre>
+
+<p>mock 模仿真的物件 (TODO)</p>
+
+<p>stub 回傳設定好的值</p>
+
+<pre><code># 用意是讓 Post 這個 model 執行 save 時都一律回傳 false, 以便測試到失敗的例子
+allow_any_instance_of(Post).to receive(:save).and_return(:false)
+
+@user = stub(&quot;user&quot;)
+@user.stub(:name).and_return(&quot;Apple&quot;)                       # @user.name = &quot;Apple&quot;
+@client = stub(&quot;client&quot;)
+@client.stub_chain(:foo, :bar, :baz).and_return(&quot;blah&quot;)     # @client.foo.bar.baz = &quot;blah&quot;
+User.stub(:find).and_return(&quot;Apple&quot;)
+receive(:ping).once
+receive(:ping).twice
+receive(:ping).exactly(3).times
+receive(:ping).at_most(3).times
+receive(:ping).at_least(3).times
+receive(:transfer).and_raise(TransferError)
+</code></pre>
+
+<p>get / post</p>
+
+<pre><code>get :index
+get :edit, id: @post[:id]                           # 傳入 get 參數
+post :create, post: @post_params                    # 傳入 post 的參數
+post :update, post: @post_params, id: @post[:id]    # 傳入 post 及 get 的參數
+</code></pre>
+
+<p>pending</p>
+
+<pre><code>describe Post do
+  it &quot;has a name&quot;     ＃沒有do / end
+  xit &quot;has a name&quot;
+  pending &quot;add some examples to (or delete) #{__FILE__}&quot;
+end
+</code></pre>
+
+<p>Matcher</p>
+
+<pre><code>be_treu / be_afalse / be_nil / be_empty / be_blank / be_admin (target.admin?)
+be_a_kind_of(Array) = be_an_instance_of(Array)
+have_key(:foo) / include(4) / have(3).items (target.items.length = 3)
+</code></pre>
+
+<h3 id="實際撰寫的邏輯">實際撰寫的邏輯</h3>
+
+<p>controller</p>
+
+<pre><code># 一般情況 : action 是否正常
+it &quot;#index&quot; do
+    get :index
+    expect(response).to have_http_status(200)
+    expect(response).to render_template(:index)
+end
+
+# 將需要成功/失敗的先用 stub 處理
+it &quot;create / update 失敗&quot; do
+    先用 stub 讓 .save 失敗再做其他判斷
+end
+</code></pre>
+
+<p>view</p>
+
+<pre><code># 一般情況的 render
+it &quot;can render&quot; do
+    @post = Post.create(:title =&gt; &quot;Big Title&quot;, :content =&gt; &quot;content&quot;)
+    @posts = Array.new(2, @post)
+    render
+    expect(rendered).to include(&quot;Big Title&quot;)
+end
+
+# render partial
+it &quot;render partial&quot; do
+    @post = Post.create(:title =&gt; &quot;Big Title&quot;, :content =&gt; &quot;content&quot;)
+    render
+    expect(response).to render_template(partial: &quot;_form&quot;)
+end
+
+# 忽略 view helper
+it &quot;renders content when @post has content&quot; do
+    allow(view).to receive(:render_content).and_return(&quot;Stub Content&quot;)          # view 有個 render_content 的 helper, 讓它強制回傳 &quot;Stub Content&quot;
+    render
+    expect(rendered).to include(&quot;Stub Content&quot;)
+end
+</code></pre>
+
+<p>model</p>
+
+<pre><code># 一般情況 create
+it &quot;is accessable&quot; do
+    post = Post.create!(title: &quot;title&quot;)
+    expect(post).to eq(Post.last)
+end
+
+# validate 不通過
+it &quot;validates title&quot; do
+    expect(Post.new).not_to be_valid
+end
+
+# 關聯 many / belongs_to  # (有 gem 可以直接做這件事)
+it &quot;has_many comments&quot; do
+    post = Post.create(:title =&gt; &quot;title&quot;, :content =&gt; &quot;content&quot;)
+    comment = Comment.create(:content =&gt; &quot;content&quot;, :post_id =&gt; post.id)
+    expect(post.comments).to include(comment)
+end
+</code></pre>
+
+<p>routing</p>
+
+<pre><code># 一般 route
+it &quot;#index&quot; do
+    expect(get: '/posts/1').to route_to(
+        controller: 'posts',
+        action: 'show',
+        id: 1
+    )
+    可以簡化為 :
+    expect(get: '/posts').to route_to(&quot;posts#index&quot;)
+end
+</code></pre>
+
+<p>整合測試 (MVC一連串的行為測試，不再單獨測功能)</p>
+
+<blockquote>
+<p>先建立 spec/requests/posts_spec.rb</p>
+</blockquote>
+
+<pre><code># 實際模擬
+describe &quot;posts&quot;, type: :request do
+    before(:all) do
+        @post = Post.create(title: 'post from request spec')
+    end
+
+    it &quot;#index&quot; do
+        get &quot;/posts&quot;
+        expect(response).to have_http_status(200)
+        expect(response).to render_template(:index)
+        expect(response.body).to include('post from request spec')
+    end
+
+    it &quot;#create&quot; do
+        params = {title: 'create title', content: 'create content'}
+        post &quot;/posts&quot;, post: params
+        expect(response).to have_http_status(302)       # 會轉址
+        expect(Post.last.title).to eq(params[:title])
+    end
+end
+</code></pre>
+
+<h2 id="factory-girl">Factory Girl</h2>
+
+<h3 id="介紹">介紹</h3>
+
+<p>在開始或測試一定會需要測試資料, 例如模擬真實上線時頁面的樣子,</p>
+
+<p>或需要搭配 Rspec 測試 models 的 validation,</p>
+
+<p>需要大量又隨機的資料自己手動新增也太辛苦, 可以藉由 Factory Girl 幫你產生</p>
+
+<h3 id="getting-started-todo-未完成">Getting started (TODO 未完成)</h3>
+
+<blockquote>
+<p>Factory Girl 建議是一個 model 對應一個 Factory Girl 檔案, 例如 models/user.rb 對應到 sepc/factiries/user.rb</p>
+</blockquote>
+
+<p>spec/factories/user.rb</p>
+
+<pre><code>FactoryGirl.define do
+  factory :user do
+    name &quot;foo&quot;
+    email &quot;bar@foo.com&quot;
+    password &quot;12341234&quot;
+    birthday &quot;1982-03-30&quot;
+  end
+end
+</code></pre>
+
+<h3 id="todo-未完成">(TODO 未完成)</h3>
+
+<p>db/seeds.rb</p>
+
+<pre><code>require 'factory_girl_rails'
+
+puts 'Creating Roles.'
+%w(guest user admin super-admin super-duper-admin).each do |role|
+  Role.find_or_create_by(name: role)
+end
+</code></pre>
+
+<p>spec/factories/roles.rb:</p>
+
+<pre><code>FactoryGirl.define do
+  factory :role do
+    name { &quot;role_#{rand(9999)}&quot; }
+
+    factory :guest_role, parent: :role do
+      name 'guest'
+    end
+
+    factory :user_role, parent: :role do
+      name 'user'
+    end
+
+    factory :admin_role, parent: :role do
+      name 'admin'
+    end
+  end
+end
+</code></pre>
+
+<p>spec/factories/users.rb:</p>
+
+<pre><code>FactoryGirl.define do
+  factory :user do
+    email 'user@example.com'
+
+    factory :admin_user, parent: :user do
+      email 'admin@example.com'
+      after(:create) {|user| user.add_role(:admin)}
+    end
+  end
+end
+</code></pre>
+
+<h2 id="ref">ref :</h2>
+
+<ul>
+<li><a href="http://motion-express.com/blog/20140723-rspec-usage">Rails Rspec 特快車</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>PHP Testing | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/php-testing/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/php-testing/">PHP Testing</a></h1>
+    <p class="meta"><time datetime="2013-03-07T00:00:00Z">March 07, 2013</time></p>
+  </header>
+  
+
+<h2 id="mock">Mock</h2>
+
+<h3 id="mock-global-function-and-class-method">Mock global function and class method</h3>
+
+<p>Notify.php</p>
+
+<pre><code>&lt;?php
+namespace Utility;
+
+class Notify
+{
+    private $obj;
+
+    // Parameter was passed to use as mocked object
+    public function __construct($mockObj = NULL)
+    {
+        if ($mockObj != NULL) {
+            $this-&gt;obj = $mockObj;
+        } else {
+            $this-&gt;obj = $this;
+        }
+    }
+
+    public function doSomething($url)
+    {
+        $is200 = $this-&gt;obj-&gt;is200OK($url);
+        $body = file_get_contents($url);
+        return [$is200, $body];
+    }
+
+    public function is200OK($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        if (!curl_errno($ch)) {
+            if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
+                return true;
+            }
+        }
+        curl_close($ch);
+        return false;
+    }
+}
+</code></pre>
+
+<p>NotifyTest.php</p>
+
+<pre><code>&lt;?php
+namespace
+{
+    $mock = false;
+}
+
+namespace Utility
+{
+    // Mock global function
+    function file_get_contents()
+    {
+        global $mock;
+        if (isset($mock) &amp;&amp; $mock === true) {
+            return &quot;file_get_contents was mocked&quot;;
+        } else {
+            return call_user_func_array('\file_get_contents', func_get_args());
+        }
+    }
+
+    include_once 'Notify.php';
+    use PHPUnit\Framework\TestCase;
+    class NotifyTest extends TestCase
+    {
+        public function setUp()
+        {
+            global $mock;
+            $mock = false;
+        }
+
+        public function testWithoutMock()
+        {
+            $dummy = new Notify();
+            list($is200, $body) = $dummy-&gt;doSomething(&quot;https://google.com/&quot;);
+            $this-&gt;assertTrue($is200);
+        }
+
+        public function testWithMock()
+        {
+            global $mock;
+            $mock = true;
+
+            // Mock class method
+            $mockNotify = $this-&gt;createMock(Notify::class);
+            $mockNotify-&gt;method(&quot;is200OK&quot;)-&gt;willReturn(true);
+
+            // Inject mocked Notify class
+            $dummy = new Notify($mockNotify);
+            list($is200, $body) = $dummy-&gt;doSomething(&quot;https://google.com/f&quot;);
+            $this-&gt;assertTrue($is200);
+        }
+    }
+}
+</code></pre>
+
+<p>Ref:</p>
+
+<ul>
+<li><a href="http://marcelog.github.io/articles/php_mock_global_functions_for_unit_tests_with_phpunit.html">Mocking Global Php 5.3 Functions Using Namespaces</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

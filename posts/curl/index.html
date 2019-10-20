@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Linux curl | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.58.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="/posts/curl/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/classes.css">
+
+<header class="dark">
+  <h2><a href="/">Jack&#39;s Note</a></h2>
+  <nav>
+    
+  </nav>
+</header>
+
+<article>
+  <header>
+    <h1><a href="/posts/curl/">Linux curl</a></h1>
+    <p class="meta"><time datetime="2015-02-21T23:54:06&#43;08:00">February 21, 2015</time></p>
+  </header>
+  
+
+<h3 id="i-i-顯示-response-的-detail"><code>-i</code> <code>-I</code> 顯示 response 的 detail</h3>
+
+<p>只顯示 header</p>
+
+<pre><code>curl -I http://wwww.example.com
+</code></pre>
+
+<p>顯示 header + body</p>
+
+<pre><code>curl -i http://wwww.example.com
+</code></pre>
+
+<h3 id="h-指定-header"><code>-H</code> 指定 Header</h3>
+
+<pre><code>curl -H &quot;Authorization:Bearer NDQzYmM1ZD&quot; http://www.example.com
+</code></pre>
+
+<h3 id="d-將-response-的-header-輸出成檔案"><code>-D</code> 將 response 的 header 輸出成檔案</h3>
+
+<pre><code>curl www.google.com -D /tmp/google-cookie.txt
+</code></pre>
+
+<h3 id="v-顯示-request-reqsponse-的-request-detail"><code>v</code> 顯示 request/reqsponse 的 request detail</h3>
+
+<pre><code>curl -v http://wwww.example.com
+</code></pre>
+
+<h3 id="l-support-302-redirect"><code>-L</code> support 302 redirect</h3>
+
+<pre><code>$ curl -L www.google.com
+</code></pre>
+
+<h3 id="x-指定-proxy"><code>-x</code> 指定 proxy</h3>
+
+<pre><code>curl -x proxy.example2.com:8080 http://www.example.com
+</code></pre>
+
+<h3 id="b-使用指定的-cookie"><code>-b</code> 使用指定的 cookie</h3>
+
+<pre><code>curl -b cookie.txt http://www.example.com
+</code></pre>
+
+<h3 id="e-referrer-若該網站限制需先訪問網站首頁才能訪問下載頁"><code>-e</code> Referrer (若該網站限制需先訪問網站首頁才能訪問下載頁)</h3>
+
+<pre><code>curl -e &quot;www.example.com&quot; http://download.example.com
+</code></pre>
+
+<h3 id="支援-regex">支援 Regex</h3>
+
+<pre><code>curl -O http://www.example.com/img0[1-9].jpg
+</code></pre>
+
+<h3 id="o-指定下載的檔案名稱"><code>-o</code> 指定下載的檔案名稱</h3>
+
+<pre><code>curl -o test.mp4 http://www.example.com/static/test-3841.mp4
+</code></pre>
+
+<h3 id="u-指定帳號密碼"><code>-u</code> 指定帳號密碼</h3>
+
+<pre><code>curl -u name:passwd ftp://ftp.example.com:13688/path
+</code></pre>
+
+<blockquote>
+<p>相當於 $ curl <a href="ftp://name:passwd@ftp.example.com:13688/path">ftp://name:passwd@ftp.example.com:13688/path</a></p>
+</blockquote>
+
+<h3 id="d-post"><code>-d</code> POST</h3>
+
+<pre><code>curl -d &quot;user=robin&amp;password=1234&quot; http://example.com/update_user
+</code></pre>
+
+<h3 id="t-put"><code>-T</code> PUT</h3>
+
+<pre><code>curl -X PUT -d &quot;payload&quot; http://localhost
+curl -T test.mp4 http://example.com/update_video
+</code></pre>
+
+<h3 id="d-file-path-body-referred-to-file"><code>-d @{file_path}</code> body referred to file</h3>
+
+<pre><code>curl -X PUT -d @/tmp/test.log http://example.com/update_user
+curl -X POST -d @/tmp/test.log http://example.com/update_user
+</code></pre>
+
+</article>
+
+
+
+</html>
