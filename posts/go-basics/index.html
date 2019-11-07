@@ -1626,6 +1626,10 @@ Error: Remotes failed for:
 
 <h2 id="panic-and-recover">Panic and Recover</h2>
 
+<blockquote>
+<p>You can only use <code>recover()</code> to catch panic. You can&rsquo;t catch <code>fmt.Fatal(&quot;something went wrong&quot;)</code>.</p>
+</blockquote>
+
 <h3 id="攔截並印出-error">攔截並印出 error</h3>
 
 <p>如果不想因為程式發生 <code>index out of range</code> 或由 panic 擲出的 error 導致整個程序強制中止的話可以用 recover 來攔截,

@@ -67,6 +67,36 @@
 
 <p>google TCP BBR</p>
 
+<h2 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h2>
+
+<p>ref: <a href="https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support">https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support</a></p>
+
+<pre><code>The theoretical maximum number of connections per client per server port is 65534.
+Assuming one network interface (i.e., 1 IP on your host),
+then you could potentially make ~4 million (IP address space size) x 65534.
+I think maybe we should talk in logarithmic terms since this number is already so huge :)
+What will bite you before that will be other issues - such as the design of application which is making or handling such connections,
+your OS's TCP/IP stack design or ultimately the amount of memory.
+If memory is not the issue and you want to increase that number,
+you can add another network interface and double this number further (ie., increase number of clients).
+</code></pre>
+
+<p>ref: <a href="https://medium.com/fantageek/understanding-socket-and-port-in-tcp-2213dc2e9b0c">https://medium.com/fantageek/understanding-socket-and-port-in-tcp-2213dc2e9b0c</a></p>
+
+<pre><code>What is the maximum number of concurrent TCP connections that a server can handle, in theory ?
+
+A single listening port can accept more than one connection simultaneously.
+There is a ‘64K’ limit that is often cited, but that is per client per server port, and needs clarifying.
+If a client has many connections to the same port on the same destination,
+then three of those fields will be the same — only source_port varies to differentiate the different connections.
+Ports are 16-bit numbers, therefore the maximum number of connections any given client can have to any given host port is 64K.
+However, multiple clients can each have up to 64K connections to some server’s port,
+and if the server has multiple ports or either is multi-homed then you can multiply that further
+So the real limit is file descriptors. Each individual socket connection is given a file descriptor,
+so the limit is really the number of file descriptors that the system has been configured to allow and resources to handle.
+The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
+</code></pre>
+
 <h2 id="http-https">HTTP / HTTPS</h2>
 
 <h3 id="keep-alive-1">Keep-alive</h3>

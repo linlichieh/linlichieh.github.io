@@ -84,12 +84,10 @@ pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections
       <pubDate>Mon, 27 Jan 2014 23:19:00 +0000</pubDate>
       
       <guid>/posts/go-gui/</guid>
-      <description>therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本
-如果都安裝成功後跑 basic example 就可以看到 GUI 介面了
-如果跑 $GOPATH/bin/qtsetup 遇到這個錯誤 Project ERROR: Could not resolve SDK Path for &#39;macosx&#39; 執行 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer, 再跑一次
-Cross compile (未完成) linux 似乎可以 cross compile 到 windows, 使用官方提供的 docker 並按步驟安裝 cross compile 需要的套件, 但一直遇到環境問題, 很多套件無法順利安裝, 便放棄了
-Windows 安裝 walk 及 rsrc
-1) Walk 是一款 golang 的 GUI Framework</description>
+      <description>QT, OpenGL Qt is an application framework, where you can build (almost) everything within Qt.
+OpenGL is a graphic library. The difference between library and framework is simple: Library is used for one specific thing, i.e. drawing, or doing data stuff, framework on the other hand is a set of libraries.
+ref: https://www.quora.com/What-are-the-difference-between-QT-OpenGL-Unity
+therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本</description>
     </item>
     
     <item>
