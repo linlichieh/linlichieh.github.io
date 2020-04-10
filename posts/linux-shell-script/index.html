@@ -251,6 +251,13 @@ fi
 fi
 </code></pre>
 
+<h4 id="判斷檔案是否在該目錄">判斷檔案是否在該目錄</h4>
+
+<pre><code>if (ls | grep -q &quot;XXX&quot;); then
+    echo &quot;XXX existed&quot;
+fi
+</code></pre>
+
 <h4 id="判斷沒有目錄直接離開">判斷沒有目錄直接離開:</h4>
 
 <pre><code>if [ ! -d &quot;/var/www/$dir&quot; ]; then

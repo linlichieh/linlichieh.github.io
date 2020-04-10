@@ -207,6 +207,31 @@ end
 
 <p>重啟 Rails app, 並且 restart postgres, 建議手動把 postgres 的 pid 先殺光光再啟動</p>
 
+<h3 id="permission-denied-for-sequence-field-name">permission denied for sequence <code>field_name</code></h3>
+
+<p>Error:</p>
+
+<pre><code>An exception occurred while executing 'SELECT NEXTVAL('jobs_id_seq')
+Insufficient privilege: 7 ERROR:  permission denied for sequence jobs_id_seq
+</code></pre>
+
+<h5 id="view-privilege">view privilege</h5>
+
+<p>table</p>
+
+<pre><code>select tablename from pg_tables where schemaname = 'public';
+</code></pre>
+
+<p>view</p>
+
+<pre><code>select table_name from information_schema.views where table_schema = 'public';
+</code></pre>
+
+<p>sequence</p>
+
+<pre><code>select sequence_name from information_schema.sequences where sequence_schema = 'public';
+</code></pre>
+
 </article>
 
 

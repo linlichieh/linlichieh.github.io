@@ -191,6 +191,17 @@ Avocado 🥑
 <li><code>git rebase —continue</code></li>
 </ol>
 
+<h3 id="rebase-a-specific-commit">rebase a specific commit</h3>
+
+<ol>
+<li>(edit files)</li>
+<li>git add</li>
+<li>git commit &ndash;fixup {Parent commit id}</li>
+<li>git rebase -i HEAD~3  (assume we want to rebase on the second commit)</li>
+<li>mark fixup on the commit that you want it to go (called commit C)</li>
+<li>change the order of commit C to middle, because it will rebase onto the commit above it</li>
+</ol>
+
 <h2 id="git-merge-與-git-rebase-差異"><code>git merge 與 git rebase</code> 差異</h2>
 
 <p>兩者結果是一樣的，產生的 history 不同點 :</p>
@@ -360,6 +371,14 @@ added new file
 <pre><code>git checkout develop
 git cherry-pick f08515bc579a06dd9c8bd7f2dfc30ad4d5a73646
 </code></pre>
+
+<h3 id="git-rerere">git rerere</h3>
+
+<p>It is used for cherry-pick
+Especially for fixing conflict when cherry-pick latest commits from develop branch against an old tag commit
+Basically, it records the change you made and apply the fixes to next conflicts</p>
+
+<p>See more: <a href="https://git-scm.com/docs/git-rerere">https://git-scm.com/docs/git-rerere</a></p>
 
 <h2 id="git-show"><code>git show</code></h2>
 
