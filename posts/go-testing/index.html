@@ -231,8 +231,8 @@ func GetFaceCount(c Counter, filepath string) (int, error) {
 }
 
 func main() {
-    cv := OpenCV{}
-    count, _ := cv.CountFaces(&quot;/tmp/fake-img.jpg&quot;)
+    cv := &amp;OpenCV{}
+    count, _ := GetFaceCount(cv, &quot;/tmp/fake-img.jpg&quot;)
     fmt.Printf(&quot;Face count: %d\n&quot;, count)
 }
 </code></pre>
@@ -243,7 +243,9 @@ func main() {
     MockCount func(string) (int, error)
 }
 
-func (f *FakeOpenCV) CountFaces(s string) (int, error) { return f.MockCount(s) }
+func (f *FakeOpenCV) CountFaces(s string) (int, error) {
+    return f.MockCount(s)
+}
 
 func TestDatabase(t *testing.T) {
     fake := &amp;FakeOpenCV{

@@ -366,6 +366,10 @@ added new file
 
 <h2 id="git-cherry-pick"><code>git cherry-pick</code></h2>
 
+<ul>
+<li><code>-x</code>: Preserve original commit id</li>
+</ul>
+
 <p>將某一個 branch 的<strong>某一個</strong> commit 的變動 merge 到另一條 branch, 假如 develop 只想要 merge feature 的某一個 commit, 則需要先把 feature 的那條 commit id 記下來, 再切到 develop 做 cherry-pick</p>
 
 <pre><code>git checkout develop
