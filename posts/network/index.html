@@ -97,6 +97,26 @@ so the limit is really the number of file descriptors that the system has been c
 The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
 </code></pre>
 
+<h3 id="tcp-time-wait">TCP TIME_WAIT</h3>
+
+<p>When a connection is closed, it will be turned into the state TIME_WAIT. Network in real world can be unpredicable.
+There is no gurantee for packet to be delivered in order. When lost packet was delayed to ask to close the connection,
+which was already disconnected, server might be confused by it and close the new established connection if it doesn&rsquo;t
+have TIME_WAIT state. TIME_WAIT keeps the info of source address, source port, destination address and destination port.
+When server recevied delayed packet to ask for closing connection, server can use TIME_WAIT to verify whether it has
+been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from messing up the new connection from the same address.</p>
+
+<p>TIME_WAIT might not hold a FD, it only consumes a local port.</p>
+
+<h3 id="nf-conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
+
+<p>It is a function to track connections managed by kernel. It might be only used in haproxy server.
+If it is full, it won&rsquo;t accept new connection.
+There are 3 ways to fix it.
+* Increase the maximum number of nf_conntrack.
+* Reduce the timeout of connection being tracked.
+* Disable connection track. (recommend)</p>
+
 <h2 id="http-https">HTTP / HTTPS</h2>
 
 <h3 id="keep-alive-1">Keep-alive</h3>
