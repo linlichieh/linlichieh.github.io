@@ -402,6 +402,53 @@ func TestUserInfo(t *testing.T) {
 }
 </code></pre>
 
+<h3 id="go-doesn-t-support-overriding-method-becasue-it-s-embedded-struct-as-opposed-to-inheritance">Go doesn&rsquo;t support overriding method, becasue it&rsquo;s embedded struct as opposed to inheritance</h3>
+
+<pre><code>type DB interface {
+    Do()
+}
+
+type mysql struct{}
+
+func (m *mysql) Do() {
+    fmt.Println(m.Custom())
+}
+
+func (m *mysql) Custom() string {
+    return &quot;mysql&quot;
+}
+
+type fakeMysql struct {
+    mysql
+}
+
+func (m *fakeMysql) Custom() string {
+    return &quot;fake mysql&quot;
+}
+
+func Do(db DB) {
+    db.Do()
+}
+
+func main() {
+    m := &amp;mysql{}
+    Do(m)
+
+    f := &amp;fakeMysql{}
+    Do(f)
+}
+</code></pre>
+
+<p>output:</p>
+
+<pre><code>mysql
+mysql
+</code></pre>
+
+<blockquote>
+<p>The second line is not what we expected as <code>fake mysql</code></p>
+</blockquote>
+
 <h2 id="stub">Stub</h2>
 
 <h3 id="time-now">time.Now</h3>
