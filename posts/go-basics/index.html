@@ -1865,6 +1865,33 @@ fmt.Println(dd)         // map[0:0x41602c 1:0x41602c 2:0x41602c]
 fmt.Println(dd2)        // map[0:0x416020 1:0x416024 2:0x416028]
 </code></pre>
 
+<h3 id="go-mod">go mod</h3>
+
+<p>go mod tidy</p>
+
+<pre><code>go: finding module for package github.com/user_name/private_repo_name/package_name
+test/controller imports
+        github.com/user_name/private_repo_name/package_name: cannot find module providing package github.com/user_name/private_repo_name/package_name: module
+ github.com/user_name/private_repo_name/package_name: git ls-remote -q origin in /Users/jacklin/go/pkg/mod/cache/vcs/697da452d33316e5203c4e98f8eb82049f3cb1b48b123194bc15
+8a0a4d78af7e: exit status 128:
+        fatal: could not read Username for 'https://github.com': terminal prompts disabled
+Confirm the import path was entered correctly.
+If this is a private repository, see https://golang.org/doc/faq#git_https for additional information.
+</code></pre>
+
+<p>[solution]</p>
+
+<p>Run</p>
+
+<pre><code>go env -w GOPRIVATE=github.com/user_name
+</code></pre>
+
+<p>.gitconfig</p>
+
+<pre><code>[url &quot;https://user_name:{ACCESS TOKEN}@github.com&quot;]
+    insteadOf = https://github.com
+</code></pre>
+
 </article>
 
 
