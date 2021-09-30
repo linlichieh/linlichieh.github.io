@@ -1717,6 +1717,7 @@ func main() {
 <li>Readers don&rsquo;t have to wait for each other. They only have to wait for writers holding the lock.</li>
 <li>Preferable for data that is mostly read.</li>
 <li>There is no <code>WLock()</code>; instead, use <code>Lock()</code>, but it does have <code>RLock()</code></li>
+<li><code>RLock()</code> will only be blocked by <code>Lock()</code></li>
 </ul>
 
 <h3 id="mutex">Mutex</h3>
@@ -1811,6 +1812,40 @@ fmt.Println(&quot;safe counter:&quot;, safeCounter)
 <pre><code>atomic counter: 5000
 unsafe counter: 4924
 safe counter: 5000
+</code></pre>
+
+<h3 id="sync-once">sync/once</h3>
+
+<p>example</p>
+
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var once sync.Once
+    onceBody := func() {
+        fmt.Println(&quot;Only once&quot;)
+    }
+    done := make(chan bool)
+    for i := 0; i &lt; 10; i++ {
+        go func() {
+            once.Do(onceBody)
+            done &lt;- true
+        }()
+    }
+    for i := 0; i &lt; 10; i++ {
+        &lt;-done
+    }
+}
+</code></pre>
+
+<p>result:</p>
+
+<pre><code>Only once
 </code></pre>
 
 <h2 id="encoding">encoding</h2>
@@ -3092,8 +3127,6 @@ time.Sleep(10 * time.Second)
 
 <h3 id="取代的-html-template-為字串">取代的 HTML template 為字串</h3>
 
-<p>{% raw %}</p>
-
 <pre><code class="language-go">package main
 
 import (
@@ -3130,8 +3163,6 @@ func main() {
 }
 </code></pre>
 
-<p>{% endraw %}</p>
-
 <p>瀏覽器得到 server 輸出的內容 :</p>
 
 <pre><code>&lt;html&gt;
@@ -3166,8 +3197,6 @@ func main() {
 
 <p>header.tmpl :</p>
 
-<p>{% raw %}</p>
-
 <pre><code class="language-go">{{define &quot;header&quot;}}
 &lt;html&gt;
 &lt;head&gt;
@@ -3177,11 +3206,7 @@ func main() {
 {{end}}
 </code></pre>
 
-<p>{% endraw %}</p>
-
 <p>body.html :</p>
-
-<p>{% raw %}</p>
 
 <pre><code class="language-go">{{define &quot;body&quot;}}
 {{template &quot;header&quot;}}
@@ -3191,19 +3216,13 @@ func main() {
 {{end}}
 </code></pre>
 
-<p>{% endraw %}</p>
-
 <p>footer.tmpl :</p>
-
-<p>{% raw %}</p>
 
 <pre><code class="language-go">{{define &quot;footer&quot;}}
 &lt;/body&gt;
 &lt;/html&gt;
 {{end}}
 </code></pre>
-
-<p>{% endraw %}</p>
 
 <p>最後在瀏覽器顯示的結果是 :</p>
 
@@ -3233,8 +3252,6 @@ Do you copy?
 
 <p>view/nameList.tmpl :</p>
 
-<p>{% raw %}</p>
-
 <pre><code class="language-go">{{define &quot;nameList&quot;}}
 Name list :
 {{ range $i, $name := .nameList}}
@@ -3242,8 +3259,6 @@ Name list :
 {{end}}
 {{end}}
 </code></pre>
-
-<p>{% endraw %}</p>
 
 <p>func main :</p>
 
@@ -3261,18 +3276,12 @@ fmt.Println(tmp.String())
 
 <p>建立要重覆的 urlItem.tmpl :</p>
 
-<p>{% raw %}</p>
-
 <pre><code class="language-go">{{define &quot;urlItem&quot;}}
 &lt;li id=&quot;url-{{.num}}&quot;&gt;{{.num}}&lt;/li&gt;
 {{end}}
 </code></pre>
 
-<p>{% endraw %}</p>
-
 <p>body.html :</p>
-
-<p>{% raw %}</p>
 
 <pre><code class="language-go">{{define &quot;body&quot;}}
 &lt;ul class=&quot;list-group&quot;&gt;
@@ -3280,8 +3289,6 @@ fmt.Println(tmp.String())
 &lt;/ul&gt;
 {{end}}
 </code></pre>
-
-<p>{% endraw %}</p>
 
 <p>完整程式碼 :</p>
 
@@ -3331,8 +3338,6 @@ err = emailLayoutTemplates.Execute(&amp;tmp, replacement)
 
 <p>用 <code>template.HTML</code> 包起來</p>
 
-<p>{% raw %}</p>
-
 <pre><code class="language-go">improt &quot;html/template&quot;
 
 var t = template.Must(template.New(&quot;ex&quot;).Parse(`{{.name}} pen. {{.name2}} pen.`))
@@ -3342,8 +3347,6 @@ data := map[string]interface{}{
 }
 t.ExecuteTemplate(os.Stdout, &quot;ex&quot;, data)
 </code></pre>
-
-<p>{% endraw %}</p>
 
 <p>result</p>
 
