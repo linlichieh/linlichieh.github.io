@@ -1867,12 +1867,7 @@ fmt.Println(dd2)        // map[0:0x416020 1:0x416024 2:0x416028]
 
 <h3 id="go-mod">go mod</h3>
 
-<blockquote>
-<p>The reason why these issues exist is using go module and GOPATH at the same time.
-Remove $GOPATH and only juse go module is recommended</p>
-</blockquote>
-
-<p>issue 1 <code>finding module for package</code></p>
+<h5 id="finding-module-for-package"><code>finding module for package</code></h5>
 
 <pre><code>go mod tidy
 go: finding module for package github.com/user_name/private_repo_name/package_name
@@ -1885,7 +1880,22 @@ Confirm the import path was entered correctly.
 If this is a private repository, see https://golang.org/doc/faq#git_https for additional information.
 </code></pre>
 
-<p>Run</p>
+<p>The reason why these issues exist is using go module and GOPATH at the same time.
+Move all go projects out of <code>GOPATH/src</code>, use go module only</p>
+
+<h5 id="package-is-not-in-goroot"><code>package ... is not in GOROOT</code></h5>
+
+<p>It might be caused by importing another module in the same file systems</p>
+
+<p>You need to tell go modules where to file that module</p>
+
+<pre><code>go mod edit -replace example.com/greetings=../greetings
+go mod tidy
+</code></pre>
+
+<h3 id="go-get-private-repo">go get private repo</h3>
+
+<p>Add</p>
 
 <pre><code>go env -w GOPRIVATE=github.com/user_name/pkg_name
 </code></pre>
@@ -1895,34 +1905,6 @@ If this is a private repository, see https://golang.org/doc/faq#git_https for ad
 <pre><code>[url &quot;https://user_name:{ACCESS TOKEN}@github.com&quot;]
     insteadOf = https://github.com
 </code></pre>
-
-<p>issue 2 <code>no matching versions for query &quot;latest&quot;</code></p>
-
-<pre><code>go get github.com/user_name/pkg_name@v0.0.1
-exit status 128:
-            fatal: could not read Username for 'https://github.com': terminal prompts disabled
-    Confirm the import path was entered correctly.
-    If this is a private repository, see https://golang.org/doc/faq#git_https for additional information.
-</code></pre>
-
-<p>Run</p>
-
-<pre><code>go env -w GOPRIVATE=github.com/user_name/pkg_name
-
-go get github.com/user_name/pkg_name@v0.0.1
-go get: github.com/user_name/pkg_name@v0.0.1: parsing go.mod:
-    module declares its path as: pkg_name
-            but was required as: github.com/user_name/pkg_name
-
-Edit go.mod and add this line
----
-replace github.com/jacklin293/crypto-trading-bot-main =&gt; ../crypto-trading-bot-main
----
-</code></pre>
-
-<blockquote>
-<p>caused by require private repo</p>
-</blockquote>
 
 </article>
 
