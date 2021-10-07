@@ -1541,6 +1541,42 @@ mk := fmt.Sprintf(&quot;%X&quot;, key)  // 大寫
 fmt.Println(mk)
 </code></pre>
 
+<h3 id="generate-32-bytes-authentication-key">generate 32 bytes authentication key</h3>
+
+<pre><code>import (
+    &quot;crypto/rand&quot;
+    &quot;encoding/base64&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+)
+
+func GenerateRandomBytes(n int) ([]byte, error) {
+    b := make([]byte, n)
+    _, err := rand.Read(b)
+    // Note that err == nil only if we read len(b) bytes.
+    if err != nil {
+        return nil, err
+    }
+
+    return b, nil
+}
+
+func GenerateRandomString(s int) (string, error) {
+    b, err := GenerateRandomBytes(s)
+    return base64.URLEncoding.EncodeToString(b), err
+    // or
+    // return hex.EncodeToString(b), err
+}
+func main() {
+    // Example: this will give us a 44 byte, base64 encoded output
+    token, err := GenerateRandomString(32)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(token)
+}
+</code></pre>
+
 <h2 id="sync">sync</h2>
 
 <h3 id="pool-特性">pool 特性</h3>
@@ -2087,10 +2123,10 @@ fmt.Printf(&quot;decoded to %#v\n&quot;, x)
 
 <pre><code>data := &quot;abc123!?$*&amp;()'-=@~&quot;
 
-sEnc := b64.StdEncoding.EncodeToString([]byte(data))
+sEnc := base64.StdEncoding.EncodeToString([]byte(data))
 fmt.Println(sEnc)           # YWJjMTIzIT8kKiYoKSctPUB+
 
-sDec, _ := b64.StdEncoding.DecodeString(sEnc)
+sDec, _ := base64.StdEncoding.DecodeString(sEnc)
 fmt.Println(string(sDec))   # abc123!?$*&amp;()'-=@~
 </code></pre>
 
@@ -2159,10 +2195,9 @@ fmt.Println(hex.EncodeToString(b[:]))
 
 <h3 id="aes-cbc-encrypt">AES CBC encrypt</h3>
 
-<pre><code>plaintext 必須為 aes.Blocksize (16) 的倍數
+<p>plaintext 必須為 aes.Blocksize (16) 的倍數</p>
 
-
-import (
+<pre><code>import (
     &quot;crypto/aes&quot;
     &quot;crypto/cipher&quot;
     &quot;crypto/rand&quot;
@@ -2238,6 +2273,10 @@ func pad(src []byte, blocksize int) []byte {
 }
 </code></pre>
 
+<blockquote>
+<p>The IV can be saved (or can even be &ldquo;exposed&rdquo;/transmitted publicly); it is no &lsquo;secret&rsquo;. The key should be kept private. So you could save/transmit your data like <iv_here>;<encrypted_data_here>.</p>
+</blockquote>
+
 <h3 id="aes-cbc-decrypt">AES CBC decrypt</h3>
 
 <pre><code>import (
@@ -2310,6 +2349,8 @@ ret = strings.Replace(ret, &quot;=&quot;, &quot;&quot;, -1)
 import uuid &quot;github.com/satori/go.uuid&quot;
 uuid.NewV4()
 </code></pre>
+
+<h1 id="generate">generate</h1>
 
 <h2 id="defer">defer</h2>
 
