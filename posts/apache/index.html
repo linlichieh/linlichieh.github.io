@@ -2,31 +2,26 @@
 <html lang="en-us">
 <title>Apache | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/apache/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/apache/">Apache</a></h1>
-    <p class="meta"><time datetime="2013-07-21T05:56:38Z">July 21, 2013</time></p>
+    <h1>Apache</h1>
+    <time datetime="2013-07-21T05:56:38Z">July 21, 2013</time>
   </header>
-  
-
-<h2 id="基本設定">基本設定</h2>
-
+  <h2 id="基本設定">基本設定</h2>
 <p>/etc/apache2/sites-available/test.conf :</p>
-
 <pre><code>&lt;VirtualHost *:80&gt;
         ServerName example.com
         ServerAdmin admin@example.com
@@ -51,14 +46,10 @@
         LogLevel warn
 &lt;/VirtualHost&gt;
 </code></pre>
-
 <p>啟動 conf</p>
-
 <pre><code>sudo a2ensite test
 </code></pre>
-
 <h2 id="options">Options</h2>
-
 <ul>
 <li>All: 以下諸功能皆有</li>
 <li>None: 以下諸功能皆無</li>
@@ -69,40 +60,28 @@
 <li>ExecCGI: 可以執行CGI程式。</li>
 <li>MultiViews: 送出多國語言支援的頁面. 此功能必須被明確指定, Options All並不會提供這個功能</li>
 </ul>
-
 <h2 id="打開-rewrite-模組">打開 Rewrite 模組</h2>
-
 <pre><code>cd /etc/apache2
 a2enmod
 rewrite
 </code></pre>
-
 <h2 id="設置轉向自訂的404頁面">設置轉向自訂的404頁面</h2>
-
 <pre><code>ErrorDocument 404 /404.php
 </code></pre>
-
 <h2 id="建立多個virtual-host">建立多個virtual host</h2>
-
 <ol>
 <li>在<code>/etc/apache2/sites-available</code>建立virtual host, ex: test</li>
 <li><code>sudo a2ensite test</code></li>
 <li><code>sudo service apache2 restart</code></li>
 </ol>
-
 <h2 id="設定環境變數">設定環境變數</h2>
-
 <blockquote>
 <p>多用在不同的virtual host使得每個都擁有不同的環境變數例如:</p>
 </blockquote>
-
 <p>不同的virtual host要共用同一個環境變數可以在/etc/apache2/apache2.conf設定</p>
-
 <pre><code>SetEnv BRAND test
 </code></pre>
-
 <p>各別的virtual host變數可在/etc/apache2/sites-available/ 設定:</p>
-
 <pre><code>  &lt;VirtualHost *:80&gt;
     &lt;Directory /var/www&gt;
     ...
@@ -111,98 +90,68 @@ rewrite
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
 </code></pre>
-
 <p>php取得apache環境變數:</p>
-
 <pre><code>  echo getenv('BRAND');
 </code></pre>
-
-<h2 id="如果網址只指到資料夾-不顯示目前資料夾的檔案列表">如果網址只指到資料夾，不顯示目前資料夾的檔案列表</h2>
-
+<h2 id="如果網址只指到資料夾不顯示目前資料夾的檔案列表">如果網址只指到資料夾，不顯示目前資料夾的檔案列表</h2>
 <pre><code>&lt;VirtualHost *:80&gt;
     Options -Indexes FollowSymLinks
 &lt;/VirtualHost&gt;
 </code></pre>
-
-<h2 id="apache2-could-not-reliably-determine-the-server-s-fully-qualified-domain-name">apache2: Could not reliably determine the server&rsquo;s fully qualified domain name</h2>
-
+<h2 id="apache2-could-not-reliably-determine-the-servers-fully-qualified-domain-name">apache2: Could not reliably determine the server&rsquo;s fully qualified domain name</h2>
 <pre><code>$ sudo service apache2 restart
 [sudo] password for test:
  * Restarting web server apache2
 apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1 for ServerName
 ... waiting apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1 for ServerName
 </code></pre>
-
 <p>在/etc/apache2/sites-available/default:</p>
-
 <pre><code>ServerName test.com
 &lt;VirtualHost *:80&gt;
     ServerName test.com
     (...略...)
 &lt;/VirtualHost&gt;
 </code></pre>
-
 <blockquote>
 <p>將<code>ServerName</code>宣告為global</p>
 </blockquote>
-
 <h3 id="或">或</h3>
-
 <p>在/etc/apache2/httpd.conf加上:</p>
-
 <pre><code>ServerName test.com
 </code></pre>
-
 <blockquote>
 <p>但apache2.conf要記得<code>Include httpd.conf</code></p>
 </blockquote>
-
-<h2 id="不存在的virtual-host會自動導向-問題發生在將default不存在">不存在的virtual host會自動導向(問題發生在將default不存在)</h2>
-
+<h2 id="不存在的virtual-host會自動導向問題發生在將default不存在">不存在的virtual host會自動導向(問題發生在將default不存在)</h2>
 <p>問題: 原本的default被我刪掉了，而加上兩個virtual host</p>
-
 <ul>
 <li>w1.test.com</li>
 <li>w2.test.com</li>
 </ul>
-
 <blockquote>
 <p>如此一來 w3.test.com 因為不存在，所以會導向w1.test.com</p>
 </blockquote>
-
 <p>解決方法:</p>
-
 <p>將 <code>/etc/apache2/sites-available/default</code> 加回來, 即可解決此問題, 當不存在的domain會導向到default</p>
-
 <p>後記 :</p>
-
 <blockquote>
 <ul>
 <li>ServerName變數不可以在每一個virtual host都宣告成global，不然apache會誤判domain</li>
 <li>建議ServerName只在default宣告為global變數</li>
 </ul>
 </blockquote>
-
 <h2 id="apache-log">apache log</h2>
-
 <p>在/etc/apache2/sites-available/default可以找到apache的log存放位置,例如:</p>
-
 <pre><code>ErrorLog ${APACHE_LOG_DIR}/error.log
 </code></pre>
-
 <blockquote>
 <p>預設存放在/var/log/apache2/error.log</p>
 </blockquote>
-
-<h2 id="讓主機上的帳號都有自己的-public-資料夾-public-html">讓主機上的帳號都有自己的 public 資料夾 - public_html</h2>
-
+<h2 id="讓主機上的帳號都有自己的-public-資料夾---public_html">讓主機上的帳號都有自己的 public 資料夾 - public_html</h2>
 <p>load /etc/apache2/mods-enabled :</p>
-
 <pre><code>userdir.load
 </code></pre>
-
 <p>/etc/apache2/mods-enabled/userdir.conf:</p>
-
 <pre><code> &lt;IfModule mod_userdir.c&gt;
          UserDir public_html
          UserDir disabled root
@@ -211,21 +160,15 @@ apache2: Could not reliably determine the server's fully qualified domain name, 
                  AllowOverride FileInfo AuthConfig Limit Indexes
                  Options MultiViews Indexes FollowSymLinks IncludesNoExec
 </code></pre>
-
-<h3 id="indexes-followsymlinks">Indexes、FollowSymLinks</h3>
-
+<h3 id="indexesfollowsymlinks">Indexes、FollowSymLinks</h3>
 <pre><code>Options -Indexes +FollowSymLinks
 </code></pre>
-
 <ul>
 <li><code>-Indexes</code> : 不允許顯示檔案目錄結構</li>
 <li><code>+FollowSymLinks</code> : 允許使用 <code>.htaccess</code> 檔案 override 預設的設定</li>
 </ul>
-
 <h2 id="特定副檔名忽略同源政策">特定副檔名忽略同源政策</h2>
-
 <p>在 <code>&lt;Directory&gt;</code> 裡加上</p>
-
 <pre><code>&lt;FilesMatch &quot;\.(ttf|otf|eot|woff|svg)$&quot;&gt;
     &lt;IfModule mod_headers.c&gt;
         Header set Access-Control-Allow-Origin &quot;*&quot;

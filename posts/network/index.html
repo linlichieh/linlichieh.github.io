@@ -2,75 +2,51 @@
 <html lang="en-us">
 <title>Network | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/network/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/network/">Network</a></h1>
-    <p class="meta"><time datetime="2015-01-16T12:15:03&#43;08:00">January 16, 2015</time></p>
+    <h1>Network</h1>
+    <time datetime="2015-01-16T12:15:03&#43;08:00">January 16, 2015</time>
   </header>
-  
-
-<h2 id="load-balance">Load Balance</h2>
-
+  <h2 id="load-balance">Load Balance</h2>
 <p>分幾種, 常見的是 L3, L7</p>
-
 <p>L3 是 IP 層, 是以指派 IP 到後面的主機</p>
-
 <p>L7 是 HTTP 層, 分析 Domain 或 Header 再指派到後面的主機, 效率較 L3 快</p>
-
 <h2 id="長連線">長連線</h2>
-
 <p>飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著</p>
-
 <p>habit 是 tcp 三項交握的 sync 封包</p>
-
-<h2 id="tcp-udp">TCP / UDP</h2>
-
+<h2 id="tcp--udp">TCP / UDP</h2>
 <h3 id="查看系統-tcp-相關設定">查看系統 TCP 相關設定</h3>
-
 <p>MacOS:</p>
-
 <pre><code>sysctl net.inet.tcp
 </code></pre>
-
 <h3 id="tcp-timeout">TCP timeout</h3>
-
 <p>OS 預設會對 connection 設 timeout, 如果這段期間 connection 是閒置的(沒有 write, read, heartbeat), connection 就會被切斷</p>
-
 <h3 id="keep-alive">keep alive</h3>
-
 <p>發送心跳包, 用來偵測連線是否還正常, server/client 都可以設定, 可以自已調整心跳的頻率,
 它的功能只有探測而且只有在 write/read 沒有在發送的時候才會去發送心跳包</p>
-
 <h3 id="斷線發生的情況">斷線發生的情況</h3>
-
 <ol>
 <li>程式自已下 conn.Close by server or client</li>
 <li>心跳包發現對方沒回應</li>
 <li>使用中 read/write 超過 timeout</li>
 </ol>
-
 <h3 id="加速">加速</h3>
-
 <p>google TCP BBR</p>
-
 <h2 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h2>
-
 <p>ref: <a href="https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support">https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support</a></p>
-
 <pre><code>The theoretical maximum number of connections per client per server port is 65534.
 Assuming one network interface (i.e., 1 IP on your host),
 then you could potentially make ~4 million (IP address space size) x 65534.
@@ -80,9 +56,7 @@ your OS's TCP/IP stack design or ultimately the amount of memory.
 If memory is not the issue and you want to increase that number,
 you can add another network interface and double this number further (ie., increase number of clients).
 </code></pre>
-
 <p>ref: <a href="https://medium.com/fantageek/understanding-socket-and-port-in-tcp-2213dc2e9b0c">https://medium.com/fantageek/understanding-socket-and-port-in-tcp-2213dc2e9b0c</a></p>
-
 <pre><code>What is the maximum number of concurrent TCP connections that a server can handle, in theory ?
 
 A single listening port can accept more than one connection simultaneously.
@@ -96,81 +70,52 @@ So the real limit is file descriptors. Each individual socket connection is give
 so the limit is really the number of file descriptors that the system has been configured to allow and resources to handle.
 The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
 </code></pre>
-
-<h3 id="tcp-time-wait">TCP TIME_WAIT</h3>
-
+<h3 id="tcp-time_wait">TCP TIME_WAIT</h3>
 <p>When a connection is closed, it will be turned into the state TIME_WAIT. Network in real world can be unpredicable.
 There is no gurantee for packet to be delivered in order. When lost packet was delayed to ask to close the connection,
 which was already disconnected, server might be confused by it and close the new established connection if it doesn&rsquo;t
 have TIME_WAIT state. TIME_WAIT keeps the info of source address, source port, destination address and destination port.
 When server recevied delayed packet to ask for closing connection, server can use TIME_WAIT to verify whether it has
 been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from messing up the new connection from the same address.</p>
-
 <p>TIME_WAIT might not hold a FD, it only consumes a local port.</p>
-
-<h3 id="nf-conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
-
+<h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
 <p>It is a function to track connections managed by kernel. It might be only used in haproxy server.
 If it is full, it won&rsquo;t accept new connection.
-There are 3 ways to fix it.
-* Increase the maximum number of nf_conntrack.
-* Reduce the timeout of connection being tracked.
-* Disable connection track. (recommend)</p>
-
-<h2 id="http-https">HTTP / HTTPS</h2>
-
+There are 3 ways to fix it.</p>
+<ul>
+<li>Increase the maximum number of nf_conntrack.</li>
+<li>Reduce the timeout of connection being tracked.</li>
+<li>Disable connection track. (recommend)</li>
+</ul>
+<h2 id="http--https">HTTP / HTTPS</h2>
 <h3 id="keep-alive-1">Keep-alive</h3>
-
 <p>tcp 沒有 keep-alive 一個 request 就會佔用一條通道</p>
-
 <p>tcp 有 keep-alive 就多個 request 只需做一次三項交握, 都在同一條通道傳送</p>
-
 <p>一個 socket 只能接一個 session, 不能一對多</p>
-
 <h3 id="https-header-加密範圍">HTTPS header 加密範圍</h3>
-
 <p>SSL 憑證加密, 從 Header 到 Body 都是加密的</p>
-
 <h3 id="put-與-patch-差異">PUT 與 PATCH 差異</h3>
-
 <p>PUT 相當於是 delete + insert, 是對整個資源進行更新</p>
-
 <p>PATCH 是只更新部份的資源</p>
-
 <h3 id="瀏覽器支援-patch-put-跟-delete-嗎">瀏覽器支援 PATCH, PUT 跟 DELETE 嗎?</h3>
-
 <p><strong>不支援</strong></p>
-
 <p>HTML 只定義了 GET/POST,</p>
-
 <p>所以 HTML Form 是沒有支援 PUT/DELETE 的</p>
-
 <p>但 XmlHttpRequest (也就是Ajax) 有定義 GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS</p>
-
 <p><strong>但可以在 HTML Form 裡偷藏 _method 參數, 定義不支援的 method</strong>, 送到 server 端再判斷</p>
-
 <h3 id="etag">Etag</h3>
-
 <p>第一次 : browser 對 server 發出請求, server 回應 200 ok, 並多加上 header[&lsquo;ETag&rsquo;] =  body 以 md5 編碼</p>
-
 <p>browser 會 cache response 及儲存 Etag</p>
-
 <p>第二次 : browser 對 server 發出請求並多帶 headers[&lsquo;If-None-match&rsquo;] = 上面 ETag 的值, server 再算出 ETag 是否值為一樣, 一樣的話會返回 304 Not Modified</p>
-
 <p>browser 收到 304 會從 cache 拿之前 cache 的結果</p>
-
 <h3 id="terms-of-url">Terms of URL</h3>
-
 <p><code>http://example.com/public/index.html#post</code></p>
-
 <ul>
 <li>URL (Uniform Resource Locator): <code>http://example.com/public/index.html</code></li>
 <li>URN (Uniform Resource Name): <code>example.com/public/index.html#post</code></li>
 <li>URI (Uniform Resource Identifier): <code>http://example.com/public/index.html#post</code></li>
 </ul>
-
 <p><code>http://www.example.com:8888/public/index.html?key=value#hashtag</code></p>
-
 <ul>
 <li>Scheme / Protocol: <code>http</code></li>
 <li>Host: <code>www.example.com:8888</code></li>
@@ -181,9 +126,7 @@ There are 3 ways to fix it.
 <li>Query: <code>key=value</code></li>
 <li>Frament / Hash: <code>#hashtag</code></li>
 </ul>
-
 <h3 id="restful-apis">Restful APIs</h3>
-
 <pre><code>Index       GET     /users
 Show        GET     /users/1
 New         GET     /users/new
@@ -192,34 +135,23 @@ Edit        GET     /users/1/edit
 Update      PUT     /users/1
 Detele      DELETE  /users/1
 </code></pre>
-
 <h3 id="get">GET</h3>
-
 <p>GET 是我們最常使用也是最簡單的，它帶資料的方式就是把 query string 放在網址後面 :</p>
-
 <pre><code>example.com?f1=v1&amp;f2=v2
 </code></pre>
-
 <p>GET 沒有 Body, 整個 Http 封包會像這樣 :</p>
-
 <pre><code>GET /api/test?f1=v1&amp;amp;f2=v2 HTTP/1.1
 Host: example.com
 Content-Type: application/x-www-form-urlencoded
 Cache-Control: no-cache
 Postman-Token: 0f99b8e9-0322-952e-a67c-76b498c51903
 </code></pre>
-
 <h3 id="post-form">POST form</h3>
-
 <p>當要背景傳送資料時要使用 POST，也就是我們常在用的表單，它的實現原理是在 Header 加上 <code>Content-Type: application/x-www-form-urlencoded</code></p>
-
 <p>而 Body 就是 query string :</p>
-
 <pre><code>f1=v1&amp;f2=v2
 </code></pre>
-
 <p>整個 Http 封包會像這樣 :</p>
-
 <pre><code>POST /api/test?f1=f1&amp;amp;f2=v2 HTTP/1.1
 Host: example.com
 Content-Type: application/x-www-form-urlencoded
@@ -228,19 +160,13 @@ Postman-Token: 3f036f1b-dfec-1269-41b7-bbf6781cbac4
 
 f1=v1&amp;f2=v2
 </code></pre>
-
 <blockquote>
 <p>POST 可同時支援 GET 及 POST 的參數</p>
 </blockquote>
-
 <h3 id="post-with-file">POST with file</h3>
-
 <p>如果要傳送檔案，就不是用原本的 <code>Content-Type: application/x-www-form-urlencoded</code>，要改用 <code>Content-Type: multipart/form-data</code></p>
-
 <p>雖然說 Content-Type 使用後者，但仍然一樣可以傳送 form data</p>
-
 <p>你的 params 會被拆解成一塊一塊的，整個 Http 封包會像這樣 :</p>
-
 <pre><code>POST /api/test/ HTTP/1.1
 Host: example.com
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -258,31 +184,21 @@ Content-Disposition: form-data; name=&quot;f1&quot;
 v1
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 </code></pre>
-
 <h3 id="https">HTTPS</h3>
-
 <p>加密所有 request 及 response 資料, 包含 URL, 如果你使用 Http Proxy, 它只知道目標 server 的 domain, 不會知道 url path</p>
-
 <p>意思是如果攔截到 https 封包只會看到 IP 跟 domain</p>
-
 <h3 id="how-does-https-work">How does HTTPS work?</h3>
-
 <h4 id="prerequisites">Prerequisites</h4>
-
 <ul>
 <li>Any message encrypted with Bob&rsquo;s public key can only be decrypted with Bob&rsquo;s private key.</li>
 <li>Anyone who has Bob&rsquo;s public key can verify a message (signature) encrypted by Bob with its private key.</li>
 <li>SSL certificates are signed by a certificate authority (CA)</li>
 <li>CA has a &ldquo;private key&rdquo;, and a &ldquo;public key&rdquo; that everyone knows</li>
 </ul>
-
 <h4 id="how-it-works">How it works?</h4>
-
 <p>It&rsquo;s a simple way to explain how it works, and it might be a bit different from what it really is.
 For example, I oversimplify the secret part. However, it&rsquo;s still a good example to explain how it works.</p>
-
 <p>Create a certificate for domain</p>
-
 <pre><code>youtube.com -&gt; CA
 (youtube issues Certificate Signing Request)
 (both of them have their own public/private key pairs)
@@ -292,11 +208,8 @@ youtube.com &lt;- CA
 (anyone who has CA's public key can verify it)
 (but the public key can't be used to create a new signature)
 </code></pre>
-
 <p>Browser have already had a list of trusted certificates.</p>
-
 <p>Visit youtube.com</p>
-
 <pre><code>Your Browser -&gt; youtube.com
 (Visit youtube)
 
@@ -313,39 +226,31 @@ Your Browser &lt;- youtube.com
 Your Browser &lt;-&gt; youtube.com
 (they all have the same secret key and start encrypting all of their communication using this key)
 </code></pre>
-
 <p>ref:</p>
-
 <ul>
 <li><a href="https://www.youtube.com/watch?v=33VYnE7Bzpk">https://www.youtube.com/watch?v=33VYnE7Bzpk</a></li>
 <li><a href="https://www.youtube.com/watch?v=T4Df5_cojAs">https://www.youtube.com/watch?v=T4Df5_cojAs</a></li>
 <li><a href="https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls">https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls</a></li>
 </ul>
-
 <h2 id="different-encryption-techniques">Different Encryption Techniques</h2>
-
 <ul>
 <li>SSH and SSL use Symmetrical encryption and Asymmetrical encryption.</li>
 <li>SSH
-
 <ul>
 <li>Symmetrical encryption is used to encrypt the entire communication during a SSH Session.</li>
 <li>Asymmetrical encryption is not used to encrypt the entire SSH session. Instead, it is only used during the key exchange algorithm of symmetric encryption.</li>
 <li>Before initiating a secured connection, both parties generate temporary public-private key pairs, and share their respective private keys to produce the shared secret key.</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h3 id="symmetrical-encryption">Symmetrical encryption</h3>
-
 <ul>
 <li>Symmetric encryption is a form of encryption where a secret key is used for both encryption and decryption of a message by both the client and the host.</li>
 <li>Both the client and the server derive the secret key using an agreed method, and the resultant key is never disclosed to any third party.</li>
 <li>AES(Advanced Encryption Standard): AES-128, AES-192, and AES-256</li>
 <li>Plain Text &ndash;Encryption(same secret key)&ndash;&gt; Cipher Text &ndash;Decryption(same secret key)&ndash;&gt; Plain Text</li>
 </ul>
-
 <h3 id="asymmetrical-encryption">Asymmetrical encryption</h3>
-
 <ul>
 <li>Unlike symmetrical encryption, asymmetrical encryption uses two separate keys for encryption and decryption.</li>
 <li>These two keys are known as the public key and the private key.</li>
@@ -356,94 +261,68 @@ Your Browser &lt;-&gt; youtube.com
 <li>Plain Text &ndash;Encryption(public key)&ndash;&gt; Cipher Text &ndash;Decryption(private Key)&ndash;&gt; Plain Text</li>
 <li>Plain Text &ndash;Encryption(private key)&ndash;&gt; Cipher Text &ndash;Decryption(public Key)&ndash;&gt; Plain Text</li>
 </ul>
-
 <h3 id="hashing">Hashing.</h3>
-
 <ul>
 <li>It&rsquo;s a one-way encryption.</li>
 <li>MD5, SHA256</li>
 </ul>
-
 <p>ref:</p>
-
 <ul>
 <li><a href="https://www.digicert.com/ssl-cryptography.htm">https://www.digicert.com/ssl-cryptography.htm</a></li>
 <li><a href="https://security.stackexchange.com/questions/56389/ssl-certificate-framework-101-how-does-the-browser-actually-verify-the-validity/56393#56393">https://security.stackexchange.com/questions/56389/ssl-certificate-framework-101-how-does-the-browser-actually-verify-the-validity/56393#56393</a></li>
 <li><a href="https://www.hostinger.com/tutorials/ssh-tutorial-how-does-ssh-work">https://www.hostinger.com/tutorials/ssh-tutorial-how-does-ssh-work</a></li>
 </ul>
-
 <h2 id="unix-domain-socket-aka-ipc-socket">Unix Domain Socket, aka IPC socket</h2>
-
 <p>Unix Domain Socket is a data communications endpoint for exchanging data between processes executing on the same host operating system.
 It supports transmission of a reliable stream of bytes, ordered and reliable transmission of datagrams.
 The API for Unix domain sockets is similar to that of an Internet socket, but rather than using an underlying network protocol, all communication occurs entirely within the operating system kernel.
 Unix domain sockets use the file system as their address name space.
 Processes reference Unix domain sockets as file system inodes, so two processes can communicate by opening the same socket.
 Instead of identifying a server by an IP address and port, a Unix domain socket is known by a pathname. Obviously the client and server have to agree on the pathname for them to find each other.</p>
-
 <h3 id="rpc">RPC</h3>
-
 <p>Remote procedure call (RPC) is an Inter-process communication technology that allows a computer program to cause a subroutine or procedure to execute in another address space (commonly on another computer on a shared network) without the programmer explicitly coding the details for this remote interaction.</p>
-
 <p>An RPC (remote procedure call) is a form of IPC (inter-process communication)</p>
-
 <h3 id="grpc">gRPC</h3>
-
 <ul>
 <li>Improved RPC</li>
 <li>Developed by google</li>
 <li>Use HTTP/2 for transport, Protocal Buffers as interface description language (protobuf)</li>
 <li>Provides features such as authentication, bidirectional streaming and flow control, blocking or nonblocking bindings, and cancellation and timeouts.</li>
 </ul>
-
 <h3 id="rpc-vs-ipc">RPC vs IPC</h3>
-
 <ul>
 <li>RPC - Remote Procedure Call - is a particular type of communication, but can be on a single machine, or across a network between machines.</li>
 <li>IPC - Inter-Process Communication - is a general term for communication between different processes (which are usually on a single machine).</li>
 <li>RPC: remotely preferred, IPC: locally preferred</li>
 </ul>
-
 <h3 id="named-pipe-vs-ipc">Named Pipe vs IPC</h3>
-
 <ul>
 <li>Duplex: Stream sockets provide bi-directional communication while named pipes are uni-directional.</li>
 <li>Distinct clients: Clients using sockets each have an independent connection to the server. With named pipes, many clients may write to the pipe, but the server cannot distinguish the clients from each other&ndash; the server has only one descriptor to read from the named pipe. Because the named pipe has only read descriptor and possibly-multiple writers, random interleaving can also occur if a client writes more than PIPE_BUF bytes in one operation. Since pipes have these limitations, UNIX domain sockets should be used if there are multiple clients that need to be distinguishable or which write long messages to the server.</li>
 <li>Method of creating and opening: Sockets are created using socket and assigned their identity via bind. Named pipes are created using mkfifo. To connect to a Unix domain socket the normal socket/connect calls are used, but a named pipe is written using regular file open and write. That makes them easier to use from a shell script for example.</li>
 </ul>
-
 <p>ref:</p>
-
 <ul>
 <li><a href="https://troydhanson.github.io/network/Unix_domain_sockets.html">Unix domain sockets</a></li>
 <li><a href="https://openforums.wordpress.com/2016/08/07/open-file-descriptor-passing-over-unix-domain-sockets/">PASSING OPEN FILE DESCRIPTORS OVER UNIX DOMAIN SOCKETS</a></li>
 <li><a href="https://stackoverflow.com/questions/2161674/is-there-a-difference-between-rpc-and-ipc">Is there a difference between RPC and IPC?</a></li>
 </ul>
-
 <h2 id="ip">IP</h2>
-
 <p>5 個 CLASS</p>
-
 <pre><code>Class A :   0.xx.xx.xx ~ 127.xx.xx.xx       # 0xxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 0
 Class B : 128.xx.xx.xx ~ 191.xx.xx.xx       # 10xxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 10
 Class C : 192.xx.xx.xx ~ 223.xx.xx.xx       # 110xxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 110
 Class D : 224.xx.xx.xx ~ 239.xx.xx.xx       # 1110xxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 1110
 Class E : 240.xx.xx.xx ~ 255.xx.xx.xx       # 1111xxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 1111
 </code></pre>
-
 <p>Public &amp; Private</p>
-
 <pre><code>Class A：10.0.0.0    - 10.255.255.255
 Class B：172.16.0.0  - 172.31.255.255
 Class C：192.168.0.0 - 192.168.255.255
 </code></pre>
-
 <h2 id="port">Port</h2>
-
 <h3 id="web-app-開-80-port-遇到-permission-denied">Web app 開 80 port 遇到 permission denied</h3>
-
 <p>只有 root 才可以開小於 1024 的 port，最簡單的解決方法就是先開一個高一點的 port (e.g. 8080)，再用 iptable 去 forward 80 -&gt; 8080</p>
-
 <pre><code>iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK --set-mark 1
 iptables -t mangle -A PREROUTING -p tcp --dport 443 -j MARK --set-mark 1
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
@@ -451,18 +330,13 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8181
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -m mark --mark 1 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark 1 -j ACCEPT
 </code></pre>
-
 <h2 id="vpn">VPN</h2>
-
 <p>讓 Private 可以被特定的連線操作</p>
-
 <ul>
 <li>OpenVPN (SSL VPN) or IPsec</li>
 <li>OpenVPN 安全性會比 IPsec 好</li>
 </ul>
-
 <h2 id="常用的-http-status">常用的 Http status</h2>
-
 <ul>
 <li>301 (Permanent) — Redirects to the site you specified in the Forward To field using a &ldquo;301 Moved Permanently&rdquo; HTTP response. The HTTP 301 response code tells user-agents (including search engines) that the location has permanently moved.</li>
 <li>302 (Temporary) — Redirects to the site you specified in the Forward To field using a &ldquo;302 Found&rdquo; HTTP response. The HTTP 302 response code tells user-agents (including search engines) that the location has temporarily moved.</li>
@@ -473,18 +347,14 @@ iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark
 <li>500 : internal server errors  # Rails automatically handles server errors and returns a 500 response.</li>
 <li>401 : Unauthorized</li>
 </ul>
-
 <h3 id="server-回覆較常使用的">Server 回覆較常使用的</h3>
-
 <ul>
 <li>200 : 成功回覆</li>
 <li>400 : Client 發送時引發的錯誤，例如參數有少</li>
 <li>401 : 認證錯誤，例如 AccessToken 錯誤</li>
 <li>500 : Server 內部發生錯誤，例如 DB 連線錯誤</li>
 </ul>
-
 <h2 id="traceroute-觀察-host-經過的節點狀態">traceroute 觀察 host 經過的節點狀態</h2>
-
 <pre><code>$ traceroute google.com
 traceroute to google.com (172.217.31.142), 30 hops max, 60 byte packets
  1  ec2-175-41-192-150.ap-northeast-1.compute.amazonaws.com (175.41.192.150)  16.685 ms ec2-175-41-192-144.ap-northeast-1.compute.amazonaws.com (175.41.192.144)  19.225 ms ec2-175-41-192-146.ap-northeast-1.compute.amazonaws.com (175.41.192.146)  16.309 ms

@@ -2,51 +2,38 @@
 <html lang="en-us">
 <title>phpmyadmin | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/phpmyadmin/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/phpmyadmin/">phpmyadmin</a></h1>
-    <p class="meta"><time datetime="2013-10-23T23:03:00Z">October 23, 2013</time></p>
+    <h1>phpmyadmin</h1>
+    <time datetime="2013-10-23T23:03:00Z">October 23, 2013</time>
   </header>
-  
-
-<h2 id="安裝-phpmyadmin">安裝 phpmyadmin</h2>
-
+  <h2 id="安裝-phpmyadmin">安裝 phpmyadmin</h2>
 <pre><code>sudo apt-get install phpmyadmin
 </code></pre>
-
 <h2 id="啟動-phpmyadmin">啟動 phpmyadmin</h2>
-
 <h3 id="apache">Apache</h3>
-
 <p>/etc/apache2/apache2.conf 加入 :</p>
-
 <pre><code>Include /etc/phpmyadmin/apache.conf
 sudo service apache2 restart
 </code></pre>
-
 <h3 id="nginx">nginx</h3>
-
 <p>將 phpmyadmin 的 code 放到 /var/www 下</p>
-
 <pre><code>ln -s /usr/share/phpmyadmin /var/www/phpmyadmin
 </code></pre>
-
 <p>建立 <code>/etc/nginx/sites-available/phpmyadmin</code> :</p>
-
 <pre><code>server {
     listen 80;
     root /var/www/phpmyadmin;
@@ -65,49 +52,32 @@ sudo service apache2 restart
     }
 }
 </code></pre>
-
 <p>建立 phpmyadmin 的 site config</p>
-
 <pre><code>ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin
 </code></pre>
-
 <h2 id="如果沒有設定密碼會連不進去">如果沒有設定密碼會連不進去</h2>
-
 <p>修改 /etc/phpmyadmin/config.inc.php : 將註解拿掉</p>
-
 <pre><code>// $cfg['Servers'][$i]['AllowNoPassword'] = TRUE;
 刪註解
 $cfg['Servers'][$i]['AllowNoPassword'] = TRUE;
 </code></pre>
-
 <p>重啟動</p>
-
 <pre><code>sudo service apache2 restart
 </code></pre>
-
 <p>這樣會有安全性的問題, 趕緊設定一組帳密, 再改回來變成不允許空密碼登入~</p>
-
 <h2 id="修改-phpmyadmin-cookie-存活時間">修改 phpmyadmin cookie 存活時間</h2>
-
 <p>修改 <code>config.inc.php</code> :</p>
-
 <pre><code>$cfg['LoginCookieValidity'] = 86400; // 不管你下面設定幾台 db server (e.g. `$cfg['Servers'][$i]['host'] = ''`), 都統一吃這個值, 不能各別設定
 </code></pre>
-
 <p>修改 <code>/etc/php5/fpm/php.ini</code>, 改完重啟 php-fpm</p>
-
 <pre><code>session.gc_maxlifetime = 86400
 </code></pre>
-
 <p>一定要兩個都改才會生效</p>
-
 <h2 id="phpmyadmin-設定免登入直接進入">phpmyadmin 設定免登入直接進入</h2>
-
 <pre><code>$cfg['Servers'][$i]['auth_type'] = 'config';
 $cfg['Servers'][$i]['username'] = 'root';
 $cfg['Servers'][$i]['password'] = 'your_password';
 </code></pre>
-
 <blockquote>
 <p><code>auth_type = config</code> 意是是認證應該由 configuration 而不是 login cookie</p>
 </blockquote>

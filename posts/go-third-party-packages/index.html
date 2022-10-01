@@ -2,45 +2,36 @@
 <html lang="en-us">
 <title>Go Third-party Packages | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/go-third-party-packages/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/go-third-party-packages/">Go Third-party Packages</a></h1>
-    <p class="meta"><time datetime="2015-01-06T16:11:25&#43;08:00">January 06, 2015</time></p>
+    <h1>Go Third-party Packages</h1>
+    <time datetime="2015-01-06T16:11:25&#43;08:00">January 06, 2015</time>
   </header>
-  
-
-<h2 id="redigo-https-github-com-garyburd-redigo"><a href="https://github.com/garyburd/redigo">redigo</a></h2>
-
+  <h2 id="redigohttpsgithubcomgaryburdredigo"><a href="https://github.com/garyburd/redigo">redigo</a></h2>
 <pre><code>github.com/garyburd/redigo/redis
 </code></pre>
-
 <h3 id="connect-to-redis-server">Connect to redis server</h3>
-
 <p>One connection</p>
-
 <pre><code>conn, err := redis.Dial(&quot;tcp&quot;, &quot;:6379&quot;)
 if err != nil {
     panic(err)
 }
 defer conn.Close()
 </code></pre>
-
 <p>Connection pool</p>
-
 <pre><code>pool := &amp;redis.Pool{
     MaxIdle:     300,               // Maximum number of idle connections in the pool.
     MaxActive:   5,                 // Maximum number of connections allocated by the pool at a given time.
@@ -64,46 +55,29 @@ if err != nil {
     return nil, err
 }
 </code></pre>
-
 <h3 id="command">Command</h3>
-
 <p>GET</p>
-
 <pre><code>val, err := redis.String(conn.Do(&quot;GET&quot;, &quot;key&quot;))
 </code></pre>
-
 <p>SET</p>
-
 <pre><code>_, err := conn.Do(&quot;SET&quot;, workerID, &quot;value&quot;)
 </code></pre>
-
 <p>DEL</p>
-
 <pre><code>_, err := conn.Do(&quot;DEL&quot;, &quot;key&quot;)
 </code></pre>
-
 <p>LLEN</p>
-
 <pre><code>count, err := redis.Int(conn.Do(&quot;LLEN&quot;, &quot;list_key&quot;))
 </code></pre>
-
 <p>LPOP</p>
-
 <pre><code>val, err := redis.Bytes(conn.Do(&quot;LPOP&quot;, &quot;list_key&quot;))
 </code></pre>
-
 <p>RPUSH</p>
-
 <pre><code>_, err := conn.Do(&quot;RPUSH&quot;, &quot;list_key&quot;, &quot;val&quot;)
 </code></pre>
-
 <p>HGETALL</p>
-
 <pre><code>res, err = redis.StringMap(conn.Do(&quot;HGETALL&quot;, &quot;key&quot;))
 </code></pre>
-
 <p>MHSET</p>
-
 <pre><code>var args []interface{}
 args = append(args, &quot;my_hash_key&quot;)
 for field, val := range hash {
@@ -115,54 +89,35 @@ or
 
 _, err = conn.Do(&quot;HMSET&quot;, redis.Args{}.Add(&quot;my_hash_key&quot;).AddFlat(hash)...)
 </code></pre>
-
 <p>HGET</p>
-
 <pre><code>val, err = redis.String(conn.Do(&quot;HGET&quot;, &quot;key&quot;, &quot;field&quot;))
 </code></pre>
-
 <p>HSET</p>
-
 <pre><code>_, err = conn.Do(&quot;HSET&quot;, key, field, value)
 </code></pre>
-
 <p>KEYS (show keys with prefix)</p>
-
 <pre><code>vals, err := redis.Values(conn.Do(&quot;KEYS&quot;, &quot;device:*&quot;))
 
 // 將第一個 key 取出來
 _, err := redis.Scan(vals, &amp;value)
 </code></pre>
-
 <h3 id="其他">其他</h3>
-
 <h4 id="如果重覆用同一條-connection-做-del-key-的動作可能會引發隨機出現的錯誤">如果重覆用同一條 connection 做 del key 的動作可能會引發隨機出現的錯誤</h4>
-
 <p><code>use of closed network connection</code>,  <code>short write</code></p>
-
 <p>原因 : <a href="http://godoc.org/github.com/garyburd/redigo/redis#hdr-Concurrency">Concurrent writes are not supported</a></p>
-
 <p>解決方法 : 使用 connection pool，要用的時候就拿一個新的 connection，不用的時候再放回去</p>
-
-<h4 id="error-dial-tcp-127-0-0-1-6379-too-many-open-files">Error <code>dial tcp 127.0.0.1:6379: too many open files</code></h4>
-
+<h4 id="error-dial-tcp-1270016379-too-many-open-files">Error <code>dial tcp 127.0.0.1:6379: too many open files</code></h4>
 <p>使用 pool 要注意取出來的 connection 要釋放, 如果沒釋放有可能會出現此 error，因為系統資源的限制, 一個 process 不能超過 1024 個 socket</p>
-
 <pre><code>redisConn := redisPool.Get()
 defer redisConn.Close()
 </code></pre>
-
 <h2 id="goworker">goworker</h2>
-
 <h3 id="介紹">介紹</h3>
-
 <p>Goworker 是 golang 的一套 job queue 的 package，它可以幫你達成這些事，它是使用 resque 的資料格式(resque 有固定的資料格式)，
 resque 是一套 Ruby 開發的 job queue，也有被其他的語言開發成該語言的版本，你可以把它當作是 golang 版的 resque，
 最主要的好處是你後端語言可以用 php, ruby etc. 你想的語言寫，把它丟到 redis 裡的 job queue, 然候 goworker 再去拿，
 並針對不同的 task 寫出不同對應的程式</p>
-
 <h3 id="worker">Worker</h3>
-
 <pre><code>package main
 
 import (
@@ -188,18 +143,13 @@ func main() {
     fmt.Printf(&quot;Started on %v&quot;, time.Now().Format(&quot;2006-01-02 15:04:05&quot;))
 }
 </code></pre>
-
 <p>Run :</p>
-
 <pre><code>go run main.go -queues=MyClass
 </code></pre>
-
 <h3 id="增加一筆-job-讓-worker-執行">增加一筆 job 讓 worker 執行</h3>
-
 <blockquote>
 <p>你也可以用其他語言 insert 一筆 job</p>
 </blockquote>
-
 <pre><code>package main
 
 import (
@@ -242,19 +192,13 @@ func main() {
     redisConn.Do(&quot;RPUSH&quot;, &quot;resque:queue:MyClass&quot;, string(b[:]))
 }
 </code></pre>
-
 <p>Run :</p>
-
 <pre><code>go run qq.go
 </code></pre>
-
 <p>結果 :</p>
-
 <pre><code>worker 就會 print 那筆 job 的資料
 </code></pre>
-
-<h2 id="dump-for-debug-spew-https-github-com-davecgh-go-spew">Dump (for debug) - <a href="https://github.com/davecgh/go-spew">spew</a></h2>
-
+<h2 id="dump-for-debug---spewhttpsgithubcomdavecghgo-spew">Dump (for debug) - <a href="https://github.com/davecgh/go-spew">spew</a></h2>
 <pre><code>a := map[string]int64{}
 a[&quot;A&quot;] = 1
 a[&quot;B&quot;] = 2
@@ -267,9 +211,7 @@ debug.Dump(a)
  (string) (len=1) &quot;B&quot;: (int64) 2
 }
 </code></pre>
-
-<h2 id="gorequest-https-github-com-parnurzeal-gorequest"><a href="https://github.com/parnurzeal/gorequest">gorequest</a></h2>
-
+<h2 id="gorequesthttpsgithubcomparnurzealgorequest"><a href="https://github.com/parnurzeal/gorequest">gorequest</a></h2>
 <pre><code>agent := gorequest.New().CustomMethod(&quot;POST&quot;, &quot;url&quot;).Timeout(30 * time.Second)
 agent.Header = header               // 將 HEADER 以 map 型態傳進去
 agent.Send(post_data)               // POST 需要, GET 不用, 傳入 String
@@ -282,9 +224,7 @@ if resp.StatusCode != 200 {
     // Do something
 }
 </code></pre>
-
 <h3 id="orm">ORM</h3>
-
 <pre><code>package main
 
 import (
@@ -323,11 +263,8 @@ func checkErr(err error, msg string) {
     }
 }
 </code></pre>
-
 <h2 id="fasthttp">fasthttp</h2>
-
 <p>效能比原生的 http 好</p>
-
 <pre><code>import (
     &quot;github.com/buaazp/fasthttprouter&quot;
     &quot;github.com/valyala/fasthttp&quot;
@@ -345,9 +282,7 @@ func Index(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) {
     fmt.Fprintf(ctx, &quot;hello, %s!n&quot;, ps.ByName(&quot;name&quot;))
 }
 </code></pre>
-
 <p>帶入 net.Listener 的方式</p>
-
 <pre><code>l, err := net.Listen(&quot;tcp&quot;, &quot;:&quot;+strconv.Itoa(port))
 if err != nil {
     fmt.Println(&quot;net.Listen error: %v&quot;, err)
@@ -361,20 +296,15 @@ if err != nil {
     os.Exit(1)
 }
 </code></pre>
-
-<h2 id="go-logging-https-github-com-op-go-logging"><a href="https://github.com/op/go-logging">go-logging</a></h2>
-
+<h2 id="go-logginghttpsgithubcomopgo-logging"><a href="https://github.com/op/go-logging">go-logging</a></h2>
 <p>一套 log 的 package 特色如下 :</p>
-
 <ul>
 <li>可以自由的設計 log format</li>
 <li>可以自動地紀錄 call log 時當時是在什麼 package 及 func, 在 debug 時相當好用</li>
 <li>可以設定當 log 達到什麼層級時另外紀錄下來</li>
 <li>輸出不同 level 的 log 時有顏色</li>
 </ul>
-
 <p>Example :</p>
-
 <pre><code>// 標準輸出的 log
 logger = logging.MustGetLogger(&quot;example&quot;)
 format := logging.MustStringFormatter(`%{color}%{time:15:04:05} %{shortpkg} %{shortfunc} [%{level}] %{color:reset} %{message}`)
@@ -405,9 +335,7 @@ backend2Leveled.SetLevel(logging.ERROR, &quot;&quot;)
 // 註冊
 logging.SetBackend(backendFormatter, backend2Leveled)
 </code></pre>
-
-<h2 id="mux-api-router-https-github-com-gorilla-mux"><a href="https://github.com/gorilla/mux">Mux - API Router</a></h2>
-
+<h2 id="mux---api-routerhttpsgithubcomgorillamux"><a href="https://github.com/gorilla/mux">Mux - API Router</a></h2>
 <pre><code>func main() {
     l, _ := net.Listen(&quot;tcp&quot;, &quot;:3333&quot;)
     r := mux.NewRouter()
@@ -419,25 +347,16 @@ func Index(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(&quot;Time: &quot; + time.Now().Format(time.RFC1123)))
 }
 </code></pre>
-
 <h2 id="websocket">Websocket</h2>
-
 <p>(Updated on 8th March, 2014)</p>
-
 <p>目前主要 golang 的 websocket 套件有兩個, 分别是官方維護的 <a href="http://godoc.org/code.google.com/p/go.net/websocket">code.google.com/p/go.net/websocket</a>,</p>
-
 <p>及非官方版本的 <a href="http://www.gorillatoolkit.org/pkg/websocket">github.com/gorilla/websocket</a>, 我也不知道哪個比較好,</p>
-
 <p>這邊有個<a href="https://gowalker.org/github.com/gorilla/websocket">比較表</a>可以參考看看</p>
-
 <blockquote>
 <p>官方版的在使用 go get 下載前還需要先下載 Mercurial 這個版控, 否則無法下載</p>
 </blockquote>
-
 <h3 id="以下分别使用這兩種套件實現-websocket-的-example">以下分别使用這兩種套件實現 websocket 的 example</h3>
-
 <p>HTML + JS :</p>
-
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;head&gt;
     &lt;title&gt;Test~&lt;/title&gt;
@@ -467,11 +386,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
-<h4 id="1-以-go-net-websocket-實作">[1] 以 go.net/websocket 實作</h4>
-
+<h4 id="1-以-gonetwebsocket-實作">[1] 以 go.net/websocket 實作</h4>
 <p>main :</p>
-
 <pre><code>http.Handle(&quot;/connws/&quot;, websocket.Handler(ConnWs))
 err := http.ListenAndServe(&quot;:9090&quot;, nil)
 if err != nil {
@@ -499,26 +415,19 @@ func ConnWs(ws *websocket.Conn) {
     }
 }
 </code></pre>
-
 <p>result :</p>
-
 <pre><code>$ go run main.go
 Server received : map[Enabled:true]
 </code></pre>
-
-<h4 id="2-以-gorilla-websocket-實作">[2] 以 gorilla/websocket 實作</h4>
-
+<h4 id="2-以-gorillawebsocket-實作">[2] 以 gorilla/websocket 實作</h4>
 <p>main :</p>
-
 <pre><code>http.HandleFunc(&quot;/connws/&quot;, ConnWs)
 err := http.ListenAndServe(&quot;:9090&quot;, nil)
 if err != nil {
     log.Fatal(&quot;ListenAndServe: &quot;, err)
 }
 </code></pre>
-
 <p>func ConnWs(w http.ResponseWriter, r *http.Request) :</p>
-
 <pre><code>ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 if _, ok := err.(websocket.HandshakeError); ok {
     http.Error(w, &quot;Not a websocket handshake&quot;, 400)
@@ -549,25 +458,17 @@ for {
     }
 }
 </code></pre>
-
 <p>result :</p>
-
 <pre><code>$ go run main.go
 map[Enabled:true Test:tt]
 </code></pre>
-
 <blockquote>
 <p>有特別處理 io error 的 EOF, 否則頁面 refresh 會陷入無窮迴圈</p>
 </blockquote>
-
 <h3 id="cross-domain">Cross domain</h3>
-
 <p>原本是使用官方的版本, 直到有 cross domain 的需求,</p>
-
 <p>HTML5 websocket 本身是支持 cross domain 的,</p>
-
 <p>但是官方版本不知道怎麼去支持它, 一直得到 403,</p>
-
 <p>最後發現 gorilla/websocket 是支持的, 就改用它來達成</p>
 
 </article>

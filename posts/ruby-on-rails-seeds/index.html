@@ -2,59 +2,45 @@
 <html lang="en-us">
 <title>Rails Seeds | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-seeds/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-seeds/">Rails Seeds</a></h1>
-    <p class="meta"><time datetime="2015-07-08T10:26:14&#43;08:00">July 08, 2015</time></p>
+    <h1>Rails Seeds</h1>
+    <time datetime="2015-07-08T10:26:14&#43;08:00">July 08, 2015</time>
   </header>
-  
-
-<h2 id="introduction">Introduction</h2>
-
+  <h2 id="introduction">Introduction</h2>
 <ul>
 <li><a href="https://github.com/paulelliott/fabrication">fabrication</a>, 產生物件</li>
 <li><a href="https://github.com/stympy/faker">faker</a>, 用來建立假資料</li>
 </ul>
-
 <h2 id="fabrication">Fabrication</h2>
-
 <p>一個 model 對應一個 fabrication</p>
-
 <p>首先先建立模型</p>
-
 <pre><code>Fabricator(:person) do
   age { rand(20..45) }
 end
 </code></pre>
-
 <blockquote>
 <p>一定要用 <code>{</code> <code>}</code> 包起來，因為有遇過一些奇怪的 bug, 而 seed 不成功</p>
 </blockquote>
-
 <p>Insert 資料</p>
-
 <pre><code>Fabricate(:person)
 Fabricate(:person, email: 'xxx@ff.com')     # 指定欄位
 </code></pre>
-
 <h2 id="faker-使用上非常簡單-直接看-example">Faker 使用上非常簡單, 直接看 Example</h2>
-
 <p>建立 4 個 users, 並且每名 user 指定一個 role, 隨機 user 建立共 50 篇文章, 隨機 user 對隨機挑的 50 篇文章回覆共 200 筆留言</p>
-
 <pre><code>user = User.create({email: &quot;user@gmail.com&quot;, password: &quot;00000000&quot;, confirmed_at: Time.now})
 
 Fabricator(:post) do
@@ -64,13 +50,10 @@ end
 
 50.times { Fabricate(:post, user_id: user.id) }
 </code></pre>
-
 <blockquote>
 <p>Fabricator 的 Table name 要用單數</p>
 </blockquote>
-
 <h3 id="seed-file-with-paperclip">Seed file with paperclip</h3>
-
 <pre><code>Fabricator(:product) do
   photo { File.new(&quot;app/assets/images/logo.png&quot;) }
 
@@ -78,9 +61,7 @@ end
   photo { open(&quot;http://lorempixel.com/300/300/&quot;) }
 end
 </code></pre>
-
 <h3 id="建議可以區分-seed-的環境-避免-seed-到-production">建議可以區分 Seed 的環境, 避免 Seed 到 Production</h3>
-
 <pre><code>case Rails.env
 when &quot;development&quot;
    ...
@@ -88,30 +69,19 @@ when &quot;production&quot;
    ...
 end
 </code></pre>
-
 <h3 id="locale">Locale</h3>
-
 <p>Faker 在不同機器可能會讀取到不同的 locale, 例如我在開發機是 en 的, 但到 production 卻變成 zh-TW, 而 <code>Faker::Internet.free_email</code> 卻變得不 work 了</p>
-
 <p>但可以在 config 裡設定他預設的 locale</p>
-
 <p><code>config/environments/development.rb</code> :</p>
-
 <pre><code>Faker::Config.locale = 'en'
 </code></pre>
-
 <h2 id="troubleshootings">Troubleshootings</h2>
-
-<h3 id="activerecord-recordnotsaved-you-cannot-call-create-unless-the-parent-is-saved"><code>ActiveRecord::RecordNotSaved: You cannot call create unless the parent is saved</code></h3>
-
+<h3 id="activerecordrecordnotsaved-you-cannot-call-create-unless-the-parent-is-saved"><code>ActiveRecord::RecordNotSaved: You cannot call create unless the parent is saved</code></h3>
 <p>有可能會發生在當一筆資料沒有建立成功(可能是 validation 沒有通過)，造成資料沒有建立，但又直接建立關聯資料造成的錯誤：</p>
-
 <pre><code>c = Category.create(...)
 c.products.create(...)
 </code></pre>
-
 <p>建議加上 <code>!</code> 讓錯誤當下直接擲出 Exception 中斷程序</p>
-
 <pre><code>c = Category.create!(...)
 c.products.create!(...)
 </code></pre>

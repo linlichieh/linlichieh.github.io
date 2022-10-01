@@ -2,63 +2,49 @@
 <html lang="en-us">
 <title>Bootstrap | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/bootstrap/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/bootstrap/">Bootstrap</a></h1>
-    <p class="meta"><time datetime="2013-10-01T22:21:00Z">October 01, 2013</time></p>
+    <h1>Bootstrap</h1>
+    <time datetime="2013-10-01T22:21:00Z">October 01, 2013</time>
   </header>
-  
-
-<h2 id="版面">版面</h2>
-
+  <h2 id="版面">版面</h2>
 <p>本身左右會留一些空間</p>
-
 <pre><code>&lt;div class=&quot;container&quot;&gt;
   ...
 &lt;/div&gt;
 </code></pre>
-
 <p>全版, full width container, spanning the entire width of your viewport</p>
-
 <pre><code>&lt;div class=&quot;container-fluid&quot;&gt;
   ...
 &lt;/div&gt;
 </code></pre>
-
 <h2 id="引入時-不要把-row-寫在-partial-裡">引入時, 不要把 row 寫在 partial 裡</h2>
-
 <p>partial</p>
-
 <pre><code>&lt;div class=&quot;col-md-12&quot;&gt;
     ...
 &lt;/div&gt;
 </code></pre>
-
 <p>否則即使用 <code>container-flud</code> 包起來也可能發生版面超過</p>
-
 <pre><code>&lt;div class=&quot;container-fluid&quot;&gt;
   &lt;div class=&quot;margin-top-50&quot;&gt;
     &lt;%= render ... partial view ... %&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-
 <h2 id="modal">Modal</h2>
-
 <pre><code>&lt;button type=&quot;button&quot; class=&quot;btn btn-primary btn-lg&quot; data-toggle=&quot;modal&quot; data-target=&quot;#myModal&quot;&gt;
   Launch demo modal
 &lt;/button&gt;
@@ -80,9 +66,7 @@
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-
 <h2 id="panel">Panel</h2>
-
 <pre><code>&lt;div class=&quot;panel panel-primary&quot;&gt;
     &lt;div class=&quot;panel-heading&quot;&gt;
         &lt;h3 class=&quot;panel-title&quot;&gt;Panel title&lt;/h3&gt;
@@ -92,29 +76,20 @@
     &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-
 <h2 id="popover">popover</h2>
-
 <h3 id="基本用法">基本用法</h3>
-
 <p>HTML :</p>
-
 <pre><code>&lt;span class=&quot;badge popover-hint&quot; data-content=&quot;獲得評價次數&quot;&gt;15&lt;/span&gt;
 </code></pre>
-
 <p>JS :</p>
-
 <pre><code>$('.popover-hint').popover({
   trigger: 'hover',
   placement: 'auto',                // hint 出現的位置
   container: 'body'                 // 讓 popover 調整為適合內文的寬度
 });
 </code></pre>
-
 <h3 id="custom">Custom</h3>
-
 <p>HTML:</p>
-
 <pre><code>// 讓取消事件可以取到 test-id, 進而觸發 close
 &lt;a href=\&quot;javascript: void(0);\&quot; class=\&quot;close\&quot; data-test-id=\&quot;{$row['id']}\&quot;&gt;&amp;times;&lt;/a&gt;
 
@@ -125,9 +100,7 @@
 // content 不一定要用 js 產生, 可以直接寫在 html 裡
 &lt;li data-toggle='popover' title='Demo title' data-content='Demo content' data-html='true'&gt;
 </code></pre>
-
 <p>CSS:</p>
-
 <pre><code>.popover {
     z-index: 9999;      // 避免被排在其他的下面
     position: fixed;   //避免被 限制大小的 diev 切掉
@@ -135,9 +108,7 @@
     line-height: 16px;
 }
 </code></pre>
-
 <p>click + close 事件 :</p>
-
 <pre><code>// 基本資料及更多資料
 $('[data-toggle=&quot;popover&quot;]').popover({
     html: true,
@@ -153,9 +124,7 @@ $('[data-toggle=&quot;popover&quot;]').popover({
     });
 });
 </code></pre>
-
 <p>hover :</p>
-
 <pre><code>$('[data-toggle=&quot;popover&quot;]').popover({
     html: true,
     trigger: 'hover',
@@ -165,9 +134,7 @@ $('[data-toggle=&quot;popover&quot;]').popover({
     }
 });
 </code></pre>
-
 <p>hover 到 popup 不要消失 :</p>
-
 <pre><code>$('[data-toggle=&quot;popover&quot;]').popover({
     html: true,
     trigger: 'manual',
@@ -190,23 +157,16 @@ $('[data-toggle=&quot;popover&quot;]').popover({
     }, 300);
 });
 </code></pre>
-
-<h2 id="datepicker-https-github-com-nerian-bootstrap-datepicker-rails"><a href="https://github.com/Nerian/bootstrap-datepicker-rails">Datepicker</a></h2>
-
+<h2 id="datepickerhttpsgithubcomnerianbootstrap-datepicker-rails"><a href="https://github.com/Nerian/bootstrap-datepicker-rails">Datepicker</a></h2>
 <p>安裝</p>
-
 <pre><code>gem 'bootstrap-datepicker-rails', '~&gt; 1.4.0'
 </code></pre>
-
 <p>application.scss</p>
-
 <pre><code>*= require bootstrap-datepicker3
 @import &quot;bootstrap-sprockets&quot;;
 @import &quot;bootstrap&quot;;
 </code></pre>
-
 <p>application.js</p>
-
 <pre><code>Load 所有 locales
 //= require bootstrap-datepicker
 
@@ -214,53 +174,34 @@ $('[data-toggle=&quot;popover&quot;]').popover({
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-TW.js
 </code></pre>
-
 <p>bundle install 完記得重啟 rails</p>
-
-<h3 id="example-http-eternicode-github-io-bootstrap-datepicker-markup-input-format-weekstart-startdate-enddate-startview-0-minviewmode-0-todaybtn-false-clearbtn-false-language-en-orientation-auto-multidate-multidateseparator-keyboardnavigation-on-forceparse-on-sandbox"><a href="http://eternicode.github.io/bootstrap-datepicker/?markup=input&amp;format=&amp;weekStart=&amp;startDate=&amp;endDate=&amp;startView=0&amp;minViewMode=0&amp;todayBtn=false&amp;clearBtn=false&amp;language=en&amp;orientation=auto&amp;multidate=&amp;multidateSeparator=&amp;keyboardNavigation=on&amp;forceParse=on#sandbox">Example</a></h3>
-
+<h3 id="examplehttpeternicodegithubiobootstrap-datepickermarkupinputformatweekstartstartdateenddatestartview0minviewmode0todaybtnfalseclearbtnfalselanguageenorientationautomultidatemultidateseparatorkeyboardnavigationonforceparseonsandbox"><a href="http://eternicode.github.io/bootstrap-datepicker/?markup=input&amp;format=&amp;weekStart=&amp;startDate=&amp;endDate=&amp;startView=0&amp;minViewMode=0&amp;todayBtn=false&amp;clearBtn=false&amp;language=en&amp;orientation=auto&amp;multidate=&amp;multidateSeparator=&amp;keyboardNavigation=on&amp;forceParse=on#sandbox">Example</a></h3>
 <p>HTML :</p>
-
 <pre><code>&lt;input class=&quot;form-control&quot; type=&quot;text&quot; id=&quot;date-from&quot;&gt;
 </code></pre>
-
 <p>JS :</p>
-
 <pre><code>$('#date-from').datepicker({
   format: 'yyyy/mm/dd'
 });
 </code></pre>
-
-<h2 id="switch-https-github-com-manuelvanrijn-bootstrap-switch-rails"><a href="https://github.com/manuelvanrijn/bootstrap-switch-rails">Switch</a></h2>
-
+<h2 id="switchhttpsgithubcommanuelvanrijnbootstrap-switch-rails"><a href="https://github.com/manuelvanrijn/bootstrap-switch-rails">Switch</a></h2>
 <p>Install</p>
-
 <pre><code>gem &quot;bootstrap-switch-rails&quot;, '~&gt; 3.3.3'
 </code></pre>
-
 <p>application.scss</p>
-
 <pre><code>*= require bootstrap3-switch
 @import &quot;bootstrap-sprockets&quot;;
 @import &quot;bootstrap&quot;;
 </code></pre>
-
 <p>application.js</p>
-
 <pre><code>//= require bootstrap-switch
 </code></pre>
-
 <p>bundle install 完記得重啟 rails</p>
-
 <h3 id="example">Example</h3>
-
 <p>HTML :</p>
-
 <pre><code>&lt;input type=&quot;checkbox&quot; id=&quot;switch&quot; &lt;%= @enabled %&gt;&gt;
 </code></pre>
-
 <p>JS :</p>
-
 <pre><code>$.fn.bootstrapSwitch.defaults.size = 'mini';
 $('#switch').bootstrapSwitch();
 $('#switch').on('switchChange.bootstrapSwitch', function (event, state) {
@@ -269,19 +210,14 @@ $('#switch').on('switchChange.bootstrapSwitch', function (event, state) {
     console.log(state); // true | false
 });
 </code></pre>
-
 <h2 id="file-upload">file upload</h2>
-
 <p>HTML :</p>
-
 <pre><code>&lt;span id=&quot;file-upload&quot; class=&quot;btn btn-default btn-file&quot;&gt;
   選擇檔案 &lt;%= f.file_field :original_file %&gt;
 &lt;/span&gt;
 &lt;span id=&quot;file-name&quot;&gt;&lt;span&gt;
 </code></pre>
-
 <p>CSS :</p>
-
 <pre><code>.btn-file {
     position: relative;
     overflow: hidden;
@@ -302,9 +238,7 @@ $('#switch').on('switchChange.bootstrapSwitch', function (event, state) {
     display: block;
 }
 </code></pre>
-
 <p>JS :</p>
-
 <pre><code>// 上傳檔案 - 從 path 中取得檔名
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this),
@@ -320,9 +254,7 @@ $('#file-upload :file').on('fileselect', function(event, numFiles, label) {
   $('#file-name').html(label);
 });
 </code></pre>
-
 <h2 id="dropdown">dropdown</h2>
-
 <pre><code>&lt;div class=&quot;dropdown&quot;&gt;
   &lt;button class=&quot;btn btn-default dropdown-toggle&quot; type=&quot;button&quot; id=&quot;dropdownMenu1&quot; data-toggle=&quot;dropdown&quot; aria-haspopup=&quot;true&quot; aria-expanded=&quot;true&quot;&gt;
     Dropdown
@@ -336,11 +268,8 @@ $('#file-upload :file').on('fileselect', function(event, numFiles, label) {
   &lt;/ul&gt;
 &lt;/div&gt;
 </code></pre>
-
 <h2 id="好用的第三方">好用的第三方</h2>
-
 <p><a href="https://silviomoreto.github.io/bootstrap-select/">dropdown</a></p>
-
 <pre><code>&lt;select class=&quot;selectpicker show-tick&quot;&gt;
   &lt;option&gt;item1&lt;/option&gt;
   &lt;option&gt;item2&lt;/option&gt;
@@ -349,9 +278,7 @@ $('#file-upload :file').on('fileselect', function(event, numFiles, label) {
 
 $('.selectpicker').selectpicker();
 </code></pre>
-
 <p><a href="https://bootstrap-datepicker.readthedocs.org/en/latest/">datepicker</a></p>
-
 <pre><code>&lt;input type=&quot;text&quot; class=&quot;datepicker&quot;/&gt;
 
 $('.datepicker').datepicker({
@@ -359,9 +286,7 @@ $('.datepicker').datepicker({
   autoclose: true
 });
 </code></pre>
-
 <h3 id="ref">ref</h3>
-
 <ul>
 <li><a href="http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/">btn-file</a></li>
 </ul>

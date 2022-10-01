@@ -2,82 +2,60 @@
 <html lang="en-us">
 <title>Go Built-in Packages | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/go-built-in-packages/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/go-built-in-packages/">Go Built-in Packages</a></h1>
-    <p class="meta"><time datetime="2014-01-20T13:05:03&#43;08:00">January 20, 2014</time></p>
+    <h1>Go Built-in Packages</h1>
+    <time datetime="2014-01-20T13:05:03&#43;08:00">January 20, 2014</time>
   </header>
-  
-
-<h2 id="fmt">fmt</h2>
-
+  <h2 id="fmt">fmt</h2>
 <h3 id="輸出固定長度">輸出固定長度</h3>
-
 <pre><code>fmt.Printf(&quot;ID : %-10s&quot;, id)    // 十個字元的長度, 向左對齊
 fmt.Printf(&quot;ID : %10s&quot;, id)     // 十個字元的長度, 向右對齊
 fmt.Printf(&quot;ID : %.10s&quot;, id)    // 印出頭十個字元
 fmt.Printf(&quot;%q&quot;, []string{&quot;a&quot;,&quot;b&quot;}) // 印 slice `[&quot;a&quot; &quot;b&quot;]`
 </code></pre>
-
 <h3 id="前面補-0">前面補 0</h3>
-
 <pre><code>fmt.Sprintf(&quot;%02d:%02d&quot;, 5, 3)  // 05:03
 </code></pre>
-
 <h3 id="接收-command-輸入的值">接收 command 輸入的值</h3>
-
 <pre><code>fmt.Print(&quot;Enter a number: &quot;)
 var input float64
 fmt.Scanf(&quot;%f&quot;, &amp;input)
 </code></pre>
-
 <h3 id="印出顏色">印出顏色</h3>
-
 <pre><code>fmt.Println(&quot;\x1b[31;1mHello, World!\x1b[0m&quot;)
 </code></pre>
-
 <h3 id="最簡單的方法-不過有個缺點是它會是-string">最簡單的方法, 不過有個缺點是它會是 string</h3>
-
 <pre><code>fmt.Sprintf(&quot;%.7f&quot;, 123.123456789)                              // 123.1234568
 </code></pre>
-
 <h3 id="不改變本身的型態">不改變本身的型態</h3>
-
 <pre><code>val := 123.123456789
 pow10_n := math.Pow10(7)                                        // 1e7 = 10000000
 d := math.Trunc(val*pow10_n) / pow10_n                          // 123.1234567
 </code></pre>
-
 <h3 id="如果已知位數-可簡化">如果已知位數, 可簡化</h3>
-
 <pre><code>math.Trunc(123.1234567*1e5) / 1e5                               // 123.12345
 </code></pre>
-
 <h3 id="不改變本身的型態且4捨5入">不改變本身的型態且4捨5入</h3>
-
 <pre><code>val := 123.123456789
 pow10_n := math.Pow10(7)
 d := math.Trunc((val+0.5/pow10_n)*pow10_n) / pow10_n            // 123.1234568
 </code></pre>
-
 <h2 id="log">log</h2>
-
 <h3 id="儲存成-file">儲存成 file</h3>
-
 <pre><code>// open a file
 f, err := os.OpenFile(&quot;dev.log&quot;, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
 if err != nil {
@@ -95,18 +73,14 @@ log.Println(&quot;test&quot;)
 log.Println(&quot;testr2&quot;)
 log.Println(&quot;testr3&quot;)
 </code></pre>
-
 <h3 id="將-log-內容暫存在-buffer">將 log 內容暫存在 buffer</h3>
-
 <pre><code>var buf bytes.Buffer
 logger := log.New(&amp;buf, &quot;logger: &quot;, log.Lshortfile)
 logger.Print(&quot;Hello, log file!&quot;)
 
 fmt.Print(&amp;buf)
 </code></pre>
-
 <h3 id="攔截-log-的內容">攔截 log 的內容</h3>
-
 <pre><code>var buf bytes.Buffer
 logger := log.New(&amp;buf, &quot;&quot;, log.Lshortfile)
 go func() {
@@ -125,9 +99,7 @@ logger.Print(&quot;Hello, log file!3&quot;)
 dd := make(chan int)
 &lt;-dd
 </code></pre>
-
 <h3 id="寫到-syslog">寫到 syslog</h3>
-
 <pre><code>// Configure logger to write to the syslog. You could do this in init(), too.
 logwriter, e := syslog.New(syslog.LOG_NOTICE, &quot;myprog&quot;)
 if e == nil {
@@ -137,16 +109,11 @@ if e == nil {
 // Now from anywhere else in your program, you can use this:
 log.Print(&quot;Hello Logs!&quot;)
 </code></pre>
-
 <p><code>/var/log/system.log</code> :</p>
-
 <pre><code>Nov  4 08:19:33 testde-MacBook-Pro myprog[90449]: 2016/11/04 08:19:33 Hello Logs!
 </code></pre>
-
 <h2 id="net">net</h2>
-
 <h3 id="取得本機上的-mac">取得本機上的 Mac</h3>
-
 <pre><code>interfaces, err := net.Interfaces()
 if err != nil {
     panic(&quot;Poor soul, here is what you got: &quot; + err.Error())
@@ -155,39 +122,27 @@ for _, inter := range interfaces {
     fmt.Println(inter.Name, inter.HardwareAddr)
 }
 </code></pre>
-
-<h3 id="header-status-etc">header / status / etc.</h3>
-
+<h3 id="header--status--etc">header / status / etc.</h3>
 <p>header</p>
-
 <pre><code>resp, _ := http.Get(url)
 // &amp;{200 OK 200 HTTP/1.1 1 1 map[Connection:[keep-alive] Server:[nginx] Accept-Ranges:[bytes] Content-Length:[994291] Date:[Sat, 25 Jan 2014 19:13:51 GMT] Etag:[&quot;4e28a21e-f2bf3&quot;] Content-Type:[video/x-flv] Last-Modified:[Thu, 21 Jul 2011 22:03:10 GMT]] 0xf8400c2a00 994291 [] false map[] 0xf8400c0240}
 </code></pre>
-
 <p>Status</p>
-
 <pre><code>resp.Status             // 200 OK
 resp.StatusCode         // 200
 </code></pre>
-
 <p>size</p>
-
 <pre><code>resp.Header.Get(&quot;Content-Length&quot;)
 // 994291
 </code></pre>
-
 <p>body</p>
-
 <pre><code>source, _ := ioutil.ReadAll(resp.Body)
 // source 為 131 239 216 100 96 184 2 221 171 162 131 49 17 33 17 39 152 176 194 18 19 62 40 124 93 230 48 58 9 (..略..)
 </code></pre>
-
 <blockquote>
 <p>len(source) 結果會和 header 的 Content-Length 一樣</p>
 </blockquote>
-
-<h3 id="net-url-解析-url">net/url 解析 URL</h3>
-
+<h3 id="neturl-解析-url">net/url 解析 URL</h3>
 <pre><code>s := &quot;postgres://user:pass@host.com:5432/path?k=v#f&quot;
 u, err := url.Parse(s)
 fmt.Println(u.Scheme)                   // postgres
@@ -216,9 +171,7 @@ fmt.Println(&quot;Fragment&quot;, u.Fragment)   // Fragment this_is_fragment
 fmt.Println(&quot;RawQuery&quot;, u.RawQuery)   // RawQuery foo=bar&amp;foo=baz
 fmt.Printf(&quot;query: %#v\n&quot;, u.Query()) // query: url.Values{&quot;foo&quot;:[]string{&quot;bar&quot;, &quot;baz&quot;}}
 </code></pre>
-
 <h3 id="url-組-query">url 組 query</h3>
-
 <pre><code>u, _ := url.Parse(&quot;https://example.com&quot;)
 u.Path += &quot;/api/v1/user/event&quot;
 query := url.Values{}
@@ -226,21 +179,16 @@ query.Add(&quot;a&quot;, &quot;12+3&quot;)
 query.Add(&quot;b&quot;, &quot;4&amp;D&quot;)
 u.RawQuery = query.Encode()
 </code></pre>
-
 <p>output</p>
-
 <pre><code>example.com
 /api/v1/user/event?a=12%2B3&amp;b=4%26D
 a=12%2B3&amp;b=4%26D
 https://example.com/api/v1/user/event?a=12%2B3&amp;b=4%26D
 </code></pre>
-
 <blockquote>
 <p>It Urlencoded automatically.</p>
 </blockquote>
-
 <h3 id="已存在的-url-再新增-query-param">已存在的 url 再新增 query param</h3>
-
 <pre><code>var u *url.URL
 u, _ = url.Parse(&quot;https://example.com/ccccc/ffff.jpg?a=aa&amp;c=cc&quot;)
 q := u.Query()
@@ -248,35 +196,25 @@ q.Set(&quot;q&quot;, &quot;golang&quot;)
 u.RawQuery = q.Encode()
 fmt.Println(u.String())
 </code></pre>
-
 <h3 id="自組-post-body-要-escape">自組 post body 要 escape</h3>
-
 <p>Post body 規則像 url, 要 url encode, 否則 <code>+</code> 等等的符號會被當成是 <code>space</code></p>
-
 <pre><code>body := fmt.Sprintf(&quot;p=%s&amp;iv=%s&quot;, url.QueryEscape(p_64), url.QueryEscape(iv_64))
 </code></pre>
-
-<h3 id="net-http-download-file">net/http Download file</h3>
-
+<h3 id="nethttp-download-file">net/http Download file</h3>
 <pre><code>out, err := os.Create(&quot;output.txt&quot;)
 defer out.Close()
 resp, err := http.Get(&quot;http://example.com/&quot;)
 defer resp.Body.Close()
 n, err := io.Copy(out, resp.Body)
 </code></pre>
-
 <h3 id="只取得-response-的-header">只取得 response 的 Header</h3>
-
 <pre><code>res, _ := http.Head(url)
 maps := res.Header
 </code></pre>
-
 <blockquote>
 <p>它連完線馬上就會斷了，不需要手動關掉</p>
 </blockquote>
-
 <h3 id="get-filename-from-url-path">Get filename from url path</h3>
-
 <pre><code>import (
     &quot;net/url&quot;
     &quot;path/filepath&quot;
@@ -286,9 +224,7 @@ s := &quot;https://talks.golang.org/2012/splash/appenginegophercolor.jpg&quot;
 u, _ := url.Parse(s)
 fmt.Println(filepath.Base(u.Path))
 </code></pre>
-
 <h3 id="get-method">GET method</h3>
-
 <pre><code>import (
   &quot;http&quot;
   &quot;io/ioutil&quot;
@@ -309,11 +245,8 @@ if err != nil {
     fmt.Printf(&quot;%s\n&quot;, string(contents))
 }
 </code></pre>
-
 <p>ref : <a href="https://gist.github.com/ijt/950790">https://gist.github.com/ijt/950790</a></p>
-
-<h3 id="get-另一種寫法-指定-header">Get 另一種寫法，指定 header</h3>
-
+<h3 id="get-另一種寫法指定-header">Get 另一種寫法，指定 header</h3>
 <pre><code>client := http.Client{
   Timeout: time.Second * 5,
 }
@@ -335,14 +268,10 @@ contents, _ := ioutil.ReadAll(resp.Body)
 fmt.Println(string(contents))
 return
 </code></pre>
-
 <p>post :</p>
-
 <pre><code>http.NewRequest(&quot;GET&quot;, &quot;http://www.google.com/dd&quot;, strings.NewReader(&quot;name=cjb&quot;))
 </code></pre>
-
-<h3 id="post-form-data-json">Post (form-data / json)</h3>
-
+<h3 id="post-form-data--json">Post (form-data / json)</h3>
 <pre><code>// New request
 req, err := http.NewRequest(&quot;POST&quot;, c.URL, bytes.NewBuffer([]byte(c.PostData)))
 req.Close = true
@@ -365,9 +294,7 @@ if err != nil {
 }
 defer resp.Body.Close()
 </code></pre>
-
 <h3 id="post-file">Post (file)</h3>
-
 <pre><code>// 模擬 form 的一個 選項, 現在是空的
 bodyBuf := &amp;bytes.Buffer{}
 bodyWriter := multipart.NewWriter(bodyBuf)
@@ -426,9 +353,7 @@ if err != nil {
 }
 defer resp.Body.Close()
 </code></pre>
-
 <h3 id="http-建立-api">Http 建立 API</h3>
-
 <pre><code>http.HandleFunc(&quot;/&quot;, Index)
 err := http.ListenAndServe(&quot;:5555&quot;, nil)
 if err != nil {
@@ -440,9 +365,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
     // w.Write([]byte(&quot;Time: &quot; + time.Now().Format(time.RFC1123)))
 }
 </code></pre>
-
 <p>也可以改由這樣連線, 先建立 linstener</p>
-
 <pre><code>http.HandleFunc(&quot;/&quot;, Index)
 s := &amp;http.Server{}
 l, err := net.Listen(&quot;tcp&quot;, &quot;:5555&quot;)
@@ -451,11 +374,8 @@ if err != nil {
 }
 panic(s.Serve(l))
 </code></pre>
-
 <h3 id="connstate-可以截取-connection-的狀態">ConnState 可以截取 connection 的狀態</h3>
-
 <p>總共有這五種狀態 <code>StateNew</code> <code>StateActive</code> <code>StateIdle</code> <code>StateHijacked</code> <code>StateClosed</code></p>
-
 <pre><code>func main() {
     http.HandleFunc(&quot;/&quot;, myHandler)
     s := &amp;http.Server{
@@ -473,11 +393,8 @@ func ConnStateListener(c net.Conn, cs http.ConnState) {
     // 如果想要直接結束 connection : c.Close()
 }
 </code></pre>
-
 <p>ref : <a href="http://siddontang.com/2015/01/25/stop-server-gracefully/">http://siddontang.com/2015/01/25/stop-server-gracefully/</a></p>
-
 <h3 id="handle-connection-created-at-27-dec-2013">handle connection (created at 27 Dec 2013)</h3>
-
 <pre><code>ln, err := net.Listen(&quot;tcp&quot;, &quot;:8080&quot;)
 if err != nil {
     log.Fatal(&quot;Starting error&quot;, err)
@@ -505,11 +422,8 @@ func handleConnection(conn net.Conn) {
     bufio.NewReader(os.Stdin).ReadBytes('\n')
 }
 </code></pre>
-
 <h3 id="tcp-example">TCP example</h3>
-
 <p>TCP server</p>
-
 <pre><code>func launchTCPserver() {
     // Listen for incoming connections.
     l, err := net.Listen(&quot;tcp&quot;, &quot;:8081&quot;)
@@ -556,9 +470,7 @@ func handleRequest(conn net.Conn) {
         }
 }
 </code></pre>
-
 <p>TCP client</p>
-
 <pre><code>conn, _ := net.Dial(&quot;tcp&quot;, &quot;127.0.0.1:8081&quot;)
 for {
     // read in input from stdin
@@ -573,9 +485,7 @@ for {
     fmt.Print(&quot;[Client] Message from server: &quot; + message)
 }
 </code></pre>
-
 <p>or</p>
-
 <pre><code>reply := make([]byte, 1024)
 _, err = conn.Read(reply)
 if err != nil {
@@ -583,9 +493,7 @@ if err != nil {
 }
 fmt.Println(string(reply))
 </code></pre>
-
 <h3 id="api-custom-handler">API Custom Handler</h3>
-
 <pre><code>type timeHandler struct {
   format string
 }
@@ -605,24 +513,16 @@ func main() {
   http.ListenAndServe(&quot;:3000&quot;, mux)
 }
 </code></pre>
-
 <p>or</p>
-
 <pre><code>func (th *timeHandler) CustomName(w http.ResponseWriter, r *http.Request) {}
 
 mux.HandleFunc(&quot;/time&quot;, th.CustomName)
 </code></pre>
-
-<h3 id="net-http-x509-certificate-signed-by-unknown-authority">net/http - x509: certificate signed by unknown authority</h3>
-
+<h3 id="nethttp---x509-certificate-signed-by-unknown-authority">net/http - x509: certificate signed by unknown authority</h3>
 <p>Post 到一個 https 的 URL 得到 <code>x509: certificate signed by unknown authority</code></p>
-
 <p>會發生這個原因主要是 golang 的 client 端會自動地對 server 傳來的 certificate 做驗證，但因為它是由不知名的 CA 簽發的，所以有 error</p>
-
 <p>網路其中解法之一 : To fix this problem, you must add certificates of &ldquo;COMODO RSA Domain Validation Secure Server CA&rdquo; to your certififcate served from server, also see full report at <a href="https://www.ssllabs.com/ssltest/analyze.html?d=catchchat.catchchatchina.com">https://www.ssllabs.com/ssltest/analyze.html?d=catchchat.catchchatchina.com</a></p>
-
 <p>另一個解法是不要去驗證它</p>
-
 <pre><code>import (&quot;net/http&quot;; &quot;crypto/tls&quot;)
 
 tr := &amp;http.Transport{
@@ -631,19 +531,13 @@ tr := &amp;http.Transport{
 client := &amp;http.Client{Transport: tr}
 resp, err := client.Get(&quot;https://someurl:443/)
 </code></pre>
-
 <p>更好的解法是對 server 的 certificate 做驗證, 這邊有點超越我的能力了, <a href="http://studygolang.com/articles/2946">請參考這</a></p>
-
-<h3 id="net-http-client-request-得到-eof-原因">net/http client request 得到 EOF 原因</h3>
-
+<h3 id="nethttp-client-request-得到-eof-原因">net/http client request 得到 EOF 原因</h3>
 <pre><code>Post https://xxxxx.com/wait/: EOF
 </code></pre>
-
 <p>有可能是這個 request 需要比較久的時間，即使你的 http client 的 timeout 設很長，
 也會因為 server timeout 太短先把你踢掉，所以你會得到這個 Error</p>
-
 <h3 id="get-lan-ip">Get lan ip</h3>
-
 <pre><code>func GetLocalIP() string {
     addrs, err := net.InterfaceAddrs()
     if err != nil {
@@ -660,11 +554,8 @@ resp, err := client.Get(&quot;https://someurl:443/)
     return &quot;&quot;
 }
 </code></pre>
-
 <h3 id="proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example">Proper way to test CIDR membership of an IP 4 or 6 address example</h3>
-
 <p>ref: <a href="https://www.socketloop.com/tutorials/golang-proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example">https://www.socketloop.com/tutorials/golang-proper-way-to-test-cidr-membership-of-an-ip-4-or-6-address-example</a></p>
-
 <pre><code>package main
 
 import (
@@ -714,9 +605,7 @@ func inc(ip net.IP) {
         }
 }
 </code></pre>
-
 <p>output :</p>
-
 <pre><code>[0] 123.45.67.64
 [1] 123.45.67.65
 ...略...
@@ -726,11 +615,8 @@ func inc(ip net.IP) {
 Contains 123.45.67.69 :  false
 Contains 123.45.67.69 :  true
 </code></pre>
-
 <h2 id="io">io</h2>
-
 <p>pipe</p>
-
 <pre><code>pr, pw := io.Pipe()
 go func() {
     defer pw.Close()
@@ -748,11 +634,8 @@ if err != nil {
     panic(err)
 }
 </code></pre>
-
-<h2 id="io-ioutil-bufio">io/ioutil/bufio</h2>
-
-<h3 id="將下載的資料轉成-io-reader-型態">將下載的資料轉成 io.Reader 型態</h3>
-
+<h2 id="ioioutilbufio">io/ioutil/bufio</h2>
+<h3 id="將下載的資料轉成-ioreader-型態">將下載的資料轉成 io.Reader 型態</h3>
 <pre><code>var source io.Reader
 source = resp.Body
 buffer := make([]byte, 1024)
@@ -760,23 +643,17 @@ for {
     cBytes, _ := source.Read(buffer)
     (...略...)
 </code></pre>
-
 <p>等同於</p>
-
 <pre><code>buffer := make([]byte, 1024)
 for {
     cBytes,_ := resp.Body.Read(buffur)
     (...略...)
 </code></pre>
-
 <h3 id="read-file">Read File</h3>
-
 <pre><code>var img64 []byte
 img64, _ = ioutil.ReadFile(&quot;/home/ubuntu/mygo/src/pushImage/google.png&quot;)
 </code></pre>
-
-<h3 id="read-last-line-of-file-ref-here-https-www-socketloop-com-tutorials-golang-simulate-tail-f-or-read-last-line-from-log-file-example">Read last line of file (ref: <a href="https://www.socketloop.com/tutorials/golang-simulate-tail-f-or-read-last-line-from-log-file-example">here</a>)</h3>
-
+<h3 id="read-last-line-of-file-ref-herehttpswwwsocketloopcomtutorialsgolang-simulate-tail-f-or-read-last-line-from-log-file-example">Read last line of file (ref: <a href="https://www.socketloop.com/tutorials/golang-simulate-tail-f-or-read-last-line-from-log-file-example">here</a>)</h3>
 <pre><code>func readLastLine(filename string) {
     var previousOffset int64 = 0
 
@@ -830,9 +707,7 @@ img64, _ = ioutil.ReadFile(&quot;/home/ubuntu/mygo/src/pushImage/google.png&quot
 
 }
 </code></pre>
-
 <h3 id="get-last-modified-time-of-file">Get last-modified time of file</h3>
-
 <pre><code>// Get file list from dir
 files, err := ioutil.ReadDir(&quot;/tmp&quot;)
 if err != nil {
@@ -848,9 +723,7 @@ for _, file := range files {
     fmt.Printf(&quot;%s %s\n&quot;, file.Name(), file.ModTime())
 }
 </code></pre>
-
 <h3 id="line-counter">Line counter</h3>
-
 <pre><code>func lineCounter(r io.Reader) (int, error) {
     buf := make([]byte, 32*1024)
     count := 0
@@ -877,17 +750,13 @@ if err != nil {
 defer file.Close()
 count, err := lineCounter(file)
 </code></pre>
-
 <h3 id="有效率的-monitor-file-並取得最新內容-類似-tail-指令">有效率的 monitor file 並取得最新內容 (類似 tail 指令)</h3>
-
 <ol>
 <li>先 new File</li>
 <li>用兩個 int 變數記錄上一次及偵測到檔案變更的位置 (也就是檔案大小, 用 os.Stat 取得)</li>
 <li>使用 fsnotify/fsnotify 偵測變更, 有變更就取最新內容 (用 file.ReadAt 在上一次的位置開始讀取, 讀取的長度用目前的size減上一次size</li>
 </ol>
-
 <p>code:</p>
-
 <pre><code>for {
         select {
         case event := &lt;-watcher.Events:
@@ -925,28 +794,21 @@ func readLastLine(file *os.File, prev int64, curr int64) (last_line string, err 
         return string(buf[:n]), nil
 }
 </code></pre>
-
-<h2 id="io-read-into-byte-from-another-byte">io - Read into []byte from another []byte</h2>
-
+<h2 id="io---read-into-byte-from-another-byte">io - Read into []byte from another []byte</h2>
 <p>io.Copy (900MB, 1s)</p>
-
 <pre><code>b2 := bytes.NewBuffer(nil)
 _, err = io.Copy(b2, bytes.NewReader(b))
 if err != nil {
     panic(err)
 }
 </code></pre>
-
 <p>ioutil.ReadAll (900MB 3s)</p>
-
 <pre><code>b3, err := ioutil.ReadAll(bytes.NewReader(b))
 if err != nil {
     panic(err)
 }
 </code></pre>
-
 <p>buffer read (900MB, 3s)</p>
-
 <pre><code>buf := make([]byte, 4*1024)
 br := bufio.NewReader(bytes.NewReader(b))
 b2 := bytes.NewBuffer(nil)
@@ -967,9 +829,7 @@ for {
     }
 }
 </code></pre>
-
 <p>buffer pipe read (900MB, 4s)</p>
-
 <pre><code>pr, pw := io.Pipe()
 go func() {
     defer pw.Close()
@@ -999,53 +859,36 @@ if err != nil {
     panic(err)
 }
 </code></pre>
-
 <h2 id="string">string</h2>
-
 <h3 id="基本處理">基本處理</h3>
-
 <p>String to Array</p>
-
 <pre><code>strings.Split(&quot;a/b/c&quot;,  &quot;/&quot;)
 </code></pre>
-
 <p>Array to String (join)</p>
-
 <pre><code>s := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
 fmt.Println(strings.Join(s, &quot;/&quot;))
 </code></pre>
-
 <h2 id="os">os</h2>
-
 <h3 id="外部參數">外部參數</h3>
-
 <ul>
 <li>command : <code>go run t.go dd</code></li>
 <li>t.go : <code>fmt.Println(os.Args[1])</code></li>
 </ul>
-
-<h3 id="main-main-函數並沒有返回值">&ldquo;main.main&rdquo; 函數並沒有返回值</h3>
-
+<h3 id="mainmain-函數並沒有返回值">&ldquo;main.main&rdquo; 函數並沒有返回值</h3>
 <p>如果想返回一個出錯信息，可用系統調用強制退出：</p>
-
 <pre><code>os.Exit(1)
 
 # Stop
 os.Exit(0)
 </code></pre>
-
-<h3 id="檔案-目錄-是否存在">檔案 / 目錄 是否存在</h3>
-
+<h3 id="檔案--目錄-是否存在">檔案 / 目錄 是否存在</h3>
 <p>檔案或目錄是否存在</p>
-
 <pre><code>if _, err := os.Stat(filename); os.IsNotExist(err) {
     fmt.Printf(&quot;no such file or directory: %s&quot;, filename)
     return
 }
 </code></pre>
-
 <p>檔案資訊</p>
-
 <pre><code>func GetFileInfo(path string) (isExistent bool, fileInfo os.FileInfo) {
     fileInfo, err := os.Stat(path)
     if err != nil {
@@ -1060,9 +903,7 @@ os.Exit(0)
     return true, fileInfo
 }
 </code></pre>
-
 <p>目錄是否存在</p>
-
 <pre><code>func DirExists(path string) (bool) {
     fileInfo, err := os.Stat(path)
     if err != nil {
@@ -1077,9 +918,7 @@ os.Exit(0)
     return false
 }
 </code></pre>
-
 <p>檔案是否存在</p>
-
 <pre><code>func FileExists(path string) (bool) {
     fileInfo, err := os.Stat(path)
     if err != nil {
@@ -1094,18 +933,14 @@ os.Exit(0)
     return true
 }
 </code></pre>
-
 <p>目前位置</p>
-
 <pre><code>dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 if err != nil {
         log.Fatal(err)
 }
 fmt.Println(dir)
 </code></pre>
-
 <p>列出指定路徑下的檔案或目錄</p>
-
 <pre><code>files, err := ioutil.ReadDir(&quot;./&quot;)
 if err != nil {
     log.Fatal(err)
@@ -1114,9 +949,7 @@ for _, f := range files {
         fmt.Println(f.Name())
 }
 </code></pre>
-
-<h3 id="file-指定寫入位置">file - 指定寫入位置</h3>
-
+<h3 id="file---指定寫入位置">file - 指定寫入位置</h3>
 <pre><code>file, _ := os.OpenFile(&quot;tt&quot;, os.O_RDWR|os.O_APPEND, 0660)
 n, err := file.WriteAt([]byte(&quot;中Start&quot;), 3)
 if err != nil {
@@ -1124,27 +957,18 @@ if err != nil {
 }
 fmt.Println(n)
 </code></pre>
-
 <blockquote>
 <p>返回的 n 是寫入的字節大小, 中文字佔 3 btyes, 英文 1 bytes</p>
 </blockquote>
-
 <p>檔案 tt 寫入後的結果 : <code>^@^@^@中Start</code></p>
-
 <p>其中 <code>^@</code> 為空字元, 共有 3 組 <code>^@</code> 是因為 WriteAt 指定從 3 開始寫入,</p>
-
 <p>但檔案位置是從 0 開始算, 所以會有 3 組 <code>^@</code></p>
-
 <p>寫入改成 <code>n, err := file.WriteAt([]byte(&quot;678&quot;), 6)</code></p>
-
 <p>結果為 : <code>^@^@^@中678rt</code></p>
-
 <blockquote>
 <p>註 : <code>^@</code> 佔 1byte, <code>中</code> 佔 3 bytes</p>
 </blockquote>
-
 <h3 id="create-folder">Create folder</h3>
-
 <pre><code> import (
    //&quot;fmt&quot;
    &quot;os&quot;
@@ -1156,37 +980,25 @@ fmt.Println(n)
    os.Mkdir(&quot;.&quot; + string(filepath.Separator) + &quot;TestDir&quot;,0777)
  }
 </code></pre>
-
-<h3 id="在-windows-下執行可執行檔-exe-後視窗停留不關閉">在 windows 下執行可執行檔(.exe)後視窗停留不關閉</h3>
-
+<h3 id="在-windows-下執行可執行檔exe後視窗停留不關閉">在 windows 下執行可執行檔(.exe)後視窗停留不關閉</h3>
 <p>引入 :</p>
-
 <pre><code>import (
     &quot;bufio&quot;
     &quot;os&quot;
 )
 </code></pre>
-
 <p>最後一行執行 :</p>
-
 <pre><code>bufio.NewReader(os.Stdin).ReadBytes('\n')
 </code></pre>
-
 <p>當執行 .exe 檔後視窗就不會關閉了</p>
-
 <p>或用另一種寫法</p>
-
 <pre><code>b := make([]byte, 1)
 os.Stdin.Read(b)
 </code></pre>
-
 <h3 id="不同作業系統取得不同-path-separator-slash-斜線">不同作業系統取得不同 path separator (slash, 斜線)</h3>
-
 <pre><code>string(filepath.Separator)
 </code></pre>
-
 <h3 id="progress-bar">progress bar</h3>
-
 <pre><code>package main
 import (
   &quot;fmt&quot;
@@ -1204,9 +1016,7 @@ func main() {
   fmt.Println(&quot;\nAll System Go!&quot;)
 }
 </code></pre>
-
 <h3 id="讓字一個一個-print-出來">讓字一個一個 print 出來</h3>
-
 <pre><code>func main() {
     text := &quot;Hello World!&quot;
     printSlowly(text, 200)
@@ -1225,120 +1035,83 @@ func printSlowly(text string, speed int) {
     fmt.Print(&quot;\n&quot;)
 }
 </code></pre>
-
-<h3 id="os-exec">os/exec</h3>
-
+<h3 id="osexec">os/exec</h3>
 <h4 id="取得執行中的-binary-路徑">取得執行中的 binary 路徑</h4>
-
 <pre><code>[binary path]
 os.Args[0]                      # /home/apps/go/src/test/test
 
 [dir path]
 filepath.Dir(os.Args[0])        # /home/apps/go/src/test
 </code></pre>
-
 <h4 id="執行外部指令">執行外部指令</h4>
-
 <pre><code>output, err := exec.Command(&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;).Output()
 if err != nil {
     return &quot;unknown&quot;
 }
 fmt.Println(string(output))
 </code></pre>
-
 <blockquote>
 <p>output 最後會含一個 ascii: <code>10</code> (hex: <code>0A</code>) 的換行字元, 它並不是 <code>\n</code> 字元</p>
 </blockquote>
-
 <h2 id="signal">signal</h2>
-
-<h3 id="接收中止訊號-kill-signal">接收中止訊號(kill signal)</h3>
-
+<h3 id="接收中止訊號kill-signal">接收中止訊號(kill signal)</h3>
 <p>當程式執行後會停在 <code>&lt;-sigc</code>，如果收到 kill 指令則會繼續往下走</p>
-
 <pre><code>sigc := make(chan os.Signal, 1)
 signal.Notify(sigc, os.Interrupt, os.Kill)
 &lt;-sigc
 log.Println(&quot;Abort!&quot;)
 </code></pre>
-
 <h3 id="發送-signal">發送 signal</h3>
-
 <p>重啟 signal</p>
-
 <pre><code>syscall.Kill(syscall.Getpid(), syscall.SIGHUP)
 </code></pre>
-
 <p>Kill process signal</p>
-
 <pre><code>syscall.Kill(syscall.Getpid(), syscall.SIGTERM)
 </code></pre>
-
 <h3 id="what-would-it-be-if-both-of-main-program-and-sub-program-try-to-capture-the-signals-at-the-same-time">What would it be if both of main program and sub-program try to capture the signals at the same time?</h3>
-
 <p>Both of them will capture that signal at the same time.</p>
-
 <h2 id="time">time</h2>
-
 <p>Datetime</p>
-
 <pre><code>time.Now()                  // 2016-12-29 17:33:23.784617257 +0800 CST
 </code></pre>
-
 <p>Format</p>
-
 <pre><code> time.Now().Format(time.RFC3339)                            // 2017-02-14T06:59:21Z   可以以 string 型態被解到 time.Time 型態
  time.Now().Local().Format(&quot;2006-01-02 15:04:05 +0800&quot;)     // 2014-06-30 14:23:38 +0800
  time.Now().Format(&quot;2006-01-02 15:04:05&quot;)                   // 2015-02-03 04:16:54
  time.Now().String()                                        // 2017-01-10 06:51:14.271079336 +0000 UTC
  time.Now().UTC().String()                                  // 轉成 UTC+0
 </code></pre>
-
 <p>Timestamp</p>
-
 <pre><code>time.Now().Unix()           // 1483004003
 </code></pre>
-
 <p>Convert timestamp to time</p>
-
 <pre><code>tm := time.Unix(1484032609, 0)
 </code></pre>
-
 <p>Convert string to time</p>
-
 <pre><code>today := &quot;2017-01-10 16:57:28&quot;
 t, err := time.Parse(&quot;2006-01-02 15:04:05&quot;, today)
 </code></pre>
-
 <p>Convert string to time in timezone</p>
-
 <pre><code>// 將指定的時間跟 timezone 轉成 time.Time
 l, _ := time.LoadLocation(&quot;Asia/Taipei&quot;)
 t, _ := time.ParseInLocation(&quot;2006-01-02 15:04:05&quot;, &quot;2019-01-02 17:04:43&quot;, l)
 fmt.Println(t.In(time.UTC).Format(&quot;2006-01-02 15:04:05&quot;)) // 2019-01-02 09:04:43
 fmt.Println(t.In(l).Format(&quot;2006-01-02 15:04:05&quot;))        // 2019-01-02 17:04:43
 </code></pre>
-
 <blockquote>
 <p>UTC: time.LoadLocation(&ldquo;UTC&rdquo;)</p>
 </blockquote>
-
 <p>Convert string to time in RFC3339</p>
-
 <pre><code>ts, err := time.Parse(time.RFC3339, src)
 </code></pre>
-
 <p>Convert time to time in timezone</p>
-
 <pre><code>t := time.Now()
 loc, err := time.LoadLocation(&quot;Asia/Taipei&quot;)
 fmt.Println(t.String())             // 2017-01-10 08:41:19.833220416 +0000 UTC
 fmt.Println(t.In(loc))              // 2017-01-10 16:41:19.833220416 +0800 CST
 fmt.Println(t.In(loc).Format(&quot;2006-01-02 15:04:05&quot;))
 </code></pre>
-
 <p>year, month, day, hour, min, sec</p>
-
 <pre><code>year, month, day := t2.Date()
 fmt.Printf(&quot;Date : [%d]year : [%d]month : [%d]day \n&quot;, year, month, day)
 // Date : [2017]year : [1]month : [10]day
@@ -1347,16 +1120,12 @@ hr, min, sec := t2.Clock()
 fmt.Printf(&quot;Clock : [%d]hour : [%d]minutes : [%d] seconds \n&quot;, hr, min, sec)
 // Clock : [16]hour : [57]minutes : [28] seconds
 </code></pre>
-
 <p>first/last day of month</p>
-
 <pre><code>y, m, _ := time.Now().Date()
 first := time.Date(y, m, 1, 0, 0, 0, 0, loc)
 last := first.AddDate(0, 1, 0).Add(-time.Nanosecond)
 </code></pre>
-
 <h3 id="parse-time-的非預期狀況">Parse time 的非預期狀況</h3>
-
 <pre><code>timeTest := &quot;20:36&quot;
 timezone := &quot;Asia/Tokyo&quot;
 loc, err := time.LoadLocation(timezone)
@@ -1370,21 +1139,15 @@ if err != nil {
 fmt.Println(t.Format(&quot;15:04&quot;))
 fmt.Println(t.UTC().Format(&quot;15:04&quot;))
 </code></pre>
-
 <p>在某些主機會是預期結果</p>
-
 <pre><code>20:36
 11:36
 </code></pre>
-
 <p>某些會是:</p>
-
 <pre><code>20:36
 11:17
 </code></pre>
-
 <p>似乎也不是 go 版本不同的問題, 不知道確切發生的原因, 但如果將指定的時間用完整一點可以解決此問題</p>
-
 <pre><code>timeTest := time.Now().Format(&quot;2006-01-02&quot;) + &quot; &quot; + &quot;20:36&quot;
 timezone := &quot;Asia/Tokyo&quot;
 
@@ -1399,11 +1162,8 @@ if err != nil {
 fmt.Println(t.Format(&quot;15:04&quot;))
 fmt.Println(t.UTC().Format(&quot;15:04&quot;))
 </code></pre>
-
 <h3 id="comapare">Comapare</h3>
-
 <p>After / Before</p>
-
 <pre><code>time1 := &quot;2016-05-15 12:22:00&quot;
 time2 := &quot;2017-05-15 12:22:00&quot;
 t1, err := time.Parse(&quot;2006-01-02 15:04:05&quot;, time1)
@@ -1412,9 +1172,7 @@ if err == nil &amp;&amp; t1.Before(t2) {
     fmt.Println(&quot;true&quot;)
 }
 </code></pre>
-
 <h3 id="延遲">延遲</h3>
-
 <pre><code>time.Sleep(3 * time.Second)
 
 time.Sleep(500 * time.Millisecond)
@@ -1422,11 +1180,8 @@ time.Sleep(500 * time.Millisecond)
 speed := 500
 time.Sleep(time.Duration(speed) * time.Millisecond)
 </code></pre>
-
-<h3 id="時間相加-相減">時間相加／相減</h3>
-
+<h3 id="時間相加相減">時間相加／相減</h3>
 <p>兩時間相減</p>
-
 <pre><code>startTime := time.Now()                     // 2014-01-26 18:17:22.185125 +0800 CST
 time.Sleep(3 * time.Second)
 endTime := time.Now()                       // 2014-01-26 18:17:25.186307 +0800 CST
@@ -1434,9 +1189,7 @@ endTime := time.Now()                       // 2014-01-26 18:17:25.186307 +0800 
 var durationTime time.Duration = endTime.Sub(startTime)
 fmt.Println(durationTime.String())
 </code></pre>
-
 <p>加減(日時秒)</p>
-
 <pre><code>timein := time.Now().Add(time.Hour * time.Duration(1))      // Add 1 hour
 timein := time.Now().Add(time.Minute * time.Duration(1))    // Add 1 minute
 timein := time.Now().Add(time.Second * time.Duration(1))    // Add 1 second
@@ -1449,34 +1202,23 @@ then := time.Now().AddDate(0, 0, 1)     // +1 day
 then := time.Now().AddDate(0, 0, -1)    // -1 day
 then := time.Now().AddDate(1, 1, 0)     // +1 year and 1 month
 </code></pre>
-
 <p>timestamp plus 30 seconds</p>
-
 <pre><code>time.Now().Unix() + 30
 </code></pre>
-
 <p>Week</p>
-
 <pre><code>time.Now().Weekday()            // Tuesday
 int(time.Now().Weekday())       // 2 (Day of the week)
 </code></pre>
-
 <p>相減算時間差</p>
-
 <pre><code>time_start := time.Now()
 // do something
 log.Printf(&quot;elasped time: %s&quot;, time.Since(time_start))
 </code></pre>
-
-<h3 id="3-time-second">3 * time.Second</h3>
-
+<h3 id="3--timesecond">3 * time.Second</h3>
 <p>如果前面的 int 從 string 轉型，是會噴錯的，要改成 :</p>
-
 <pre><code>time.Duration(params[&quot;idle_timeout&quot;].(int)) * time.Second
 </code></pre>
-
-<h3 id="印出到小數的-timestamp-datetime-e-g-2017-06-28-02-58-46-452-0000-utc">印出到小數的 timestamp/datetime (e.g. <code>2017-06-28 02:58:46.452 +0000 UTC</code>)</h3>
-
+<h3 id="印出到小數的-timestampdatetime-eg-2017-06-28-025846452-0000-utc">印出到小數的 timestamp/datetime (e.g. <code>2017-06-28 02:58:46.452 +0000 UTC</code>)</h3>
 <pre><code>func main() {
         fmt.Println(unixMilli(time.Unix(0, 123400000)))
         fmt.Println(unixMilli(time.Unix(0, 123500000)))
@@ -1493,44 +1235,30 @@ func makeTimestampMilli() int64 {
         return unixMilli(time.Now())
 }
 </code></pre>
-
 <p>Result:</p>
-
 <pre><code>123
 124
 1498618861845
 2017-06-28 03:01:01.845 +0000 UTC
 </code></pre>
-
 <p>Timestamp with three decimal places</p>
-
 <pre><code>fmt.Sprintf(&quot;%f&quot;, float64(time.Now().UnixNano())/1000000000) // 1483004003.785
 </code></pre>
-
-<h2 id="math-rand">math/rand</h2>
-
-<h3 id="產生-0-7-每一次產生不一樣的變數">產生 0~7  (每一次產生不一樣的變數)</h3>
-
+<h2 id="mathrand">math/rand</h2>
+<h3 id="產生-07--每一次產生不一樣的變數">產生 0~7  (每一次產生不一樣的變數)</h3>
 <pre><code>rand.Seed(time.Now().UnixNano())
 r := rand.Intn(8)
 </code></pre>
-
 <p>等於</p>
-
 <pre><code>r := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 f := r.Intn(8)
 </code></pre>
-
 <h3 id="產生一串隨機數值-ex-7572000213564998818">產生一串隨機數值 (ex: 7572000213564998818)</h3>
-
 <pre><code>r := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 f := r.Int63()
 </code></pre>
-
 <h3 id="unique-key">Unique key</h3>
-
 <p>32 bytes HEX</p>
-
 <pre><code>key := make([]byte, 16)       // 16 會產生 32 個字元
 _, err := rand.Read(key)
 if err != nil {
@@ -1540,9 +1268,7 @@ mk := fmt.Sprintf(&quot;%X&quot;, key)  //小寫
 mk := fmt.Sprintf(&quot;%X&quot;, key)  // 大寫
 fmt.Println(mk)
 </code></pre>
-
 <h3 id="generate-32-bytes-authentication-key">generate 32 bytes authentication key</h3>
-
 <pre><code>import (
     &quot;crypto/rand&quot;
     &quot;encoding/base64&quot;
@@ -1576,11 +1302,8 @@ func main() {
     fmt.Println(token)
 }
 </code></pre>
-
 <h2 id="sync">sync</h2>
-
 <h3 id="pool-特性">pool 特性</h3>
-
 <ul>
 <li>臨時暫存的 pool (有點像 cache 的感覺)</li>
 <li>GC 會把 pool 清空, 也因為如此, 不要用 pool 來當 connection pool (TCP, DB, Redis, etc.)</li>
@@ -1588,9 +1311,7 @@ func main() {
 <li>減少 GC 成本, 提高效能</li>
 <li>a dynamically-sized store of temporary output buffers, 會根據壓力下自已變大縮小</li>
 </ul>
-
 <h3 id="pool-是會被gc的">pool 是會被GC的</h3>
-
 <pre><code>p := &amp;sync.Pool{
     New: func() interface{} {
         var i interface{}
@@ -1613,15 +1334,11 @@ p.Put(a)
 p.Put(b)
 fmt.Println(&quot;After GC: &quot;, a, b) // nil, nil
 </code></pre>
-
 <p>result:</p>
-
 <pre><code>Before GC: 1 2
 After GC:  &lt;nil&gt; &lt;nil&gt;
 </code></pre>
-
 <h3 id="pool-first-in-first-out">Pool (First In, First out)</h3>
-
 <pre><code>var pool sync.Pool
 type Item struct {
     Order string
@@ -1637,9 +1354,7 @@ fmt.Println(q.(*Item).Order)     // &quot;first&quot;
 q = pool.Get()                   // You'll get the second item
 fmt.Println(q.(*Item).Order)     // &quot;second&quot;
 </code></pre>
-
 <h3 id="pool-乎不會比較快-或許-example-寫的不夠複雜">Pool 乎不會比較快 (或許 example 寫的不夠複雜)</h3>
-
 <pre><code>// Pool for our struct A
 var pool *sync.Pool
 
@@ -1705,18 +1420,13 @@ func main() {
     fmt.Println(&quot;without pool: &quot;, time.Since(b))
 }
 </code></pre>
-
 <p>result:</p>
-
 <pre><code>count:  100000
 with pool:  150.17869ms
 without pool:  40.754878ms
 </code></pre>
-
 <h3 id="sync-waitgroup">Sync WaitGroup</h3>
-
 <p>當同一時間同步做很多事，但希望全部 goroutine 做完事才進行下一步</p>
-
 <pre><code>package main
 
 import (
@@ -1736,18 +1446,13 @@ func main() {
     wg.Wait()                   # 程式會在這裡等全部 goroutine 做完
 }
 </code></pre>
-
 <h3 id="mutex-與-rwmutex-差別">Mutex 與 RWMutex 差別</h3>
-
 <p>Mutex</p>
-
 <ul>
 <li>A global lock.</li>
 <li>It only allows one R or W at once.</li>
 </ul>
-
 <p>RWMutex</p>
-
 <ul>
 <li>The lock can be held by an arbitrary number of readers or a single writer. The zero value for a RWMutex is an unlocked mutex.</li>
 <li>Readers don&rsquo;t have to wait for each other. They only have to wait for writers holding the lock.</li>
@@ -1755,9 +1460,7 @@ func main() {
 <li>There is no <code>WLock()</code>; instead, use <code>Lock()</code>, but it does have <code>RLock()</code></li>
 <li><code>RLock()</code> will only be blocked by <code>Lock()</code></li>
 </ul>
-
 <h3 id="mutex">Mutex</h3>
-
 <pre><code>a := 0
 var wg sync.WaitGroup
 for i := 0; i &lt; 10000; i++ {
@@ -1770,9 +1473,7 @@ for i := 0; i &lt; 10000; i++ {
 wg.Wait()
 fmt.Printf(&quot;a = %d\n&quot;, a)     // a = 9222  &lt; 10000 because of race condition
 </code></pre>
-
 <p>use <code>-race</code> to verify</p>
-
 <pre><code> ==================
 WARNING: DATA RACE
 Read at 0x00c420084008 by goroutine 7:
@@ -1795,9 +1496,7 @@ a = 9978
 Found 1 data race(s)
 exit status 66
 </code></pre>
-
 <p>use lock</p>
-
 <pre><code>a := 0
 var wg sync.WaitGroup
 var l sync.Mutex
@@ -1813,9 +1512,7 @@ for i := 0; i &lt; 10000; i++ {
 wg.Wait()
 fmt.Printf(&quot;a = %d\n&quot;, a)      // a = 10000
 </code></pre>
-
-<h3 id="sync-atomic">sync/atomic</h3>
-
+<h3 id="syncatomic">sync/atomic</h3>
 <pre><code>var atomicCounter uint64
 var safeCounter int64
 var unsafeCounter int64
@@ -1842,29 +1539,24 @@ fmt.Println(&quot;atomic counter:&quot;, atomic.LoadUint64(&amp;atomicCounter))
 fmt.Println(&quot;unsafe counter:&quot;, unsafeCounter)
 fmt.Println(&quot;safe counter:&quot;, safeCounter)
 </code></pre>
-
 <p>output:</p>
-
 <pre><code>atomic counter: 5000
 unsafe counter: 4924
 safe counter: 5000
 </code></pre>
-
-<h3 id="sync-once">sync/once</h3>
-
+<h3 id="synconce">sync/once</h3>
 <p>example</p>
-
-<pre><code>package main
+<pre tabindex="0"><code>package main
 
 import (
-    &quot;fmt&quot;
-    &quot;sync&quot;
+    &#34;fmt&#34;
+    &#34;sync&#34;
 )
 
 func main() {
     var once sync.Once
     onceBody := func() {
-        fmt.Println(&quot;Only once&quot;)
+        fmt.Println(&#34;Only once&#34;)
     }
     done := make(chan bool)
     for i := 0; i &lt; 10; i++ {
@@ -1877,17 +1569,10 @@ func main() {
         &lt;-done
     }
 }
-</code></pre>
-
-<p>result:</p>
-
-<pre><code>Only once
-</code></pre>
-
-<h2 id="encoding">encoding</h2>
-
+</code></pre><p>result:</p>
+<pre tabindex="0"><code>Only once
+</code></pre><h2 id="encoding">encoding</h2>
 <h3 id="組出-soap">組出 SOAP</h3>
-
 <pre><code>package main
 
 import &quot;fmt&quot;
@@ -1929,13 +1614,9 @@ func main() {
     fmt.Println(val.MyVar)
 }
 </code></pre>
-
 <p>ref : <a href="http://play.golang.org/p/957GWzfdvN">http://play.golang.org/p/957GWzfdvN</a></p>
-
 <h3 id="parse-xml-into-struct">Parse xml into struct</h3>
-
 <p>Person.xml :</p>
-
 <pre><code>&lt;Person&gt;
     &lt;FullName&gt;Grace R. Emlin&lt;/FullName&gt;
     &lt;Company&gt;Example Inc.&lt;/Company&gt;
@@ -1953,9 +1634,7 @@ func main() {
     &lt;State&gt;Easter Island&lt;/State&gt;
 &lt;/Person&gt;
 </code></pre>
-
 <p>code :</p>
-
 <pre><code>package main
 
 import (
@@ -2030,11 +1709,8 @@ func main() {
     fmt.Printf(&quot;City=%s,  State=%s  \n&quot;, v.Address.City, v.Address.State)
 }
 </code></pre>
-
 <p>ref : <a href="http://www.cnblogs.com/yuanershi/archive/2013/01/29/2881192.html">http://www.cnblogs.com/yuanershi/archive/2013/01/29/2881192.html</a></p>
-
-<h3 id="parse-xml-into-map-clbanning-mxj-github-com-clbanning-mxj"><a href="github.com/clbanning/mxj">Parse xml into map - clbanning/mxj</a></h3>
-
+<h3 id="parse-xml-into-map---clbanningmxjgithubcomclbanningmxj"><a href="github.com/clbanning/mxj">Parse xml into map - clbanning/mxj</a></h3>
 <pre><code>var xml = `
     &lt;Person&gt;
         &lt;FullName&gt;Grace R. Emlin&lt;/FullName&gt;
@@ -2060,18 +1736,13 @@ fmt.Println(res)
 fmt.Println(res[&quot;Person&quot;].(interface{}).(map[string]interface{})[&quot;FullName&quot;])
 fmt.Println(res[&quot;Person&quot;].(interface{}).(map[string]interface{})[&quot;Email&quot;].([]interface{})[1].(map[string]interface{})[&quot;Addr&quot;])
 </code></pre>
-
 <p>result :</p>
-
 <pre><code>map[Person:map[FullName:Grace R. Emlin Company:Example Inc. Email:[map[-where:home Addr:gre@example.com] map[Addr:gre@work.com -where:work]] Group:map[Value:[Friends Squash]] City:Hanga Roa State:Easter Island]]
 Grace R. Emlin
 gre@work.com
 </code></pre>
-
 <h3 id="parse-json-struct-map">Parse json (struct, map)</h3>
-
 <p>方法1 : Json 放進預先定義好的 Struct 裡</p>
-
 <pre><code>type Test struct {
     JsonTag string `json:&quot;field1&quot;` // 利用 Tag mapping 到欄位名稱
     Field2  []struct {
@@ -2088,9 +1759,7 @@ fmt.Println(res.JsonTag)
 fmt.Println(res.Field2[0].SubField1)
 fmt.Println(res.Field2[1].SubField2)
 </code></pre>
-
 <p>方法2 : 以 map 方式將 json 讀進來</p>
-
 <pre><code>var res2 map[string]interface{}
 if err := json.Unmarshal([]byte(jsonString), &amp;res2); err != nil {
     fmt.Println(err)
@@ -2099,13 +1768,9 @@ fmt.Println(res2[&quot;field1&quot;])
 fmt.Println(res2[&quot;field2&quot;].([]interface{})[0].(map[string]interface{})[&quot;subField1&quot;])
 fmt.Println(res2[&quot;field2&quot;].([]interface{})[1].(map[string]interface{})[&quot;subField2&quot;])
 </code></pre>
-
 <h3 id="json-unmarshal-預設數字讓它是-int64-而不是-float64">json unmarshal 預設數字讓它是 int64 而不是 float64</h3>
-
 <p>json 字串裡面有 <code>&quot;visible_at&quot;:1483079819</code>，但 unmarshal 完 int 變成 <code>1.483079819e+09</code></p>
-
 <p>解決方法 :</p>
-
 <pre><code>var data = `{
     &quot;id&quot;: 12423434,
     &quot;Name&quot;: &quot;Fernando&quot;
@@ -2118,9 +1783,7 @@ if err := d.Decode(&amp;x); err != nil {
 }
 fmt.Printf(&quot;decoded to %#v\n&quot;, x)
 </code></pre>
-
 <h3 id="base64-加解密">base64 加解密</h3>
-
 <pre><code>data := &quot;abc123!?$*&amp;()'-=@~&quot;
 
 sEnc := base64.StdEncoding.EncodeToString([]byte(data))
@@ -2129,16 +1792,11 @@ fmt.Println(sEnc)           # YWJjMTIzIT8kKiYoKSctPUB+
 sDec, _ := base64.StdEncoding.DecodeString(sEnc)
 fmt.Println(string(sDec))   # abc123!?$*&amp;()'-=@~
 </code></pre>
-
 <p>POST base64 with form-data</p>
-
 <pre><code>body := fmt.Sprintf(&quot;p=%s&amp;iv=%s&quot;, url.QueryEscape(crypt.Base64Encode(p_bytes)), url.QueryEscape(crypt.Base64Encode(iv_bytes)))
 </code></pre>
-
-<h3 id="json-marshal-不要-escape-某些字元">json.Marshal 不要 escape 某些字元</h3>
-
+<h3 id="jsonmarshal-不要-escape-某些字元">json.Marshal 不要 escape 某些字元</h3>
 <p>當欄位裡面有 url 時，json marshal 會自動地將某些字元(e.g. <code>&amp;</code>) escape 為 <code>\\u0026</code>，為了避免此情形改用 :</p>
-
 <pre><code>type Search struct {
         Query string `json:&quot;query&quot;`
 }
@@ -2152,19 +1810,14 @@ fmt.Println(string(buf.Bytes()))            // 注意 Encode 會在字尾加上 
 [output]
     {&quot;query&quot;:&quot;http://google.com/?q=stackoverflow&amp;ie=UTF-8&quot;}
 </code></pre>
-
 <p>或用取代的方式將被脫逸的符號還原</p>
-
 <pre><code>b, err := json.Marshal(v)
 b = bytes.Replace(b, []byte(&quot;\\u003c&quot;), []byte(&quot;&lt;&quot;), -1)
 b = bytes.Replace(b, []byte(&quot;\\u003e&quot;), []byte(&quot;&gt;&quot;), -1)
 b = bytes.Replace(b, []byte(&quot;\\u0026&quot;), []byte(&quot;&amp;&quot;), -1)
 </code></pre>
-
 <h2 id="crypto">crypto</h2>
-
 <h3 id="md5">md5</h3>
-
 <pre><code>h := md5.New()
 io.WriteString(h, &quot;Hello World!&quot;)
 fmt.Printf(&quot;%x&quot;, h.Sum(nil))
@@ -2176,27 +1829,19 @@ fmt.Println(hex.EncodeToString(hasher.Sum(nil)))
 h := md5.Sum([]byte(&quot;test&quot;))
 fmt.Println(hex.EncodeToString(h[:]))
 </code></pre>
-
 <h3 id="sha256">sha256</h3>
-
 <p>方法1</p>
-
 <pre><code>hash := sha256.New()
 hash.Write([]byte(&quot;test&quot;))
 b := hash.Sum(nil)  // byte
 fmt.Println(hex.EncodeToString(b[:]))
 </code></pre>
-
 <p>方法2</p>
-
 <pre><code>b := sha256.Sum256([]byte(&quot;test&quot;))
 fmt.Println(hex.EncodeToString(b[:]))
 </code></pre>
-
 <h3 id="aes-cbc-encrypt">AES CBC encrypt</h3>
-
 <p>plaintext 必須為 aes.Blocksize (16) 的倍數</p>
-
 <pre><code>import (
     &quot;crypto/aes&quot;
     &quot;crypto/cipher&quot;
@@ -2243,9 +1888,7 @@ func pad(in []byte) []byte {
     return in
 }
 </code></pre>
-
 <p>另種寫法</p>
-
 <pre><code>text := []byte(`secret data12345`)
 sharekey := []byte(`1234567890123456`)
 block, err := aes.NewCipher(sharekey)
@@ -2272,13 +1915,10 @@ func pad(src []byte, blocksize int) []byte {
     return src
 }
 </code></pre>
-
 <blockquote>
-<p>The IV can be saved (or can even be &ldquo;exposed&rdquo;/transmitted publicly); it is no &lsquo;secret&rsquo;. The key should be kept private. So you could save/transmit your data like <iv_here>;<encrypted_data_here>.</p>
+<p>The IV can be saved (or can even be &ldquo;exposed&rdquo;/transmitted publicly); it is no &lsquo;secret&rsquo;. The key should be kept private. So you could save/transmit your data like &lt;iv_here&gt;;&lt;encrypted_data_here&gt;.</p>
 </blockquote>
-
 <h3 id="aes-cbc-decrypt">AES CBC decrypt</h3>
-
 <pre><code>import (
     &quot;crypto/aes&quot;
     &quot;crypto/cipher&quot;
@@ -2303,40 +1943,27 @@ func main() {
     fmt.Printf(&quot;%s\n&quot;, ciphertext)
 }
 </code></pre>
-
-<h3 id="aes-decrypt-string-相同-同長度及-byte-不同-invalid-character-x00-after-top-level-value">AES Decrypt - String 相同, 同長度及 byte 不同 <code>invalid character '\x00' after top-level value</code></h3>
-
+<h3 id="aes-decrypt---string-相同-同長度及-byte-不同-invalid-character-x00-after-top-level-value">AES Decrypt - String 相同, 同長度及 byte 不同 <code>invalid character '\x00' after top-level value</code></h3>
 <p>可能是 AES 加解密後發生的情況，可能在過程中被塞入 padding, 導致解出來後的 byte 數量不一樣</p>
-
 <p>加密前 :</p>
-
 <pre><code>2561953d9ec389715498d44b0c150fec
 len = 32
 [50 53 54 49 57 53 51 100 57 101 99 51 56 57 55 49 53 52 57 56 100 52 52 98 48 99 49 53 48 102 101 99]
 </code></pre>
-
 <p>加密後 :</p>
-
 <pre><code>len = 48
 [50 53 54 49 57 53 51 100 57 101 99 51 56 57 55 49 53 52 57 56 100 52 52 98 48 99 49 53 48 102 101 99 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 </code></pre>
-
 <p>ASCII 對應</p>
-
 <pre><code>50 =&gt; 2
 99 =&gt; c
 0 =&gt; 空字元（Null）
 </code></pre>
-
 <p>解決方法: 將多餘的 <code>\x00</code> 刪除</p>
-
 <pre><code>b = bytes.Trim(b, &quot;\x00&quot;)
 </code></pre>
-
 <p>ref: <a href="http://stackoverflow.com/questions/35953436/golang-why-arent-these-two-strings-equal">類似問題</a></p>
-
-<h3 id="uuid-crypto-rand">UUID (crypto/rand)</h3>
-
+<h3 id="uuid-cryptorand">UUID (crypto/rand)</h3>
 <pre><code>// 一般
 uuid := make([]byte, 16)
 io.ReadFull(rand.Reader, uuid)
@@ -2349,13 +1976,9 @@ ret = strings.Replace(ret, &quot;=&quot;, &quot;&quot;, -1)
 import uuid &quot;github.com/satori/go.uuid&quot;
 uuid.NewV4()
 </code></pre>
-
 <h1 id="generate">generate</h1>
-
 <h2 id="defer">defer</h2>
-
 <h3 id="關於-defer-如何運作">關於 defer 如何運作</h3>
-
 <pre><code>package main
 
 import (
@@ -2389,38 +2012,26 @@ Function1 結束
 Function 2
 Function 3
 </code></pre>
-
 <p>ref : <a href="http://ithelp.ithome.com.tw/question/10153473">http://ithelp.ithome.com.tw/question/10153473</a></p>
-
 <h2 id="error">error</h2>
-
 <h3 id="擲出自定義錯誤訊息">擲出自定義錯誤訊息</h3>
-
 <pre><code>err = errors.New(&quot;fail&quot;)
 </code></pre>
-
 <h3 id="比對-error">比對 error</h3>
-
 <p>在另一個 package 用全域變數定義</p>
-
 <pre><code>package fruits
 
 var NoMorePumpkins = errors.New(&quot;No more pumpkins&quot;)
 </code></pre>
-
 <p>就可以比對了</p>
-
 <pre><code>package shop
 
 if err == fruits.NoMorePumpkins {
      ...
 }
 </code></pre>
-
 <h2 id="runtime">runtime</h2>
-
 <h3 id="detect-os">detect OS</h3>
-
 <pre><code>switch runtime.GOOS {
     case &quot;windows&quot;:
     case &quot;darwin&quot;:       //Mac OS
@@ -2428,16 +2039,12 @@ if err == fruits.NoMorePumpkins {
     default :
 }
 </code></pre>
-
 <h3 id="記憶體使用量">記憶體使用量</h3>
-
 <pre><code>var m0 runtime.MemStats
 runtime.ReadMemStats(&amp;m0)
 fmt.Printf(&quot;Memory: %.2f mb&quot;, float64(m0.Sys)/1024/1024)
 </code></pre>
-
 <h2 id="cpu-usage-沒用到-runtime-package">Cpu Usage (沒用到 runtime package)</h2>
-
 <pre><code>func getCPUSample() (idle, total uint64) {
     contents, err := ioutil.ReadFile(&quot;/proc/stat&quot;)
     if err != nil {
@@ -2476,13 +2083,9 @@ func main() {
     fmt.Printf(&quot;CPU usage is %f%% [busy: %f, total: %f]\n&quot;, cpuUsage, totalTicks-idleTicks, totalTicks)
 }
 </code></pre>
-
 <h2 id="channel">channel</h2>
-
 <h3 id="把-channel-當成-queue-使用">把 Channel 當成 Queue 使用</h3>
-
 <p>它是先進先出，如果要做一個 worker 很好用，直接宣告它的大小是多少，但塞值不需要管它的 index，一直丟就對了</p>
-
 <pre><code>var worker_ch = make(chan string, 10000)
 
 // 用 Goroutine 跑，一個 Worker，它會一直 wait，直到 worker_ch 有值
@@ -2497,9 +2100,7 @@ func NonBlcok(ctx *fasthttp.RequestCtx, _ fasthttprouter.Params) {
     worker_ch &lt;- file_name
 }
 </code></pre>
-
-<h3 id="用-channel-select-實作-long-lived-concurrent-safe-pools">用 channel &amp; select 實作 long lived, concurrent safe pools</h3>
-
+<h3 id="用-channel--select-實作-long-lived-concurrent-safe-pools">用 channel &amp; select 實作 long lived, concurrent safe pools</h3>
 <pre><code>// Pool holds Clients.
 type Pool struct {
     pool   chan *Client
@@ -2532,11 +2133,8 @@ func (p *Pool) Return(c *Client) {
     }
 }
 </code></pre>
-
 <h2 id="reflect">reflect</h2>
-
 <h3 id="call-dynamic-func-by-name">Call dynamic func by name</h3>
-
 <pre><code>func Call(m map[string]interface{}, name string, params ...interface{}) (result []reflect.Value, err error) {
     f := reflect.ValueOf(m[name])
     if len(params) != f.Type().NumIn() {
@@ -2551,18 +2149,14 @@ func (p *Pool) Return(c *Client) {
     return
 }
 </code></pre>
-
 <p>用法 :</p>
-
 <pre><code>// 宣告
 funcs := map[string]interface{}{
     &quot;qq&quot;: curl.Get,  // index 隨便取, 後面的是 func name  e.g. func QQ() 就填  QQ, 如果是 curl pacakge 的 Get func 就填 curl.Get
 }
 Call(funcs, &quot;qq&quot;, params)  // 如果有參數就傳入 params
 </code></pre>
-
-<h3 id="call-dynamic-struct-function-by-name-string">Call dynamic struct.function by name (string)</h3>
-
+<h3 id="call-dynamic-structfunction-by-name-string">Call dynamic struct.function by name (string)</h3>
 <pre><code>import &quot;fmt&quot;
 import &quot;reflect&quot;
 
@@ -2579,13 +2173,10 @@ func main() {
     fmt.Println(res[0]) // ok
 }
 </code></pre>
-
 <blockquote>
 <p>res 是一個陣列，即使你的 func 只回傳一個參數，它也是放在陣列裡</p>
 </blockquote>
-
 <h3 id="call-dynamic-function-by-interface">Call dynamic function by interface</h3>
-
 <pre><code>value := reflect.ValueOf(jb)                // jb can be a struct which implemented an interface
 method := value.MethodByName(&quot;Done&quot;)        // func name
 if method.IsValid() {
@@ -2594,9 +2185,7 @@ if method.IsValid() {
     }
 }
 </code></pre>
-
 <h3 id="good-example-of-call-dynamic-function-by-either-value-or-pointer">Good example of call dynamic function by either value or pointer</h3>
-
 <pre><code>type Test struct {
     Start string
 }
@@ -2662,9 +2251,7 @@ func main() {
     fmt.Println(CallMethod(&amp;j, &quot;Another&quot;))
 }
 </code></pre>
-
 <p>Result</p>
-
 <pre><code>startfinish
 startfinish
 startanother
@@ -2674,13 +2261,9 @@ start2finish
 start2another
 start2another
 </code></pre>
-
 <p>ref: <a href="https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type">https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type</a></p>
-
 <h2 id="flag">flag</h2>
-
 <h3 id="auto-flag">auto flag</h3>
-
 <pre><code>config := struct {
     Name    string        `flag:&quot;queue,queue name&quot;`
 }{
@@ -2689,11 +2272,8 @@ start2another
 autoflags.Define(&amp;config)
 flag.Parse()
 </code></pre>
-
 <h2 id="image">image</h2>
-
-<h3 id="get-image-s-width-and-height">Get image&rsquo;s width and height</h3>
-
+<h3 id="get-images-width-and-height">Get image&rsquo;s width and height</h3>
 <pre><code>import (
     &quot;fmt&quot;
     &quot;image&quot;
@@ -2723,9 +2303,7 @@ func main() {
     }
 }
 </code></pre>
-
-<h3 id="image-jpg-convert-jpg-to-png">image/jpg Convert jpg to png</h3>
-
+<h3 id="imagejpg-convert-jpg-to-png">image/jpg Convert jpg to png</h3>
 <pre><code>file, err := os.Open(&quot;test.jpg&quot;)
 if err != nil {
     log.Fatal(&quot;File error&quot;)
@@ -2749,9 +2327,7 @@ if err != nil {
 }
 fmt.Println(&quot;Done!&quot;)
 </code></pre>
-
-<h3 id="image-jpg-convert-jpg-to-bmp">image/jpg Convert jpg to bmp</h3>
-
+<h3 id="imagejpg-convert-jpg-to-bmp">image/jpg Convert jpg to bmp</h3>
 <pre><code>// Convert jpg to bmp
 img_file, err := os.Open(&quot;test.jpg&quot;)
 if err != nil {
@@ -2776,9 +2352,7 @@ if err != nil {
 }
 defer out_file.Close()
 </code></pre>
-
-<h3 id="image-jpg-convert-bmp-to-jpg">image/jpg Convert bmp to jpg</h3>
-
+<h3 id="imagejpg-convert-bmp-to-jpg">image/jpg Convert bmp to jpg</h3>
 <pre><code>// Convert jpg to bmp
 img_file, err := os.Open(&quot;test.bmp&quot;)
 if err != nil {
@@ -2805,9 +2379,7 @@ if err != nil {
 }
 defer out_file.Close()
 </code></pre>
-
 <h3 id="convert-an-image-to-a-black-and-white-image">convert an image to a black and white image</h3>
-
 <pre><code>import (
     &quot;fmt&quot;
     &quot;image&quot;
@@ -2838,9 +2410,7 @@ func main() {
 
 }
 </code></pre>
-
 <h3 id="draw-a-line-on-an-image">Draw a line on an image</h3>
-
 <pre><code>import (
     &quot;fmt&quot;
     &quot;image&quot;
@@ -2880,11 +2450,8 @@ func main() {
     jpeg.Encode(file, jpg, &amp;jpeg.Options{Quality: 100})
 }
 </code></pre>
-
 <h2 id="unsafe">unsafe</h2>
-
 <h3 id="看變數佔多數記憶體-bytes">看變數佔多數記憶體 (bytes)</h3>
-
 <pre><code>a1 := &quot;xxxdflasjdfl;daskjfdsalfkjasdlfjas&quot;
 a2 := int64(66666)
 a3 := int32(5555)
@@ -2894,18 +2461,12 @@ fmt.Println(unsafe.Sizeof(a2))  // 8
 fmt.Println(unsafe.Sizeof(a3))  // 4
 fmt.Println(unsafe.Sizeof(a4))  // 4
 </code></pre>
-
 <h2 id="utf8">utf8</h2>
-
 <h3 id="count-size-of-utf8-string">Count size of UTF8 string</h3>
-
 <pre><code>utf8.RuneCountInString(&quot;世界&quot;)
 </code></pre>
-
 <h2 id="reflect-1">reflect</h2>
-
 <h3 id="implementation-of-generics">Implementation of generics</h3>
-
 <pre><code>type Animal interface{}
 
 type Body struct {
@@ -2951,21 +2512,15 @@ func setFeetCount(a Animal, c int64) {
     }
 }
 </code></pre>
-
 <p>output:</p>
-
 <pre><code>People
 {People {2}}
 Cat
 {Cat {4}}
 </code></pre>
-
 <h2 id="sql">SQL</h2>
-
 <p>(last updated at 2016-12-21)</p>
-
 <h3 id="connect">Connect</h3>
-
 <pre><code>conn, err = sql.Open(&quot;mysql&quot;, &quot;root:password@tcp(127.0.0.1:3306)/db_name&quot;)
 或
 conn, err = sql.Open(&quot;mysql&quot;, &quot;root:password@/db_name&quot;)
@@ -2978,13 +2533,9 @@ if err != nil {
 }
 defer db.Close()
 </code></pre>
-
 <h3 id="prepare-prevent-sql-injection">Prepare (prevent sql injection)</h3>
-
 <p>有兩種寫法，第一種是用 <code>Query</code>；第二種是先 <code>Prepare</code> 再 <code>Query</code> 或 <code>Exec</code></p>
-
 <p>SELECT with Query (with Prepare)</p>
-
 <pre><code>rows, err := conn.Query(&quot;SELECT name FROM users WHERE age=?&quot;, req.FormValue(&quot;age)
 defer rows.Close()
 if rows.Next() {
@@ -2994,9 +2545,7 @@ if rows.Next() {
     // no data
 }
 </code></pre>
-
 <p>SELECT with Prepare</p>
-
 <pre><code>stmt, err := conn.Prepare(&quot;SELECT name, address FROM user WHERE age = ? AND name = ?&quot;)
 defer stmt.Close()
 rows, err := stmt.Query(27, &quot;test&quot;) // replace the params
@@ -3007,18 +2556,14 @@ for rows.Next() {
     fmt.Println(name, address)
 }
 </code></pre>
-
 <p>使用 Query 要注意 :</p>
-
 <pre><code>// this is safe
 conn.Query(&quot;SELECT name FROM users WHERE age=?&quot;, req.FormValue(&quot;age)
 
 // this allows sql injection.
 conn.Query(&quot;SELECT name FROM users WHERE age=&quot; + req.FormValue(&quot;age&quot;))
 </code></pre>
-
 <p>UPDATE with Prepare</p>
-
 <pre><code>stmt, err := conn.Prepare(&quot;UPDATE user SET name = ?, age = ? WHERE id = ?&quot;)
 defer stmt.Close()
 res, err := stmt.Exec(&quot;test&quot;, 27, 123)   // replace the params
@@ -3028,17 +2573,12 @@ fmt.Println(num)
 // where 到，但資料沒變也是 0
 // where 到，但資料有變是 1
 </code></pre>
-
 <h3 id="crud-操作">CRUD 操作</h3>
-
 <p>SELECT 取第一筆</p>
-
 <pre><code>var str string
 err = conn.QueryRow(&quot;SELECT id FROM user&quot;).Scan(&amp;str)
 </code></pre>
-
 <p>SELECT 多筆 (fetch every single row)</p>
-
 <pre><code>var id int
 var name string
 rows, err := conn.Query(&quot;SELECT id, name FROM user&quot;)
@@ -3049,9 +2589,7 @@ for rows.Next() {
 }
 err = rows.Err()        // do check
 </code></pre>
-
 <p>Query Row 取第一筆</p>
-
 <pre><code>var name string
 err = db.QueryRow(&quot;SELECT name FROM users WHERE id = ?&quot;, 1).Scan(&amp;name)
 
@@ -3059,34 +2597,24 @@ stmt, err := db.Prepare(&quot;SELECT name FROM users WHERE id = ?&quot;)
 var name string
 err = stmt.QueryRow(1).Scan(&amp;name)
 </code></pre>
-
 <p>INSERT (TODO)</p>
-
 <pre><code>stmt, err := db.Prepare(&quot;INSERT ... &quot;)
 res, err := stmt.Exec(&quot;A&quot;, &quot;B&quot;)
 id, err := res.LastInsertId()
 </code></pre>
-
 <p>UPDATE (TODO)</p>
-
 <pre><code>stmt, err = db.Prepare(&quot;UPDATE ...&quot;)
 res, err = stmt.Exec(&quot;A&quot;, id)
 affect, err := res.RowsAffected()
 </code></pre>
-
 <p>DELETE (TODO)</p>
-
 <pre><code>stmt, err = db.Prepare(&quot;DELETE ...&quot;)
 res, err = stmt.Exec(id)
 affect, err = res.RowsAffected()
 </code></pre>
-
 <h2 id="unix">unix</h2>
-
 <h3 id="調整系統設定最大讀寫檔案數量-for-currency">調整系統設定最大讀寫檔案數量 (for currency)</h3>
-
 <p>unix 預設一個 process 最多可開 1024 個檔案，也就是能出去的 network currency 數量是 1024</p>
-
 <pre><code>import &quot;golang.org/x/sys/unix&quot;
 
 var rLimit unix.Rlimit
@@ -3096,18 +2624,14 @@ rLimit.Max = max_rlimit
 rLimit.Cur = cur_rlimit
 _ = unix.Setrlimit(unix.RLIMIT_NOFILE, &amp;rLimit)
 </code></pre>
-
 <h1 id="context">context</h1>
-
 <ul>
 <li>It&rsquo;s not for killing a goroutine,</li>
 <li>It is for ending earlier if you don&rsquo;t wanna wait any longer.</li>
 <li>An example to show you how to use <code>WithCancel</code>, <code>WithTimeout</code> and <code>WithDeadline</code>.</li>
 <li>An example to show you how to do nested goroutines with their own context to interact with each other.</li>
 </ul>
-
 <p>Code:</p>
-
 <pre><code>ctxTimeout := 3
 ctx2Timeout := 5
 ctx3Timeout := 7
@@ -3151,9 +2675,7 @@ case &lt;-time.After(time.Duration(ctxTimeout) * time.Second):
 }
 time.Sleep(10 * time.Second)
 </code></pre>
-
 <p>Result:</p>
-
 <pre><code>2019/08/28 22:04:58 ctx  waiting... timeout: 3s
 2019/08/28 22:04:58 ctx3 waiting... timeout: 7s
 2019/08/28 22:04:58 ctx2 waiting... timeout: 5s
@@ -3161,51 +2683,44 @@ time.Sleep(10 * time.Second)
 2019/08/28 22:05:01 ctx  done, spent 3.003625s
 2019/08/28 22:05:05 ctx3 done, spent 7.005422s (its own context)
 </code></pre>
-
 <h2 id="template">template</h2>
-
 <p>template 來源可以是字串也可以是一個檔案(html or text) 透過 html/template 或 text/template 將內容取代</p>
-
 <h3 id="取代的-html-template-為字串">取代的 HTML template 為字串</h3>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;html/template&quot;
-    &quot;log&quot;
-    &quot;net/http&quot;
-)
-
-const tmpl = `
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;{{.Title}}&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        {{.Body}}
-    &lt;/body&gt;
-&lt;/html&gt;`
-
-func tHandler(w http.ResponseWriter, r *http.Request) {
-    t := template.Must(template.New(&quot;ex&quot;).Parse(tmpl))
-    v := map[string]interface{}{
-        &quot;Title&quot;: &quot;Test &lt;b&gt;World&lt;/b&gt;&quot;,
-        &quot;Body&quot;:  template.HTML(&quot;Hello &lt;b&gt;World&lt;/b&gt;&quot;),
-    }
-    t.Execute(w, v)
-}
-
-func main() {
-    http.HandleFunc(&quot;/&quot;, tHandler)
-    err := http.ListenAndServe(&quot;:9090&quot;, nil)
-    if err != nil {
-        log.Fatal(&quot;ListenAndServe: &quot;, err)
-    }
-}
-</code></pre>
-
-<p>瀏覽器得到 server 輸出的內容 :</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;html/template&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tmpl</span> = <span style="color:#e6db74">`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;html&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &lt;head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &lt;title&gt;</span><span style="color:#75715e">{{</span><span style="color:#a6e22e">.Title</span><span style="color:#75715e">}}</span><span style="color:#e6db74">&lt;/title&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &lt;/head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &lt;body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        </span><span style="color:#75715e">{{</span><span style="color:#a6e22e">.Body</span><span style="color:#75715e">}}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &lt;/body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;/html&gt;`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">tHandler</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">t</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Must</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;ex&#34;</span>).<span style="color:#a6e22e">Parse</span>(<span style="color:#a6e22e">tmpl</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Title&#34;</span>: <span style="color:#e6db74">&#34;Test &lt;b&gt;World&lt;/b&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Body&#34;</span>:  <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#e6db74">&#34;Hello &lt;b&gt;World&lt;/b&gt;&#34;</span>),
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">Execute</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">v</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#a6e22e">tHandler</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:9090&#34;</span>, <span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;ListenAndServe: &#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>瀏覽器得到 server 輸出的內容 :</p>
 <pre><code>&lt;html&gt;
     &lt;head&gt;
         &lt;title&gt;Test &amp;lt;b&amp;gt;World&amp;lt;/b&amp;gt;&lt;/title&gt;
@@ -3215,17 +2730,12 @@ func main() {
     &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <p>可以看到 title 跟 body 的結果截然不同, title 的 html 標籤會被轉義, 而 body 沒有是因為我加上了 <code>template.HTML()</code> 不要轉義 HTML 標籤, 我覺得預設轉義設計是很好的, 防止沒注意而產生了 XSS 漏洞, rails 也是預設轉義的, 但 php 什麼時候才要改!!!??? (怒</p>
-
 <blockquote>
 <p>當改成 <code>t.Execute(os.Stdout, v)</code>, 表示是系統的標準輸出, 所以只會在 terminal 上看到輸出, 瀏覽器則不會有任何內容</p>
 </blockquote>
-
 <h3 id="取代的-html-template-為檔案">取代的 HTML template 為檔案</h3>
-
 <p>將 header 與 footer 做為固定的 template, 並傳入動態內容 :</p>
-
 <pre><code>func tHandler(w http.ResponseWriter, r *http.Request) {
     t, _ := template.ParseFiles(&quot;header.tmpl&quot;, &quot;body.html&quot;, &quot;footer.tmpl&quot;)
     var data = map[string] interface{}{
@@ -3235,38 +2745,27 @@ func main() {
     t.Execute(w, nil)
 }
 </code></pre>
-
 <p>header.tmpl :</p>
-
-<pre><code class="language-go">{{define &quot;header&quot;}}
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Video downloader&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-{{end}}
-</code></pre>
-
-<p>body.html :</p>
-
-<pre><code class="language-go">{{define &quot;body&quot;}}
-{{template &quot;header&quot;}}
-&lt;h1 id=&quot;go&quot;&gt;Golang Web Works!&lt;/h1&gt;
-{{.content}}
-{{template &quot;footer&quot;}}
-{{end}}
-</code></pre>
-
-<p>footer.tmpl :</p>
-
-<pre><code class="language-go">{{define &quot;footer&quot;}}
-&lt;/body&gt;
-&lt;/html&gt;
-{{end}}
-</code></pre>
-
-<p>最後在瀏覽器顯示的結果是 :</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;header&#34;</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">html</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">head</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#a6e22e">title</span>&gt;<span style="color:#a6e22e">Video</span> <span style="color:#a6e22e">downloader</span>&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">title</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">head</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">body</span>&gt;
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>body.html :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;body&#34;</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">template</span> <span style="color:#e6db74">&#34;header&#34;</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">h1</span> <span style="color:#a6e22e">id</span>=<span style="color:#e6db74">&#34;go&#34;</span>&gt;<span style="color:#a6e22e">Golang</span> <span style="color:#a6e22e">Web</span> <span style="color:#a6e22e">Works</span>!&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">h1</span>&gt;
+</span></span><span style="display:flex;"><span>{{.<span style="color:#a6e22e">content</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">template</span> <span style="color:#e6db74">&#34;footer&#34;</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>footer.tmpl :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;footer&#34;</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">body</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">html</span>&gt;
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>最後在瀏覽器顯示的結果是 :</p>
 <pre><code>&lt;html&gt;
 &lt;head&gt;
     &lt;title&gt;Video downloader&lt;/title&gt;
@@ -3279,30 +2778,21 @@ Do you copy?
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <blockquote>
 <p>副檔名不需要一定是 <code>.html</code> <code>.tmpl</code>, 你可以自訂任何你喜歡的
 <code>template.ParseFiles</code> 只負責引入檔案而已, 而真正負責要呈獻出來的內容及 parse 是 <code>t.ExecuteTemplate</code></p>
 </blockquote>
-
 <h3 id="for-loop-template">For loop template</h3>
-
 <p>有時候我們會重覆使用同一個 template 連續印出10次, 作法如下</p>
-
 <h4 id="作法-1-用-range-直接在-template-跑-10-次">作法 1, 用 <code>range</code> 直接在 template 跑 10 次</h4>
-
 <p>view/nameList.tmpl :</p>
-
-<pre><code class="language-go">{{define &quot;nameList&quot;}}
-Name list :
-{{ range $i, $name := .nameList}}
-{{$i}} -&gt; {{$name}}
-{{end}}
-{{end}}
-</code></pre>
-
-<p>func main :</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;nameList&#34;</span>}}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Name</span> <span style="color:#a6e22e">list</span> :
+</span></span><span style="display:flex;"><span>{{ <span style="color:#66d9ef">range</span> <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#a6e22e">i</span>, <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">:=</span> .<span style="color:#a6e22e">nameList</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#a6e22e">i</span>}} <span style="color:#f92672">-</span>&gt; {{<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#a6e22e">name</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>func main :</p>
 <pre><code>var tmp bytes.Buffer
 var data = map[string]interface{}{}
 t, _ := template.ParseFiles(
@@ -3312,27 +2802,18 @@ data[&quot;nameList&quot;] = []string{&quot;Jack&quot;, &quot;Bob&quot;}
 t.ExecuteTemplate(&amp;tmp, &quot;nameList&quot;, data)
 fmt.Println(tmp.String())
 </code></pre>
-
 <h4 id="作法2-先跑-10-次的-template-再將生成後的-html-傳到-body-再輸出">作法2, 先跑 10 次的 template, 再將生成後的 html 傳到 body 再輸出</h4>
-
 <p>建立要重覆的 urlItem.tmpl :</p>
-
-<pre><code class="language-go">{{define &quot;urlItem&quot;}}
-&lt;li id=&quot;url-{{.num}}&quot;&gt;{{.num}}&lt;/li&gt;
-{{end}}
-</code></pre>
-
-<p>body.html :</p>
-
-<pre><code class="language-go">{{define &quot;body&quot;}}
-&lt;ul class=&quot;list-group&quot;&gt;
-    {{.urlItem}}
-&lt;/ul&gt;
-{{end}}
-</code></pre>
-
-<p>完整程式碼 :</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;urlItem&#34;</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">li</span> <span style="color:#a6e22e">id</span>=<span style="color:#e6db74">&#34;url-{{.num}}&#34;</span>&gt;{{.<span style="color:#a6e22e">num</span>}}&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">li</span>&gt;
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>body.html :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>{{<span style="color:#a6e22e">define</span> <span style="color:#e6db74">&#34;body&#34;</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#a6e22e">ul</span> <span style="color:#a6e22e">class</span>=<span style="color:#e6db74">&#34;list-group&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    {{.<span style="color:#a6e22e">urlItem</span>}}
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">/</span><span style="color:#a6e22e">ul</span>&gt;
+</span></span><span style="display:flex;"><span>{{<span style="color:#a6e22e">end</span>}}
+</span></span></code></pre></div><p>完整程式碼 :</p>
 <pre><code>// Show view
 var tmplPath string = &quot;view/template/&quot;
 var indexPath string = &quot;view/index/&quot;
@@ -3354,14 +2835,11 @@ data[&quot;urlItem&quot;] = template.HTML(tmplBuf.String())   // 將 for loop te
 t.ExecuteTemplate(w, &quot;body&quot;, data)
 t.Execute(w, nil)
 </code></pre>
-
 <p>ref :
 <a href="http://play.golang.org/p/Uw8l3M7Qvg">http://play.golang.org/p/Uw8l3M7Qvg</a>
 <a href="https://groups.google.com/forum/#!topic/golang-nuts/8L4eDkr5Q84">https://groups.google.com/forum/#!topic/golang-nuts/8L4eDkr5Q84</a>
 <a href="http://blog.xcai.net/golang/templates">http://blog.xcai.net/golang/templates</a></p>
-
 <h3 id="取代的-text-template-為檔案">取代的 TEXT template 為檔案</h3>
-
 <pre><code>// 讀取資料夾底下的 template (不需要指定檔名)
 var emailBodyTemplates = template.Must(template.ParseGlob(&quot;app/template/email/en/*&quot;))     // 資料夾底下有很多 .txt 的 template 檔案
 var tmp bytes.Buffer
@@ -3374,30 +2852,22 @@ if err != nil {
 var emailLayoutTemplates = template.Must(template.ParseFiles(&quot;app/template/layout/email.html&quot;))
 err = emailLayoutTemplates.Execute(&amp;tmp, replacement)
 </code></pre>
-
-<h3 id="不要脫逸-等-html-符號">不要脫逸 <code>'</code> <code>&quot;</code> 等 HTML 符號</h3>
-
+<h3 id="不要脫逸---等-html-符號">不要脫逸 <code>'</code> <code>&quot;</code> 等 HTML 符號</h3>
 <p>用 <code>template.HTML</code> 包起來</p>
-
-<pre><code class="language-go">improt &quot;html/template&quot;
-
-var t = template.Must(template.New(&quot;ex&quot;).Parse(`{{.name}} pen. {{.name2}} pen.`))
-data := map[string]interface{}{
-    &quot;name&quot;:  template.HTML(&quot;Tom's&quot;),
-    &quot;name2&quot;: &quot;Tom's&quot;,
-}
-t.ExecuteTemplate(os.Stdout, &quot;ex&quot;, data)
-</code></pre>
-
-<p>result</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">improt</span> <span style="color:#e6db74">&#34;html/template&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">t</span> = <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">Must</span>(<span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;ex&#34;</span>).<span style="color:#a6e22e">Parse</span>(<span style="color:#e6db74">`</span><span style="color:#75715e">{{</span><span style="color:#a6e22e">.name</span><span style="color:#75715e">}}</span><span style="color:#e6db74"> pen. </span><span style="color:#75715e">{{</span><span style="color:#a6e22e">.name2</span><span style="color:#75715e">}}</span><span style="color:#e6db74"> pen.`</span>))
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">data</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>:  <span style="color:#a6e22e">template</span>.<span style="color:#a6e22e">HTML</span>(<span style="color:#e6db74">&#34;Tom&#39;s&#34;</span>),
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name2&#34;</span>: <span style="color:#e6db74">&#34;Tom&#39;s&#34;</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">t</span>.<span style="color:#a6e22e">ExecuteTemplate</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;ex&#34;</span>, <span style="color:#a6e22e">data</span>)
+</span></span></code></pre></div><p>result</p>
 <pre><code>Tom's pen. Tom&amp;#39;s pen.
 </code></pre>
-
 <blockquote>
 <p><code>'</code> -&gt; <code>&amp;#39;</code></p>
 </blockquote>
-
 <p>解法2: improt 改成 <code>text/template</code>, 就不需要用 <code>template.HTML</code> 防止脫逸了</p>
 
 </article>

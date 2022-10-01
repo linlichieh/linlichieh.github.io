@@ -2,64 +2,48 @@
 <html lang="en-us">
 <title>Rails Third-party Gems | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-third-party-gems/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-third-party-gems/">Rails Third-party Gems</a></h1>
-    <p class="meta"><time datetime="2015-07-04T01:18:42&#43;08:00">July 04, 2015</time></p>
+    <h1>Rails Third-party Gems</h1>
+    <time datetime="2015-07-04T01:18:42&#43;08:00">July 04, 2015</time>
   </header>
-  
-
-<h2 id="will-paginate-https-github-com-mislav-will-paginate"><a href="https://github.com/mislav/will_paginate">will_paginate</a></h2>
-
+  <h2 id="will_paginatehttpsgithubcommislavwill_paginate"><a href="https://github.com/mislav/will_paginate">will_paginate</a></h2>
 <p>提供分頁功能</p>
-
-<h3 id="will-paginate-如何使用">will_paginate 如何使用</h3>
-
+<h3 id="will_paginate-如何使用">will_paginate 如何使用</h3>
 <p>controller : posts/index</p>
-
 <pre><code>@posts = Post.includes(:user)
 改成
 @posts = Post.includes(:user).paginate(page: params[:page], per_page: 5)
 </code></pre>
-
 <p>view : posts/index</p>
-
 <pre><code>&lt;% @posts.each do |post| %&gt;
   &lt;%= post.title %&gt;
 &lt;% end %&gt;
 &lt;%= will_paginate @posts %&gt;
 </code></pre>
-
-<h3 id="will-paginate-not-working">will_paginate not working</h3>
-
+<h3 id="will_paginate-not-working">will_paginate not working</h3>
 <pre><code>如果傳入的是 ActiveRecord_Associations_CollectionProxy 而不是 ActiveRecord_Relation 可能會造成此狀況，在 controller 要額外引入
 
 require 'will_paginate/array'
 </code></pre>
-
 <h3 id="bootstrap-樣式">bootstrap 樣式</h3>
-
 <p>view :</p>
-
 <pre><code>&lt;%= will_paginate @posts, :renderer =&gt; PaginationLinkRenderer %&gt;
 </code></pre>
-
 <p>config/initializers/pagination_link_renderer.rb :</p>
-
 <pre><code>require 'will_paginate/view_helpers/link_renderer'
 require 'will_paginate/view_helpers/action_view'
 
@@ -86,81 +70,67 @@ class PaginationLinkRenderer &lt; ::WillPaginate::ActionView::LinkRenderer
   end
 end
 </code></pre>
-
-<h3 id="小技巧-簡化-view-的分頁">小技巧 - 簡化 view 的分頁</h3>
-
+<h3 id="小技巧---簡化-view-的分頁">小技巧 - 簡化 view 的分頁</h3>
 <p>在 controller 多指定變數給 @paginate</p>
-
 <pre><code>@users = @paginate = User.all.paginate(:page =&gt; params[:page] , :per_page =&gt; 15)
 </code></pre>
-
 <blockquote>
 <p>不必擔心 <code>@users</code> 跟 <code>@paginate</code> 佔兩份記憶體, 它們都指向同一個 object_id</p>
 </blockquote>
-
 <p>view/layout</p>
-
 <pre><code>&lt;%= raw(will_paginate(@paginate ,:renderer =&gt; PaginationLinkRenderer)) if @paginate %&gt;
 </code></pre>
-
 <blockquote>
 <p>在 layout 放這段, 讓 renderer 覆寫掉原生的 gem (寫在 initializers 裡, 可參考本篇 bootstrap 那邊寫法), 就不用每一個 view 都要寫 will_paginate</p>
 </blockquote>
-
 <p>之後只要在需要分頁的 view 直接 <code>&lt;%= @paginate %&gt;</code> 就好</p>
-
 <h3 id="其他">其他</h3>
-
 <p>取得總數</p>
-
 <pre><code>@products.total_entries
 </code></pre>
-
 <h2 id="fb-oauth">FB Oauth</h2>
-
 <p><strong>如果使用 Devise，請不要用下列的方法</strong>，請到<a href="/posts/ruby-on-rails-user-permissions/">這篇搜尋 oauth-facebook</a></p>
-
 <h3 id="申請-fb-app">申請 FB APP</h3>
-
-<p>1) <a href="https://developers.facebook.com/">Developers</a></p>
-
-<p>2) Add a New App 選擇 Website (網站)</p>
-
-<p>3) 建立 App -&gt; 輸入一個 Name -&gt; 按步驟 -&gt; Create a New App ID</p>
-
-<p>4) 建立成功, 下面有個欄位輸入 Domain : <code>http://test.example.com:3000/</code></p>
-
+<ol>
+<li>
+<p><a href="https://developers.facebook.com/">Developers</a></p>
+</li>
+<li>
+<p>Add a New App 選擇 Website (網站)</p>
+</li>
+<li>
+<p>建立 App -&gt; 輸入一個 Name -&gt; 按步驟 -&gt; Create a New App ID</p>
+</li>
+<li>
+<p>建立成功, 下面有個欄位輸入 Domain : <code>http://test.example.com:3000/</code></p>
+</li>
+</ol>
 <blockquote>
 <p>如果沒有 domain 可以暫時用 ngrok，但注意！FB 登入時要用 <code>http://e2191881.ngrok.io/</code> 而不是 <code>http://127.0.0.1:3000/</code></p>
 </blockquote>
-
-<p>5) 右上角大頭像的 My Apps 選剛剛建立的 App</p>
-
-<p>6) 將 App ID 及 App Secret Copy 貼到安裝完 omniauth 的設定檔 <code>config/initializers/omniauth.rb</code></p>
-
+<ol start="5">
+<li>
+<p>右上角大頭像的 My Apps 選剛剛建立的 App</p>
+</li>
+<li>
+<p>將 App ID 及 App Secret Copy 貼到安裝完 omniauth 的設定檔 <code>config/initializers/omniauth.rb</code></p>
+</li>
+</ol>
 <blockquote>
 <p>如果日後要換 domain 一樣在 App Dashboard 頁面, 在 App ID 下面那塊, 選擇 Choose a Platform -&gt; WWW -&gt; 就可以改 domain 了</p>
 </blockquote>
-
 <h3 id="install">Install</h3>
-
 <p>Gemfile</p>
-
 <pre><code>gem 'omniauth', '~&gt; 1.3.1'
 gem 'omniauth-facebook', '~&gt; 3.0.0'
 </code></pre>
-
 <blockquote>
 <p>安裝完重啟動 rails</p>
 </blockquote>
-
 <h3 id="新增-user-model">新增 User model</h3>
-
 <pre><code>rails g model User provider uid name oauth_token oauth_expires_at:datetime
 </code></pre>
-
 <p>或直接建立</p>
-
 <pre><code>class CreateUsers &lt; ActiveRecord::Migration
   def change
     create_table :users do |t|
@@ -175,9 +145,7 @@ gem 'omniauth-facebook', '~&gt; 3.0.0'
   end
 end
 </code></pre>
-
 <p>app/models/user.rb</p>
-
 <pre><code>def self.from_omniauth(auth)
   where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
     user.provider = auth.provider
@@ -189,9 +157,7 @@ end
   end
 end
 </code></pre>
-
 <p>寫入後資料如下</p>
-
 <pre><code>:id =&gt; 1,
 :provider =&gt; &quot;facebook&quot;,
 :uid =&gt; &quot;860********7924&quot;,
@@ -199,20 +165,15 @@ end
 :oauth_token =&gt; &quot;CAAF5japY********************n7hjii&quot;,
 :oauth_expires_at =&gt; Sat, 10 Oct 2015 14:26:09 UTC +00:00,
 </code></pre>
-
 <h3 id="新增-sessions-controller">新增 Sessions Controller</h3>
-
 <p>app/controllers/application_controller.rb</p>
-
 <pre><code>private
 def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
 end
 helper_method :current_user
 </code></pre>
-
 <p>app/controllers/sessions_controller.rb</p>
-
 <pre><code>class SessionsController &lt; ApplicationController
   def create
     user = User.from_omniauth(env[&quot;omniauth.auth&quot;])
@@ -226,29 +187,20 @@ helper_method :current_user
   end
 end
 </code></pre>
-
 <h3 id="新增-routes">新增 routes</h3>
-
 <p>config/routes</p>
-
 <pre><code>match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
 match 'auth/failure', to: redirect('/'), via: [:get, :post]
 match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
 </code></pre>
-
 <h3 id="手動建立-omniauth-initializer">手動建立 Omniauth initializer</h3>
-
 <p>config/initializers/omniauth.rb</p>
-
 <pre><code>Rails.application.config.middleware.use OmniAuth::Builder do
   provider :facebook, '41512******2503', '1791f7944e*********7ebaa65989414'
 end
 </code></pre>
-
-<h3 id="登入-登出">登入 / 登出</h3>
-
+<h3 id="登入--登出">登入 / 登出</h3>
 <p>app/views/welcome/index.html.erb</p>
-
 <pre><code>&lt;div id=&quot;user-widget&quot;&gt;
   &lt;% if current_user %&gt;
     &lt;%= link_to &quot;Sign out&quot;, signout_path, id: &quot;sign_out&quot; %&gt;
@@ -257,9 +209,7 @@ end
   &lt;% end %&gt;
 &lt;/div&gt;
 </code></pre>
-
 <p>(選項, 可不加) JS :</p>
-
 <pre><code>$(document).ready(function () {
 
     $('body').prepend('&lt;div id=&quot;fb-root&quot;&gt;&lt;/div&gt;')
@@ -284,41 +234,27 @@ end
         true
 });
 </code></pre>
-
 <p>ref : <a href="https://coderwall.com/p/bsfitw/ruby-on-rails-4-authentication-with-facebook-and-omniauth">https://coderwall.com/p/bsfitw/ruby-on-rails-4-authentication-with-facebook-and-omniauth</a></p>
-
-<h2 id="bootstrap-https-github-com-twbs-bootstrap-sass"><a href="https://github.com/twbs/bootstrap-sass">bootstrap</a></h2>
-
+<h2 id="bootstraphttpsgithubcomtwbsbootstrap-sass"><a href="https://github.com/twbs/bootstrap-sass">bootstrap</a></h2>
 <p>Gemfile</p>
-
 <pre><code>gem 'bootstrap-sass', '~&gt; 3.3.5'
 gem 'sass-rails', '&gt;= 3.2'
 </code></pre>
-
 <p>application.scss (注意副檔名是 <code>.scss</code>)</p>
-
 <pre><code>// &quot;bootstrap-sprockets&quot; must be imported before &quot;bootstrap&quot; and &quot;bootstrap/variables&quot;
 @import &quot;bootstrap-sprockets&quot;;
 @import &quot;bootstrap&quot;;
 </code></pre>
-
 <p>application.js</p>
-
 <pre><code>//= require jquery
 //= require bootstrap-sprockets
 </code></pre>
-
-<h2 id="awesome-print-https-github-com-michaeldv-awesome-print"><a href="https://github.com/michaeldv/awesome_print">awesome_print</a></h2>
-
+<h2 id="awesome_printhttpsgithubcommichaeldvawesome_print"><a href="https://github.com/michaeldv/awesome_print">awesome_print</a></h2>
 <p>當用 rails console 撈資料時, 欄位多會造成很難閱讀, 可以藉由 awesome_print 使輸出時好看一點</p>
-
 <p>Gemfile</p>
-
 <pre><code>gem 'awesome_print'
 </code></pre>
-
 <p>Usage</p>
-
 <pre><code>$ rails console
 &gt; ap User.find(1)
   User Load (0.3ms)  SELECT  &quot;users&quot;.* FROM &quot;users&quot; WHERE &quot;users&quot;.&quot;id&quot; = ? LIMIT 1  [[&quot;id&quot;, 1]]
@@ -342,99 +278,73 @@ gem 'sass-rails', '&gt;= 3.2'
 }
  =&gt; nil
 </code></pre>
-
 <h2 id="cron-jobs">Cron jobs</h2>
-
 <p>有時候主機需要一個背景需要可以一直跑的程式, 例如幫你檢查 DB 某個欄位再做對應的事</p>
-
-<h3 id="whenever-https-github-com-javan-whenever"><a href="https://github.com/javan/whenever">whenever</a></h3>
-
+<h3 id="wheneverhttpsgithubcomjavanwhenever"><a href="https://github.com/javan/whenever">whenever</a></h3>
 <p>Install</p>
-
 <pre><code>gem 'whenever', :require =&gt; false
 
 bundle install
 wheneverize .
 </code></pre>
-
 <p>會產生 <code>config/schedule.rb</code>, 在這裡定義你的 cron job</p>
-
 <p>注意! 無法直接在 schedule 裡寫 Rails 語法, 維持這裡的乾淨, 定義 cron job 要做的事情就好, 把任務定義在 task</p>
-
 <h3 id="example">Example</h3>
-
 <p>每一分鐘寫入一次檔案或 task</p>
-
 <pre><code>every 1.minute do
   command &quot;/bin/echo '1' &gt;&gt; /tmp/test&quot;
   rake &quot;schedule:find&quot;
 end
 </code></pre>
-
 <p>every 30 minutes between 6 to 9.</p>
-
 <pre><code>every '*/30 6-9 * * *' do
   runner &quot;Model.method&quot;
 end
 </code></pre>
-
 <h3 id="使用步驟">使用步驟</h3>
-
 <blockquote>
 <p>預設的定義檔路徑是 <code>config/schedule.rb</code>, 所以要到 rails app 下執行</p>
 </blockquote>
-
-<p>1) 查看轉換為 cron syntax 的語法, 但還不會寫入</p>
-
-<pre><code>whenever
-whenever --set environment=development              # 執行 rake 必須加上
-</code></pre>
-
+<ol>
+<li>
+<p>查看轉換為 cron syntax 的語法, 但還不會寫入</p>
+<p>whenever
+whenever &ndash;set environment=development              # 執行 rake 必須加上</p>
+</li>
+</ol>
 <blockquote>
 <p>whenever 執行 rake 指令預設是 production,</p>
 </blockquote>
-
-<p>2) 寫入 cron</p>
-
-<pre><code>whenever -w
-</code></pre>
-
+<ol start="2">
+<li>
+<p>寫入 cron</p>
+<p>whenever -w</p>
+</li>
+</ol>
 <p>或 update</p>
-
 <pre><code>whenever -i
 </code></pre>
-
 <blockquote>
 <p>如果一次 update development 及 production 環境的 schedule, 但只會有一種被寫進 cronjob</p>
 </blockquote>
-
 <p>註) 啟動後 cron job 就會開始跑了, 因為它是使用系統的 cron job, 所以即使 rails 沒啟動它仍然會在背景跑</p>
-
 <p>如果在啟動後輸入 <code>crontab -e</code> 就會看到剛剛寫入的以下內容</p>
-
 <pre><code># Begin Whenever generated tasks for: /Users/test/Desktop/projects/rails/translate/config/schedule.rb
 * * * * * /bin/bash -l -c '/bin/echo '\''1'\'' &gt;&gt; /tmp/test'
 
 # End Whenever generated tasks for: /Users/test/Desktop/projects/rails/translate/config/schedule.rb
 </code></pre>
-
 <blockquote>
 <p><strong>Rails 的 production 與 dev 的 cronjob 可同時存在</strong></p>
 </blockquote>
-
 <h3 id="清除-cron-job">清除 cron job</h3>
-
 <pre><code>whenever -c
 </code></pre>
-
 <blockquote>
 <p>在同一個 Rails app 不管執行的是 production, development 都會被清掉</p>
 </blockquote>
-
 <h3 id="example-1">example</h3>
-
 <p>lib/tasks/schedule.rake</p>
-
 <pre><code>namespace :schedule do
   desc &quot;TODO..&quot;
   task :find do
@@ -442,23 +352,22 @@ whenever --set environment=development              # 執行 rake 必須加上
   end
 end
 </code></pre>
-
 <h3 id="缺點">缺點</h3>
-
 <p>它是在執行的時候從頭啟動 rails 再執行你的 function，會有這麼一點效能浪費，我覺得是個小問題</p>
-
-<h2 id="sitemap-generator-https-github-com-kjvarga-sitemap-generator"><a href="https://github.com/kjvarga/sitemap_generator">sitemap_generator</a></h2>
-
+<h2 id="sitemap_generatorhttpsgithubcomkjvargasitemap_generator"><a href="https://github.com/kjvarga/sitemap_generator">sitemap_generator</a></h2>
 <p>是否該使用 sitemap 可以根據 <a href="https://support.google.com/webmasters/answer/156184?hl=zh-Hant">google 的手冊來決定</a></p>
-
-<p>1) 根據這個套件的 README 就可以順利安裝, 記得將 <code>sitemap.rb</code> 放在根目錄, 因為產生的 <code>sitemap.xml.gz</code> 會被放在 <code>public/</code> 下</p>
-
-<p>2) 記得在 <code>robots.txt</code> 加上</p>
-
-<pre><code>Sitemap: https://www.example.com/sitemap.xml.gz
-</code></pre>
-
-<p>3) 到 google 的 search console 加入你的網站 (會要求你用一些方法確認是你的網站, 加上 <code>&lt;meta&gt;</code> 標簽的方法較簡單), 加入成功後左邊 menu 選擇 Sitemap 並且提交</p>
+<ol>
+<li>
+<p>根據這個套件的 README 就可以順利安裝, 記得將 <code>sitemap.rb</code> 放在根目錄, 因為產生的 <code>sitemap.xml.gz</code> 會被放在 <code>public/</code> 下</p>
+</li>
+<li>
+<p>記得在 <code>robots.txt</code> 加上</p>
+<p>Sitemap: <a href="https://www.example.com/sitemap.xml.gz">https://www.example.com/sitemap.xml.gz</a></p>
+</li>
+<li>
+<p>到 google 的 search console 加入你的網站 (會要求你用一些方法確認是你的網站, 加上 <code>&lt;meta&gt;</code> 標簽的方法較簡單), 加入成功後左邊 menu 選擇 Sitemap 並且提交</p>
+</li>
+</ol>
 
 </article>
 

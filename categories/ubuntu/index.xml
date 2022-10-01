@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ubuntu on Jack&#39;s Note</title>
@@ -6,19 +6,15 @@
     <description>Recent content in ubuntu on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2013 15:40:00 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/ubuntu/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 06 Aug 2013 15:40:00 +0000</lastBuildDate><atom:link href="/categories/ubuntu/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ubuntu</title>
       <link>/posts/ubuntu/</link>
       <pubDate>Tue, 06 Aug 2013 15:40:00 +0000</pubDate>
       
       <guid>/posts/ubuntu/</guid>
-      <description>查 ubuntu 版本 $ lsb_release -a No LSB modules are available. Distributor ID: Ubuntu Description: Ubuntu 13.10 Release: 13.10 Codename: saucy  升級 Linux kernel 查看目前版本
-確切版號 $ uname -r 4.8.3-x86_64-linode76 $ uname -a Linux 139-162-12-42 4.8.3-x86_64-linode76 #1 SMP Thu Oct 20 19:05:39 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux  尋找要的 Kernel image
+      <description>查 ubuntu 版本 $ lsb_release -a No LSB modules are available. Distributor ID: Ubuntu Description: Ubuntu 13.10 Release: 13.10 Codename: saucy 升級 Linux kernel 查看目前版本
+確切版號 $ uname -r 4.8.3-x86_64-linode76 $ uname -a Linux 139-162-12-42 4.8.3-x86_64-linode76 #1 SMP Thu Oct 20 19:05:39 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux 尋找要的 Kernel image
 sudo apt-get update sudo apt-cache search linux-image linux-image-3.19.0-15-generic - Linux kernel image for version 3.19.0 on 64 bit x86 SMP linux-image-3.</description>
     </item>
     

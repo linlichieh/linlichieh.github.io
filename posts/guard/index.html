@@ -2,84 +2,60 @@
 <html lang="en-us">
 <title>Node.js guard | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/guard/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/guard/">Node.js guard</a></h1>
-    <p class="meta"><time datetime="2014-10-28T23:03:59&#43;08:00">October 28, 2014</time></p>
+    <h1>Node.js guard</h1>
+    <time datetime="2014-10-28T23:03:59&#43;08:00">October 28, 2014</time>
   </header>
-  
-
-<h2 id="介紹">介紹</h2>
-
+  <h2 id="介紹">介紹</h2>
 <p>guard 是一個 node.js 的套件, 它可以偵測資料夾下面的檔案發生變動然候再去做相對應的事,
 修改的檔案變動就 reload 瀏覽器或執行一段 shell</p>
-
 <h2 id="install-rvm">Install rvm</h2>
-
 <p>首先要先安裝 rvm, 我們再利用 rum 安裝 guard</p>
-
 <p>[1] Install</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get install curl
 curl -L https://get.rvm.io | bash -s stable --auto-dotfiles
 </code></pre>
-
 <blockquote>
 <p>如果執行失敗照著指示做 <code>gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3</code>, 然候再執行一次安裝指令</p>
 </blockquote>
-
 <p>[2] Exec <code>source /etc/profile.d/rvm.sh</code></p>
-
 <pre><code>rvm requirements
 </code></pre>
-
 <p>[3] Install ruby</p>
-
 <pre><code>rvm install ruby
 rvm use ruby --default
 </code></pre>
-
 <p>[4] Install RubyGems</p>
-
 <pre><code>rvm rubygems current
 </code></pre>
-
 <h2 id="安裝-guard-及-guard-livereload">安裝 guard 及 guard-livereload</h2>
-
 <p>guard 是偵測檔案變動你再跟它說要做什麼事</p>
-
 <p>guard-livereload 是利用 guard 偵測檔案發生變動就 reload 瀏覽器</p>
-
 <p>[1] 安裝 guard-livereload</p>
-
 <pre><code>sudo apt-get install ruby-dev make build-essential g++
 gem install guard
 gem install guard-livereload
 </code></pre>
-
 <blockquote>
 <p><strong>gem install 不要用 sudo</strong>, 否則執行時會報錯, 詳細原因參考<a href="http://stackoverflow.com/questions/21857571/ruby-gems-wont-run">這裡</a></p>
 </blockquote>
-
 <p>[2] 執行 <code>guard init livereload</code> 會在目錄下產生一個 Guardfile, 裡面定義一些偵測的規則</p>
-
 <p>Guardfile (修改後) :</p>
-
 <pre><code>guard 'livereload' do
   watch(%r{app/controllers/.+\.rb})
   watch(%r{app/models/.+\.rb})
@@ -91,82 +67,71 @@ gem install guard-livereload
   watch(%r{(app|vendor)(/assets/\w+/(.+\.(css|js|html|png|jpg))).*}) { |m| &quot;/assets/#{m[3]}&quot; }
 end
 </code></pre>
-
 <p>[3] <a href="https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei">下載 livereload chrome extension</a></p>
-
 <p>[4] 點擊 extension 讓 livereload 與 guard-livereload 連接</p>
-
 <ul>
 <li>如果是用本機開發 :
-
 <ul>
 <li>執行 <code>guard</code>, 再到 chrome 打開 livereload extension 就好了</li>
-</ul></li>
-<li>如果是用 ssh 連到主機開發 :
-
-<ul>
-<li>1) 執行 <code>guard</code>, 預設 port 是 35729 (<strong>注意! server 要記得開放 35729 port</strong>)</li>
-<li>2) 利用 ssh 的 port forwarding 將主機的 35729 導到本機的 35729, <a href="/posts/ssh/">參考 SSH 設定 - Port Forwarding 部份</a></li>
-<li>3) 再到 chrome 打開 livereload extension</li>
-</ul></li>
 </ul>
-
+</li>
+<li>如果是用 ssh 連到主機開發 :
+<ul>
+<li>
+<ol>
+<li>執行 <code>guard</code>, 預設 port 是 35729 (<strong>注意! server 要記得開放 35729 port</strong>)</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>利用 ssh 的 port forwarding 將主機的 35729 導到本機的 35729, <a href="/posts/ssh/">參考 SSH 設定 - Port Forwarding 部份</a></li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>再到 chrome 打開 livereload extension</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
 <p>[5] 完成, 只要 guard 偵測到 server 端的檔案有異動就會自動通知 livereload chrome extension 做 reload</p>
-
 <h2 id="偵測檔案變動並執行特定指令">偵測檔案變動並執行特定指令</h2>
-
 <p>[1] Install : <code>gem install guard-shell</code></p>
-
 <p>[2] Exec : <code>guard init shell</code></p>
-
 <p>Guardfile :</p>
-
 <pre><code>guard :shell do
   watch(/(.*).cpp/) {|m| `g++ #{m[0]} -o runMe &amp;&amp; ./runMe` }
 end
 </code></pre>
-
 <blockquote>
 <p><code>.cpp</code> 變動自動編譯</p>
 </blockquote>
-
 <h2 id="偵測-golang-檔案變動">偵測 golang 檔案變動</h2>
-
 <p>Install : <code>gem install guard-go</code></p>
-
 <h2 id="偵測-php-檔案變動">偵測 php 檔案變動</h2>
-
 <p>所有 *.php 設定 :</p>
-
 <pre><code>guard 'livereload' do
   watch(%r{.+\.(php)$})
 end
 </code></pre>
-
 <p>ci 設定 :</p>
-
 <pre><code>guard 'livereload', :grace_period =&gt; 0 do
   watch(%r{application/.+\.(php)$})
   watch(%r{public/.+\.(css|js)})
 end
 </code></pre>
-
 <p>laravel 設定 :</p>
-
 <pre><code>guard 'livereload', :grace_period =&gt; 0 do
   watch(%r{app/.+\.(php)$})
   watch(%r{public/assets/.+\.(css|js)})
 end
 </code></pre>
-
 <blockquote>
 <p>grace_period 是指 delay 幾秒才 reload</p>
 </blockquote>
-
 <h2 id="測測-ruby-檔案變動檢查-coding-style">測測 ruby 檔案變動檢查 coding style</h2>
-
 <p>Install : <code>gem install guard-rubocop</code></p>
-
 <p>Exec : <code>guard init rubocop</code></p>
 
 </article>

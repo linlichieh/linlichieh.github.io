@@ -2,63 +2,49 @@
 <html lang="en-us">
 <title>PHP Frameworks | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/php-frameworks/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/php-frameworks/">PHP Frameworks</a></h1>
-    <p class="meta"><time datetime="2013-07-21T14:58:00Z">July 21, 2013</time></p>
+    <h1>PHP Frameworks</h1>
+    <time datetime="2013-07-21T14:58:00Z">July 21, 2013</time>
   </header>
-  
-
-<h2 id="codeigniter">Codeigniter</h2>
-
+  <h2 id="codeigniter">Codeigniter</h2>
 <h3 id="判斷db是否執行成功">判斷DB是否執行成功</h3>
-
 <p>判斷select</p>
-
 <pre><code>if ($query-&gt;result_array())
 {
     // display data..
 }
 return FALSE;
 </code></pre>
-
 <p>判斷insert</p>
-
 <pre><code>if ($this-&gt;db-&gt;insert_id())
 {
     return TRUE;
 }
 </code></pre>
-
 <p>判斷update是否成功更新</p>
-
 <pre><code>if ($this-&gt;db-&gt;update('shares'))
 {
     return TRUE;
 }
 </code></pre>
-
 <p>或</p>
-
 <pre><code>return ($this-&gt;db-&gt;affected_rows() &gt; 0) ? TRUE : FALSE;
 </code></pre>
-
 <p>判斷delete是否成功刪除</p>
-
 <pre><code>$this-&gt;db-&gt;delete('question_options');
 if ($this-&gt;db-&gt;affected_rows() &gt; 0)
 {
@@ -66,16 +52,12 @@ if ($this-&gt;db-&gt;affected_rows() &gt; 0)
 }
 return FALSE;
 </code></pre>
-
 <h3 id="欄位更新-ex-1">欄位更新 ex: +1</h3>
-
 <pre><code>$this-&gt;db-&gt;set('lose', 'lose+1', FALSE);
 $this-&gt;db-&gt;where('guid', $data['guid']);
 $this-&gt;db-&gt;update('users');
 </code></pre>
-
 <h3 id="form-validation-的-callback">Form Validation 的 callback</h3>
-
 <pre><code> array(
      'field' =&gt; 'current_passwd',
      'label' =&gt; 'lang:users-current_passwd',
@@ -94,13 +76,10 @@ $this-&gt;db-&gt;update('users');
       return FALSE;
  }
 </code></pre>
-
 <blockquote>
 <p>給 callback 的參數是從第二個參數開始給，第一個參數都是保留給自已那個欄位的值(current_passwd的值)</p>
 </blockquote>
-
 <h3 id="load-model-in-library">Load model in Library</h3>
-
 <pre><code>private $CI = NULL;
 
 public function __construct()
@@ -109,64 +88,42 @@ public function __construct()
     $this-&gt;CI-&gt;load-&gt;model('test_model');
 }
 </code></pre>
-
 <h3 id="codeigniter-寄信錯誤-無法使用-mail-函式發送信件-主機可能未設定此方法發送信件">codeigniter 寄信錯誤 &ldquo;無法使用 mail() 函式發送信件. 主機可能未設定此方法發送信件&rdquo;</h3>
-
 <blockquote>
 <p>可能沒有安裝sendmail</p>
 </blockquote>
-
 <pre><code>sudo apt-get install sendmail
 </code></pre>
-
 <p>測試sendmail 寄信</p>
-
 <pre><code>$ sendmail test_user@example.com     &lt;= enter
 Subject: test                        &lt;= enter
 test                                 &lt;= enter
 .                                    &lt;= enter
 </code></pre>
-
 <p>OR</p>
-
 <pre><code>echo &quot;My test email being sent from sendmail&quot; | /usr/sbin/sendmail test_user@example.com
 </code></pre>
-
-<h3 id="ci-input會自動過濾-00-08-0b-0c-0e-0f">CI input會自動過濾 <code>%00</code>~<code>%08</code> <code>%0b</code> <code>%0c</code> <code>%0e</code> <code>%0f</code></h3>
-
+<h3 id="ci-input會自動過濾-0008-0b-0c-0e-0f">CI input會自動過濾 <code>%00</code>~<code>%08</code> <code>%0b</code> <code>%0c</code> <code>%0e</code> <code>%0f</code></h3>
 <p><code>system/core/Input.php</code> 的 <code>CI_INPUT class</code> 在 <code>__contruct()</code> 會執行 <code>_sanitize_globals</code> metheod</p>
-
 <p>而 <code>_sanitize_globals</code> method 會過濾一切 <code>$_GET</code> 及 <code>$_POST</code> 變數所以即使拿原生函數 <code>$_GET</code> 去抓都沒有用，會先被ci的 method 給過濾掉</p>
-
 <p>而在這裡面它執行的是 <code>_clean_input_data</code> 這個 method 而它又會去執行</p>
-
 <p><code>remove_invisible_characters</code> 這個 function，而它是在 <code>system/core/Common.php</code> 裡</p>
-
 <p>就是由它去過濾 <code>%00</code>-<code>%08</code> <code>%0b</code> <code>%0c</code> <code>%0e</code> <code>%0f</code>，把它們轉成<code>空字串</code></p>
-
 <p>可藉由 <code>remove_invisible_characters</code> 的第二個參數指定為 <code>false</code> 關閉過濾</p>
-
 <h3 id="自訂-controller">自訂 controller</h3>
-
 <p>/application/core/MY_Controller :</p>
-
 <pre><code>require_once 'Base_Controller.php';
 
 class MY_Controller extends CI_Controller {
 </code></pre>
-
-<h3 id="ci-的-log-message">CI 的 log_message</h3>
-
+<h3 id="ci-的-log_message">CI 的 log_message</h3>
 <pre><code>log_message(&quot;INFO&quot;, &quot;data: &quot; . var_export($data, TRUE));
 </code></pre>
-
 <blockquote>
 <p>第二個參數預設為 <code>FALSE</code> :
 If you would like to capture the output of print_r(), use the return parameter. When this parameter is set to TRUE, print_r() will return the information rather than print it.</p>
 </blockquote>
-
 <h3 id="crop-avatar">crop avatar</h3>
-
 <pre><code>$crop_x = $this-&gt;input-&gt;post('crop_x');
 $crop_y = $this-&gt;input-&gt;post('crop_y');
 $crop_w = $this-&gt;input-&gt;post('crop_w');
@@ -226,9 +183,7 @@ if ($this-&gt;image_lib-&gt;crop())
     }
 }
 </code></pre>
-
 <h3 id="parseimg">parseImg</h3>
-
 <pre><code>$url = $this-&gt;input-&gt;get_post('url');
 if ( ! $html_content = @file_get_contents($url))
 {

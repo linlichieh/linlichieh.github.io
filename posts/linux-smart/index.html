@@ -2,38 +2,30 @@
 <html lang="en-us">
 <title>Linux S.M.A.R.T. | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-smart/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-smart/">Linux S.M.A.R.T.</a></h1>
-    <p class="meta"><time datetime="2013-05-17T06:04:35Z">May 17, 2013</time></p>
+    <h1>Linux S.M.A.R.T.</h1>
+    <time datetime="2013-05-17T06:04:35Z">May 17, 2013</time>
   </header>
-  
-
-<h2 id="s-m-a-r-t">S.M.A.R.T.</h2>
-
+  <h2 id="smart">S.M.A.R.T.</h2>
 <p>檢測你的硬碟健康狀態</p>
-
 <h3 id="installation">Installation</h3>
-
 <pre><code>sudo apt-get install smartmontools
 </code></pre>
-
-<h3 id="當硬碟不支援時顯示-unavailable">當硬碟不支援時顯示 Unavailable :</h3>
-
+<h3 id="當硬碟不支援時顯示-unavailable-">當硬碟不支援時顯示 Unavailable :</h3>
 <pre><code>test_user@test-VirtualBox [stp:1] { /var/www  }$ sudo smartctl -i /dev/sda1
 smartctl 5.43 2012-06-30 r3573 [x86_64-linux-3.8.0-19-generic] (local build)
 Copyright (C) 2002-12 by Bruce Allen, http://smartmontools.sourceforge.net
@@ -50,11 +42,8 @@ ATA Standard is:  ATA/ATAPI-6 published, ANSI INCITS 361-2002
 Local Time is:    Fri May 17 10:08:11 2013 CST
 SMART support is: Unavailable - device lacks SMART capability.
 </code></pre>
-
 <h3 id="to-check-if-the-device-has-smart-capability">To check if the device has SMART capability:</h3>
-
 <p>己打開會顯示:</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -i /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -76,9 +65,7 @@ Local Time is:    Mon May 13 13:51:20 2013 CST
 SMART support is: Available - device has SMART capability.
 SMART support is: Enabled
 </code></pre>
-
 <p>沒打開smart會顯示 Disabled:</p>
-
 <pre><code>test_user@test { /usr/sbin  }$ sudo smartctl -i /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -100,11 +87,8 @@ Local Time is:    Mon May 13 16:04:42 2013 CST
 SMART support is: Available - device has SMART capability.
 SMART support is: Disabled
 </code></pre>
-
 <h3 id="if-smart-is-not-enabled-it-can-be-enabled-by-doing">If SMART is not enabled, it can be enabled by doing:</h3>
-
 <p>打開:</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -s on /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -112,9 +96,7 @@ Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 === START OF ENABLE/DISABLE COMMANDS SECTION ===
 SMART Enabled.
 </code></pre>
-
 <p>沒打開:</p>
-
 <pre><code>test_user@test { /usr/sbin  }$ sudo smartctl -s off /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -122,9 +104,7 @@ Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 === START OF ENABLE/DISABLE COMMANDS SECTION ===
 SMART Disabled. Use option -s with argument 'on' to enable it.
 </code></pre>
-
 <h3 id="check-device">check device</h3>
-
 <pre><code>test_user@test { ~/test (master) }$ sudo smartctl -P show /dev/sda
 smartctl 5.43 2012-06-30 r3573 [x86_64-linux-3.8.0-25-generic] (local build)
 Copyright (C) 2002-12 by Bruce Allen, http://smartmontools.sourceforge.net
@@ -133,19 +113,14 @@ ATA device successfully opened
 
 Use 'smartctl -a' (or '-x') to print SMART (and more) information
 </code></pre>
-
-<h3 id="test-the-device-health">Test the device health :</h3>
-
+<h3 id="test-the-device-health-">Test the device health :</h3>
 <ol>
 <li>Short (runs tests that have a high probability of detecting device problems)</li>
 <li>Extended (or Long; a short check with complete disk surface examination)</li>
 <li>Conveyance (identifies if damage incurred during transportation of the device)</li>
 </ol>
-
-<h3 id="to-view-the-device-s-available-tests-and-the-time-it-will-take-to-perform-each-test-do">To view the device&rsquo;s available tests and the time it will take to perform each test do:</h3>
-
+<h3 id="to-view-the-devices-available-tests-and-the-time-it-will-take-to-perform-each-test-do">To view the device&rsquo;s available tests and the time it will take to perform each test do:</h3>
 <p>打開:</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -c /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -184,27 +159,20 @@ SCT capabilities:              (0x303f) SCT Status supported.
                                         SCT Feature Control supported.
                                         SCT Data Table supported.
 </code></pre>
-
 <p>沒打開會顯示SMART Disabled:</p>
-
 <pre><code>test_user@test { /usr/sbin  }$ sudo smartctl -c /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 SMART Disabled. Use option -s with argument 'on' to enable it.
 (override with '-T permissive' option)
 </code></pre>
-
 <h3 id="to-run-the-tests-do">To run the tests do:</h3>
-
 <pre><code>smartctl -t short /dev/&lt;device&gt;
 smartctl -t long /dev/&lt;device&gt;
 smartctl -t conveyance /dev/&lt;device&gt;
 </code></pre>
-
 <h3 id="results">Results</h3>
-
 <p>To view the test&rsquo;s overall health status (compiled from all tests):</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -H /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -212,14 +180,11 @@ Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 === START OF READ SMART DATA SECTION ===
 SMART overall-health self-assessment test result: PASSED
 </code></pre>
-
 <blockquote>
 <p>PASSED表示硬碟健康狀態良好
 Failure表示硬碟有問題</p>
 </blockquote>
-
 <p>To view the test&rsquo;s result errors:</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -l selftest /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -230,104 +195,74 @@ Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA
 1  Extended offline    Completed without error       00%        95         -
 2  Short offline       Completed without error       00%        94         -
 </code></pre>
-
 <p>To view the test&rsquo;s detailed results:</p>
-
 <pre><code>sudo smartctl -a /dev/sda1
 </code></pre>
-
 <p>或使用↓顯示部份資訊</p>
-
 <pre><code>sudo smartctl -A /dev/sda1
 </code></pre>
-
 <blockquote>
 <p>If no errors are reported the device is likely healthy.
 If there are a few errors this may or may not indicate a problem and should be investigated further.
 When a device starts to fail it is recommended to backup the data and replace it.</p>
 </blockquote>
-
 <p>ID#</p>
-
 <ul>
 <li>This ID for the attribute is displayed as a decimal number in this report but other reports may display it in its native hexadecimal format.</li>
 </ul>
-
 <p>Attribute Name</p>
-
 <ul>
 <li>The human readable description of the ID#</li>
 </ul>
-
 <p>Flag</p>
-
 <ul>
 <li>This is a hexadecimal description of the purposes of this attribute combined so they can be represented by a number.</li>
 <li>For example is it for performance, error rates or pre-fail or some combination of these and others.</li>
 </ul>
-
 <p>Value</p>
-
 <ul>
 <li>This is a normalized version of the data that starts at its best possible value (like 200 for this attribute) and then decreases as it gets worse (now 192 for this attribute).</li>
 </ul>
-
 <p>Worst</p>
-
 <ul>
 <li>The worst that the Value has ever been.</li>
 <li>Note that some vendors firmware may actually increase the &ldquo;Worst&rdquo; value for some rate-type Attributes.</li>
 </ul>
-
 <p>Threshold (THRESH)</p>
-
 <ul>
 <li>These are defined by the vendor.</li>
 <li>The threshold for the Value. Once the Value goes below this, the drive will consider it to be FAILED for this attribute and depending on the attribute (like this one) the whole drive will be considered to be failing and warnings will be sent to backup and replace it.</li>
 </ul>
-
 <p>Type</p>
-
 <ul>
 <li>A human readable version of the Flag value but not as detailed.</li>
 <li>Note that if an Attribute is of type &lsquo;Pre-fail&rsquo;, it does not mean that your disk is about to fail! It only has this meaning if the Attribute&rsquo;s current Normalized value is less than or equal to the threshold value.</li>
 </ul>
-
 <p>Updated</p>
-
 <ul>
 <li>How often the attribute’s value is updated.</li>
 <li>Some SMART attributes values, that are updated only during off-line data collection activities are labeled &ldquo;Offline&rdquo; in column &ldquo;UPDATED&rdquo;.</li>
 </ul>
-
 <p>When Failed</p>
-
 <ul>
 <li>If there was a failure where the value reached or went below the threshold value, the power-on lifetime is displayed here (usually in hours )</li>
 <li>If the Attribute&rsquo;s current &ldquo;Normalized value&rdquo; is less than or equal to the threshold value, then the attribute is marked with &ldquo;FAILING_NOW&rdquo; in column WHEN_FAILED.</li>
 </ul>
-
 <p>Raw Value</p>
-
 <ul>
 <li>The raw non-normalized value of the attribute.</li>
 <li>Please keep in mind that the conversion from RAW value to a quantity with physical units is not specified by the SMART standard! smartctl only reports the different Attribute types, values, and thresholds as read from the device. It does not carry out the conversion between &ldquo;Raw&rdquo; and &ldquo;Normalized&rdquo; values: this is done by the disk&rsquo;s firmware.</li>
 <li>In most cases, the values printed by smartctl are sensible. For example the temperature Attribute generally has its raw value equal to the temperature in Celsius. However in some cases vendors use unusual conventions. For example the Hitachi disk on my laptop reports its power-on hours in minutes, not hours. Some IBM disks track three temperatures rather than one, in their raw values. Have a look at our wiki pages on topic SMART attributes.</li>
 </ul>
-
 <p>狀態:</p>
-
 <ul>
 <li>Worst = 曾經發生過最壞時的值</li>
 <li>Value = 目前的值</li>
 <li>Threshold = 門檻值,超過此值代表硬碟瑕疵已超過容許的範圍</li>
 <li>T.E.C. = 一個預估你的硬碟壽命的日期</li>
 </ul>
-
 <h3 id="補充">補充:</h3>
-
 <p>參數說明:</p>
-
 <ul>
 <li>-h 顯示參數說明及範例</li>
 <li>-V 顯示版本等相關資訊</li>
@@ -340,9 +275,7 @@ When a device starts to fail it is recommended to backup the data and replace it
 <li>-t TEST 執行硬碟測試 (TEST: offline, short, long, conveyance, select,M-N pending,N afterselect,on afterselect,off)</li>
 <li>-X 放棄執行硬碟測試</li>
 </ul>
-
 <p>中斷背景檢測硬碟:</p>
-
 <pre><code>test_user@test { ~  }$ sudo smartctl -X /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -351,9 +284,7 @@ Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 Sending command: &quot;Abort SMART off-line mode self-test routine&quot;.
 Self-testing aborted!
 </code></pre>
-
 <p>顯示硬碟錯誤log:</p>
-
 <pre><code>test_user@test { ~  }$ smartctl -l error /dev/sda1
 smartctl 6.1 2013-03-16 r3800 [x86_64-linux-3.7.4-1-ARCH] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -366,18 +297,13 @@ Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
 SMART Error Log Version: 1
 No Errors Logged
 </code></pre>
-
 <p>-d指定設備類型，例如: ata, scsi, marvell, sat, 3ware,N</p>
-
 <pre><code>$ smartctl -s on -d ata /dev/sdb
 </code></pre>
-
 <p>disk判斷項目 :</p>
-
 <blockquote>
 <p>假設 exec() 第3參數為 $is_fail</p>
 </blockquote>
-
 <ol>
 <li>有安裝但不支援，$is_fail = 0 (解析第2參數判斷Unavailable)</li>
 <li>有安裝但沒打開，$is_fail = 0 (解析第2參數判斷Disabled)</li>
@@ -385,9 +311,7 @@ No Errors Logged
 <li>disk路徑亂打(/devx/sda8)，$is_fail = 1 or 127</li>
 <li>指定不存在的disk (/dev/sda8)，$is_fail = 2</li>
 </ol>
-
 <h3 id="參考來源">參考來源:</h3>
-
 <p><a href="https://sites.google.com/site/lab586/linuxnote/hddchecktip">https://sites.google.com/site/lab586/linuxnote/hddchecktip</a>
 <a href="https://wiki.archlinux.org/index.php/SMART">https://wiki.archlinux.org/index.php/SMART</a>
 <a href="http://space.itpub.net/12823785/viewspace-504042">http://space.itpub.net/12823785/viewspace-504042</a>

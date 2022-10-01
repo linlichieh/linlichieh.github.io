@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>sed and awk | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/sed-awk/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/sed-awk/">sed and awk</a></h1>
-    <p class="meta"><time datetime="2013-08-24T15:27:00Z">August 24, 2013</time></p>
+    <h1>sed and awk</h1>
+    <time datetime="2013-08-24T15:27:00Z">August 24, 2013</time>
   </header>
-  
-
-<h2 id="sed">sed</h2>
-
+  <h2 id="sed">sed</h2>
 <ul>
 <li><code>-i</code> : is used to affect the file.</li>
 <li><code>^</code> : is a beginning of line</li>
@@ -32,120 +28,80 @@
 <li><code>d</code> : delete if there is a empty line</li>
 <li><code>((.|\n)*)</code> : multiple line</li>
 </ul>
-
 <h3 id="刪除含有foo及bar這兩個字串的行">刪除含有FOO及BAR這兩個字串的行</h3>
-
 <pre><code>sed &quot;s/^.*FOO.*BAR.*$//g&quot; fstab
 </code></pre>
-
 <blockquote>
 <p>這作法該行被刪除，但是會是空的一行</p>
 </blockquote>
-
 <p>改成 :</p>
-
 <pre><code>sed &quot;/^.*FOO.*BAR.*$/d&quot; file.txt
 </code></pre>
-
 <blockquote>
 <p>該行被刪除，不會變成空行</p>
 </blockquote>
-
 <h3 id="去除空行">去除空行</h3>
-
 <pre><code>sed -i &quot;/^\s*$/d&quot; file.txt
 </code></pre>
-
 <h3 id="取代空白">取代空白</h3>
-
 <pre><code>\s*
 </code></pre>
-
 <h3 id="取代-windows-換行">取代 windows 換行</h3>
-
 <pre><code>sed -i 's/\r$//' wrap-trim.log
 </code></pre>
-
 <h3 id="修改檔案內容">修改檔案內容</h3>
-
 <p>假設有一個test檔:</p>
-
 <pre><code>$a = 'ccc';
 $b = 'ddd';
 $c = 'ccc';
 $d = 'fff';
 </code></pre>
-
 <p>將取代結果印出,但還不會做取代的動作</p>
-
 <pre><code>$ sed &quot;s/'ccc'/'QQQ'/g&quot; test
 $a = 'QQQ';
 $b = 'ddd';
 $c = 'QQQ';
 $d = 'fff';
 </code></pre>
-
 <p>取代檔案內容</p>
-
 <pre><code>sed -i &quot;s/'ccc'/'QQQ'/g&quot; test
 </code></pre>
-
 <p>取代檔案內容, 還會建一個原始檔案的輩份檔(.bak, 可自訂SUFFIX)</p>
-
 <pre><code>sed -i.bak &quot;s/'ccc'/'QQQ'/g&quot; test
 </code></pre>
-
 <blockquote>
 <p>test.bak 為原始檔案的輩份 ; test 為取代後的檔案</p>
 </blockquote>
-
 <h3 id="執行多個取代">執行多個取代</h3>
-
 <pre><code>sed -e &quot;s/line1/line3/g&quot; -e&quot;s/line2/line4/g&quot; /tmp/q.txt
 </code></pre>
-
 <blockquote>
 <p>使用<code>-e</code>串在後面
 -e script, &ndash;expression=script : add the script to the commands to be executed
 -i[SUFFIX], &ndash;in-place[=SUFFIX] : edit files in place (makes backup if extension supplied)</p>
 </blockquote>
-
-<h3 id="sed-e-expression-1-char-26-extra-characters-after-command">sed: -e expression #1, char 26: extra characters after command :</h3>
-
+<h3 id="sed--e-expression-1-char-26-extra-characters-after-command-">sed: -e expression #1, char 26: extra characters after command :</h3>
 <p>注意脫逸字元</p>
-
 <blockquote>
 <p>-e script, &ndash;expression=script : add the script to the commands to be executed</p>
 </blockquote>
-
-<h3 id="取代資料夾下所有檔案的取代的字串-recursive">取代資料夾下所有檔案的取代的字串(recursive)</h3>
-
+<h3 id="取代資料夾下所有檔案的取代的字串recursive">取代資料夾下所有檔案的取代的字串(recursive)</h3>
 <pre><code>find . -type f -print0 | xargs -0 sed -i 's/from/to/g'
 </code></pre>
-
 <h3 id="取得指定行數的區間-並輸出成一個新檔案">取得指定行數的區間, 並輸出成一個新檔案</h3>
-
 <pre><code>sed -n 5870,5900p handler.log &gt; /tmp/tmp.log
 </code></pre>
-
 <h2 id="awk">awk</h2>
-
 <p>預設以<code>空白</code>分隔</p>
-
 <pre><code>df | grep &quot;/dev/loop&quot; | awk '{print $2}'
 </code></pre>
-
 <p>以 <code>%</code> 分隔</p>
-
 <pre><code>df | grep &quot;/dev/loop&quot; | awk -F &quot;%&quot; '{print $2}'
 </code></pre>
-
 <blockquote>
 <p>print要用單引號括起來<code>`</code>, 不能用雙引號<code>&quot;</code></p>
 </blockquote>
-
 <p>找出 lengh &gt; 200 的行</p>
-
 <pre><code>awk 'length&gt;200' common.log
 </code></pre>
 

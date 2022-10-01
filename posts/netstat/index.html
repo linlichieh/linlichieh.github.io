@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>Linux netstat | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/netstat/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/netstat/">Linux netstat</a></h1>
-    <p class="meta"><time datetime="2014-01-19T14:47:00Z">January 19, 2014</time></p>
+    <h1>Linux netstat</h1>
+    <time datetime="2014-01-19T14:47:00Z">January 19, 2014</time>
   </header>
-  
-
-<h2 id="常用">常用</h2>
-
+  <h2 id="常用">常用</h2>
 <ul>
 <li>-t: tcp</li>
 <li>-u: udp</li>
@@ -35,32 +31,22 @@
 <li>-a: Show both listening and non-listening sockets.</li>
 <li>如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行</li>
 </ul>
-
 <p>列出在監聽的網路服務:</p>
-
 <pre><code>netstat -tunl
 </code></pre>
-
 <p>列出所有的連線</p>
-
 <pre><code>netstat -antp
 </code></pre>
-
 <p>列出已連線的網路連線狀態:</p>
-
 <pre><code>netstat -tun
 </code></pre>
-
 <p>刪除已建立或在監聽當中的連線:</p>
-
 <pre><code>netstat -tunp   #看他的pid ex: 10270
 kill -9 10270
 
 netstat -nltp
 </code></pre>
-
 <p>顯示 timer</p>
-
 <pre><code>$ netstat -antop
 
 tcp        0      0 0.0.0.0:55206           0.0.0.0:*               LISTEN      -                off (0.00/0/0)
@@ -77,9 +63,7 @@ tcp        0      0 10.173.27.211:2049      10.170.189.142:696      ESTABLISHED 
 tcp6       0      0 :::56705                :::*                    LISTEN      -                off (0.00/0/0)
 tcp6       0      0 :::2049                 :::*                    LISTEN      -                off (0.00/0/0)
 </code></pre>
-
 <p>顯示連線狀態數量</p>
-
 <pre><code>$ netstat -an|awk '/tcp/ {print $6}'|sort|uniq -c
 
      16 CLOSING
@@ -91,9 +75,7 @@ tcp6       0      0 :::2049                 :::*                    LISTEN      
     103 SYN_RECV
    5204 TIME_WAIT
 </code></pre>
-
 <p>netstat command example to find out gateway/router IP</p>
-
 <pre><code>netstat -r -n
 
 or
@@ -104,57 +86,36 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 default         192.168.79.xxx  0.0.0.0         UG    0      0        0 em1
 192.168.79.0    *               255.255.255.128 U     0      0        0 em1
 </code></pre>
-
 <p>顯示主機上所有已建立的連線 (己開放的port)</p>
-
 <pre><code>netstat -na
 </code></pre>
-
 <p>顯示所有 port 80 的連線，並把結果排序。</p>
-
 <pre><code>netstat -an | grep :80 | sort
 </code></pre>
-
 <p>列出主機上有多少個 SYNC_REC，一般上這個數字應該相當低。</p>
-
 <pre><code>netstat -n -p|grep SYN_REC | wc -l
 </code></pre>
-
 <p>同樣是列出 SYNC_REC，但不只列出數字，而是將每個 SYNC_REC 的連線列出。</p>
-
 <pre><code>netstat -n -p | grep SYN_REC | sort -u
 </code></pre>
-
 <p>列出發送 SYNC_REC 的所有 ip 地址。</p>
-
 <pre><code>netstat -n -p | grep SYN_REC | awk ‘{print $5}’ | awk -F: ‘{print $1}’
 </code></pre>
-
 <p>計算每一個 ip 在主機上建立的連線數量。</p>
-
 <pre><code>netstat -ntu | awk ‘{print $5}’ | cut -d: -f1 | sort | uniq -c | sort -n
 </code></pre>
-
 <p>列出從 TCP 或 UDP 連線到主機的 ip 的數量。</p>
-
 <pre><code>netstat -anp |grep ‘tcp\|udp’ | awk ‘{print $5}’ | cut -d: -f1 | sort | uniq -c | sort -n
 </code></pre>
-
 <p>列出每個 ip 建立的 ESTABLISHED 連線數量。</p>
-
 <pre><code>netstat -ntu | grep ESTAB | awk ‘{print $5}’ | cut -d: -f1 | sort | uniq -c | sort -nr
 </code></pre>
-
 <p>列出每個 ip 建立的 port 80 連線數量。</p>
-
 <pre><code>netstat -plan|grep :80|awk {‘print $5′}|cut -d: -f 1|sort|uniq -c|sort -nk 1
 </code></pre>
-
 <p>ref:
 <a href="http://www.hkcode.com/linux-bsd-notes/559">http://www.hkcode.com/linux-bsd-notes/559</a></p>
-
 <h2 id="狀態-描述">狀態: 描述</h2>
-
 <ul>
 <li>ESTABLISHED: The socket has an established connection.</li>
 <li>SYN_SENT: The socket is actively attempting to establish a connection.</li>
@@ -169,128 +130,82 @@ default         192.168.79.xxx  0.0.0.0         UG    0      0        0 em1
 <li>CLOSING: Both  sockets are shut down but we still don&rsquo;t have all our data sent.</li>
 <li>UNKNOWN: The state of the socket is unknown.</li>
 </ul>
-
 <p>ref: <a href="https://i.stack.imgur.com/5H0Cr.png">https://i.stack.imgur.com/5H0Cr.png</a></p>
-
-<h2 id="大量-time-wait-問題">大量 TIME_WAIT 問題</h2>
-
+<h2 id="大量-time_wait-問題">大量 TIME_WAIT 問題</h2>
 <pre><code>(..略..)
 tcp        0      0 127.0.0.1:9000              127.0.0.1:37260             TIME_WAIT   -
 tcp        0      0 10.0.11.229:58492           10.0.23.32:3306             TIME_WAIT   -
 (..略..)
 </code></pre>
-
-<h3 id="問題">問題 :</h3>
-
+<h3 id="問題-">問題 :</h3>
 <p>php-fpm 使用 9000 port, mysql 使用 3306 如果一個 request 進來最少就會有兩個 TIME_WAIT，要等系統 1 分鐘才會回收，在這期間就佔用了兩個 TCP 連線，
 如果 request 量大的時候就會沒 port 可用造成錯誤</p>
-
 <h3 id="產生原因">產生原因</h3>
-
 <p>ref : <a href="https://goo.gl/5ZquHl">打開linux-tcp端口快速回收</a></p>
-
 <ol>
 <li>nginx現有的負載均衡模塊實現php fastcgi負載均衡，nginx使用了短連接方式，所以會造成大量處於TIME_WAIT狀態的連接。</li>
 <li>TCP/IP設計者本來是這麼設計的, 主要有兩個原因
-
 <ul>
 <li>防止上一次連接中的包，迷路後重新出現，影響新連接（經過2MSL，上一次連接中所有的重複包都會消失）</li>
 <li>可靠的關閉TCP連接, 在主動關閉方發送的最後一個ack(fin) ，有可能丟失，這時被動方會重新發fin, 如果這時主動方處於CLOSED 狀態，就會響應rst 而不是ack。所以主動方要處於TIME_WAIT 狀態，而不能是CLOSED 。</li>
-</ul></li>
+</ul>
+</li>
 </ol>
-
-<h3 id="解決方法-開啟-linux-tcp-port-快速回收">解決方法 : 開啟 Linux TCP port 快速回收</h3>
-
+<h3 id="解決方法--開啟-linux-tcp-port-快速回收">解決方法 : 開啟 Linux TCP port 快速回收</h3>
 <p>修改 <code>/etc/sysctl.conf</code>, 但重啟後會還原(?)</p>
-
 <pre><code>net.ipv4.tcp_tw_reuse = 1                   # Allow to reuse TIME-WAIT sockets for new connections when it is safe from protocol viewpoint. Default value is 0.  It should not be changed without advice/request of technical experts.
 net.ipv4.tcp_tw_recycle = 1                 # Enable fast recycling TIME-WAIT sockets. Default value is 0.  It should not be changed without advice/request of technical experts.
 </code></pre>
-
 <p>再執行 <code>sudo sysctl -p</code> 生效</p>
-
 <blockquote>
 <p>注意!!  修改 tcp_tw_recycle 在使用 load balancer 可能會造成問題 ref : <a href="http://huoding.com/2012/01/19/142">記一次TIME_WAIT網絡故障</a> 下面別人的回覆訂正原文錯誤也值得一看</p>
 </blockquote>
-
 <h3 id="結果">結果</h3>
-
 <p>當 request 一執行完畢 TIME_WAIT 只會存在一下子就消失了</p>
-
-<h3 id="time-wait-補充">TIME_WAIT 補充</h3>
-
+<h3 id="time_wait-補充">TIME_WAIT 補充</h3>
 <p>TCP is layer 4, HTTP layer 7.</p>
-
 <p>In HTTP 1.0, HTTP Keep-Alive is used at layer 7 to simulate persistent connections using Connection header.</p>
-
 <p>In HTTP 1.1, connections are assumed persistent by default and then rely on TCP only to do that job. Requests can be pipelined in the same TCP connection, then one side will set Connection: close in the last request or response headers, so both side knows that no more HTTP request can be exchanged and the connection will then be closed.</p>
-
 <p>Usually in the case of a web server, the TIME_WAIT state will be the state after which, once decided to actively close the connection, it received client&rsquo;s FIN packet and is sending the last ACK back in the four-way tear-down. After this, it waits for 2 * MSL : it&rsquo;s a way to be sure that the connection is closed. That&rsquo;s where the 60s compiled in the kernel comes from. In this way we are sure that we won&rsquo;t receive in a new connection, using the same 4 tuple, packets out of sequence arising from the previous connection.</p>
-
 <p>You don&rsquo;t want to change it.</p>
-
 <p>In the other side server.max-keep-alive-idle is the timeout after which an ESTABLISHED connection will be considered idle if no HTTP request comes in and will be actively closed by the web server. When this decision is made, as you understand now, the TCP tear-down will take place.</p>
-
 <p>Be very careful with tcp_tw_recycle, if your visitors come from behind a wide NATed network then it could lead to multiple TCP connections with the same 4 tuple taking place with out of order timestamps resulting in silently dropping client connections attempts on the server side.</p>
-
 <p>So the best option is to adjust the parameter you saw in lighttpd. System-wide, you can safely lower FIN_WAIT2 state and raise buckets for sockets in TIME_WAIT state with net.ipv4.tcp_fin_timeout and net.ipv4.tcp_max_tw_buckets.</p>
-
 <h2 id="lsof">lsof</h2>
-
 <p>查看 port 被那隻程式佔用</p>
-
 <pre><code>lsof -i :3306
 </code></pre>
-
 <p>查看有些建立連線 (4 stands for ipv4)</p>
-
 <pre><code>lsof -i 4
 </code></pre>
-
 <p>查看某個 process 建立的連線</p>
-
 <pre><code>lsof -p 12084
 </code></pre>
-
 <p>找出哪個 pid 開啟某個特定的檔案</p>
-
 <pre><code>lsof -t /tmp/qq.log
 </code></pre>
-
 <p>Show process name, pid and port</p>
-
 <pre><code>$ lsof -i -n -P | grep TCP
 Spotify   60924  test   47u  IPv4 0x5f4ad82c61e46fc7      0t0  TCP 127.0.0.1:4381 (LISTEN)
 Spotify   60924  test   48u  IPv4 0x5f4ad82c620734df      0t0  TCP 127.0.0.1:4371 (LISTEN)
 </code></pre>
-
 <p>LISTEN + ESTABLISHED</p>
-
 <pre><code>sudo lsof -n -i | grep -e LISTEN -e ESTABLISHED
 </code></pre>
-
 <p>Show processes of connection over specific hostname and port</p>
-
 <pre><code>lsof -i @localhost:1883
 </code></pre>
-
 <blockquote>
 <p>Compatible with OS X</p>
 </blockquote>
-
 <p>Or</p>
-
 <pre><code>lsof -i 6tcp:1883 -sTCP:ESTABLISHED
 </code></pre>
-
 <blockquote>
 <p>6 means IPv6</p>
 </blockquote>
-
 <h2 id="kill-a-tcp-connection">Kill a tcp connection</h2>
-
-<h3 id="netstat-rmsock">netstat + rmsock</h3>
-
+<h3 id="netstat--rmsock">netstat + rmsock</h3>
 <pre><code>$ netstat -Aan | grep 30542
 f10000f303321b58 tcp4 0 0 *.30542 *.* LISTEN
 
@@ -299,9 +214,7 @@ The socket 0x3321800 is being held by proccess 692476 (db2sysc).
 
 sudo kill -9 692476
 </code></pre>
-
 <h3 id="lsof-1">lsof</h3>
-
 <pre><code>lsof -i :1883
 kill 53457
 </code></pre>

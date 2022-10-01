@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>golang on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in golang on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Nov 2016 00:12:00 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/golang/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 06 Nov 2016 00:12:00 +0800</lastBuildDate><atom:link href="/categories/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Messaging API</title>
       <link>/posts/messaging/</link>
@@ -18,11 +14,11 @@
       
       <guid>/posts/messaging/</guid>
       <description>Slack 申請 登入後到此頁產生 token
-Golang example  使用 nlopes/slack 這個 package
- 填入 Token 並 New 它的 client
-api := slack.New(&amp;quot;xoxp-5*******************************************************************a&amp;quot;)  Group
-groups, err := api.GetGroups(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, group := range groups { fmt.Printf(&amp;quot;ID: %s, Name: %s\n&amp;quot;, group.ID, group.Name) }  Channel
-channels, err := api.GetChannels(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, channel := range channels { fmt.</description>
+Golang example 使用 nlopes/slack 這個 package
+填入 Token 並 New 它的 client
+api := slack.New(&amp;quot;xoxp-5*******************************************************************a&amp;quot;) Group
+groups, err := api.GetGroups(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, group := range groups { fmt.Printf(&amp;quot;ID: %s, Name: %s\n&amp;quot;, group.ID, group.Name) } Channel
+channels, err := api.GetChannels(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, channel := range channels { fmt.Printf(&amp;quot;Name: %s, ID: %s\n&amp;quot;, channel.</description>
     </item>
     
   </channel>

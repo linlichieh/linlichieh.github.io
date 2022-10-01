@@ -2,61 +2,45 @@
 <html lang="en-us">
 <title>swftools | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/swftools/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/swftools/">swftools</a></h1>
-    <p class="meta"><time datetime="2013-07-21T05:52:18Z">July 21, 2013</time></p>
+    <h1>swftools</h1>
+    <time datetime="2013-07-21T05:52:18Z">July 21, 2013</time>
   </header>
-  
-
-<h2 id="installation">Installation</h2>
-
+  <h2 id="installation">Installation</h2>
 <p>libfreetype6</p>
-
 <pre><code>apt-get install libfreetype6
 </code></pre>
-
 <p>libgif-dev</p>
-
 <pre><code>apt-get install libgif-dev
 </code></pre>
-
 <p>libjpeg-dev</p>
-
 <pre><code>apt-get install libjpeg-dev
 apt-get upgrade --show-upgraded
 </code></pre>
-
 <p>zlib1g-dev、freetype</p>
-
 <pre><code>sudo apt-get install zlib1g-dev
 sudo apt-get install freetype*
 </code></pre>
-
 <p><a href="http://www.swftools.org/download.html">安裝swftools</a></p>
-
 <p>需先安裝</p>
-
 <pre><code>sudo apt-get install make
 sudo apt-get install g++
 </code></pre>
-
 <p>取得最新版並安裝:</p>
-
 <pre><code>cd /tmp
 wget http://www.swftools.org/swftools-2013-04-09-1007.tar.gz
 tar -xvf swftools-2013-04-09-1007.tar.gz
@@ -65,40 +49,29 @@ cd swftools-2013-04-09-1007
 sudo make
 sudo make install
 </code></pre>
-
-<h2 id="jodconverter-將word等-轉成pdf">Jodconverter 將word等..轉成pdf</h2>
-
+<h2 id="jodconverter-將word等轉成pdf">Jodconverter 將word等..轉成pdf</h2>
 <p>libreoffice</p>
-
 <pre><code>sudo apt-get install libreoffice
 </code></pre>
-
 <blockquote>
 <p>fonts dir : /usr/lib/libreoffice/share/fonts/truetype</p>
 </blockquote>
-
 <p>install font:</p>
-
 <pre><code>cd /tmp
 wget http://downloads.sourceforge.net/project/wqy/wqy-microhei/0.2.0-beta/wqy-microhei-0.2.0-beta.tar.gz
 tar zxvf wqy-microhei-0.2.0-beta.tar.gz
 sudo mv wqy-microhei /usr/lib/libreoffice/share/fonts/truetype
 rm -rf wqy-microhei*
 </code></pre>
-
 <blockquote>
 <p>example : 文泉驛微米黑 <a href="http://wenq.org/wqy2/index.cgi?MicroHei">http://wenq.org/wqy2/index.cgi?MicroHei</a></p>
 </blockquote>
-
 <p>install jodconverter:</p>
-
 <pre><code>wget https://jodconverter.googlecode.com/files/jodconverter-core-3.0-beta-4-dist.zip
 unzip jodconverter-core-3.0-beta-4-dist.zip
 mv jodconverter-core-3.0-beta-4 /home/test/
 </code></pre>
-
 <p>usege :</p>
-
 <pre><code>java -jar /home/test/jodconverter-core-3.0-beta-4/lib/jodconverter-core-3.0-beta-4.jar Fonts.docx fonts.pdf
 </code></pre>
 

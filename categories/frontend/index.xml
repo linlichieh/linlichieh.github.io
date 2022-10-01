@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>frontend on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in frontend on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Oct 2013 22:21:00 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 01 Oct 2013 22:21:00 +0000</lastBuildDate><atom:link href="/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bootstrap</title>
       <link>/posts/bootstrap/</link>
@@ -18,10 +14,10 @@
       
       <guid>/posts/bootstrap/</guid>
       <description>版面 本身左右會留一些空間
-&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt;  全版, full width container, spanning the entire width of your viewport
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt;  引入時, 不要把 row 寫在 partial 裡 partial
-&amp;lt;div class=&amp;quot;col-md-12&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt;  否則即使用 container-flud 包起來也可能發生版面超過
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;margin-top-50&amp;quot;&amp;gt; &amp;lt;%= render ... partial view ... %&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt;  Modal &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;btn btn-primary btn-lg&amp;quot; data-toggle=&amp;quot;modal&amp;quot; data-target=&amp;quot;#myModal&amp;quot;&amp;gt; Launch demo modal &amp;lt;/button&amp;gt; &amp;lt;div class=&amp;quot;modal fade&amp;quot; id=&amp;quot;myModal&amp;quot; tabindex=&amp;quot;-1&amp;quot; role=&amp;quot;dialog&amp;quot; aria-labelledby=&amp;quot;myModalLabel&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-dialog modal-lg&amp;quot; role=&amp;quot;document&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-content&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-header bg-primary&amp;quot;&amp;gt; &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;close&amp;quot; data-dismiss=&amp;quot;modal&amp;quot; aria-label=&amp;quot;Close&amp;quot;&amp;gt;&amp;lt;span aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;amp;times;&amp;lt;/span&amp;gt;&amp;lt;/button&amp;gt; &amp;lt;h4 class=&amp;quot;modal-title&amp;quot; id=&amp;quot;myModalLabel&amp;quot;&amp;gt;Modal title&amp;lt;/h4&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;modal-body&amp;quot;&amp;gt; .</description>
+&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 全版, full width container, spanning the entire width of your viewport
+&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 引入時, 不要把 row 寫在 partial 裡 partial
+&amp;lt;div class=&amp;quot;col-md-12&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 否則即使用 container-flud 包起來也可能發生版面超過
+&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;margin-top-50&amp;quot;&amp;gt; &amp;lt;%= render ... partial view ... %&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; Modal &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;btn btn-primary btn-lg&amp;quot; data-toggle=&amp;quot;modal&amp;quot; data-target=&amp;quot;#myModal&amp;quot;&amp;gt; Launch demo modal &amp;lt;/button&amp;gt; &amp;lt;div class=&amp;quot;modal fade&amp;quot; id=&amp;quot;myModal&amp;quot; tabindex=&amp;quot;-1&amp;quot; role=&amp;quot;dialog&amp;quot; aria-labelledby=&amp;quot;myModalLabel&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-dialog modal-lg&amp;quot; role=&amp;quot;document&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-content&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-header bg-primary&amp;quot;&amp;gt; &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;close&amp;quot; data-dismiss=&amp;quot;modal&amp;quot; aria-label=&amp;quot;Close&amp;quot;&amp;gt;&amp;lt;span aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;amp;times;&amp;lt;/span&amp;gt;&amp;lt;/button&amp;gt; &amp;lt;h4 class=&amp;quot;modal-title&amp;quot; id=&amp;quot;myModalLabel&amp;quot;&amp;gt;Modal title&amp;lt;/h4&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;modal-body&amp;quot;&amp;gt; .</description>
     </item>
     
     <item>
@@ -36,8 +32,8 @@
 型態被定義在 schema.org, 你必須先確定你想顯示的資料型態為何, 再按照這個型態所定義的標籤屬性
 例如 Product, 格式就要參考 schema.org/Product, code 請參考 Google 範例
 如何加上? 在 body 或 header 任意地方加上 schema 規定的屬性 即可, 可以利用 google - Structured Data Testing Tool 幫忙檢查你要加上的是否被正確分析 :
-&amp;lt;div itemscope itemtype=&amp;quot;http://schema.org/Book&amp;quot;&amp;gt; &amp;lt;span itemprop=&amp;quot;name&amp;quot;&amp;gt; Inbound Marketing and SEO: Insights from the Moz Blog&amp;lt;/span&amp;gt; &amp;lt;span itemprop=&amp;quot;author&amp;quot;&amp;gt;Rand Fishkin&amp;lt;/span&amp;gt; &amp;lt;/div&amp;gt;   可參考 此站
- 覆寫網站所有字型 html * { font-family: &#39;Arial Black&#39;, &#39;Arial&#39;, &amp;quot;新細明體&amp;quot;, &#39;PMingLiU&#39;, &#39;sans-serif&#39;; }    PMingLiU : 新細明體的英文版名稱 sans-serif : 無襯線字   base64 圖檔 &amp;lt;img src=&amp;quot;data:image/jpeg;base64,/9j/4AAQSknK2h//2Q==&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;  Preview image and get actual width and height HTML :</description>
+&amp;lt;div itemscope itemtype=&amp;quot;http://schema.org/Book&amp;quot;&amp;gt; &amp;lt;span itemprop=&amp;quot;name&amp;quot;&amp;gt; Inbound Marketing and SEO: Insights from the Moz Blog&amp;lt;/span&amp;gt; &amp;lt;span itemprop=&amp;quot;author&amp;quot;&amp;gt;Rand Fishkin&amp;lt;/span&amp;gt; &amp;lt;/div&amp;gt; 可參考 此站
+覆寫網站所有字型 html * { font-family: &#39;Arial Black&#39;, &#39;Arial&#39;, &amp;quot;新細明體&amp;quot;, &#39;PMingLiU&#39;, &#39;sans-serif&#39;; } PMingLiU : 新細明體的英文版名稱 sans-serif : 無襯線字 base64 圖檔 &amp;lt;img src=&amp;quot;data:image/jpeg;base64,/9j/4AAQSknK2h//2Q==&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt; Preview image and get actual width and height HTML :</description>
     </item>
     
   </channel>

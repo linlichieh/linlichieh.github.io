@@ -2,42 +2,33 @@
 <html lang="en-us">
 <title>Linux Crontab | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-crontab/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-crontab/">Linux Crontab</a></h1>
-    <p class="meta"><time datetime="2013-05-02T01:06:00Z">May 02, 2013</time></p>
+    <h1>Linux Crontab</h1>
+    <time datetime="2013-05-02T01:06:00Z">May 02, 2013</time>
   </header>
-  
-
-<h2 id="1-建立-var-www-test-hello-sh-檔">[1] 建立/var/www/test/hello.sh 檔:</h2>
-
+  <h2 id="1-建立varwwwtesthellosh-檔">[1] 建立/var/www/test/hello.sh 檔:</h2>
 <pre><code>#!/bin/bash
 echo &quot;Hello World&quot;
 </code></pre>
-
-<h2 id="2-假使要每一分鐘執行一次hello-sh">[2] 假使要每一分鐘執行一次hello.sh</h2>
-
+<h2 id="2-假使要每一分鐘執行一次hellosh">[2] 假使要每一分鐘執行一次hello.sh</h2>
 <p>執行:</p>
-
 <pre><code>$ crontab -e
 </code></pre>
-
 <p>會進入編輯器，輸入:</p>
-
 <pre><code># 每分鐘執行一次
 */1 * * * * echo &quot;job every minute&quot; &gt;&gt; /tmp/tz
 
@@ -47,39 +38,26 @@ echo &quot;Hello World&quot;
 # 星期一～五  9am~18pm
 00 09-18 * * 1-5 /home/ramesh/bin/check-db-status
 </code></pre>
-
 <blockquote>
 <p>格式 : 分(0-59), 時(0-23) ,日(1-31) ,月(1-12) ,週(0-6), Command</p>
 </blockquote>
-
-<h2 id="3-其他指令">[3] 其他指令 :</h2>
-
+<h2 id="3-其他指令-">[3] 其他指令 :</h2>
 <blockquote>
 <p>執行排程並不會影響到你目前工作視窗，因為它是背景執行的，所以每隔一分鐘, 並不會看到 &ldquo;Hello World&rdquo; 字串出現在畫面上，但它會在每一次執行時紀錄在log裡</p>
 </blockquote>
-
 <p>編輯 crontab 的工作內容，若要移除某些排程，直接刪除就可以了</p>
-
 <pre><code>crontab -e
 </code></pre>
-
 <p>查詢 crontab 的工作內容</p>
-
 <pre><code>crontab -l
 </code></pre>
-
 <p>移除所有的 crontab 的工作內容</p>
-
 <pre><code>crontab -r
 </code></pre>
-
 <p>查看 crontab</p>
-
 <pre><code>grep CRON /var/log/syslog
 </code></pre>
-
 <p>運作指令:</p>
-
 <pre><code>service crond start         # 啟動服務
 service crond stop          # 關閉服務
 service crond restart       # 重啟服務
@@ -88,23 +66,14 @@ service crond reload        # 重新載入配置
 或
 /etc/init.d/cron restart
 </code></pre>
-
 <h2 id="set-timezone">Set Timezone</h2>
-
 <p><strong>注意!!</strong> : 如果修改完主機的 timezone 卻沒有重新啟動 cron, 那麼 cron 仍然還會是吃舊的 timezone</p>
-
 <p>參考<a href="/posts/ubuntu/">此篇修改 timezone</a>後要記得 restart : <code>sudo service crond restart</code></p>
-
 <h2 id="另一種方式設定排程">另一種方式設定排程</h2>
-
 <p>除了<code>crontab -e</code>可以設定每日排程外，也有另一種方法執行排程</p>
-
 <p>系統預設提供這些時間點的排程，在etc/的<code>cron.daily/   cron.hourly/  cron.monthly/ cron.weekly/</code></p>
-
 <p>只需要把script丟進你想要的時間的資料夾裡，系統時間到就會自動執行</p>
-
 <p>而各時段執行排程的時間點設定在<code>/etc/crontab</code></p>
-
 <pre><code># m h dom mon dow user  command
 =====================================
 
@@ -120,21 +89,14 @@ service crond reload        # 重新載入配置
 # /etc/cron.mouthly，目錄下的腳本會每月讓執行一次，在每月1號的6點52分時運行；
 52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.monthly )
 </code></pre>
-
-<h3 id="run-cron-daily">run cron.daily</h3>
-
+<h3 id="run-crondaily">run cron.daily</h3>
 <p>/etc/cron.daily 底下至少要有r-x權限</p>
-
 <pre><code>sudo chmod 755 your_cron
 </code></pre>
-
 <p>測試看哪一個沒有執行</p>
-
 <pre><code>run-parts --test --report /etc/cron.daily
 </code></pre>
-
 <h3 id="強制重啟cron">強制重啟cron:</h3>
-
 <pre><code>ps aux | grep cron
 root     15082  0.0  0.0  18708  1068 ?        Ss   13:23   0:00 cron
 
@@ -142,20 +104,13 @@ kill 15082
 ps aux | grep cron # 若已經自動跑起來, 就不需要下面的步驟
 /usr/sbin/cron &amp;
 </code></pre>
-
 <h2 id="另一種方法">另一種方法</h2>
-
 <p>在 <code>/etc/cron.d/</code> 底下建立新檔案</p>
-
 <p>每天 01:05 刪除超過 15 天以上的 log, logs/以下的子資料夾裡的檔案也會清</p>
-
 <pre><code>5 1 * * * ec2-user /usr/bin/find /home/apps/php-api/app/logs/* -mtime +15 -exec rm {} \;
 </code></pre>
-
 <p>不用重啟 cron 就會生效了</p>
-
 <h2 id="ref">ref:</h2>
-
 <ul>
 <li><a href="http://askubuntu.com/questions/23137/cron-daily-seems-to-run-but-doesnt-log-any-activity">http://askubuntu.com/questions/23137/cron-daily-seems-to-run-but-doesnt-log-any-activity</a></li>
 <li><a href="http://www.cnblogs.com/aix1314/archive/2013/03/20/2971004.html">http://www.cnblogs.com/aix1314/archive/2013/03/20/2971004.html</a></li>

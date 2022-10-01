@@ -2,31 +2,26 @@
 <html lang="en-us">
 <title>Linux Locale | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-locale/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-locale/">Linux Locale</a></h1>
-    <p class="meta"><time datetime="2013-06-08T09:53:00Z">June 08, 2013</time></p>
+    <h1>Linux Locale</h1>
+    <time datetime="2013-06-08T09:53:00Z">June 08, 2013</time>
   </header>
-  
-
-<h2 id="指令">指令</h2>
-
+  <h2 id="指令">指令</h2>
 <p>查詢目前的語系設定：</p>
-
 <pre><code>$ locale
 locale: Cannot set LC_CTYPE to default locale: No such file or directory
 locale: Cannot set LC_MESSAGES to default locale: No such file or directory
@@ -39,9 +34,7 @@ LC_MEASUREMENT=&quot;zh_TW.UTF-8&quot;
 LC_IDENTIFICATION=&quot;zh_TW.UTF-8&quot;
 LC_ALL=
 </code></pre>
-
 <p>查詢已安裝的語系：</p>
-
 <pre><code>$ locale -a
 locale: Cannot set LC_CTYPE to default locale: No such file or directory
 locale: Cannot set LC_MESSAGES to default locale: No such file or directory
@@ -50,42 +43,28 @@ C
 C.UTF-8
 POSIX
 </code></pre>
-
 <h2 id="error-no-such-file-or-directory">Error: <code>No such file or directory</code></h2>
-
 <pre><code>locale: Cannot set LC_CTYPE to default locale: No such file or directory
 </code></pre>
-
 <h3 id="解決方法">解決方法：</h3>
-
 <pre><code>sudo locale-gen --lang zh_TW.UTF-8
 Generating locales...
   zh_TW.UTF-8... done
   Generation complete.
 </code></pre>
-
 <p>再執行<code>locale</code>指令就會正常了</p>
-
 <h3 id="參考來源">參考來源：</h3>
-
-<p><a href="http://120.105.184.250/peiyuli/network-2/shell-scripts.htm">http://120.105.184.250/peiyuli/network-2/shell-scripts.htm</a></p>
-
+<p>http://120.105.184.250/peiyuli/network-2/shell-scripts.htm</p>
 <h2 id="error-cannot-change-locale">Error: <code>cannot change locale</code></h2>
-
 <pre><code>-bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8)
 -bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8)
 </code></pre>
-
 <h3 id="解決方法-2選1">解決方法, 2選1</h3>
-
 <p>在 .bashrc 加上</p>
-
 <pre><code>export LANG=en_US.utf-8
 export LC_ALL=en_US.utf-8
 </code></pre>
-
 <p>或在 <code>/etc/environment</code> 加上</p>
-
 <pre><code>LANG=en_US.utf-8
 LC_ALL=en_US.utf-8
 </code></pre>

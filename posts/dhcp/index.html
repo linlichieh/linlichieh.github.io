@@ -2,110 +2,73 @@
 <html lang="en-us">
 <title>DHCP | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/dhcp/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/dhcp/">DHCP</a></h1>
-    <p class="meta"><time datetime="2014-01-19T17:09:00Z">January 19, 2014</time></p>
+    <h1>DHCP</h1>
+    <time datetime="2014-01-19T17:09:00Z">January 19, 2014</time>
   </header>
-  
-
-<h2 id="發送流程">發送流程</h2>
-
+  <h2 id="發送流程">發送流程</h2>
 <h3 id="1-client-以-udp-發出-dhcpdiscover-廣播封包尋找-dhcp-server">[1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server</h3>
-
 <p>來源位址 : 0.0.0.0:68
 目的位址 : 255.255.255.255:67</p>
-
 <p>當 client 開機或重啟網卡時會發出此的封包</p>
-
 <h3 id="2-dhcp-server-發出-dhcpoffer-廣播封包給-client">[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client</h3>
-
 <p>來源位址 : 192.168.181.30:67
 目的位址 : 255.255.255.255:68</p>
-
 <p>收到請求會先依據 client 的 MAC 來判斷以下</p>
-
 <ul>
 <li>到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端；</li>
 <li>若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端；</li>
 <li>若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。</li>
 </ul>
-
 <p>接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主</p>
-
 <h3 id="3-client-發出-dhcprequest-給-dhcp-server">[3] client 發出 DHCPREQUEST 給 DHCP Server</h3>
-
 <p>來源位址 : 0.0.0.0:68
 目的位址 : 255.255.255.255:67</p>
-
 <p>Client 端在收到 DHCPOFFER 封包後，會先送出一個 ARP Request 的廣播封包，來確定對方所提供的 IP 位址沒有其他的主機在使用，</p>
-
 <p>如果發現這個位址已被其它主機使用掉的話，Client 端就會送出一個 DHCPDECLINE 的拒絕訊息給 Server，然後再送出一個 DHCPDISCOVER 的廣播封包來重新索取 IP 位址。</p>
-
 <p>事實上﹐並不是所有 DHCP 客戶端都會無條件接受 DHCP 伺服器的 offer ﹐尤其這些主機安裝有其它 TCP/IP 相關的客戶軟體。客戶端也可以用 Dhcprequest 向伺服器提出 DHCP 選擇</p>
-
 <p>假設 client 確定此位址尚未被使用而且也接受這個 IP 的話, 那麼接著就會送出一個 DHCPREQUEST 的廣播封包來回應給這台 DHCP Server。</p>
-
 <p>之所以還是送出廣播封包的用意，是為了告知其他未被選上的 DHCP Server，這樣這些 DHCP Server 才可將原本打算保留給 Client 的 IP 位址釋放出來給其他 Client 使用。</p>
-
 <blockquote>
 <p>ARP(Address Resolution Protocol) : 從 cache 尋找 IP 位址所對應的 MAC</p>
 </blockquote>
-
 <h3 id="4-dhcp-server-發出-dhcpack-給-client">[4] DHCP Server 發出 DHCPACK 給 client</h3>
-
 <p>來源位址 : 192.168.181.30:67
 目的位址 : 255.255.255.255:68</p>
-
 <p>DHCP Server 收到 DHCPREQUEST 的訊息後，會回應一個 DHCPACK 的確認訊息給 Client ( 此時還是透過廣播方式，因 Client 尚未正式取得 IP 位址 ), 以確認 IP 租約的正式生效</p>
-
 <p>此訊息裡包含了指派給 Client 端使用的 IP 位址、網路遮罩、預設閘道器、DNS Server 等等，</p>
-
 <p>而在 client 收到這些訊息後，便完成了整個索取 IP 位址的動作。</p>
-
 <p>IP 租約到期的情況 :</p>
-
 <p>用戶端離線：不論是關閉網路介面 (ifdown)、重新開機 (reboot)、關機 (shutdown) 等行為，皆算是離線狀態，這個時候 Server 端就會將該 IP 回收，並放到 Server 自己的備用區中，等待未來的使用；</p>
-
 <p>用戶端租約到期：前面提到 DHCP server 端發放的 IP 有使用的期限，用戶端使用這個 IP 到達期限規定的時間，而且沒有重新提出 DHCP 的申請時，就需要將 IP 繳回去！這個時候就會造成斷線。但用戶也可以再向 DHCP 伺服器要求再次分配 IP 囉。</p>
-
 <h2 id="其他">其他</h2>
-
 <h3 id="更新租約期">更新租約期：</h3>
-
 <p>往往 DHCP Client 為了持續延用此 IP 位址，而會向 DHCP Server 要求更新租約期，一旦更新成功，則 Client 的 IP 租約期限就會從頭開始計算起。在 Client 更新租約期的時候，會向 Server 送出一個 DHCPREQUEST 的訊息。接著以下就舉兩種 Client 送出 DHCPREQUEST 給 Server 的時機：</p>
-
 <ol>
 <li>DHCP Client 重新開機時：</li>
 </ol>
-
 <p>當 DHCP 的用戶端電腦重新啟動時，會送出 DHCPREQUEST 給 DHCP Server，來要求延用原來的 IP 位址，倘若此位址目前尚未租用給其它的 Client，則用戶端就可以取得與上次所使用的 IP 相同。</p>
-
-<ol>
-<li>達 <sup>1</sup>&frasl;<sub>2</sub> 租約期時：</li>
+<ol start="2">
+<li>達 1/2 租約期時：</li>
 </ol>
-
 <p>DHCP Client 會在 IP 租約期達到一半時，主動送出一個 DHCPREQUEST 給 DHCP Server，而 Client 如果也順利收到對方所回應的 DHCPACK 訊息，就表示已成功更新租約期。萬一更新失敗，Client 還是可以繼續使用此位址，因為租約期還沒到。而在更新失敗的情況下，Client 會在租約期到了八分之七時，利用廣播方式送出 DHCPREQUEST 更新訊息來尋找任何一台可用的 DHCP Server，看看能否更新租約，如果還是無法更新成功，則 Client 會放棄目前使用的 IP，並重新送出 DHCPDISCOVER 來向 DHCP 索取一個新的位址。</p>
-
 <h3 id="檢查租約檔案">檢查租約檔案</h3>
-
 <pre><code>cat /var/lib/dhcpd/dhcpd.leases
 </code></pre>
-
 <p>ref :
 <a href="http://blog.roodo.com/dabinn/archives/7009437.html">http://blog.roodo.com/dabinn/archives/7009437.html</a>
 <a href="http://www.study-area.org/network/network_ip_dhcp.htm">http://www.study-area.org/network/network_ip_dhcp.htm</a>

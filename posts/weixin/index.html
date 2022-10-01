@@ -2,65 +2,43 @@
 <html lang="en-us">
 <title>WeChat Oauth | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/weixin/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/weixin/">WeChat Oauth</a></h1>
-    <p class="meta"><time datetime="2014-08-16T21:25:40&#43;08:00">August 16, 2014</time></p>
+    <h1>WeChat Oauth</h1>
+    <time datetime="2014-08-16T21:25:40&#43;08:00">August 16, 2014</time>
   </header>
-  
-
-<h2 id="微信登入">微信登入</h2>
-
+  <h2 id="微信登入">微信登入</h2>
 <p>必須先備案, 備案後去申請微信網站應用時還需要附一些公司名稱, 負責人, 章, 備案號等&hellip;</p>
-
 <p>列印填完後掃描再上傳 word 審核</p>
-
 <h2 id="微信公眾號">微信公眾號</h2>
-
 <p>先請代辦幫忙申請公眾號或服務號</p>
-
 <p>公眾號一天只能發一封, 但是是被收在訂閱帳號裡的</p>
-
 <p>服務號一個月只能發4封, 但是是獨立的聊天訊息, 曝光率較高</p>
-
 <p>代辦只會幫你申請, 不含認證, 認證才能用到一些進階的功能, 例如取得服務號裡的獲取用戶基本訊息, 獲取關注者列表等..</p>
-
 <p>&mdash; 申請成功, 未認證成功只能用簡單功能, 例如 接發訊息到公眾號裡 &mdash;</p>
-
 <p>後台開發者中心會要求填寫 URL + Token, 然候 server 可以用別人寫好的 SDK</p>
-
 <p>做驗證。驗證成功後會給 AppID + AppSecret 就可以利用這兩個 Key 使用高級 API 功能了 (獲取關注者列表)</p>
-
 <p>註 :</p>
-
 <p>PHP SDK 可參考 : <a href="http://www.cnblogs.com/xingmeng/p/3706676.html">http://www.cnblogs.com/xingmeng/p/3706676.html</a></p>
-
 <h3 id="接收用戶消息-api">&ldquo;接收用戶消息&rdquo; API</h3>
-
 <p>之後用戶留言在公眾號/服務號也都會 call 你提交出去的 URL, 也都會帶驗證的 $_GET 進來,</p>
-
 <p>也就是每一次 POST 進來的值都要 check signature, 然候再處理你收到的訊息</p>
-
 <p>註 :</p>
-
 <p>用戶訊息不會在 GET 或 POST 裡, 必須要用 <code>$GLOBALS[&quot;HTTP_RAW_POST_DATA&quot;]</code> 接,</p>
-
 <p>傳進來是 xml 格式的字串, 再用 php 內建的 <code>simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA)</code> 解析</p>
-
 <blockquote>
 <p>因為傳進來會包含 <code>![CDATA[</code> 所以加其他參數把它濾掉, 但是圖文訊息就要注意了</p>
 </blockquote>

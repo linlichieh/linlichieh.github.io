@@ -2,59 +2,45 @@
 <html lang="en-us">
 <title>Samba | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/samba/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/samba/">Samba</a></h1>
-    <p class="meta"><time datetime="2013-08-24T15:08:00Z">August 24, 2013</time></p>
+    <h1>Samba</h1>
+    <time datetime="2013-08-24T15:08:00Z">August 24, 2013</time>
   </header>
-  
-
-<h2 id="安裝">安裝</h2>
-
+  <h2 id="安裝">安裝</h2>
 <pre><code>sudo apt-get install samba
 </code></pre>
-
 <h2 id="關閉">關閉</h2>
-
 <pre><code>$ sudo service smbd stop
 smbd stop/waiting
 </code></pre>
-
 <h2 id="開啟">開啟</h2>
-
 <pre><code>$ sudo service smbd start
 smbd start/running, process 15892
 </code></pre>
-
 <h2 id="重新啟動">重新啟動</h2>
-
 <pre><code>$ sudo service smbd restart
 smbd stop/waiting
 smbd start/running, process 7782
 </code></pre>
-
 <h2 id="查看目前狀態">查看目前狀態</h2>
-
 <pre><code>$ sudo service smbd status
 smbd start/running, process 9395
 </code></pre>
-
-<h2 id="設定-etc-samba-smb-conf-append到最下面">設定 /etc/samba/smb.conf : (append到最下面)</h2>
-
+<h2 id="設定-etcsambasmbconf--append到最下面">設定 /etc/samba/smb.conf : (append到最下面)</h2>
 <pre><code>[share]                     &lt;= 這個samba位置的名字, 變更時URL也會變
    path = /home/test/share   &lt;= 自已指定放置網芳的位置
    public = yes
@@ -63,19 +49,12 @@ smbd start/running, process 9395
    #only guest = yes
    #guest ok = yes
 </code></pre>
-
 <h2 id="連線">連線</h2>
-
 <p>windows連進samba輸入<code>\\{IP/Domain name}\share</code> :</p>
-
 <p>ex:  <code>\\192.168.74.65\share)</code></p>
-
 <h2 id="注意-資料夾權限">注意!! 資料夾權限</h2>
-
 <p>因為<code>public = yes</code>，所以每個人都可以丟東西進來，傳上來會是<code>nobody:nogroup</code>，</p>
-
 <p>所以samba的資料夾權限一定要設定都可寫</p>
-
 <pre><code>chmod a+w /samba資料夾
 </code></pre>
 

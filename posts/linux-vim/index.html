@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>Linux Vim | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-vim/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-vim/">Linux Vim</a></h1>
-    <p class="meta"><time datetime="2013-05-15T07:47:00Z">May 15, 2013</time></p>
+    <h1>Linux Vim</h1>
+    <time datetime="2013-05-15T07:47:00Z">May 15, 2013</time>
   </header>
-  
-
-<h2 id="command-line">Command Line</h2>
-
+  <h2 id="command-line">Command Line</h2>
 <ul>
 <li><code>vim http://www.google.com</code> : 開啟google原始碼</li>
 <li><code>vim -p qq.php cc.php</code> : 用tabe顯示，用<code>gt</code>切換下一個tabe</li>
@@ -32,9 +28,7 @@
 <li><code>vim -o qq.php cc.php</code> : 水平分割顯示</li>
 <li><code>vim -u NONE cc.php</code> : 不要進行初始化直接開啟檔案 (對開大檔會快很多)</li>
 </ul>
-
-<h2 id="新增-刪除-插入">新增、刪除、插入</h2>
-
+<h2 id="新增刪除插入">新增、刪除、插入</h2>
 <ul>
 <li><code>O</code> : 在游標那行的上一行插入新的一行</li>
 <li><code>o</code> : 在游標那行的下一行插入新的一行</li>
@@ -84,9 +78,7 @@
 <li><code>gUU</code> : 整行變大寫</li>
 <li><code>g~~</code> : 整行大小寫交換</li>
 </ul>
-
-<h2 id="複製-剪下-貼上">複製、剪下、貼上</h2>
-
+<h2 id="複製剪下貼上">複製、剪下、貼上</h2>
 <ul>
 <li><code>shift</code> + <code>Insert</code> : (insert模式下)將<code>系統剪貼簿</code>貼上游標位置。</li>
 <li><code>ctrl</code> + <code>v</code> : 對區塊共同做編輯</li>
@@ -117,9 +109,7 @@
 <li><code>:2y</code> : copy 第 2 行</li>
 <li><code>:2,7y</code> : copy 第 2 ~ 7 行</li>
 </ul>
-
 <h2 id="visual模式">Visual模式</h2>
-
 <ul>
 <li><code>~</code> : 在visual模式已選取下，切換大 / 小寫</li>
 <li><code>U</code> : 在visual模式已選取下，轉成大寫</li>
@@ -132,9 +122,7 @@
 <li><code>=</code> : 在visual模式己選取下，自動縮排</li>
 <li><code>g</code>, <code>ctrl</code> + <code>g</code> : Count selected lines</li>
 </ul>
-
 <h2 id="游標移動">游標移動</h2>
-
 <ul>
 <li><code>#</code> : 向前搜尋游標上相同的單字。或按<code>N</code> 往下 <code>n</code> 往上</li>
 <li><code>*</code> : 向後搜尋游標上相同的單字</li>
@@ -179,9 +167,7 @@
 <li><code>ctrl</code> + <code>i</code> : 回到後一個 jump 點</li>
 <li><code>ctrl</code> + <code>o</code> : 回到前一個 jump 點</li>
 </ul>
-
 <h2 id="畫面移動">畫面移動</h2>
-
 <ul>
 <li><code>ctrl</code> + <code>f</code> : 下一頁 ( = <code>Page Up</code>)</li>
 <li><code>ctrl</code> + <code>b</code> : 上一頁 ( = <code>Page Down</code>)</li>
@@ -199,15 +185,10 @@
 <li><code>zs</code> : 根據目前的游標位置將畫面水平移動到最左</li>
 <li><code>ze</code> : 根據目前的游標位置將畫面水平移動到最右</li>
 </ul>
-
 <h3 id="在分割視窗時讓其他視窗一起-scrolling-down">在分割視窗時讓其他視窗一起 scrolling down</h3>
-
 <p>對每個視窗下 <code>:set scb</code> (<code>:set scrollbind</code> 縮寫), 然候再測試是否 work (<code>ctrl + e</code>)</p>
-
 <p>取消的話對其中一個下 <code>:set scb!</code> (<code>:set noscrollbind</code> 縮寫) 就可以解除了</p>
-
-<h2 id="搜尋-取代">搜尋、取代</h2>
-
+<h2 id="搜尋取代">搜尋、取代</h2>
 <ul>
 <li><code>/abc</code> : 向下搜尋abc</li>
 <li><code>?abc</code> : 向上搜尋abc</li>
@@ -222,9 +203,7 @@
 <li><code>gd</code> : 在程式的變數上循序按下 gd,可以找到 local declaration 的位置</li>
 <li><code>gD</code> : 同上,只是會找到 global declaration 的位置</li>
 </ul>
-
 <h2 id="分割視窗">分割視窗</h2>
-
 <ul>
 <li><code>:new</code> : 開新的水平分割視窗</li>
 <li><code>:vnew</code> : 開新的垂直分割視窗</li>
@@ -255,9 +234,7 @@
 <li><code>ctrl</code>-<code>w</code> <code>K</code>: Change vertical split window to horizonal split window</li>
 <li><code>ctrl</code>-<code>w</code> <code>H</code>: Change horizonal split window to vertical split window</li>
 </ul>
-
 <h2 id="暫存器">暫存器</h2>
-
 <ul>
 <li><code>:reg</code> : 把暫存器裡的東西叫出來看</li>
 <li><code>&quot;2y</code> : 複製到暫存器索引2 (可配合visual模式使用)</li>
@@ -269,9 +246,7 @@
 <li><code>&quot;+y</code> : 複製，將資料放進剪貼簿及vim緩衝區</li>
 <li><code>&quot;+gp</code> : 貼上</li>
 </ul>
-
 <h2 id="buffer">buffer</h2>
-
 <ul>
 <li><code>:e qq.php</code> : 跳去編輯 qq.php 這個檔案, qq.php 會在 buffer 裡</li>
 <li><code>:ls</code> : 顯示buffer裡的檔案</li>
@@ -281,9 +256,7 @@
 <li><code>:b qq.php</code> : 切到檔名為qq.php的buffer檔案</li>
 <li><code>ctrl</code> + <code>6</code> : 回到上一個開的buffer檔案。注意 : <code>:bp</code>是不一樣的!</li>
 </ul>
-
 <h2 id="tab">tab</h2>
-
 <ul>
 <li><code>:h tabe</code> : 列出tabe的helper</li>
 <li><code>gt</code> : 跳到下一個tabe</li>
@@ -295,9 +268,7 @@
 <li><code>:tabmove 1</code> : 將當前 tabe 順序移動到順序1</li>
 <li><code>3gt</code> : 跳至tabe順序3</li>
 </ul>
-
-<h2 id="儲存-離開">儲存、離開</h2>
-
+<h2 id="儲存離開">儲存、離開</h2>
 <ul>
 <li><code>:wa</code> : 全部儲存</li>
 <li><code>:qa</code> : 關掉全部視窗</li>
@@ -308,9 +279,7 @@
 <li><code>:w ~/qq.php</code> : 另存新檔</li>
 <li><code>:e qq.php</code> : 打開qq.php，並關閉目前所在頁面</li>
 </ul>
-
 <h2 id="其他操作">其他操作</h2>
-
 <ul>
 <li><code>u</code> : 回復上一個動作</li>
 <li><code>ctrl</code> + <code>r</code> : 回復下一個動作</li>
@@ -340,132 +309,93 @@
 <li><code>ctrl</code> + <code>w</code> + <code>gf</code> : 會在 tab 打開 source code 的檔案</li>
 <li><code>:指令</code> + <code>ctrl</code> + <code>d</code> : 會出現相關指令的 menu, 再按 <code>tab</code> 會補齊指令</li>
 </ul>
-
 <h2 id="execute-outside-commands">Execute outside commands</h2>
-
 <h3 id="pretty-json">Pretty JSON</h3>
-
 <pre><code>:%!python -m json.tool    (all)
 :'&lt;,'&gt;!jq                 (visual select, jq is another json helper)
 </code></pre>
-
 <h2 id="範圍">範圍</h2>
-
 <h3 id="加上註解">加上註解(<code>//</code>)</h3>
-
 <ul>
 <li>加上註解 :
-
 <ol>
 <li>在第一行按下<code>ctrl</code> + <code>v</code> 進入到選取區塊模式</li>
 <li>游標向下移到要註解的最後一行</li>
 <li>按 <code>I</code></li>
 <li>輸入 <code>//</code>  (註解符號，看你的程式語言是什麼)</li>
 <li><code>esc</code></li>
-</ol></li>
+</ol>
+</li>
 <li>取消註解 :
-
 <ol>
 <li>在第一行按下<code>ctrl</code> + <code>v</code> 進入到選取區塊模式</li>
 <li>游標向下移到要註解的最後一行</li>
 <li>按一個右鍵, 讓區塊把 // 包起來</li>
 <li>按<code>x</code>刪除</li>
-</ol></li>
+</ol>
+</li>
 </ul>
-
 <p>或</p>
-
 <ul>
 <li>加上註解 : <code>:34,37s/^/\/\//g</code></li>
 <li>取消註解 : <code>:34,37s/^\/\///g</code></li>
 </ul>
-
 <h3 id="append-text-to-multiple-lines">Append text to multiple lines:</h3>
-
 <ol>
-<li><c-V> - Enter Visual Block mode.</li>
+<li><!-- raw HTML omitted --> - Enter Visual Block mode.</li>
 <li>Use j/k to select the lines.</li>
 <li>$ - Move cursor to last character.</li>
 <li>A - Enter insert mode after last character.</li>
 <li>Insert desired text.</li>
-<li><Esc> - Exit insert mode and finish block append.</li>
+<li><!-- raw HTML omitted --> - Exit insert mode and finish block append.</li>
 </ol>
-
 <h3 id="範圍縮排">範圍縮排</h3>
-
 <p><code>shift</code> + <code>v</code> : 選出要縮排的列再按<code>&gt;&gt;</code>，這時候只會縮排一次，再按<code>.</code>（複製上一個動作）就可以要縮排幾次就按幾下</p>
-
 <h2 id="vim-plugin">vim plugin</h2>
-
 <p>hello.vim</p>
-
 <pre><code>function! XX()
     echo getpos(&quot;.&quot;)
 endfunction
 </code></pre>
-
 <p>隨便編輯其他文件</p>
-
 <ol>
 <li><code>:source hello.vim</code></li>
 <li><code>:call XX()</code></li>
 </ol>
-
 <blockquote>
 <p>就會 print 出你目前的游標位子了, 如: <code>[0, 3, 8, 0]</code></p>
 </blockquote>
-
 <p>get external command return</p>
-
 <pre><code>let a = system('ls -al')
 echo a
 </code></pre>
-
 <h2 id="讓-vim-複製到-clipboard">讓 vim 複製到 Clipboard</h2>
-
 <h3 id="確認目前-vim-版本有支援此功能">確認目前 vim 版本有支援此功能</h3>
-
 <p>(TODO: 未完成)</p>
-
 <pre><code>vim --version | grep clipboard
 </code></pre>
-
 <p>如果看到 <code>+clipboard</code> or <code>+xterm_clipboard</code> 就表示有</p>
-
 <p>看到 <code>-clipboard</code> and <code>-xterm_clipboard</code> 表示沒有</p>
-
 <pre><code>:set clipboard=unnamed
 :set clipboard+=unnamed
 </code></pre>
-
 <h2 id="查看檔案的-binary-hex">查看檔案的 binary hex</h2>
-
 <p>command:</p>
-
 <pre><code>vim test.txt
 </code></pre>
-
 <p>test.txt 進入後輸入 <code>:%!xxd</code></p>
-
 <pre><code>0000000: 3031 3233 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
 0000010: 4748 494a 4b4c 4d4e 4f50 5152 5354 5556  GHIJKLMNOPQRSTUV
 0000020: 5758 595a 0a                             WXYZ.
 </code></pre>
-
 <p>最後面的 <code>0a</code> 是換行字元</p>
-
 <p>編輯中間的 hex</p>
-
 <pre><code>0000000: 3031 3233 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
 </code></pre>
-
 <p>將 23 (hex 3233) 位置調換成 32 (hex 3332)</p>
-
 <pre><code>0000000: 3031 3332 3435 3637 3839 4142 4344 4546  0123456789ABCDEF
 </code></pre>
-
 <p>再執行 <code>:%!xxd -r</code> 將 hex 轉回來</p>
-
 <pre><code>0132456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 </code></pre>
 

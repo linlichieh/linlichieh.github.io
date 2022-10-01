@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>Backend | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/backend/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/backend/">Backend</a></h1>
-    <p class="meta"><time datetime="2014-07-30T21:06:39&#43;08:00">July 30, 2014</time></p>
+    <h1>Backend</h1>
+    <time datetime="2014-07-30T21:06:39&#43;08:00">July 30, 2014</time>
   </header>
-  
-
-<h2 id="安全性">安全性</h2>
-
+  <h2 id="安全性">安全性</h2>
 <ul>
 <li>SSL 憑證及加密傳送 (HTTPS)</li>
 <li>資料再以 private key 做 AES CBC 方式加密</li>
@@ -33,55 +29,38 @@
 <li>htmlspecialchars (XSS)</li>
 <li>SQL injection</li>
 </ul>
-
 <h2 id="設計-restful-api-注意地方">設計 RESTful API 注意地方</h2>
-
 <p>避免使用 cookie, 因違反無狀態協議, 如果只用來記錄 client 資料不維護狀態, 那麼還是可以使用</p>
-
 <p>session 則完全違反 REST 的無狀態性</p>
-
 <h3 id="解決方式是-client-登入後產生-token-再從-url-帶-token-過來">解決方式是 client 登入後產生 token, 再從 url 帶 token 過來</h3>
-
 <p>驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名</p>
-
 <p>驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限</p>
-
 <h2 id="增加網站效能">增加網站效能</h2>
-
 <h3 id="server">server</h3>
-
 <ul>
 <li>ELB (HA), auto-scaling</li>
 <li>nginx 取代 apache</li>
 </ul>
-
 <h3 id="後端">後端</h3>
-
 <ul>
 <li>background job</li>
 <li>cache 靜態頁面</li>
 <li>memcache / redis</li>
 </ul>
-
 <h3 id="前端">前端</h3>
-
 <ul>
 <li>js/css minify &amp; combine</li>
 <li>圖片用另一個 domain 避免 browser 一次只能發幾個 request 的限制, 也避免帶到不必要的 cookie</li>
 <li>一開始先載 lazy_image, 放真正圖片連結在 data-original=  最後再用 js 將 load 正確圖片</li>
 </ul>
-
 <h3 id="mysql">mysql</h3>
-
 <ul>
 <li>使用 in 代替 or</li>
 <li>slow query</li>
 <li>Mysql set index</li>
 <li>master - slave</li>
 </ul>
-
 <h2 id="關於-app">關於 App</h2>
-
 <ul>
 <li>手機裡的 App 會有個 UUID，不同的 App UUID 也會不一樣，即使同 App</li>
 <li>App 重新安裝 UUID 會是新的，或者 UUID 好像也有過期時間 (e.g. 180 天)</li>
@@ -89,23 +68,17 @@
 <li>app 可以自已選擇要不要濾掉 notification，也就是其實發送成功但忽略它</li>
 <li>Android 的 GCM 沒有分環境，都是用 Production; APN 有分環境有分 Sandbox 及 Production</li>
 </ul>
-
 <h3 id="storage">Storage</h3>
-
 <ul>
 <li>手機本身有兩個儲存的方式，一個是 sqlite，另一個是 local storage</li>
 <li>sqlite 是一個檔案，所以讀寫要開檔跟關檔</li>
 <li>local storage 是 key-value 型態，直接用就可以了</li>
 </ul>
-
 <h3 id="notification-title">Notification Title</h3>
-
 <ul>
 <li>如果 app 在前景 android 可以攔截, 並且指定要給的 title, 如果 app 在背景會由系統自行判斷, 如果 notification json format 有 title 的話會使用 title 的值當 notification title</li>
 </ul>
-
 <h3 id="app-與-server-溝通的幾種方式">app 與 server 溝通的幾種方式</h3>
-
 <ol>
 <li>原本的 silent push notification (APN/GCM)</li>
 <li>websocket (app 也能用 websocket)</li>
@@ -113,188 +86,148 @@
 <li>mqtt, ampq, etc. messaging protocal</li>
 <li>AWS AppSync 可讓您輕鬆地建立協作式應用程式，以即時更新共享資料。您只要用簡易程式碼陳述式指定應用程式的資料，AWS AppSync 就會管理即時更新應用程式資料的所有必要作業。此外，AWS AppSync 還會在離線使用者重新連上網路時立刻更新相關資料。它只會擷取必要的資料，藉此降低訊息流量並提升應用程式效能和電池壽命。</li>
 </ol>
-
-<h2 id="distributed-system-sub-pub">Distributed System (Sub/Pub)</h2>
-
+<h2 id="distributed-system-subpub">Distributed System (Sub/Pub)</h2>
 <ul>
 <li>MQTT
-
 <ul>
 <li>主要用在 IoT</li>
 <li>MQTT is a lightweight protocol working only with a broker in the middle with no concept of queue (it can store messages when a client is offline using the &ldquo;clean session&rdquo; feature). It has another feature over AMQP like the &ldquo;will&rdquo; testment. It supports only pub/sub and have no metadata in the messages.</li>
 <li>mqtt over websocket, 讓 app/website 使用 websocket 連接 server, 利用 mqtt 做 sub/pub 功能</li>
-</ul></li>
+</ul>
+</li>
 <li>AMQP
-
 <ul>
 <li>AMQP is more oriented to messaging than MQTT. It was created by JP Morgan for business transactions.</li>
-</ul></li>
+</ul>
+</li>
 <li>MQTT vs AMQP
-
 <ul>
 <li>The first big difference with MQTT is that AMQP 1.0 is a peer-to-peer protocol : you can use it between two peers, no need for a broker in the middle. Of course it&rsquo;s used for communication with broker providing store-and-forward mechanism. You can use it for request/reply pattern and for pub/sub.</li>
-</ul></li>
+</ul>
+</li>
 <li>kafka
-
 <ul>
 <li>主要用在 log 收集</li>
 <li>每個 topic 劃分多個 partition</li>
 <li>內部實現不用 cache, 都存在硬碟</li>
 <li>data 會批量壓縮傳送</li>
 <li>kafka 會將 data 儲存下來, 訂購的可以自已控制 pull</li>
-</ul></li>
+</ul>
+</li>
 <li>Redis pub/sub</li>
 </ul>
-
 <h2 id="log-系統">Log 系統</h2>
-
 <ol>
 <li>CloudWatch Log agent 丟到 cloudwatch 或是直接用 Kinesis agent 丟到 Kinesis Streams
-
 <ul>
 <li>上面任一方法 -&gt; Kinesis Firehose (log) -&gt; s3</li>
 <li>上面任一方法 -&gt; Kinesis Firehose (log) -&gt; Kinesis Analytics (SQL query) -&gt; Firehose (result) -&gt; s3</li>
-</ul></li>
+</ul>
+</li>
 <li>ELK stack : ElasticSearch(搜尋引擎) + Kibana(顯示圖表/結果) + Logstash (收集 log, 也可用 filebeat/FluentD)</li>
 <li>Telegraf / Collectd + InfluxDB + Grafana 易安裝</li>
 <li>Fluentd + Prometheus + Grafana</li>
 </ol>
-
 <blockquote>
 <p>2,3,4 都要自已架, 成本也高</p>
 </blockquote>
-
-<p>ref:
-* <a href="https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/">https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/</a></p>
-
+<p>ref:</p>
+<ul>
+<li><a href="https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/">https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/</a></li>
+</ul>
 <h2 id="dst-時間-日光節約時間">DST 時間 (日光節約時間)</h2>
-
 <p>某些國家會調整當地時間以符合日光節約時間，當程式在處理不同國家時間時就要注意了，將時間轉成 dst 存下來，
 可以使用別人寫好的第三方來轉，下次取時再將 utc 轉成 dst 撈出來。</p>
-
 <h2 id="如何避免-response-header-x-content-type-options-nosniff">如何避免 response header <code>X-Content-Type-Options: nosniff</code></h2>
-
 <p>如果 MIME 類型與 URL 的 MIME 類型不匹配，則不允許讀取該檔案</p>
-
 <p>我還不是很了解這個實際判斷的方式是什麼, 但我加上 cookie 後, 就可以下載 google drive 的檔案了</p>
-
 <h2 id="cors">CORS</h2>
-
 <p>chrome 會先發一個 method: OPTIONS 的 request 測試是否通, 但不會幫你加上 body 及 header</p>
-
 <h2 id="proxy-vs-reverse-proxy">Proxy vs Reverse Proxy</h2>
-
 <p>Proxy 後面的 server 有直接對外</p>
-
 <p>Reverse Proxy 後面 server 沒有直接對外</p>
-
 <h2 id="編碼">編碼</h2>
-
-<h3 id="輸出-emoji-unicode-character-表情符號">輸出 emoji / unicode character / 表情符號</h3>
-
+<h3 id="輸出-emoji--unicode-character--表情符號">輸出 emoji / unicode character / 表情符號</h3>
 <pre><code>&quot;\xF0\x9F\x98\x81&quot;     // 用 Bytes (UTF-8 encoding) 輸出笑臉
 &quot;\uD83D\uDE01&quot;         // 用 Unicode (UTF-16 encoding) 輸出笑臉
 &quot;\U0001F601&quot;           // 用 Unicode (UTF-32 encoding) 輸出笑臉
 </code></pre>
-
 <h3 id="utf-8-與-unicode-的不同">utf-8 與 unicode 的不同</h3>
-
 <ul>
 <li>Unicode is a character set (A -&gt; 41)</li>
 <li>UTF-8 is an encoding (41 -&gt; binary)</li>
 </ul>
-
 <h3 id="以下是-string-用-unicode-存到硬碟到取出解碼的過程">以下是 string 用 unicode 存到硬碟到取出解碼的過程</h3>
-
-<p>1) 將文字轉成 unicode</p>
-
+<ol>
+<li>將文字轉成 unicode</li>
+</ol>
 <p>A character set is a list of characters with unique numbers (these numbers are sometimes referred to as &ldquo;code points&rdquo;).</p>
-
 <p>For example, in the Unicode character set, the number for A is 41.</p>
-
-<p>2) 將 unicode 用 utf-8 編碼成 binary</p>
-
+<ol start="2">
+<li>將 unicode 用 utf-8 編碼成 binary</li>
+</ol>
 <p>An encoding on the other hand, is an algorithm that translates a list of numbers to binary so it can be stored on disk.</p>
-
 <p>For example UTF-8 would translate the number sequence 1, 2, 3, 4 like this: <code>00000001 00000010 00000011 00000100</code></p>
-
 <p>Our data is now translated into binary and can now be saved to disk.</p>
-
-<p>3) 將 binary 用 utf-8 解碼成 unicode</p>
-
+<ol start="3">
+<li>將 binary 用 utf-8 解碼成 unicode</li>
+</ol>
 <p>Say an application reads the following from the disk: <code>1101000 1100101 1101100 1101100 1101111</code></p>
-
 <p>The app knows this data represent a Unicode string encoded with UTF-8 and must show this as text to the user. First step,
 is to convert the binary data to numbers. The app uses the UTF-8 algorithm to decode the data. In this case,
 the decoder returns this: <code>104 101 108 108 111</code></p>
-
-<p>4) 將 unicode 轉回成 string</p>
-
+<ol start="4">
+<li>將 unicode 轉回成 string</li>
+</ol>
 <p>Since the app knows this is a Unicode string, it can assume each number represents a character.
 We use the Unicode character set to translate each number to a corresponding character. The resulting string is “hello”.</p>
-
 <h2 id="testing">Testing</h2>
-
 <h3 id="unit-testing">Unit Testing</h3>
-
 <ul>
 <li>The minimum units can be method/function/class.</li>
 <li>Unit testing is the lowest level of testing you can do. It is usually testing a method inside a class. Unit tests do not interact with other classes directly, but instead with mocks. This makes unit tests isolated and easy to debug and refactor.</li>
 </ul>
-
 <h3 id="integration-testing">Integration Testing</h3>
-
 <ul>
 <li>Testing involves in other services such as S3, I/O, etc., like testing APIs.</li>
 <li>Integration testing touches more than one class. Hence, it tests the integration between classes i.e dependencies. It is used to test if the database is giving us the correct results, if an external API is providing us with correct data etc. It tests the real classes and functionalities rather than using mocks. It is significantly slower compared to unit tests to run, since they interact with databases and external providers.</li>
 </ul>
-
 <h3 id="functional-testing">Functional Testing</h3>
-
 <ul>
 <li>Functional testing is a type of testing that tests a whole feature which may call a lot of dependencies. Typically you would test a route for a correct response, or a Controller method that relates to a certain feature in the application. They are slower than integration tests as they touch a lot more dependencies.</li>
 </ul>
-
 <h3 id="acceptance-testing">Acceptance Testing</h3>
-
 <ul>
 <li>Acceptance testing is the highest level of testing. It only cares if the feature works through the vantage point of customers. The test flow goes through the website clicking and submitting forms and expecting correct results. We use tools like Selenium for this purpose.</li>
 </ul>
-
 <h3 id="regression-testing">Regression Testing</h3>
-
 <p>To make sure your new feature won&rsquo;t break the existing functionality of the application. You have to run all of the tests including itself&rsquo;s test.</p>
-
 <ul>
 <li>Rerunning the previously conducted tests</li>
 <li>Comparing current results with previously executed test results</li>
 </ul>
-
 <h3 id="test-doubles">Test Doubles</h3>
-
 <ul>
 <li>Stub: Stub is an object that holds predefined data and uses it to answer calls during tests. It is used when we cannot or don’t want to involve objects that would answer with real data or have undesirable side effects.
-
 <ul>
 <li>An example can be an object that needs to grab some data from the database to respond to a method call. Instead of the real object, we introduced a stub and defined what data should be returned.</li>
 <li>me: Return a predefined data when calls is made.</li>
-</ul></li>
+</ul>
+</li>
 <li>Mock: Mocks are objects that register calls they receive.  In test assertion we can verify on Mocks that all expected actions were performed.
-
 <ul>
 <li>We don’t want to send e-mails each time we run a test. Moreover, it is not easy to verify in tests that a right email was send. Only thing we can do is to verify the outputs of the functionality that is exercised in our test. In other worlds, verify that e-mail sending service was called.</li>
 <li>me: Use a object to make sure the method was called. Don&rsquo;t care about whether the method works or not.</li>
 <li><a href="https://medium.com/@sameernyaupane/php-test-driven-development-part-4-enter-the-mock-106b4fdedd00">PHP Mock Example</a></li>
-</ul></li>
+</ul>
+</li>
 <li>Fake: The fake implementation will not engage database, but will use a simple collection to store data. This allows us to do integration test of services without starting up a database and performing time consuming requests.
-
 <ul>
 <li>me: Use a set of predefined data, instead of real data from database.</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>ref:</p>
-
 <ul>
 <li>original article: <a href="http://www.polylab.dk/utf8-vs-unicode.html">http://www.polylab.dk/utf8-vs-unicode.html</a></li>
 <li><a href="https://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf-8">https://stackoverflow.com/questions/3951722/whats-the-difference-between-unicode-and-utf-8</a></li>

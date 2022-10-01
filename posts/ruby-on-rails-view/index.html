@@ -2,43 +2,34 @@
 <html lang="en-us">
 <title>Rails View | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-view/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-view/">Rails View</a></h1>
-    <p class="meta"><time datetime="2015-08-02T16:11:01&#43;08:00">August 02, 2015</time></p>
+    <h1>Rails View</h1>
+    <time datetime="2015-08-02T16:11:01&#43;08:00">August 02, 2015</time>
   </header>
-  
-
-<p>(最後更新: 2016-04-27)</p>
-
-<h2 id="fields-for-一對一-一對多">fields_for 一對一, 一對多</h2>
-
+  <p>(最後更新: 2016-04-27)</p>
+<h2 id="fields_for-一對一-一對多">fields_for 一對一, 一對多</h2>
 <p>籍由 user 去更新 profile(1對1), user_languages(1對多) 欄位</p>
-
 <p>user.rb</p>
-
 <pre><code>has_one  :profile
 has_many :user_languages
 accepts_nested_attributes_for :profile
 accepts_nested_attributes_for :user_languages
 </code></pre>
-
 <p>view</p>
-
 <pre><code>&lt;%= form_for @user, url: user_path(@user), html: {method: :put} do |f| %&gt;
     &lt;%= f.fields_for :profile do |s| %&gt;
         &lt;%= s.text_field :about_me %&gt;
@@ -51,15 +42,11 @@ accepts_nested_attributes_for :user_languages
     &lt;% end %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>產生的 HTML Name :</p>
-
 <pre><code>user[profile_attributes][:about_me]
 user[user_languages_attributes][0][has_badge]
 </code></pre>
-
 <p>controller</p>
-
 <pre><code>user = User.find(params[:id])
 user.update(admin_update_params)
 
@@ -67,15 +54,11 @@ def admin_update_params
     params[:user].permit(profile_attributes: [:id, :about_me], user_languages_attributes: [:id, :has_badge])
 end
 </code></pre>
-
 <blockquote>
 <p>它就會更新一對一或一對多了</p>
 </blockquote>
-
 <p>接下來看一下它到底是怎麼更新的</p>
-
 <p>params[:user] 參數 :</p>
-
 <pre><code>profile_attributes: {
     about_me: &quot;Hello world!&quot;,
     id: &quot;66&quot;
@@ -87,68 +70,47 @@ user_languages_attributes: {
     }
 }
 </code></pre>
-
 <p>原來 params 會帶該 record 的 id, 所以上面 controller 取參數時要記得 permit <code>:id</code></p>
-
 <p>Rails 會依照 User model 的關聯下對應的 sql, 注意的是它會先用 user_id + IN (..上面的id參數..), 所以可以確定是這名 User 的資料才可以被 Update</p>
-
 <pre><code>Profile Load (0.3ms)  SELECT  &quot;profiles&quot;.* FROM &quot;profiles&quot; WHERE &quot;profiles&quot;.&quot;user_id&quot; = ? LIMIT 1  [[&quot;user_id&quot;, 69]]
 UserLanguage Load (0.3ms)  SELECT &quot;user_languages&quot;.* FROM &quot;user_languages&quot; WHERE &quot;user_languages&quot;.&quot;user_id&quot; = ? AND &quot;user_languages&quot;.&quot;id&quot; IN (143, 141, 142)  [[&quot;user_id&quot;, 69]]
 SQL (2.8ms)  UPDATE &quot;profiles&quot; SET &quot;about_me&quot; = ?, &quot;updated_at&quot; = ? WHERE &quot;profiles&quot;.&quot;id&quot; = ?  [[&quot;about_me&quot;, &quot;Hello world!&quot;], [&quot;updated_at&quot;, &quot;2015-08-18 09:01:20.299243&quot;], [&quot;id&quot;, 66]]
 SQL (0.6ms)  UPDATE &quot;user_languages&quot; SET &quot;has_badge&quot; = ?, &quot;updated_at&quot; = ? WHERE &quot;user_languages&quot;.&quot;id&quot; = ?  [[&quot;has_badge&quot;, &quot;f&quot;], [&quot;updated_at&quot;, &quot;2015-08-18 09:01:20.305686&quot;], [&quot;id&quot;, 143]]
 </code></pre>
-
 <p>測試它是否真的安全, 將 fields_for 產生的 HTML 隱藏欄位的值改為一個不屬於此 User 的 id</p>
-
 <pre><code>&lt;input type=&quot;hidden&quot; value=&quot;143&quot; name=&quot;user[user_languages_attributes][0][id]&quot; id=&quot;user_user_languages_attributes_0_id&quot;&gt;
                             改成
 &lt;input type=&quot;hidden&quot; value=&quot;123&quot; name=&quot;user[user_languages_attributes][0][id]&quot; id=&quot;user_user_languages_attributes_0_id&quot;&gt;
 </code></pre>
-
 <p>送出後, 可以看到 Rails 噴錯了:D , 符合預期結果</p>
-
 <pre><code>Couldn't find UserLanguage with ID=123 for User with ID=69
 </code></pre>
-
 <h2 id="partial">Partial</h2>
-
 <h3 id="pass-a-variable-into-a-partial">Pass a variable into a partial</h3>
-
 <p>如果是 instance variable (ex: <code>@user</code>), 不需要特別傳入到 partial, 如果是一般變數才需要 (ex: <code>user</code>)</p>
-
 <pre><code>&lt;%= form_for @user, url: users_path(@user) do |f| %&gt;
     &lt;%= render 'partial file', f: f %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>partial file :</p>
-
 <pre><code>&lt;%= f.text_field :name %&gt;
 </code></pre>
-
 <p>注意!!  判斷傳入 partial 的變數, 要用 <code>local_assigns</code> 去判斷, 如果直接用</p>
-
 <pre><code>if name   &lt;= 會噴錯 undefined local variable or method `name`
 
 OK :
     if local_assigns.has_key? :name
     if local_assigns[:name]
 </code></pre>
-
 <h3 id="代入-template-取得-html">代入 template 取得 html</h3>
-
 <pre><code>&lt;% @progress_bar = render :partial =&gt; 'template/progress_bar', :locals =&gt; { :num =&gt; num, :part_num =&gt; part_num, :progress_bar_status =&gt; &quot;progress-bar-danger&quot; } %&gt;
 &lt;%= render :partial =&gt; 'template/url_item', :locals =&gt; { :num =&gt; num, :progress_bar =&gt; @progress_bar } %&gt;
 </code></pre>
-
 <blockquote>
 <p>注意檔名要底線 <code>_progress_bar.html.erb</code>,  <code>_url_item.html.erb</code></p>
 </blockquote>
-
 <h3 id="layout-template">layout Template</h3>
-
 <p>views/layouts/application.html.erb :</p>
-
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -168,32 +130,22 @@ OK :
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <blockquote>
 <ul>
 <li>layouts/_header.html.erb, _footer.html.erb</li>
 <li>yield 是替換的內容的, ex: users/edit.html.erb</li>
 </ul>
 </blockquote>
-
 <h3 id="不同頁面引入相同-partial-path-如何根據不同-route-顯示">不同頁面引入相同 partial, path 如何根據不同 route 顯示</h3>
-
 <p>很簡單, ex:</p>
-
 <pre><code>link_to '評價', request.path
 </code></pre>
-
-<h2 id="引入個別-view-定義的-css-js">引入個別 view 定義的 CSS / JS</h2>
-
+<h2 id="引入個別-view-定義的-css--js">引入個別 view 定義的 CSS / JS</h2>
 <p>像有些共用的 js 你可以寫在 appication.js，但有些只有這一頁才會用到的 js 可以直接寫在該 view，這樣開發及維護都很方便</p>
-
 <p>layout/application.html.erb</p>
-
 <pre><code>&lt;%= yield :js %&gt;
 </code></pre>
-
 <p>在個別 view 寫 javascript</p>
-
 <pre><code>&lt;% content_for :js do %&gt;
     &lt;script&gt;
         $(document).ready(function () {
@@ -202,11 +154,8 @@ OK :
     &lt;/script&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <h2 id="讓表單送出錯誤後返回資料不清除">讓表單送出錯誤後返回資料不清除</h2>
-
 <p>controller</p>
-
 <pre><code>def update
 
   ...(省略)...
@@ -216,105 +165,70 @@ OK :
   end
 end
 </code></pre>
-
 <p>edit.html.erb</p>
-
 <pre><code>&lt;input type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;xxx&quot; value=&quot;&lt;%= params[:xxx] %&gt;&quot;&gt;
 </code></pre>
-
 <blockquote>
-<p>不要用 <code>redirect_to action: :edit</code>, 因為 post 的資料不會被帶到 edit 頁面, 它相當於是一個&rdquo;重新&rdquo;的 request 請求。 用 <code>render</code> 直接在 update 生出 edit 頁面, post 資料也會被保存下來</p>
+<p>不要用 <code>redirect_to action: :edit</code>, 因為 post 的資料不會被帶到 edit 頁面, 它相當於是一個&quot;重新&quot;的 request 請求。 用 <code>render</code> 直接在 update 生出 edit 頁面, post 資料也會被保存下來</p>
 </blockquote>
-
 <p>或讓 rails 自動幫你綁定回填</p>
-
 <pre><code>&lt;%= f.text_field :nickname, class: 'form-control' %&gt;
 </code></pre>
-
 <p><strong>但它有個問題是, 一定要執行到 model 裡, 例如 <code>@post.update(params[:post])</code> 最後再 <code>redner :edit</code>, 如果還沒執行到 model 就 <code>render</code> 那麼資料就不會回填</strong></p>
-
 <h2 id="刪除-validate-錯誤產生多的-div-wrapper">刪除 validate 錯誤產生多的 div wrapper</h2>
-
 <p>正常 :</p>
-
 <pre><code>&lt;%= f.text_field :present_price  %&gt;
 </code></pre>
-
 <p>錯誤時 :</p>
-
 <pre><code>&lt;div class=&quot;field_with_errors&quot;&gt;&lt;input type=&quot;text&quot; value=&quot;&quot; name=&quot;product[present_price]&quot; id=&quot;product_present_price&quot;&gt;&lt;/div&gt;
 </code></pre>
-
 <p>解決方法 : 拿掉它, 在 <code>config/environment.rb</code> 最後面加上</p>
-
 <pre><code>ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   html_tag.html_safe
 end
 </code></pre>
-
-<h2 id="jsonp-jbuilder-預設包在-rails-的-gemfile-裡">JSONP (jbuilder - 預設包在 Rails 的 Gemfile 裡)</h2>
-
+<h2 id="jsonp-jbuilder---預設包在-rails-的-gemfile-裡">JSONP (jbuilder - 預設包在 Rails 的 Gemfile 裡)</h2>
 <blockquote>
 <p>ajax 送出請求給 show, show 會去返回 show.js.erb 的 js code 回去給 browser 執行</p>
 </blockquote>
-
 <h3 id="ajax-以-bootstrap-modal-顯示-show-action">ajax 以 bootstrap modal 顯示 show action</h3>
-
 <p>index.html.erb</p>
-
 <pre><code>&lt;div class=&quot;modal fade&quot; id=&quot;myModal&quot;
     ..略..
 &lt;/div&gt;
 
 link_to '訂單明細', order_path(o), remote: true, data: {toggle: 'modal', target: '#myModal'}
 </code></pre>
-
 <p>show.js.erb</p>
-
 <pre><code>$(&quot;.modal-title&quot;).html(&quot;訂單明細&quot;);
 
 // 填入 html, escape_javascript 可簡寫成 j
 $(&quot;.modal-body&quot;).html(&quot;&lt;%= escape_javascript render(partial: 'orders/show')%&gt;&quot;);
 </code></pre>
-
 <p><code>_show.html.erb</code></p>
-
 <pre><code>html + ruby code
 </code></pre>
-
 <h3 id="ajax-submit-form">ajax submit form</h3>
-
 <p>view</p>
-
 <pre><code>form_for 加上 remote: true
 </code></pre>
-
 <p>controller</p>
-
 <pre><code>respond_to do |format|
   format.js
 end
 </code></pre>
-
 <p>create.js.erb</p>
-
 <pre><code>alert('Success');
 </code></pre>
-
 <h2 id="json-檔">JSON 檔</h2>
-
 <p>index.json.jbuilder</p>
-
 <pre><code>json.array!(@posts) do |post|
     json.extract! post, :id, :title, :content
     json.url post_url(post, format: :json)
 end
 </code></pre>
-
 <h2 id="form-helper">Form helper</h2>
-
-<h3 id="radio-button">radio_button</h3>
-
+<h3 id="radio_button">radio_button</h3>
 <pre><code>&lt;% UserDomain.domains.each do |k, v| %&gt;
   &lt;div&gt;
     &lt;%= radio_button_tag 'user[domain]', v %&gt;
@@ -330,37 +244,24 @@ f.radio_button :gender, 'male', checked: true
 
 collection_radio_buttons(:item, :owner_id, Owner.all, :id, :name)
 </code></pre>
-
 <h3 id="select">select</h3>
-
 <p>未指定值 : 頁面上及 option value 皆顯示一樣</p>
-
 <pre><code>f.select :gender, ['male', 'female', 'others']
 </code></pre>
-
 <p>有指定值 : 頁面上顯示 male/female/others； option value 為 1 / 2 / 3</p>
-
 <pre><code>f.select :city, {male: 1, female: 2, others: 3}
 </code></pre>
-
 <p>取出 name 及 id 欄位，直接放入</p>
-
 <pre><code>f.select :category, Category.pluck(:name, :id)        要注意順序是 :name, :id, 否則 select 下拉顯示的會是 id
 f.select :category, Category.map { |s| [s.name, s.id] }
 </code></pre>
-
 <p>空白值, 給 default 值及 class name</p>
-
 <pre><code>f.select :product_spec_id, @product.product_specs.map { |s| [s.name, s.id] }, { include_blank: ture, selected: params[:spec] }, class: 'form-control'
 </code></pre>
-
 <p>設定 Default</p>
-
 <pre><code>f.select :parent_id, @parent_categories.unshift([&quot;不選擇&quot;, 0])
 </code></pre>
-
 <p>select_tag</p>
-
 <pre><code>select_tag :category_id, options_from_collection_for_select(Category.all, &quot;id&quot;, &quot;name&quot;)
 
 &lt;select name=&quot;category_id&quot; id=&quot;category_id&quot;&gt;
@@ -368,16 +269,12 @@ f.select :category, Category.map { |s| [s.name, s.id] }
     &lt;option value=&quot;2&quot;&gt;Games, Movies &amp; Baby&lt;/option&gt;
 &lt;/select&gt;
 </code></pre>
-
-<h3 id="collection-select">collection_select</h3>
-
+<h3 id="collection_select">collection_select</h3>
 <p>User has_many UserLocation, 將 User 住的 Location 每項以 Select 列出來</p>
-
 <pre><code>current_user.user_locations.each do |l|
     collection_select('user_locations', '', UserLocation.locations_i18n, :last, :first, { include_blank: false, selected: l.location }, { class: 'location', id: nil } )
 end
 </code></pre>
-
 <ul>
 <li>第一個參數 : HTML name 名稱</li>
 <li>第二個參數 : user_locations (第二個參數), 我將它留空</li>
@@ -386,9 +283,7 @@ end
 <li><code>include_blank</code> : 一定要設定它, 否則 class, id 不會 work</li>
 <li><code>selected</code> : 如果去掉, 就是未選擇的 <code>&lt;select&gt;</code></li>
 </ul>
-
 <p>備註</p>
-
 <pre><code>1) f.collection_select(:category_id, Category.all, :id, :name)
 等於
 f.select :category_id, Category.all.map{ |c| [c.name, c.id] }
@@ -396,9 +291,7 @@ f.select :category_id, Category.all.map{ |c| [c.name, c.id] }
 2)
 s.select :recommended, options_for_select(Translator.recommendeds)
 </code></pre>
-
 <h3 id="checkbox">checkbox</h3>
-
 <pre><code>f.check_box :rotting
 
 &lt;%= check_box_tag 'user_domains[]', k, @user_domains.has_key?(k), id: &quot;domain-#{k}&quot; %&gt;
@@ -420,52 +313,36 @@ Hash : dom_id 無法用, 它只吃 object
   &lt;/div&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>參數:</p>
-
 <ol>
 <li>第一個參數 name</li>
 <li>第二個參數 value</li>
 <li>第三個參數 是否 checked</li>
 </ol>
-
-<h3 id="collection-check-boxes">collection_check_boxes</h3>
-
+<h3 id="collection_check_boxes">collection_check_boxes</h3>
 <p>models/owner.rb</p>
-
 <pre><code>has_many :items
 </code></pre>
-
 <p>models/item.rb</p>
-
 <pre><code>belongs_to :owner
 </code></pre>
-
 <p>view :</p>
-
 <pre><code>collection_check_boxes(:item, :owner_id, Owner.all, :id, :name)
 </code></pre>
-
 <h3 id="file">file</h3>
-
 <p>一般用法</p>
-
 <pre><code>&lt;%= form_for @user, url: users_path, method: :post, html: { class: 'form-inline' } do |f| %&gt;
   &lt;%= f.file_field :name %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>Rename resource</p>
-
 <pre><code>&lt;%= form_for @user, as: 'man', url: users_path, method: :post, html: { class: 'form-inline' } do |f| %&gt;
   &lt;%= f.file_field :name %&gt;
 &lt;% end %&gt;
 
 &lt;input type=&quot;text&quot; name=&quot;man[name]&quot; id=&quot;man_name&quot;&gt;
 </code></pre>
-
-<h3 id="label-text-field">label + text_field</h3>
-
+<h3 id="label--text_field">label + text_field</h3>
 <pre><code>&lt;%= f.label :nickname %&gt;
 &lt;%= f.text_field :nickname %&gt;
 
@@ -475,98 +352,65 @@ disabled: true
 # 重新給值或 format datetime
 value: @case.deadline.strftime(&quot;%Y-%m-%d&quot;)
 </code></pre>
-
 <p>數字</p>
-
 <pre><code>&lt;%= number_field(:product, :price, in: 1.0..20.0, step: 0.5) %&gt;
 </code></pre>
-
-<h3 id="text-area">text_area</h3>
-
+<h3 id="text_area">text_area</h3>
 <pre><code>f.text_area :bio
 </code></pre>
-
 <h3 id="button">button</h3>
-
 <p><code>&lt;button&gt;</code></p>
-
 <pre><code>&lt;%= button_tag(type: 'submit', class: &quot;btn btn-primary&quot;) do %&gt;
  &lt;i class=&quot;icon-ok icon-white&quot;&gt;&lt;/i&gt; Save
 &lt;% end %&gt;
 </code></pre>
-
 <p><code>&lt;input type=&quot;submit&quot;&gt;</code></p>
-
 <pre><code>f.submit &quot;Submit&quot;, :disable_with =&gt; 'Submiting...'
 submit_tag &quot;Submit&quot;, id: &quot;foo-submit&quot;, data: { disable_with: &quot;Please wait...&quot; }
 </code></pre>
-
 <h3 id="form">form</h3>
-
 <pre><code>&lt;%= form_for @user, url: user_path(@user), html: { method: :put, id: 'edit-user' } do |f| %&gt;
 </code></pre>
-
 <p>取值</p>
-
 <pre><code>@user.email 或
 f.object.email
 </code></pre>
-
 <p>刪除 hidden 欄位 - utf8</p>
-
 <pre><code>&lt;%= form_for (略), enforce_utf8: false %&gt;
 </code></pre>
-
-<h3 id="link-to">link_to</h3>
-
+<h3 id="link_to">link_to</h3>
 <p>兩者是一樣意思的</p>
-
 <pre><code>&lt;%= link_to user.contacts.name, contact_path(user.contact) %&gt;
 &lt;%= link_to user.contacts.name, user.contact %&gt;
 </code></pre>
-
 <p>block 寫法</p>
-
 <pre><code>&lt;%= link_to edit_user_registration_path do %&gt;
     &lt;span class=&quot;glyphicon glyphicon-user&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
     Edit profile
 &lt;% end %&gt;
 </code></pre>
-
 <p>表單 ajax (使用 Unobtrusive JavaScript - UJS)</p>
-
 <pre><code>&lt;%= link_to 'ajax show', event_path(event), :remote =&gt; true %&gt;
 form_for @user, :remote =&gt; true
 </code></pre>
-
 <blockquote>
 <p>ajax 送出加上 <code>remote: true</code></p>
 </blockquote>
-
 <p>Ajax Link</p>
-
 <pre><code>link_to 'Del', post_path(post), class: 'btn btn-danger', method: :delete, data: {confirm: 'Are you sure?', disable_with: 'Removing'}
 </code></pre>
-
 <h3 id="label">label</h3>
-
 <pre><code>f.label :name
 </code></pre>
-
 <p>tag</p>
-
 <pre><code>&lt;%= label_tag &quot;domain-#{k}&quot;, t(&quot;domain.#{k}&quot;) %&gt;
 </code></pre>
-
 <p>參數:</p>
-
 <ol>
 <li>id</li>
 <li>顯示名稱</li>
 </ol>
-
 <h3 id="div">div</h3>
-
 <pre><code>&lt;% @users.each do |u| %&gt;
     ...
     &lt;%= div_for u do %&gt;                 &lt;div id=&quot;user_&lt;%= u.id %&gt;&quot; class=&quot;user&quot;&gt;
@@ -575,171 +419,110 @@ form_for @user, :remote =&gt; true
     ...
 &lt;% end %&gt;
 </code></pre>
-
 <h3 id="dom-id">dom id</h3>
-
 <pre><code>dom_id(@user) =&gt; user_2
 </code></pre>
-
 <h2 id="輸出">輸出</h2>
-
 <p>nil 即顯示預設值</p>
-
 <pre><code>&lt;%= @xxx || 'none' %&gt;
 </code></pre>
-
 <p>輸出換行字元，Replace <code>\n</code> 為 <code>&lt;br&gt;</code></p>
-
 <pre><code>&lt;%= h(c.text).gsub(&quot;\n&quot;, &quot;&lt;br&gt;&quot;).html_safe %&gt;
 </code></pre>
-
 <p>截斷指定長度的字串</p>
-
 <pre><code>truncate(user.about_me, length: 100)
  =&gt; Stella appositus odio cilicium. Adopto quia magni textus stips libero vergo enim. Iste delibero c...
 </code></pre>
-
 <h3 id="脫逸">脫逸</h3>
-
 <p>脫逸</p>
-
 <pre><code>&lt;%= @user.ages %&gt;
 </code></pre>
-
 <p>不脫逸</p>
-
 <pre><code>&lt;%= raw @user.ages %&gt;
 </code></pre>
-
 <p>脫逸危險標籤</p>
-
 <pre><code>&lt;%=raw sanitize &quot;&lt;script&gt;alert(1);&lt;/script&gt;&quot; %&gt;             # alert(1);
 </code></pre>
-
 <p>(?)脫逸 javascript</p>
-
 <pre><code>escape_javascript()
 
 # 可以縮寫為
 j()
 </code></pre>
-
 <h3 id="數字及日期">數字及日期</h3>
-
 <p>數字口語化</p>
-
 <pre><code>number_to_human 1234567890                                      # 1.2 十億
 </code></pre>
-
 <p>數字 3 位一撇</p>
-
 <pre><code>number_with_delimiter(8400)                                     # 8,400
 </code></pre>
-
 <p>貨幣符號</p>
-
 <pre><code>number_to_currency(8400)                                        # NT$ 8,400.00  # 如果 locale 為 en =&gt; $8,400.00
 
 
 # 強制指定 locale 及小數位數
 number_to_currency(8400, precision: 0, locale: 'zh-TW')         # NT$ 8,400
 </code></pre>
-
 <p>在 model 裡面用 :</p>
-
 <ol>
 <li><code>ActiveSupport::NumberHelper::number_to_currency(self.price, unit: '$', precision: 0)</code></li>
 <li><code>extend ActionView::Helpers::NumberHelper</code></li>
 </ol>
-
 <p>Percent</p>
-
 <pre><code>number_to_percentage(&quot;98&quot;)                                       # =&gt; 98.000%
 number_to_percentage(100, precision: 0)                          # =&gt; 100%
 </code></pre>
-
 <p>日期</p>
-
 <pre><code>time_ago_in_words current_user.created_at                       # 大約 6 小時
 </code></pre>
-
 <h3 id="語意化">語意化</h3>
-
 <p>名詞單複數</p>
-
 <pre><code>pluralize(3, &quot;user&quot;)                                            # 3 users
 </code></pre>
-
 <p>標題化 - 單字的開頭大寫</p>
-
 <pre><code>&quot;man from the boondocks&quot;.titleize                               # Man From The Boondocks
 </code></pre>
-
 <p>連接詞 (and)</p>
-
 <pre><code>['one', 'two', 'three'].to_sentence                             # one, two, 和 three
 </code></pre>
-
 <h3 id="debug">Debug</h3>
-
 <p>It will return a <code>&lt;pre&gt;</code> tag that renders the object using the YAML format</p>
-
 <pre><code>&lt;%= debug @article %&gt;
 </code></pre>
-
 <p>Displaying an instance variable, or any other object or method, in YAML format</p>
-
 <pre><code>&lt;%= simple_format @article.to_yaml %&gt;
 </code></pre>
-
 <p>Displaying object values</p>
-
 <pre><code>&lt;%= [1, 2, 3, 4, 5].inspect %&gt;
 </code></pre>
-
-<h2 id="簡化判斷-迴圈的寫法">簡化判斷 + 迴圈的寫法</h2>
-
+<h2 id="簡化判斷--迴圈的寫法">簡化判斷 + 迴圈的寫法</h2>
 <h3 id="view-迴圈">View 迴圈</h3>
-
 <p>如果要使用 each 前需要先判斷他是否為 nil 或 empty, 否則物件空的可能會噴 Error</p>
-
 <p>此寫法只適合傳回空值是 empty 的, 因為可以將 if 及 each 寫在同一行, 就不需要兩層了(if 一層, each 一層),</p>
-
 <p>但在寫法上也比較麻煩一些, 得先知道他是 empty, 還是 nil</p>
-
-<h4 id="取多筆時-如果不存在-返回-empty-的話-如下">取多筆時, 如果不存在, 返回 empty 的話, 如下 :</h4>
-
+<h4 id="取多筆時-如果不存在-返回-empty-的話-如下-">取多筆時, 如果不存在, 返回 empty 的話, 如下 :</h4>
 <pre><code>&gt;   @posts = Post.where(user_id: 3333)
   Post Load (0.1ms)  SELECT &quot;posts&quot;.* FROM &quot;posts&quot; WHERE &quot;posts&quot;.&quot;user_id&quot; = ?  [[&quot;user_id&quot;, 3333]]
  =&gt; #&lt;ActiveRecord::Relation []&gt;
 </code></pre>
-
 <p>因為返回的是 empty, 不是 nil 所以它會是 ture, 以下寫法可以將 <code>if</code> 及 <code>each</code> 寫成同一行</p>
-
 <pre><code>&lt;% if @posts.each do |post| %&gt;
   &lt;%= post.title %&gt;
 &lt;% end.empty? %&gt;
   You have no posts.
 &lt;% end %&gt;
 </code></pre>
-
 <p>不顯示錯誤訊息的話 :</p>
-
 <pre><code>&lt;% if @posts.each do |post| %&gt;
   &lt;%= post.title %&gt;
 &lt;% end.empty?; end %&gt;
 </code></pre>
-
 <blockquote>
 <p>對於不顯示錯誤訊息的寫法我覺得 end 那邊有點稍亂</p>
 </blockquote>
-
 <p>希望能繼續找到更好的寫法</p>
-
 <h2 id="其他">其他</h2>
-
 <h3 id="判斷目前所在頁面">判斷目前所在頁面</h3>
-
 <pre><code>current_page?(root_path)
 </code></pre>
 

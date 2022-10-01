@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ssh on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in ssh on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 21 Jul 2013 16:03:00 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 21 Jul 2013 16:03:00 +0000</lastBuildDate><atom:link href="/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SSH</title>
       <link>/posts/ssh/</link>
@@ -18,10 +14,10 @@
       
       <guid>/posts/ssh/</guid>
       <description>產生 ssh key 並且設定免密碼直接連入遠端主機 本機:
-cd ~ ssh-keygen -t rsa (enter到底) cd .ssh scp id_rsa.pub 遠端主機網址:~/.ssh/qq (把本機的公鑰複製到遠端主機)  登入遠端主機:
-ssh 遠端主機網址 (會要你輸入密碼) cd .ssh cat qq &amp;gt;&amp;gt; authorized_keys (將主機的公鑰加入到遠端的驗證key裡) rm qq (加入到authorized_keys後就沒有用了, 刪除它) exit (大功告成, 離開遠端主機)  回本機:
-ssh 遠端主機網址 (不會要求你輸入密碼而直接進入)  安全性設定 Open /etc/ssh/sshd_config (注意!! 不要改錯檔案, 是 sshd_config 不是 ssh_config) :
-允許密碼驗證 PasswordAuthentication yes  改 SSH default port Port 2222 Protocol 2 PermitRootLogin no    1025~65536 的 port 都可以使用 PermitRootLogin 設為 no 的話, root 登入還是會要求你輸入密碼, 只是即使輸入的是對的密碼, 也會告訴你是錯的, 即不讓你登入就對了   只允許某個 User UseDNS no AllowUsers test  Reload 新設定 別急著登出, 先測試修改是否成功</description>
+cd ~ ssh-keygen -t rsa (enter到底) cd .ssh scp id_rsa.pub 遠端主機網址:~/.ssh/qq (把本機的公鑰複製到遠端主機) 登入遠端主機:
+ssh 遠端主機網址 (會要你輸入密碼) cd .ssh cat qq &amp;gt;&amp;gt; authorized_keys (將主機的公鑰加入到遠端的驗證key裡) rm qq (加入到authorized_keys後就沒有用了, 刪除它) exit (大功告成, 離開遠端主機) 回本機:
+ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設定 Open /etc/ssh/sshd_config (注意!! 不要改錯檔案, 是 sshd_config 不是 ssh_config) :
+允許密碼驗證 PasswordAuthentication yes 改 SSH default port Port 2222 Protocol 2 PermitRootLogin no 1025~65536 的 port 都可以使用 PermitRootLogin 設為 no 的話, root 登入還是會要求你輸入密碼, 只是即使輸入的是對的密碼, 也會告訴你是錯的, 即不讓你登入就對了 只允許某個 User UseDNS no AllowUsers test Reload 新設定 別急著登出, 先測試修改是否成功</description>
     </item>
     
     <item>
@@ -30,11 +26,14 @@ ssh 遠端主機網址 (不會要求你輸入密碼而直接進入)  安全性�
       <pubDate>Mon, 20 May 2013 05:28:00 +0000</pubDate>
       
       <guid>/posts/virtualbox/</guid>
-      <description>讓本機的 putty 可以用 ssh 連進 VirtualBox 的主機裡  開啟你的 windows 命令列輸入 ipconfig ，乙太網路卡 VirtualBox Host-Only Network: 的 IPv4 位址 那欄，假設是192.168.0.100，先記下來 開啟你的 linux terminal 輸入 ifconfig ，找到 inet addr，假設是10.0.3.11，先記下來 開啟VitualBox左上角機器設定值→網路→連接埠傳送 將你記下來的 IP 填上去。(主機IP是填windows IP，客體IP是填VirtualBox裡的Ubuntu IP)
-協定 : TCP 主機IP : 192.168.0.100 主機連接埠 : 22 客體IP : 10.0.3.11 客體連接埠 : 22  接下來打開 putty 連到 virtualBox
- Host Name (or IP address) 輸入 :192.168.0.100 (putty:要連的是主機ip)
- Port : 22
-  本機瀏覽器顯示 VirtualBox 裡 http server 結果  開啟VitualBox左上角機器設定值→網路→連接埠傳送 填入你的IP資訊，與上面設定幾乎一樣，但有兩部份需要更改</description>
+      <description>讓本機的 putty 可以用 ssh 連進 VirtualBox 的主機裡 開啟你的 windows 命令列輸入 ipconfig ，乙太網路卡 VirtualBox Host-Only Network: 的 IPv4 位址 那欄，假設是192.168.0.100，先記下來
+開啟你的 linux terminal 輸入 ifconfig ，找到 inet addr，假設是10.0.3.11，先記下來
+開啟VitualBox左上角機器設定值→網路→連接埠傳送
+將你記下來的 IP 填上去。(主機IP是填windows IP，客體IP是填VirtualBox裡的Ubuntu IP)
+協定 : TCP 主機IP : 192.168.0.100 主機連接埠 : 22 客體IP : 10.0.3.11 客體連接埠 : 22 接下來打開 putty 連到 virtualBox
+Host Name (or IP address) 輸入 :192.168.0.100 (putty:要連的是主機ip)
+Port : 22
+本機瀏覽器顯示 VirtualBox 裡 http server 結果 開啟VitualBox左上角機器設定值→網路→連接埠傳送</description>
     </item>
     
   </channel>

@@ -2,45 +2,36 @@
 <html lang="en-us">
 <title>Raspberry Pi camera MJPG-streamer server | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/raspberry-pi-camera-mjpg-streamer-server/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/raspberry-pi-camera-mjpg-streamer-server/">Raspberry Pi camera MJPG-streamer server</a></h1>
-    <p class="meta"><time datetime="2014-01-21T22:53:00Z">January 21, 2014</time></p>
+    <h1>Raspberry Pi camera MJPG-streamer server</h1>
+    <time datetime="2014-01-21T22:53:00Z">January 21, 2014</time>
   </header>
-  
-
-<p>MJPG-streamer 是一個能截取 camera 影像的套件, 將每幅影像壓成 jpg, 並且起一個 server 將影像輸出, 好處是跨瀏覽器、編解碼容易、運算能力需求低, 缺點是即時性差(在高解析的影像更是明顯)</p>
-
+  <p>MJPG-streamer 是一個能截取 camera 影像的套件, 將每幅影像壓成 jpg, 並且起一個 server 將影像輸出, 好處是跨瀏覽器、編解碼容易、運算能力需求低, 缺點是即時性差(在高解析的影像更是明顯)</p>
 <h2 id="安裝-mjpg-streamer">安裝 MJPG-streamer</h2>
-
 <h3 id="安裝必要的相依套件">安裝必要的相依套件</h3>
-
 <pre><code>sudo apt-get install subversion libjpeg8-dev imagemagick libv4l-dev
 </code></pre>
-
 <h3 id="下載並安裝-mjpg-streamer">下載並安裝 MJPG-streamer</h3>
-
 <pre><code>cd ~
 svn co https://svn.code.sf.net/p/mjpg-streamer/code/
 cd mjpg-streamer/mjpg-streamer
 make
 sudo make install
 </code></pre>
-
 <blockquote>
 <ul>
 <li>svn 點斷了可到<a href="http://sourceforge.net/projects/mjpg-streamer/">官方下載</a></li>
@@ -50,25 +41,17 @@ sudo make install
 <li><code>www/*</code> : <code>/usr/local/www</code></li>
 </ul>
 </blockquote>
-
 <h2 id="starting-the-webcam-server">Starting the Webcam Server</h2>
-
 <pre><code>cd ~/mjpg-streamer/mjpg-streamer
 ./mjpg_streamer -i &quot;./input_uvc.so -r 320x240 -f 1&quot; -o &quot;./output_http.so -w ./www&quot;
 </code></pre>
-
 <blockquote>
 <p>320x240, fps:1</p>
 </blockquote>
-
 <h2 id="watch-the-stream-in-your-browser">Watch the stream in your browser</h2>
-
 <p>你可以在同一個 lan 的電腦打開瀏覽器輸入你的 ip:8080 (i.e. <code>http://192.168.1.10:8080/?action=snapshot</code>)</p>
-
 <p>頁面就會是你的 camera 的影像, 你必須 refresh 才會更新影像</p>
-
 <p>或者用以下每 1.5 秒自動 reload 模擬動態影像的網頁來看</p>
-
 <pre><code>&lt;html&gt;
 &lt;head&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -79,30 +62,28 @@ setTimeout(&quot;location.reload()&quot;, 1500)
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <h2 id="讓-wan-可以連進來看你的-camera-影像">讓 Wan 可以連進來看你的 camera 影像</h2>
-
 <p>大部份人的網路都在 NAT 下, 所以外面是無法連到你的 RPI 的, 但可以藉由 ngrok 這個工具做到讓 Wan 連進來, ngrok 的原理是提供一條 tunnel, 有點像接水管的方式, 讓你的 RPI 跟 ngrok 的主機建立一條連線, ngrok 提供一個 TOKEN URL 讓你從外部連進來再幫你導到你的 RPI</p>
-
 <p>下載並安裝 <a href="https://ngrok.com/download">ngrok</a>, 由於 RPI 是 ARM 架構, 記得選取 <code>Linux/ARM</code></p>
-
 <h3 id="使用">使用</h3>
-
-<p>1) 先執行你的 <code>start-mjpg</code> 指令, 此時 mjpg-streamer 的 URL 只有 Lan 的 8080 才可以看到影像</p>
-
-<p>2) 再執行 <code>ngrok http 8080</code>, 畫面上會提供一組 URL ex: <code>http://cf77c5af.ngrok.io -&gt; localhost:8080</code>, 意思是連到 <code>http://cf77c5af.ngrok.io</code> 會幫你導到 localhost 的 8080 port</p>
-
-<p>3) <code>http://cf77c5af.ngrok.io?action=snapshot</code> 就可以從 Wan 連進來了</p>
-
-<p>4) 寫個簡單的 HTML + script 讓影像每一秒自動更新一次</p>
-
+<ol>
+<li>
+<p>先執行你的 <code>start-mjpg</code> 指令, 此時 mjpg-streamer 的 URL 只有 Lan 的 8080 才可以看到影像</p>
+</li>
+<li>
+<p>再執行 <code>ngrok http 8080</code>, 畫面上會提供一組 URL ex: <code>http://cf77c5af.ngrok.io -&gt; localhost:8080</code>, 意思是連到 <code>http://cf77c5af.ngrok.io</code> 會幫你導到 localhost 的 8080 port</p>
+</li>
+<li>
+<p><code>http://cf77c5af.ngrok.io?action=snapshot</code> 就可以從 Wan 連進來了</p>
+</li>
+<li>
+<p>寫個簡單的 HTML + script 讓影像每一秒自動更新一次</p>
+</li>
+</ol>
 <p>html :</p>
-
 <pre><code>&lt;img id=&quot;stream&quot; onload=&quot;start();&quot;&gt;
 </code></pre>
-
 <p>javascript :</p>
-
 <pre><code>tmpimage = new Image();
 var url = &quot;http:// ........ &quot;;
 function start() {
@@ -113,75 +94,47 @@ function start() {
 tmpimage.src = url + '&amp;t=' + new Date().getTime();
 $('#stream').attr('src', tmpimage.src);
 </code></pre>
-
-<p><img src="/images/posts/raspberry-pi-camera-mjpg-streamer-server.jpg" alt="mjpg+ngrok.JPG" /></p>
-
+<p><img src="/images/posts/raspberry-pi-camera-mjpg-streamer-server.jpg" alt="mjpg+ngrok.JPG"></p>
 <h2 id="安裝-mjpg-streamer-的-troubleshootings">安裝 mjpg-streamer 的 troubleshootings</h2>
-
 <h3 id="如果發生-error-opening-v4l-interface-no-such-file-or-directory">如果發生 <code>ERROR opening V4L interface: No such file or directory</code></h3>
-
 <p>上面應該會有 <code>Using V4L2 device.: /dev/video0</code>, 表示你的 <code>/dev/video0</code> 不存在</p>
-
 <p>原因是你的 V4L driver 不支援你的 camera, 所以沒有 <code>/dev/video0</code></p>
-
 <blockquote>
 <p>V4L : Video4Linux framework</p>
 </blockquote>
-
-<p>解法方式是<strong><a href="http://www.linux-projects.org/modules/news/article.php?storyid=150">安裝非官方的 V4L driver</a></strong>, <strong><a href="http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&amp;artid=14">這裡是它的安裝說明頁</a></strong>, 或直接照著以下的步驟做 :</p>
-
+<p>解法方式是**<a href="http://www.linux-projects.org/modules/news/article.php?storyid=150">安裝非官方的 V4L driver</a>**, <strong><a href="http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&amp;artid=14">這裡是它的安裝說明頁</a></strong>, 或直接照著以下的步驟做 :</p>
 <p>[1] <code>wget http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc &amp;&amp; sudo apt-key add ./lrkey.asc</code></p>
-
 <p>[2] Append into <code>/etc/apt/source.list</code> :</p>
-
 <pre><code>deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main
 </code></pre>
-
 <p>[3] <code>sudo apt-get update</code> 及 <code>sudo apt-get install uv4l uv4l-raspicam</code></p>
-
 <p>If you want the driver to be loaded at boot, execute <code>sudo apt-get install uv4l-raspicam-extras</code></p>
-
 <p>Now the UV4L core component and the Video4Linux2 driver for the CSI Camera Board are installed.</p>
-
 <p>[4] update raspberry pi firmware : <code>sudo rpi-update</code>    (更新超久)</p>
-
 <p>[5] 重開機後就抓的到 <code>/dev/video0</code> 了</p>
-
 <p>[6] 關閉 uv4l 的程序, 並更新</p>
-
 <pre><code>sudo pkill uv4l
 sudo apt-get update (非必要, 建議執行)
 sudo apt-get install uv4l-uvc
 sudo apt-get install uv4l-xscreen
 sudo apt-get install uv4l-mjpegstream
 </code></pre>
-
 <p>[7] 重開機, 再啟動 <code>mjpg_streamer -i &quot;./input...(略)</code>, 沒意外的話你會遇到下面的問題</p>
-
-<h3 id="發生-dev-video0-does-not-support-streaming-i-o">發生 <code>/dev/video0 does not support streaming i/o</code></h3>
-
+<h3 id="發生-devvideo0-does-not-support-streaming-io">發生 <code>/dev/video0 does not support streaming i/o</code></h3>
 <p>因為之後都要靠 uv4l 的 library 驅動了, 只要後面加上 <code>mjpg_streamer -i &quot;./input...(略)</code> 就行了, 如下</p>
-
 <pre><code>cd ~/mjpg-streamer/mjpg-streamer
 LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so mjpg_streamer -i &quot;./input_uvc.so&quot; -o &quot;./output_http.so -w ./www&quot;
 </code></pre>
-
 <blockquote>
 <p>如果不行試試先執行這行看看 <code>uv4l --driver raspicam --auto-video_nr --extension-presence=1</code></p>
 </blockquote>
-
 <p>mjpg-streamer 應該就可以正常跑起來了,</p>
-
 <p>你跟我想的一樣..這指令實在太醜了, 簡化它一下</p>
-
 <p>在 <code>/home/pi/.bashrc</code> 最下面加上 :</p>
-
 <pre><code>export MJPG_STREAMER_PATH=/home/pi/mjpg-streamer/mjpg-streamer
 alias start-mjpg='LD_PRELOAD=/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so ${MJPG_STREAMER_PATH}/mjpg_streamer -i &quot;${MJPG_STREAMER_PATH}/input_uvc.so&quot; -o &quot;${MJPG_STREAMER_PATH}/output_http.so -w ${MJPG_STREAMER_PATH}/www&quot;'
 </code></pre>
-
 <p>存檔後重新讀取 .bashrc : <code>source .bashrc</code></p>
-
 <p>之後就以這個簡短指令 <code>start-mjpg</code> 執行它就行了</p>
 
 </article>

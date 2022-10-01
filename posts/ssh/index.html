@@ -2,40 +2,33 @@
 <html lang="en-us">
 <title>SSH | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ssh/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ssh/">SSH</a></h1>
-    <p class="meta"><time datetime="2013-07-21T16:03:00Z">July 21, 2013</time></p>
+    <h1>SSH</h1>
+    <time datetime="2013-07-21T16:03:00Z">July 21, 2013</time>
   </header>
-  
-
-<h2 id="產生-ssh-key-並且設定免密碼直接連入遠端主機">產生 ssh key 並且設定免密碼直接連入遠端主機</h2>
-
+  <h2 id="產生-ssh-key-並且設定免密碼直接連入遠端主機">產生 ssh key 並且設定免密碼直接連入遠端主機</h2>
 <p>本機:</p>
-
 <pre><code>cd ~
 ssh-keygen -t rsa
 (enter到底)
 cd .ssh
 scp id_rsa.pub 遠端主機網址:~/.ssh/qq  (把本機的公鑰複製到遠端主機)
 </code></pre>
-
 <p>登入遠端主機:</p>
-
 <pre><code>ssh 遠端主機網址
 (會要你輸入密碼)
 cd .ssh
@@ -43,56 +36,39 @@ cat qq &gt;&gt; authorized_keys   (將主機的公鑰加入到遠端的驗證key
 rm qq                       (加入到authorized_keys後就沒有用了, 刪除它)
 exit                        (大功告成, 離開遠端主機)
 </code></pre>
-
 <p>回本機:</p>
-
 <pre><code>ssh 遠端主機網址
 (不會要求你輸入密碼而直接進入)
 </code></pre>
-
 <h2 id="安全性設定">安全性設定</h2>
-
 <p>Open <code>/etc/ssh/sshd_config</code> (<strong>注意!! 不要改錯檔案</strong>, 是 <code>sshd_config</code> 不是 <code>ssh_config</code>) :</p>
-
 <h3 id="允許密碼驗證">允許密碼驗證</h3>
-
 <pre><code>PasswordAuthentication yes
 </code></pre>
-
 <h3 id="改-ssh-default-port">改 SSH default port</h3>
-
 <pre><code>Port 2222
 Protocol 2
 PermitRootLogin no
 </code></pre>
-
 <blockquote>
 <ul>
 <li>1025~65536 的 port 都可以使用</li>
 <li>PermitRootLogin 設為 no 的話, root 登入還是會要求你輸入密碼, 只是即使輸入的是對的密碼, 也會告訴你是錯的, 即不讓你登入就對了</li>
 </ul>
 </blockquote>
-
 <h3 id="只允許某個-user">只允許某個 User</h3>
-
 <pre><code>UseDNS no
 AllowUsers test
 </code></pre>
-
 <h3 id="reload-新設定">Reload 新設定</h3>
-
 <p>別急著登出, 先測試修改是否成功</p>
-
 <pre><code>sudo service ssh restart
 ssh -p 2222 test@localhost
 </code></pre>
-
 <blockquote>
 <p>如果有設定防火牆記得把 2222 port 打開</p>
 </blockquote>
-
-<h2 id="當我的主機重灌後-我要-ssh-進去時發生這樣的錯誤">當我的主機重灌後, 我要 ssh 進去時發生這樣的錯誤 :</h2>
-
+<h2 id="當我的主機重灌後-我要-ssh-進去時發生這樣的錯誤-">當我的主機重灌後, 我要 ssh 進去時發生這樣的錯誤 :</h2>
 <pre><code>device-f33d32:~ apple$ ssh test@test.com
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
@@ -108,26 +84,16 @@ Offending RSA key in /Users/apple/.ssh/known_hosts:1
 RSA host key for test.com has changed and you have requested strict checking.
 Host key verification failed.
 </code></pre>
-
 <p>意思是 .ssh/known_hosts 原本記著這樣的紀錄</p>
-
 <pre><code>test.com,142.4.51.133 ssh-rsa AAAAB3NzaC1yc2EAAA(..略..)
 </code></pre>
-
 <p>但是重灌後的 rsa 不一樣了, 所以為了安全性的考量而無法登入, 解決方法很簡單</p>
-
 <p>只要把 .ssh/known_hosts 裡主機那行紀錄刪除, 再 ssh 進去重新產生紀錄就行了</p>
-
 <h2 id="設定-push-或-pull-github-不用再輸入帳密">設定 push 或 pull github 不用再輸入帳密</h2>
-
 <p>將你的 repository 的 ssh URL 加到你的 origin, 不要用 https URL</p>
-
 <p>然候將你的 ssh public key 加到 github 後台的 ssh 管理</p>
-
-<h2 id="設定-alias-每一次連線不用輸入過多參數">設定 alias - 每一次連線不用輸入過多參數</h2>
-
+<h2 id="設定-alias---每一次連線不用輸入過多參數">設定 alias - 每一次連線不用輸入過多參數</h2>
 <p>~/.ssh/config 加上要 alias 對應的欄位</p>
-
 <pre><code>HOST test
     HostName 192.168.79.21
     User test
@@ -137,136 +103,96 @@ Host key verification failed.
     LocalForward 35729 192.168.79.21:35729      (將主機的 35729 導到本機的 35729)
     ...
 </code></pre>
-
 <p>之後輸入 <code>ssh test</code> 即可</p>
-
 <blockquote>
 <p><code>.pem</code> 的權限要調低, 否則會報錯, <code>chmod 400 aws.pem</code></p>
 </blockquote>
-
 <p>使用 <code>.pem</code> 連進主機，除了上述方法設定也可以用參數 <code>-i</code></p>
-
 <pre><code>sudo ssh ubuntu@123.123.123.123 -i aws.pem
 </code></pre>
-
 <blockquote>
 <p>AWS Ubuntu 主機預設 User 叫 ubuntu</p>
 </blockquote>
-
 <h2 id="在同一台主機避免跟同事用到同一個-session-方法">在同一台主機避免跟同事用到同一個 session 方法</h2>
-
 <p>可在 .bashrc 設定 :</p>
-
 <pre><code>sssh (){ ssh -t &quot;$1&quot; 'tmux attach -t test || tmux new -s test || screen -DR'; }
 </code></pre>
-
 <p>之後執行 sssh 就好了!</p>
-
 <h2 id="port-forwarding">Port Forwarding</h2>
-
 <ul>
 <li>Mac :</li>
 </ul>
-
 <p>本機執行 <code>ssh -L 127.0.0.1:35729:54.199.219.49:35729 ubuntu@54.199.219.49</code></p>
-
 <p>或者在 <code>~/.ssh/config</code> 設定 :</p>
-
 <pre><code>Host ec2
     HostName 54.199.219.49
     User ubuntu
     Port 22
     LocalForward 35729 54.199.219.49:35729
 </code></pre>
-
 <blockquote>
 <ul>
 <li>LocalForward 是將遠端主機 54.199.219.49 的 35729 導到本機的 35729</li>
 <li>如果要連到其他 ssh port 的寫法 <code>ssh jx@54.164.251.31 -p 4223 -L 35729:54.164.251.31:35729</code></li>
 </ul>
 </blockquote>
-
 <ul>
 <li>Windows :</li>
 </ul>
-
 <p>如果使用 putty 要多設定 Conection-&gt;SSH-&gt;Tunels</p>
-
 <pre><code>Source port : 35729
 Destination : 54.199.219.49:35729
 (下面選項維持預設 Local 及 Auto)
 </code></pre>
-
-<h3 id="forward-agent-本機登錄到-basion-後再登入到其他主機時不需要把-private-key-放到-basion">forward agent - 本機登錄到 basion 後再登入到其他主機時不需要把 private key 放到 basion</h3>
-
-<p>1) 將本機的私鑰加入到 keychain</p>
-
-<pre><code>ssh-add -K
-</code></pre>
-
+<h3 id="forward-agent---本機登錄到-basion-後再登入到其他主機時不需要把-private-key-放到-basion">forward agent - 本機登錄到 basion 後再登入到其他主機時不需要把 private key 放到 basion</h3>
+<ol>
+<li>
+<p>將本機的私鑰加入到 keychain</p>
+<p>ssh-add -K</p>
+</li>
+</ol>
 <blockquote>
 <p><code>ssh-add -l</code> 或 <code>ssh-add -L</code> 就可以看到剛剛加入的那把私鑰了</p>
 </blockquote>
-
 <p>在本機及 basion 加入以下，當從 basion 登入到其他台時， basion 那台就不需要有本機 private key 就能連到其他台了</p>
-
 <pre><code>Host *
         ForwardAgent yes
         ServerAliveInterval 300
         ServerAliveCountMax 5
 </code></pre>
-
 <h3 id="一行指令直接經由-basion-登入主機-proxycommand">一行指令直接經由 basion 登入主機 (proxycommand)</h3>
-
 <p>大部份我們的主機架構會長這樣，每次要到 server 都要經由 basion，所以會輸入兩次 ssh 很麻煩</p>
-
 <pre><code>laptop -&gt; basion -&gt; server
 </code></pre>
-
 <p>我們可以用一行指令就能直接登入 server</p>
-
 <pre><code>ssh -tt basion ssh -tt server
 </code></pre>
-
 <p>但這樣雖然縮短時間，不需要等到進去 basion 再 ssh 到主機，但 command 還是有點太長，可以用 proxycommand 做到，它的原理是用 nc 指令建立 TCP 連線連接 basion 與 server</p>
-
 <p>(TODO)</p>
-
 <h2 id="putty免密碼以ssh登入主機">PuTTY免密碼以SSH登入主機</h2>
-
 <p>[1] 主機要先產生完 SSH Key (ssh請選擇rsa)</p>
-
 <p>[2] 下載 WinSCP，並使用它登入主機把私鑰的 SSH Key 下載下來(id_rsa)</p>
-
 <p>[3] 將私鑰名稱(id_rsa)加上副檔名(.ppk) =&gt; id_rsa.ppk</p>
-
 <p>[4] 到 <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY 官網頁</a>下載 puttygen.exe</p>
-
 <p>[5] 打開PuTTYgen</p>
-
 <ol>
 <li>點選 &ldquo;Load&rdquo; 讀取 id_rsa.ppk</li>
 <li>選擇 SSH-1 (RSA)</li>
 <li>點選 Save private key</li>
 </ol>
-
 <p>[6] 打開PuTTY</p>
-
 <ul>
 <li>左邊 Connection→Data 輸入 Auto-login username</li>
 <li>左邊 Connection→SSH→Auth</li>
 </ul>
-
-<p>1) 打勾 Attempt authentication using Pageant
-2) 打勾 Attempt TIS or CrptoCard auth(SSH-1)        <strong>(其他不要打勾)</strong>
-3) 下面瀏覽框要將 PuTTYgen 儲存的私鑰讀進來</p>
-
+<ol>
+<li>打勾 Attempt authentication using Pageant</li>
+<li>打勾 Attempt TIS or CrptoCard auth(SSH-1)        <strong>(其他不要打勾)</strong></li>
+<li>下面瀏覽框要將 PuTTYgen 儲存的私鑰讀進來</li>
+</ol>
 <p>[7] 完成，記得回到 Session 點 save 儲存這些設定，這樣下次就不用又從頭設定一次喔!</p>
-
-<h3 id="將-amazonec2microinstance-pem-轉成-ppk">將 AmazonEC2MicroInstance.pem 轉成 ppk</h3>
-
+<h3 id="將-amazonec2microinstancepem-轉成-ppk">將 AmazonEC2MicroInstance.pem 轉成 ppk</h3>
 <p>開啟 puttygen.ext -&gt; Load (選擇 AmazonEC2MicroInstance.pem) -&gt; Save private key (存成 amazon-ec2.ppk)</p>
-
 <p>左邊 SSH -&gt; Auth 的 Private key file for authentication 選擇剛剛生出來的 amazon-ec2.ppk</p>
 
 </article>

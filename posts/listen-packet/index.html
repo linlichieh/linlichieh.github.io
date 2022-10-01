@@ -2,31 +2,26 @@
 <html lang="en-us">
 <title>Linux Network Sniffer Tools | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/listen-packet/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/listen-packet/">Linux Network Sniffer Tools</a></h1>
-    <p class="meta"><time datetime="2013-12-15T20:39:00Z">December 15, 2013</time></p>
+    <h1>Linux Network Sniffer Tools</h1>
+    <time datetime="2013-12-15T20:39:00Z">December 15, 2013</time>
   </header>
-  
-
-<h2 id="tcpdump">Tcpdump</h2>
-
+  <h2 id="tcpdump">Tcpdump</h2>
 <h3 id="監聽封包">監聽封包</h3>
-
 <pre><code>sudo tcpdump -i lo -nn port 8080
 13:45:48.703124 IP 127.0.0.1.42893 &gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0
 13:45:48.703130 IP 127.0.0.1.8080 &gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0
@@ -38,9 +33,7 @@
 13:45:48.704009 IP 127.0.0.1.42893 &gt; 127.0.0.1.8080: Flags [F.], seq 39, ack 1, win 683, options [nop,nop,TS val 2431609 ecr 2431608], length 0
 13:45:48.743612 IP 127.0.0.1.8080 &gt; 127.0.0.1.42893: Flags [.], ack 40, win 683, options [nop,nop,TS val 2431619 ecr 2431609], length 0
 </code></pre>
-
 <h3 id="監聽封包內容">監聽封包內容</h3>
-
 <pre><code>sudo tcpdump -i lo -nn port 8080 -X
 (...略...)
 13:42:53.139609 IP 127.0.0.1.8080 &gt; 127.0.0.1.42892: Flags [.], ack 40, win 683, options [nop,nop,TS val 2387718 ecr 2387708], length 0
@@ -49,9 +42,7 @@
         0x0020:  8010 02ab fe28 0000 0101 080a 0024 6f06  .....(.......$o.
         0x0030:  0024 6efc                                .$n.
 </code></pre>
-
 <h3 id="監聽-post-並且輸出成好閱讀模式">監聽 post, 並且輸出成好閱讀模式</h3>
-
 <pre><code>sudo tcpdump -s 0 -A 'tcp dst port 80 and (tcp[((tcp[12:1] &amp; 0xf0) &gt;&gt; 2):4] = 0x504f5354)' -i eth0
 (...略...)
 E....   @.@..8..Of6......P.N$.Y...P..:....POST /oauth/authorize?client_id=a216481c HTTP/1.1
@@ -61,99 +52,63 @@ Accept: */*
 Content-Length: 8
 Content-Type: application/x-www-form-urlencoded
 </code></pre>
-
 <blockquote>
 <p><code>(tcp[((tcp[12:1] &amp; 0xf0) &gt;&gt; 2):4] = 0x504f5354)</code> 是監聽 post 的意思</p>
 </blockquote>
-
-<h3 id="如何使用-tcpdump-監聽-1-來自-eth0-介面卡且-2-通訊協定為-port-22-3-封包來源為-192-168-1-101-的封包資料">如何使用 tcpdump 監聽 (1)來自 eth0 介面卡且 (2)通訊協定為 port 22 ，(3)封包來源為 192.168.1.101 的封包資料？</h3>
-
+<h3 id="如何使用-tcpdump-監聽-1來自-eth0-介面卡且-2通訊協定為-port-22-3封包來源為-1921681101-的封包資料">如何使用 tcpdump 監聽 (1)來自 eth0 介面卡且 (2)通訊協定為 port 22 ，(3)封包來源為 192.168.1.101 的封包資料？</h3>
 <pre><code>tcpdump -i eth0 -nn -l 'port 22 and src host 192.168.1.101'
 </code></pre>
-
 <h3 id="參數">參數</h3>
-
 <ul>
 <li><code>-i</code>: 後面接要『監聽』的網路介面，例如 eth0, lo, ppp0 等等的介面；</li>
 <li><code>-nn</code>: 直接以 IP 及 port number 顯示，而非主機名與服務名稱</li>
 <li><code>-X</code>: 可以列出十六進位 (hex) 以及 ASCII 的封包內容，對於監聽封包內容很有用</li>
 <li><code>-l</code>: 使用標準輸出的 buffer, 顯示上比較即時</li>
 </ul>
-
 <h2 id="ngrep">Ngrep</h2>
-
 <p>聽 GET/POST/PUT 80 port</p>
-
 <pre><code>sudo ngrep -W byline -d eth0 -t '^(GET|POST|PUT)' 'port 80'
 </code></pre>
-
 <p>聽 GET/POST/PUT 特定 host 的 80 port</p>
-
 <pre><code>sudo ngrep -d eht0 -t '^(GET|POST|PUT)' &quot;src host example.com and port 80&quot;
 </code></pre>
-
 <p>聽 GET/POST/PUT 特定 host 的 80 port, TCP 協定</p>
-
 <pre><code>sudo ngrep -t '^(GET|POST|PUT)' &quot;src host example.com and tcp and dst port 80&quot;
 </code></pre>
-
 <h3 id="其他">其他</h3>
-
 <p>ref: <a href="http://wall-skills.com/2016/ngrep-cheat-sheet-with-examples/">ngrep cheat sheet</a></p>
-
 <p>Print udp packets</p>
-
 <pre><code>ngrep '' udp
 </code></pre>
-
 <p>Print packets passing eth0 device. Without -d ngrep listens to a default interface. ngrep -d eth0
 Print packets for port 80 regardless of device</p>
-
 <pre><code>ngrep -d any port 80
 </code></pre>
-
 <p>Only print packets that contain “interesting-domain.com”</p>
-
 <pre><code>ngrep -d any “interesting-domain.com” port 80
 </code></pre>
-
 <p>You can use regex such as ‘.*’ in the search string</p>
-
 <pre><code>ngrep -d any “domain-.*.com” port 80
 </code></pre>
-
 <p>Or use regex to search for ‘pass’ or ‘USER’</p>
-
 <pre><code>ngrep -d any “pass|USER” port 80
 </code></pre>
-
 <p>And ignore case with -i to match for ‘user’ as well</p>
-
 <pre><code>ngrep -d any -i “pass|USER” port 80
 </code></pre>
-
 <p>If you’re logged in via SSH you might want to ignore your own traffic</p>
-
 <pre><code>ngrep -d any port not 22
 </code></pre>
-
 <p>Only print packet headers and payload (if relevant)</p>
-
 <pre><code>ngrep -q -d any “needle” port 80
 </code></pre>
-
 <p>Use -W byline for more readable output</p>
-
 <pre><code>ngrep -d any -W byline “needle” port 80
 </code></pre>
-
 <p>Limit the number of results with -n</p>
-
 <pre><code>ngrep -d any “needle” -n 3 port 80
 </code></pre>
-
 <p>Print empty packets with -e</p>
-
 <pre><code>ngrep -e -d any “needle” port 80
 </code></pre>
 

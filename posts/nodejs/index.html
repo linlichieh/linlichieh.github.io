@@ -2,56 +2,43 @@
 <html lang="en-us">
 <title>Node.js | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/nodejs/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/nodejs/">Node.js</a></h1>
-    <p class="meta"><time datetime="2014-05-26T12:30:54&#43;08:00">May 26, 2014</time></p>
+    <h1>Node.js</h1>
+    <time datetime="2014-05-26T12:30:54&#43;08:00">May 26, 2014</time>
   </header>
-  
-
-<h2 id="install-node-js-npm-package-manager-nvm-version-manager">Install node.js &amp; npm (package manager) &amp; nvm (version manager)</h2>
-
+  <h2 id="install-nodejs--npm-package-manager--nvm-version-manager">Install node.js &amp; npm (package manager) &amp; nvm (version manager)</h2>
 <h3 id="ubuntu">Ubuntu</h3>
-
 <pre><code>sudo apt-get update
 sudo apt-get install nodejs nodejs-legacy
 sudo apt-get install npm
 git clone git://github.com/creationix/nvm.git ~/.nvm
 . ~/.nvm/nvm.sh
 </code></pre>
-
 <p>Add path to .bashrc</p>
-
 <pre><code>echo &quot;. ~/.nvm/nvm.sh&quot; &gt;&gt; ~/.bashrc
 </code></pre>
-
 <h3 id="amazon-linux">Amazon Linux</h3>
-
 <pre><code>(?) sudo yum install gcc-c++ make
 sudo yum install nodejs npm --enablerepo=epel
 </code></pre>
-
 <h2 id="websocket-example">Websocket example</h2>
-
 <pre><code>npm install websocket -gd
 </code></pre>
-
 <p>test.js :</p>
-
 <pre><code>var sys = require(&quot;sys&quot;),
 my_http = require(&quot;http&quot;);
 my_http.createServer(function(request,response){
@@ -62,10 +49,8 @@ my_http.createServer(function(request,response){
 }).listen(9090);
 sys.puts(&quot;Server Running on 9090&quot;);
 </code></pre>
-
 <p>Execute : <code>node test.js</code>
 Browser : <code>http://192.168.56.1:9090/</code></p>
-
 <blockquote>
 <ul>
 <li>-g : executable install globally</li>
@@ -74,69 +59,47 @@ Browser : <code>http://192.168.56.1:9090/</code></p>
 <li>以上是安裝在全域的 lib 需要的設定, 如果不加上 <code>-gd</code> 就會在目前目錄產生 <code>node_modules</code></li>
 </ul>
 </blockquote>
-
 <h2 id="redis">redis</h2>
-
 <p>install :</p>
-
 <pre><code>npm install redis -gd
 </code></pre>
-
 <blockquote>
 <p><code>SAVE</code> OR <code>BGSAVE</code> 指令, 快照儲存的路徑 : <code>/var/lib/redis/dump.rdb</code></p>
 </blockquote>
-
-<h2 id="install-express-web-framework">Install express web framework :</h2>
-
+<h2 id="install-express-web-framework-">Install express web framework :</h2>
 <pre><code>npm install express -gd
 npm install -g express-generator
 npm install -g ejs
 </code></pre>
-
 <p>Use (example: test):</p>
-
 <pre><code>express test --ejs
 cd test
 npm install          (install dependencies)
 npm start
 </code></pre>
-
 <blockquote>
 <ul>
 <li>ejs 是一種 html template engine, 語法不像 default 的 jade 跟原生的 html 語法差很多,</li>
 <li>ejs 比較貼近原始的 html, 用法跟 php 的 template 很像</li>
 </ul>
 </blockquote>
-
 <h2 id="install-nodemon">Install nodemon</h2>
-
 <p>檔案變動不用再重新啟動 node.js</p>
-
 <h3 id="安裝">安裝</h3>
-
 <pre><code>npm install nodemon -g
 </code></pre>
-
 <h3 id="啟動">啟動</h3>
-
 <pre><code>cd test
 nodemon ./bin/www
 </code></pre>
-
 <p>或</p>
-
 <pre><code>修改 `test/package.json` 將 `node ./bin/www` 改成 `nodemon ./bin/www`
 </code></pre>
-
 <h3 id="ref">ref</h3>
-
 <h2 id="packages">Packages</h2>
-
 <p>jshint : 檢查語法錯誤</p>
-
 <pre><code>npm install jshint -g
 </code></pre>
-
 <ul>
 <li><a href="http://www.hongkiat.com/blog/node-js-server-side-javascript/">一些 server example</a></li>
 <li><a href="https://www.digitalocean.com/community/articles/how-to-install-and-use-redis">redis</a></li>
@@ -144,11 +107,8 @@ nodemon ./bin/www
 <li><a href="http://blog.wu-boy.com/2011/08/%E7%84%A1%E7%97%9B%E5%AE%89%E8%A3%9D-nodejs-%E5%92%8C-node-framework-express/">Appleboy nodejs</a></li>
 <li><a href="https://github.com/visionmedia/express">express github</a></li>
 </ul>
-
-<h3 id="log-io-http-logio-org"><a href="http://logio.org/">log.io</a></h3>
-
+<h3 id="logiohttplogioorg"><a href="http://logio.org/">log.io</a></h3>
 <p>一個現成的套件提供介面看 log</p>
-
 <p>建議安裝使用 root 安裝，比較不會遇到其他的麻煩 <code>sudo npm install -g log.io --user=&quot;root&quot;</code></p>
 
 </article>

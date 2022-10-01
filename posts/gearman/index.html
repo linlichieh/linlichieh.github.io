@@ -2,58 +2,43 @@
 <html lang="en-us">
 <title>PHP Gearman | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/gearman/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/gearman/">PHP Gearman</a></h1>
-    <p class="meta"><time datetime="2013-10-21T00:24:00Z">October 21, 2013</time></p>
+    <h1>PHP Gearman</h1>
+    <time datetime="2013-10-21T00:24:00Z">October 21, 2013</time>
   </header>
-  
-
-<h2 id="介紹">介紹</h2>
-
+  <h2 id="介紹">介紹</h2>
 <p>Gearman 是可以在 backgroud 做事的 job worker</p>
-
 <h2 id="安裝-gearman">安裝 Gearman</h2>
-
 <p>可參考<a href="http://blog.wu-boy.com/2013/06/how-to-install-gearman-on-ubuntu-or-debian-with-mysql/">apple boy</a>安裝步驟</p>
-
 <p>如果一直安裝失敗可以執行以下試看看 :</p>
-
 <pre><code>sudo apt-get update
 sudo apt-get upgrade
 </code></pre>
-
-<h3 id="persistent-storage-mysql">Persistent Storage :  MySQL</h3>
-
+<h3 id="persistent-storage---mysql">Persistent Storage :  MySQL</h3>
 <blockquote>
 <p>預設 queue 是存在記憶體, 如果重開或 server crash, queue 就不見了, 所以我們需要一直永久存放 queue 的地方, 詳細可參考<a href="http://gearman.org/manual:job_server#persistent_queues">官方文件</a>的說明</p>
 </blockquote>
-
 <p>設定 /etc/default/gearman-job-server</p>
-
 <pre><code>PARAMS=&quot;-q mysql --mysql-host=localhost --mysql-user=root --mysql-db=test --mysql-table=gearman_queue&quot;
 </code></pre>
-
 <blockquote>
-<p>PARAMS=&ldquo;-q mysql &ndash;mysql-host=localhost &ndash;mysql-user=xxxx &ndash;mysql-password=xxxxx&ndash;mysql-db=gearman &ndash;mysql-table=gearman_queue&rdquo;</p>
+<p>PARAMS=&quot;-q mysql &ndash;mysql-host=localhost &ndash;mysql-user=xxxx &ndash;mysql-password=xxxxx&ndash;mysql-db=gearman &ndash;mysql-table=gearman_queue&quot;</p>
 </blockquote>
-
 <p>搭配 MySQL, 使用 test DB, 建立 gearman_queue 資料表</p>
-
 <pre><code>mysql -u root
 &gt; use test;
 &gt; CREATE TABLE IF NOT EXISTS `gearman_queue` (
@@ -65,37 +50,25 @@ sudo apt-get upgrade
 &gt;   UNIQUE KEY `unique_key` (`unique_key`,`function_name`)
 &gt; ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 </code></pre>
-
 <blockquote>
 <ul>
 <li>一定要加上 primary key ? .. 不確定, 參考語法 :</li>
 <li><code>ALTER TABLE gearman_queue ADD COLUMN `id` INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT;</code></li>
 </ul>
 </blockquote>
-
 <p>安裝 gearman API extension</p>
-
 <pre><code>pecl install channel://pecl.php.net/gearman-1.1.0
 </code></pre>
-
 <p>建立 /etc/php5/conf.d/gearman.ini (預設不存在)</p>
-
 <pre><code>extension=gearman.so
 </code></pre>
-
 <p>重啟 apache2</p>
-
 <p>測試是否安裝成功</p>
-
 <pre><code>php -i | grep gearman
 </code></pre>
-
 <p>或看 phpinfo 搜尋 gearman</p>
-
 <h2 id="測試-gearman">測試 gearman</h2>
-
 <p>worker.php</p>
-
 <pre><code>&lt;?php
 $worker = new GearmanWorker();
 $worker-&gt;addServer(); // ______ localhost
@@ -112,13 +85,10 @@ function writeContent ($job)
     return &quot;done !&quot;;
 }
 </code></pre>
-
 <blockquote>
 <p>每 5 秒執行一次 job</p>
 </blockquote>
-
 <p>client :</p>
-
 <pre><code>&lt;?php
 $client = new GearmanClient();
 $client-&gt;addServer(); // ______ localhost
@@ -134,16 +104,13 @@ $contentData = array(
 $client-&gt;doBackground('content', serialize($contentData));
 echo &quot;Content sending is done.\n&quot;;
 </code></pre>
-
 <blockquote>
 <ul>
 <li>執行一個 job</li>
 <li>job 內容是在 test 檔案最下面新增一行亂數 string</li>
 </ul>
 </blockquote>
-
 <p>首先執行幾個 job</p>
-
 <pre><code>test@server:/var/www/gearman$ php client.php
 Content sending is done.
 test@server:/var/www/gearman$ php client.php
@@ -151,9 +118,7 @@ Content sending is done.
 test@server:/var/www/gearman$ php client.php
 Content sending is done.
 </code></pre>
-
 <p>執行了 3 次, 所以 mysql 應該會有 3 筆 job</p>
-
 <pre><code>mysql&gt; select * from gearman_queue;
 +--------------------------------------+---------------+----------+-----------------------------------------
 -----------------------------------------------------------------------------------+-------------+----+
@@ -174,35 +139,25 @@ Content sending is done.
 -----------------------------------------------------------------------------------+-------------+----+
 3 rows in set (0.00 sec)
 </code></pre>
-
 <p>test 檔, 檔案本身存放一筆資料 :</p>
-
 <pre><code>test@server:/var/www/gearman$ tail -f test
 random string : e03adeb9683f95764753a7741ff810bd5260f5ef989fc
 </code></pre>
-
 <blockquote>
 <p>當執行 worker 後, 每一次執行 job 就會新增一行 random string</p>
 </blockquote>
-
 <p>執行 worker :</p>
-
 <pre><code>test@server:/var/www/gearman$ php worker.php
 </code></pre>
-
 <p>就開始執行了~ 每5秒就會執行一次 job</p>
-
 <p>所以 test 最後會有 4筆資料:</p>
-
 <pre><code>test@server:/var/www/gearman$ tail -f test
 random string : e03adeb9683f95764753a7741ff810bd5260f5ef989fc
 random string : 2f58db93c9ea5194a32ccafaa199e17352640c057f178
 random string : 66887b7529f4febdd0aa3dcfd1b7a39952640c0893241
 random string : b1aba74b60afbd1db1f38b04b865b4b152640c09a1662
 </code></pre>
-
 <p>而 mysql 原本存放的 3 筆 job, 因為執行後就會自動刪掉</p>
-
 <pre><code>mysql&gt; select count(*) from gearman_queue;
 +----------+
 | count(*) |
@@ -211,15 +166,11 @@ random string : b1aba74b60afbd1db1f38b04b865b4b152640c09a1662
 +----------+
 1 row in set (0.19 sec)
 </code></pre>
-
 <blockquote>
 <p>queue 存放在 mysql 的新增跟刪除的動作, 全部是交由 gearman 做, 我們完全不用動手處理, 相當方便!</p>
 </blockquote>
-
-<h3 id="執行結果">執行結果 :</h3>
-
-<p><img src="/images/posts/gearman.png" alt="result.PNG" /></p>
-
+<h3 id="執行結果-">執行結果 :</h3>
+<p><img src="/images/posts/gearman.png" alt="result.PNG"></p>
 <p>ref :
 <a href="http://blog.wu-boy.com/2013/06/how-to-install-gearman-on-ubuntu-or-debian-with-mysql/">http://blog.wu-boy.com/2013/06/how-to-install-gearman-on-ubuntu-or-debian-with-mysql/</a>
 <a href="http://www.phamviet.net/2012/10/10/ubuntu-php-5-4-x-and-gearman-troubleshooting/">http://www.phamviet.net/2012/10/10/ubuntu-php-5-4-x-and-gearman-troubleshooting/</a></p>

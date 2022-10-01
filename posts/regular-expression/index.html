@@ -2,33 +2,29 @@
 <html lang="en-us">
 <title>Regular Expression | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/regular-expression/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/regular-expression/">Regular Expression</a></h1>
-    <p class="meta"><time datetime="2013-01-16T18:10:00Z">January 16, 2013</time></p>
+    <h1>Regular Expression</h1>
+    <time datetime="2013-01-16T18:10:00Z">January 16, 2013</time>
   </header>
-  
-
-<h2 id="需要被脫逸的符號">需要被脫逸的符號 :</h2>
-
+  <h2 id="需要被脫逸的符號-">需要被脫逸的符號 :</h2>
 <ul>
 <li><code>\</code> : 可以脫逸字元</li>
 <li><code>[</code> <code>]</code> : [xyz] 比對中括孤內的任一個字元 , 但不會將配對到的字串存入RegExp變數中</li>
-<li><code>(</code> <code>)</code> : 合起來 (x) 比對x並將符合的部份存入一個變數, /(a<em>) and (b</em>)/ 可以對 ‘aaa and bb’ 中的’aaa’和’bb’, 並將這兩個比對得到的字串設定至數字 RegExp.$1 和 RegExp.$2</li>
+<li><code>(</code> <code>)</code> : 合起來 (x) 比對x並將符合的部份存入一個變數, /(a*) and (b*)/ 可以對 ‘aaa and bb’ 中的’aaa’和’bb’, 並將這兩個比對得到的字串設定至數字 RegExp.$1 和 RegExp.$2</li>
 <li><code>.</code> : 比對任何一個字元 , 但換行符號不算</li>
 <li><code>^</code> : 啟始位置</li>
 <li><code>$</code> : 結束位置</li>
@@ -37,13 +33,10 @@
 <li><code>+</code> : 比對前一個字元 , 一次或更多次 , 也等於 {1,}</li>
 <li><code>|</code> : 或者 , 等於OR , 邏輯運算子(Logical Operators)</li>
 </ul>
-
 <blockquote>
 <p>左中括號(<code>[</code>)需脫逸 , 但右中括號(<code>]</code>)不需脫逸 , 左下到右上的斜線(<code>/</code>)也需要脫逸</p>
 </blockquote>
-
-<h2 id="符號對照">符號對照 :</h2>
-
+<h2 id="符號對照-">符號對照 :</h2>
 <ul>
 <li><code>\d</code> = <code>[0-9]</code> : 0~9(數字)</li>
 <li><code>\D</code> = <code>[^0-9]</code> 或 <code>[^\d]</code> : 非數字</li>
@@ -68,9 +61,7 @@
 <li><code>(?=.*\d)</code>：這是 Positive Lookahead，用來判斷右邊緊接著的字元是否符合比對條件，如果符合條件才會繼續比對下去。拿這個實例來說，右邊的字元必須包含一個數字才算符合這個條件。</li>
 <li><code>(?=.*[a-zA-Z])</code>：跟上面出現過得 Positive Lookahead 一樣，這是說右邊的字必須包含一個 a 到 z 或是 A 到 Z 的字元，說穿了就是右邊的字要包含一個英文字的意思。</li>
 </ul>
-
-<h2 id="比對方式">比對方式 :</h2>
-
+<h2 id="比對方式-">比對方式 :</h2>
 <ul>
 <li>g：全域比對（Global match）</li>
 <li>i：忽略大小寫（Ignore case）</li>
@@ -78,100 +69,68 @@
 <li>o : 表示我只要比對一次               //似乎沒有這功能 , 有待查證</li>
 <li>gi：全域比對並忽略大小寫</li>
 </ul>
-
-<h2 id="語法結構">語法結構 :</h2>
-
+<h2 id="語法結構-">語法結構 :</h2>
 <pre><code>re = /pattern/flag
 re = new RegExp(&quot;pattern&quot;, &quot;flag&quot;);
 </code></pre>
-
 <blockquote>
 <p>pattern 是正規表示法比對規則，flag 則是比對的方式</p>
 </blockquote>
-
 <h2 id="examples">Examples</h2>
-
-<h3 id="數量-不能為0的正整數">數量 : 不能為0的正整數</h3>
-
+<h3 id="數量--不能為0的正整數">數量 : 不能為0的正整數</h3>
 <pre><code>/^[1-9]\d*$/
 </code></pre>
-
 <blockquote>
 <ul>
 <li><code>[1-9]</code> : 開頭要1~9</li>
 <li><code>\d*</code> : 0~9的數字出現 0個或多個</li>
 </ul>
 </blockquote>
-
-<h3 id="價格-0-或是正整數">價格 :  0 或是正整數</h3>
-
+<h3 id="價格---0-或是正整數">價格 :  0 或是正整數</h3>
 <pre><code>/^(0|[1-9]\d*)$/
 </code></pre>
-
 <blockquote>
 <p>0 : 零, <code>|</code> : 或者, <code>[1-9]\d*</code> : 正整數</p>
 </blockquote>
-
 <h3 id="整數或最多兩位小數">整數或最多兩位小數</h3>
-
 <pre><code>/^(0|[1-9]\d*)(\.\d{1,2})?$/
 </code></pre>
-
-<h3 id="中文姓名-檢查中文字2-5個字">中文姓名 : 檢查中文字2~5個字</h3>
-
+<h3 id="中文姓名--檢查中文字25個字">中文姓名 : 檢查中文字2~5個字</h3>
 <p>javascript :</p>
-
 <pre><code>/^[\u4e00-\u9fa5]{2,5}$/
 </code></pre>
-
 <blockquote>
 <p>中文的正則, 如果把javascript語法搬到php會出現 <code>Warning : preg_match()[function.preg-match] : Compilation failed : PCRE does not support \L , \I , \N , \U or \u at offset 9</code>  的錯誤</p>
 </blockquote>
-
 <p>解決方法 : 將<code>\u</code>改成<code>\x</code> , 並且將後面的中文代碼用<code>{ }</code> 括起來 , 在表示法最後的斜線後加一個 u</p>
-
 <p>php :</p>
-
 <pre><code>/^[\x{4e00}-\x{9fa5}]{2,5}$/u
 </code></pre>
-
 <blockquote>
 <ul>
 <li><code>[\x{4e00}-\x{9fa5}]</code> : 繁體中文字</li>
 <li><code>{2,5}</code> : 出現2~5次</li>
 </ul>
 </blockquote>
-
-<h3 id="email-email格式">email : email格式</h3>
-
+<h3 id="email--email格式">email : email格式</h3>
 <pre><code>/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
 </code></pre>
-
-<h3 id="室內電話-離鳥區碼最多4碼-後面最少5碼最多8碼-例如-02-42365514">室內電話 : 離鳥區碼最多4碼 , 後面最少5碼最多8碼 . 例如 : 02-42365514</h3>
-
+<h3 id="室內電話--離鳥區碼最多4碼--後面最少5碼最多8碼--例如--02-42365514">室內電話 : 離鳥區碼最多4碼 , 後面最少5碼最多8碼 . 例如 : 02-42365514</h3>
 <pre><code>/^[0]{1}[0-9]{1,3}[-]{1}[0-9]{5,8}$/     (前面4碼後面8碼 , 會超過10碼條件 , 所以要再判斷一次 , 如下一行)
 /^[0-9-]{10,11}$/                        (共10或11碼)
 </code></pre>
-
 <p>要驗證兩次 , 如果下次有空的話再改成一行表示法 , 因為很久沒用這個 , 所以有點懶</p>
-
-<h3 id="地址-禁止中-英-數-減號-以外的字元-至少要連續中文4個字-至少一位數字-字元數共8-40位">地址 : 禁止中,英,數,減號( - )以外的字元,至少要連續中文4個字,至少一位數字,字元數共8~40位</h3>
-
+<h3 id="地址--禁止中英數減號---以外的字元至少要連續中文4個字至少一位數字字元數共840位">地址 : 禁止中,英,數,減號( - )以外的字元,至少要連續中文4個字,至少一位數字,字元數共8~40位</h3>
 <pre><code>/^(?!.*[^\u4e00-\u9fa5a-zA-Z0-9-])(?=.*[\u4e00-\u9fa5]{4,})(?=.*\d).{8,40}$/
 </code></pre>
-
 <h3 id="網址">網址</h3>
-
 <pre><code>/((http[s]{0,1}|ftp):\/\/[a-zA-Z0-9\.\-]+\.([a-zA-Z]{2,4})(:\d+)?(\/[a-zA-Z0-9\.\-~!@#$%^&amp;amp;*+?:_\/=&lt;&gt;]*)?)/g
 or
 ((http[s]{0,1}|ftp):\/\/[a-zA-Z0-9\.\-\_\/]+\.([a-zA-Z]{2,4})(:\d+)?(\/[a-zA-Z0-9\.\-~!@#$%^&amp;amp;*+?:_\/=&lt;&gt;]*)?)
 </code></pre>
-
 <h3 id="正規取代驗證多餘空白">正規取代驗證多餘空白:</h3>
-
 <pre><code>^(.*[^\s])?\s+$`    取代成 `\1
 </code></pre>
-
 <blockquote>
 <ul>
 <li><code>( )</code>裡的東西代表$1</li>
@@ -179,96 +138,67 @@ or
 <li><code>\s+</code>結尾為空白</li>
 </ul>
 </blockquote>
-
-<h3 id="驗證密碼-至少各一位英文字母-數字-共8-12位">驗證密碼  至少各一位英文字母、數字,共8~12位 :</h3>
-
+<h3 id="驗證密碼--至少各一位英文字母數字共812位-">驗證密碼  至少各一位英文字母、數字,共8~12位 :</h3>
 <pre><code>/^(?!.*[^a-zA-Z0-9])(?=.*\d)(?=.*[a-zA-Z]).{8,12}$/
 </code></pre>
-
 <blockquote>
 <ul>
 <li>`.{6,30}：表示字串長度要大於等於 6，小於等於 30。</li>
 <li><code>?=.*</code> : 用來判斷右邊緊接著的字元是否符合比對條件，如果符合條件才會繼續比對下去。</li>
 <li><code>(?!.*[^\x21-\x7e])</code> :  不允許特殊符號, 數字, 英文字母以外的字元輸入</li>
 <li><code>(?=.{10,})</code> : 檢查輸入的字元長度是否有超過 10. 如果資料庫裡的密碼欄位長度是 20, 那就改成 (?=.{10,20}).</li>
-<li><code>(?!.*[\W])</code> : 不允許非 (數字、字母、底線)的字元  \W [^a-zA-Z0-9<em>]   \w=[a-zA-Z0-9</em>]</li>
-<li><code>.*</code>：表示非 &ldquo;\r&rdquo;、&rdquo;\n&rdquo; 字元出現了 0 或一次以上。</li>
+<li><code>(?!.*[\W])</code> : 不允許非 (數字、字母、底線)的字元  \W [^a-zA-Z0-9_]   \w=[a-zA-Z0-9_]</li>
+<li><code>.*</code>：表示非 &ldquo;\r&rdquo;、&quot;\n&quot; 字元出現了 0 或一次以上。</li>
 </ul>
 </blockquote>
-
 <p>解析: 第一個是判斷不能有小寫及數字以外的字元,第二個是數字至少要有一個,第三個是小寫至少要有一個,第四個是要8~12位</p>
-
 <h3 id="不允許逗號及從頭到尾都是0">不允許逗號及從頭到尾都是0</h3>
-
 <pre><code>^(?!.*[,])(?!.*(^0+$))(.*)$
 </code></pre>
-
 <h3 id="含有中文字元">含有中文字元</h3>
-
 <pre><code>(.*?\p{Han})
 </code></pre>
-
 <h3 id="前後不能有空白">前後不能有空白</h3>
-
 <pre><code>^[^\s]+[A-Za-z\s]{2,21}[^\s]+$
 </code></pre>
-
 <p>結果 :</p>
-
 <ul>
 <li><code>ABC DEF</code> : true</li>
-<li><code>ABC DEF</code> : false</li>
-<li><code>ABC DEF</code> : false</li>
+<li><code> ABC DEF</code> : false</li>
+<li><code>ABC DEF </code> : false</li>
 </ul>
-
 <blockquote>
 <p><code>[^\s]+</code> 代表不能有空白, 所以在頭尾各放一個去限制頭尾不能有空白</p>
 </blockquote>
-
-<h3 id="檢查-05-30-時間格式">檢查 <code>05:30</code> 時間格式</h3>
-
+<h3 id="檢查-0530-時間格式">檢查 <code>05:30</code> 時間格式</h3>
 <pre><code>^([0-1]+[0-9]|2[0-3]):[0-5][0-9]$
 </code></pre>
-
 <h3 id="只-match-中間的部份">只 match 中間的部份</h3>
-
 <p>字串</p>
-
 <pre><code>import javax.faces.application.FacesMessage;
 </code></pre>
-
 <p>regex</p>
-
 <pre><code>(?&lt;=import ).*?(?=;)
 </code></pre>
-
 <p>結果</p>
-
 <pre><code>javax.faces.application.FacesMessage
 </code></pre>
-
 <h3 id="k-example"><code>\K</code> example</h3>
-
 <pre><code>$ echo 'hello world' | grep -oP 'hello \K(world)'
 world
 $ echo 'hello world' | grep -oP 'hello (world)'
 hello world
 </code></pre>
-
 <h3 id="配對尾數後面是-0-的">配對尾數後面是 <code>0+</code> 的</h3>
-
 <pre><code>^(\d+[1-9]\.?|\d+\.\d+[1-9])(0+)$
 </code></pre>
-
 <blockquote>
 <ul>
 <li>前面的 ( &hellip; ) 是配對 match 1, 但因為有分整數跟小數, 所以判斷式要分開寫, 用 <code>|</code> (or) 隔開</li>
 <li>後面的 (0+) 是配對 match 2</li>
 </ul>
 </blockquote>
-
 <p>配對結果</p>
-
 <ul>
 <li>12304000 - match 1: 12304, match 2: 000</li>
 <li>0.33444400 - match 1: 0.33444, match 2: 00</li>
@@ -279,45 +209,38 @@ hello world
 <li>10.0087 - not matched</li>
 <li>10.872000 - match 1: 10.872, match 2: 000</li>
 </ul>
-
-<h3 id="allowed-me-any-chars-but-it-cant-allowed-0-9-numbers">allowed me any chars , but it cant allowed (0-9) numbers</h3>
-
+<h3 id="allowed-me-any-chars--but-it-cant-allowed-0-9-numbers">allowed me any chars , but it cant allowed (0-9) numbers</h3>
 <pre><code>^([^0-9]*)$
 </code></pre>
-
 <h3 id="不允許字串-not">不允許字串 <code>not</code></h3>
-
 <pre><code>^(?!.*not).*$
 </code></pre>
-
 <p>配對結果</p>
-
 <ul>
 <li>You can not see me. (not matched)</li>
 <li>Hi, can you do it?</li>
 <li>Don&rsquo;t monkey around.</li>
 <li>Do not touch it. (not matched)</li>
 </ul>
-
 <h3 id="開頭不是某個字元">開頭不是某個字元</h3>
-
-<p>1) 開頭不是 <code>my</code></p>
-
-<pre><code>^(?!my)\w+$
-</code></pre>
-
+<ol>
+<li>
+<p>開頭不是 <code>my</code></p>
+<p>^(?!my)\w+$</p>
+</li>
+</ol>
 <ul>
 <li>my name is Cathy</li>
 <li>her name is Lily (matched)</li>
 <li>this build is amazing</li>
 <li>my chest is sore (matched)</li>
 </ul>
-
-<p>2) 開頭不是 1/3/5</p>
-
-<pre><code>^(?!.*[135]).*$
-</code></pre>
-
+<ol start="2">
+<li>
+<p>開頭不是 1/3/5</p>
+<p>^(?!.<em>[135]).</em>$</p>
+</li>
+</ol>
 <ul>
 <li>1</li>
 <li>2 (matched)</li>
@@ -325,25 +248,19 @@ hello world
 <li>4 (matched)</li>
 <li>5</li>
 </ul>
-
-<h3 id="比對-src-符合相對路徑的-path">比對 <code>src=&quot; ... &quot;</code> 符合相對路徑的 path</h3>
-
+<h3 id="比對-src---符合相對路徑的-path">比對 <code>src=&quot; ... &quot;</code> 符合相對路徑的 path</h3>
 <pre><code>$reg = '(src=[&quot;|\'](?!.*(http[s]?))(?!.*(www\.))[\/]?(([^\s\[\\&quot;\'])+)[&quot;|\'])';
 </code></pre>
-
 <ul>
 <li>src=&ldquo;images/spacer.gif&rdquo; -&gt; yes</li>
-<li>src=&ldquo;/images/spacer.gif&rdquo; -&gt; yes</li>
+<li>src=&quot;/images/spacer.gif&quot; -&gt; yes</li>
 <li>src=&ldquo;www3.org/1999/XMLSchema-instance&rdquo; -&gt; yes</li>
 <li>src=&ldquo;www.org/1999/XMLSchema-instance&rdquo; -&gt; no</li>
-<li>src=&ldquo;<a href="http://www.w3.org/1999/XMLSchema-instance&quot;">http://www.w3.org/1999/XMLSchema-instance&quot;</a> -&gt; no</li>
-<li>src=&ldquo;<a href="https://www.w3.org/1999/XMLSchema-instance&quot;">https://www.w3.org/1999/XMLSchema-instance&quot;</a> -&gt; no</li>
+<li>src=&ldquo;<a href="http://www.w3.org/1999/XMLSchema-instance%22">http://www.w3.org/1999/XMLSchema-instance&quot;</a> -&gt; no</li>
+<li>src=&ldquo;<a href="https://www.w3.org/1999/XMLSchema-instance%22">https://www.w3.org/1999/XMLSchema-instance&quot;</a> -&gt; no</li>
 </ul>
-
 <h3 id="match連結並且顯示頭4個字元">match連結並且顯示頭4個字元</h3>
-
 <p>改成:</p>
-
 <pre><code>$message = 'google : www.google.com.tw ,yahoo : http://www.google.com.tw';
 $message = preg_replace_callback(
     &quot;/(((http[s]?):\/\/|www\.)([^\s\[\\\&quot;'])+)/&quot;,
@@ -358,9 +275,7 @@ $message = preg_replace_callback(
 );
 return $message;
 </code></pre>
-
 <p>得到預期的結果:</p>
-
 <pre><code>google : www. ,yahoo : http
 </code></pre>
 

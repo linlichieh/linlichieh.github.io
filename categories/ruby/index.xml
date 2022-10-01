@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ruby on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in ruby on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 02 Aug 2015 16:11:01 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/ruby/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 02 Aug 2015 16:11:01 +0800</lastBuildDate><atom:link href="/categories/ruby/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Rails View</title>
       <link>/posts/ruby-on-rails-view/</link>
@@ -20,8 +16,8 @@
       <description>(最後更新: 2016-04-27)
 fields_for 一對一, 一對多 籍由 user 去更新 profile(1對1), user_languages(1對多) 欄位
 user.rb
-has_one :profile has_many :user_languages accepts_nested_attributes_for :profile accepts_nested_attributes_for :user_languages  view
-&amp;lt;%= form_for @user, url: user_path(@user), html: {method: :put} do |f| %&amp;gt; &amp;lt;%= f.fields_for :profile do |s| %&amp;gt; &amp;lt;%= s.text_field :about_me %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;%= f.fields_for :user_languages do |l| %&amp;gt; &amp;lt;%= l.check_box :has_badge %&amp;gt; &amp;lt;%= l.object.from %&amp;gt; &amp;lt;%= l.object.to %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;% end %&amp;gt;  產生的 HTML Name :</description>
+has_one :profile has_many :user_languages accepts_nested_attributes_for :profile accepts_nested_attributes_for :user_languages view
+&amp;lt;%= form_for @user, url: user_path(@user), html: {method: :put} do |f| %&amp;gt; &amp;lt;%= f.fields_for :profile do |s| %&amp;gt; &amp;lt;%= s.text_field :about_me %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;%= f.fields_for :user_languages do |l| %&amp;gt; &amp;lt;%= l.check_box :has_badge %&amp;gt; &amp;lt;%= l.object.from %&amp;gt; &amp;lt;%= l.object.to %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;% end %&amp;gt; 產生的 HTML Name :</description>
     </item>
     
     <item>
@@ -31,8 +27,8 @@ has_one :profile has_many :user_languages accepts_nested_attributes_for :profile
       
       <guid>/posts/ruby-on-rails-model/</guid>
       <description>Model 與 Table 的 Naming Conventions Model : 兩個單字以上不使用 _ 連接, 並且開頭字母大寫, ex: BookClub Table : 兩個單字以上使用 _ 連接, ex: book_clubs
-Model / Class Model 檔名 Table / Schema -------------------------------------------------------- Article article.rb articles LineItem line_item.rb line_items Deer deer.rb deers Mouse mouse.rb mice Person person.rb people   外連鍵命名 : item_id, order_id
- CRUD Read User.find(3) User.find(3, 4, 5) User.first User.first(5) # 取前5個 User.last User.all User.count User.limit(10) User.where(name: &amp;quot;ash&amp;quot;).order(status: desc).limit(10) # complex User.</description>
+Model / Class Model 檔名 Table / Schema -------------------------------------------------------- Article article.rb articles LineItem line_item.rb line_items Deer deer.rb deers Mouse mouse.rb mice Person person.rb people 外連鍵命名 : item_id, order_id
+CRUD Read User.find(3) User.find(3, 4, 5) User.first User.first(5) # 取前5個 User.last User.all User.count User.limit(10) User.where(name: &amp;quot;ash&amp;quot;).order(status: desc).limit(10) # complex User.where(&#39;name LIKE ?</description>
     </item>
     
     <item>
@@ -42,11 +38,11 @@ Model / Class Model 檔名 Table / Schema --------------------------------------
       
       <guid>/posts/ruby-on-rails-i18n/</guid>
       <description>Introduction 當網站會需要多國語言顯示的話, 就會用到 i18n
-使用 UI 介面方便翻譯人員協助翻譯  tolk, open source, 蠻好用的, 較直覺 lit, open source localeapp, 線上服務 Phraseapp, 線上服務  原生基本用法 config/locales/en.yml :
-en: posts: &#39;Posts&#39;  config/locales/zh-TW.yml :
-&#39;zh-TW&#39;: posts: &#39;文章&#39;  controllers/welcome_controller.rb :
-before_action :set_locale def set_locale if params[:locale] &amp;amp;&amp;amp; I18n.available_locales.include?(params[:locale].to_sym) session[:locale] = params[:locale] end I18n.locale = session[:locale] || I18n.default_locale @current_lang = session[:locale].nil? ? &#39;zh-TW&#39; : session[:locale] end  view :
-&amp;lt;%= link_to &amp;quot;繁體中文&amp;quot;, locale: &amp;quot;zh-TW&amp;quot; %&amp;gt; &amp;lt;%= link_to &amp;quot;English&amp;quot;, locale: &amp;quot;en&amp;quot; %&amp;gt; &amp;lt;p&amp;gt;&amp;lt;%= t(&#39;posts&#39;) %&amp;gt;&amp;lt;/p&amp;gt;  對應 DB 欄位 activerecord: attributes: user: real_name: &#39;真實姓名&#39; nickname: &#39;暱稱&#39;   當 validate 失敗後的 errors.</description>
+使用 UI 介面方便翻譯人員協助翻譯 tolk, open source, 蠻好用的, 較直覺 lit, open source localeapp, 線上服務 Phraseapp, 線上服務 原生基本用法 config/locales/en.yml :
+en: posts: &#39;Posts&#39; config/locales/zh-TW.yml :
+&#39;zh-TW&#39;: posts: &#39;文章&#39; controllers/welcome_controller.rb :
+before_action :set_locale def set_locale if params[:locale] &amp;amp;&amp;amp; I18n.available_locales.include?(params[:locale].to_sym) session[:locale] = params[:locale] end I18n.locale = session[:locale] || I18n.default_locale @current_lang = session[:locale].nil? ? &#39;zh-TW&#39; : session[:locale] end view :
+&amp;lt;%= link_to &amp;quot;繁體中文&amp;quot;, locale: &amp;quot;zh-TW&amp;quot; %&amp;gt; &amp;lt;%= link_to &amp;quot;English&amp;quot;, locale: &amp;quot;en&amp;quot; %&amp;gt; &amp;lt;p&amp;gt;&amp;lt;%= t(&#39;posts&#39;) %&amp;gt;&amp;lt;/p&amp;gt; 對應 DB 欄位 activerecord: attributes: user: real_name: &#39;真實姓名&#39; nickname: &#39;暱稱&#39; 當 validate 失敗後的 errors.</description>
     </item>
     
     <item>
@@ -55,12 +51,12 @@ before_action :set_locale def set_locale if params[:locale] &amp;amp;&amp;amp; I
       <pubDate>Wed, 08 Jul 2015 10:26:14 +0800</pubDate>
       
       <guid>/posts/ruby-on-rails-seeds/</guid>
-      <description>Introduction  fabrication, 產生物件 faker, 用來建立假資料  Fabrication 一個 model 對應一個 fabrication
+      <description>Introduction fabrication, 產生物件 faker, 用來建立假資料 Fabrication 一個 model 對應一個 fabrication
 首先先建立模型
-Fabricator(:person) do age { rand(20..45) } end   一定要用 { } 包起來，因為有遇過一些奇怪的 bug, 而 seed 不成功
- Insert 資料
-Fabricate(:person) Fabricate(:person, email: &#39;xxx@ff.com&#39;) # 指定欄位  Faker 使用上非常簡單, 直接看 Example 建立 4 個 users, 並且每名 user 指定一個 role, 隨機 user 建立共 50 篇文章, 隨機 user 對隨機挑的 50 篇文章回覆共 200 筆留言
-user = User.create({email: &amp;quot;user@gmail.com&amp;quot;, password: &amp;quot;00000000&amp;quot;, confirmed_at: Time.</description>
+Fabricator(:person) do age { rand(20..45) } end 一定要用 { } 包起來，因為有遇過一些奇怪的 bug, 而 seed 不成功
+Insert 資料
+Fabricate(:person) Fabricate(:person, email: &#39;xxx@ff.com&#39;) # 指定欄位 Faker 使用上非常簡單, 直接看 Example 建立 4 個 users, 並且每名 user 指定一個 role, 隨機 user 建立共 50 篇文章, 隨機 user 對隨機挑的 50 篇文章回覆共 200 筆留言
+user = User.create({email: &amp;quot;user@gmail.com&amp;quot;, password: &amp;quot;00000000&amp;quot;, confirmed_at: Time.now}) Fabricator(:post) do title { Faker::Lorem.</description>
     </item>
     
     <item>
@@ -69,10 +65,10 @@ user = User.create({email: &amp;quot;user@gmail.com&amp;quot;, password: &amp;qu
       <pubDate>Wed, 08 Jul 2015 00:21:43 +0800</pubDate>
       
       <guid>/posts/ruby-on-rails-testing/</guid>
-      <description>Introduction  Rspec-rails, 是一套 Rails 的 BDD Testing framework, 非常強大 Factory Girl, 產生測試資料 Capybara, 用來搭配 Rspec 的測試工具, 可以模擬使用者操作瀏覽器 (TODO) watchr (存檔馬上測) / rcov(測試涵蓋度) / shoulda (matcher)  Gemfile
-group :development, :test do gem &amp;quot;rspec&amp;quot; # 可以不需要，如果要用原來的 rspec 才需引入 gem &#39;rspec-rails&#39; # rspec 與 rails 整合的套件 gem &amp;quot;factory_girl_rails&amp;quot; end  安裝 rspec : rails generate rspec:install
+      <description>Introduction Rspec-rails, 是一套 Rails 的 BDD Testing framework, 非常強大 Factory Girl, 產生測試資料 Capybara, 用來搭配 Rspec 的測試工具, 可以模擬使用者操作瀏覽器 (TODO) watchr (存檔馬上測) / rcov(測試涵蓋度) / shoulda (matcher) Gemfile
+group :development, :test do gem &amp;quot;rspec&amp;quot; # 可以不需要，如果要用原來的 rspec 才需引入 gem &#39;rspec-rails&#39; # rspec 與 rails 整合的套件 gem &amp;quot;factory_girl_rails&amp;quot; end 安裝 rspec : rails generate rspec:install
 Rspec 關於 BDD BDD 是基於 TDD 發展出來的，不同 TDD 的地方在於 BDD 寫出系統行為的規格，好處是可以盡量避免細節的遺漏、更容易理解及維護。
-指令  執行所有測試 : rspec 只跑 controllers 的測試 : rspec spec/controllers  .</description>
+指令 執行所有測試 : rspec 只跑 controllers 的測試 : rspec spec/controllers .</description>
     </item>
     
     <item>
@@ -83,9 +79,9 @@ Rspec 關於 BDD BDD 是基於 TDD 發展出來的，不同 TDD 的地方在於 
       <guid>/posts/ruby-on-rails-third-party-gems/</guid>
       <description>will_paginate 提供分頁功能
 will_paginate 如何使用 controller : posts/index
-@posts = Post.includes(:user) 改成 @posts = Post.includes(:user).paginate(page: params[:page], per_page: 5)  view : posts/index
-&amp;lt;% @posts.each do |post| %&amp;gt; &amp;lt;%= post.title %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;%= will_paginate @posts %&amp;gt;  will_paginate not working 如果傳入的是 ActiveRecord_Associations_CollectionProxy 而不是 ActiveRecord_Relation 可能會造成此狀況，在 controller 要額外引入 require &#39;will_paginate/array&#39;  bootstrap 樣式 view :
-&amp;lt;%= will_paginate @posts, :renderer =&amp;gt; PaginationLinkRenderer %&amp;gt;  config/initializers/pagination_link_renderer.rb :
+@posts = Post.includes(:user) 改成 @posts = Post.includes(:user).paginate(page: params[:page], per_page: 5) view : posts/index
+&amp;lt;% @posts.each do |post| %&amp;gt; &amp;lt;%= post.title %&amp;gt; &amp;lt;% end %&amp;gt; &amp;lt;%= will_paginate @posts %&amp;gt; will_paginate not working 如果傳入的是 ActiveRecord_Associations_CollectionProxy 而不是 ActiveRecord_Relation 可能會造成此狀況，在 controller 要額外引入 require &#39;will_paginate/array&#39; bootstrap 樣式 view :
+&amp;lt;%= will_paginate @posts, :renderer =&amp;gt; PaginationLinkRenderer %&amp;gt; config/initializers/pagination_link_renderer.rb :
 require &#39;will_paginate/view_helpers/link_renderer&#39; require &#39;will_paginate/view_helpers/action_view&#39; class PaginationLinkRenderer &amp;lt; ::WillPaginate::ActionView::LinkRenderer protected def page_number(page) unless page == current_page tag(:li, link(page, page, :rel =&amp;gt; rel_value(page))) else tag(:li, link(page, &#39;#&#39;, :rel =&amp;gt; rel_value(page)), :class =&amp;gt; &amp;quot;active disabled&amp;quot;) end end def gap tag(:li, link(&#39;.</description>
     </item>
     
@@ -95,7 +91,8 @@ require &#39;will_paginate/view_helpers/link_renderer&#39; require &#39;will_pag
       <pubDate>Sun, 12 Apr 2015 19:15:40 +0800</pubDate>
       
       <guid>/posts/ruby-on-rails-form/</guid>
-      <description>Introduction  simple_form 讓表單寫起來更乾淨, 也支援 bootstrap 樣式, 推薦這套, 它也支援 devise bootstrap_form 也是讓表單更簡單, 但預設使用的是 bootstrap 樣式  Rails 原生表單 form # method 預設是 post &amp;lt;%= form_for @post, url: posts_path(@post) do |f| %&amp;gt; &amp;lt;%= f.label :title %&amp;gt; &amp;lt;%= f.text_field :title %&amp;gt; &amp;lt;%= f.label :content %&amp;gt; &amp;lt;%= f.text_field :content %&amp;gt; &amp;lt;%= f.button :submit, disable_with: &#39;Submiting&#39; %&amp;gt; &amp;lt;% end %&amp;gt;  form_for 與 form_tag 差別 使用 form_for 的話一定要在 controller 的先 new 好 (@post = Post.</description>
+      <description>Introduction simple_form 讓表單寫起來更乾淨, 也支援 bootstrap 樣式, 推薦這套, 它也支援 devise bootstrap_form 也是讓表單更簡單, 但預設使用的是 bootstrap 樣式 Rails 原生表單 form # method 預設是 post &amp;lt;%= form_for @post, url: posts_path(@post) do |f| %&amp;gt; &amp;lt;%= f.label :title %&amp;gt; &amp;lt;%= f.text_field :title %&amp;gt; &amp;lt;%= f.label :content %&amp;gt; &amp;lt;%= f.text_field :content %&amp;gt; &amp;lt;%= f.button :submit, disable_with: &#39;Submiting&#39; %&amp;gt; &amp;lt;% end %&amp;gt; form_for 與 form_tag 差別 使用 form_for 的話一定要在 controller 的先 new 好 (@post = Post.new)
+所以要 create 必須先 new 好</description>
     </item>
     
     <item>
@@ -104,10 +101,12 @@ require &#39;will_paginate/view_helpers/link_renderer&#39; require &#39;will_pag
       <pubDate>Sun, 12 Apr 2015 19:11:19 +0800</pubDate>
       
       <guid>/posts/ruby-on-rails-user-permissions/</guid>
-      <description>Introduction  devise : 提供註冊, 登入, 登出一整套 solution cancancan : 授權功能, 判斷 user 是否可以做什麼, 不可以做什麼 rolify : 身份功能, 賦與 user 身份 ex: 一般 user 或 admin 等等..   cancancan 設計上跟 model 綁太緊我覺得實作上會有些綁手綁腳，而 rolify 適合用在 role 分很多的情況下使用，如果希望專案引入的東西單純一點，我建議只需要 devise 就夠了
- Devise 安裝 1) Gemfile :
-gem &#39;bcrypt&#39; gem &#39;devise&#39;, &#39;~&amp;gt; 3.5.6&#39;   devise 預設使用 bcrypt 做加密  2) Init :
-rails generate devise:install rails generate devise User rails generate devise:views rake db:migrate  3) 補上 zh-TW 旳 rails-i18n 及 devise i18n :</description>
+      <description>Introduction devise : 提供註冊, 登入, 登出一整套 solution cancancan : 授權功能, 判斷 user 是否可以做什麼, 不可以做什麼 rolify : 身份功能, 賦與 user 身份 ex: 一般 user 或 admin 等等.. cancancan 設計上跟 model 綁太緊我覺得實作上會有些綁手綁腳，而 rolify 適合用在 role 分很多的情況下使用，如果希望專案引入的東西單純一點，我建議只需要 devise 就夠了
+Devise 安裝 Gemfile :
+gem &amp;lsquo;bcrypt&amp;rsquo; gem &amp;lsquo;devise&amp;rsquo;, &amp;lsquo;~&amp;gt; 3.5.6&amp;rsquo;
+devise 預設使用 bcrypt 做加密 Init :
+rails generate devise:install rails generate devise User rails generate devise:views rake db:migrate
+補上 zh-TW 旳 rails-i18n 及 devise i18n :</description>
     </item>
     
     <item>
@@ -116,7 +115,7 @@ rails generate devise:install rails generate devise User rails generate devise:v
       <pubDate>Thu, 29 Jan 2015 11:15:25 +0800</pubDate>
       
       <guid>/posts/ruby-on-rails-basics/</guid>
-      <description>Rails 指令  rails new my_app : 新增 my_app 專案 rails s : 啟動 server rails s RAILS_ENV=development : 啟動 development 環境的 server rails s -b 0.0.0.0 : 開放外部, 預設只允許本機 (127.0.0.1:3000) rvmsudo rails s -p 80 : 使用 80 port, 使用 rvmsudo 是因為 rails 起 80 port 一定要用 sudo 身份 rails s -p 5000 : 換 port, 預設是 3000 rails c : rails console, 可以直接操作 ActiveRecord rails c --sandbox : 沙盒的 console, 在這期間改的 DB 內容在離開時都會還原 rails db : 進入 db console 根據 config/database.</description>
+      <description>Rails 指令 rails new my_app : 新增 my_app 專案 rails s : 啟動 server rails s RAILS_ENV=development : 啟動 development 環境的 server rails s -b 0.0.0.0 : 開放外部, 預設只允許本機 (127.0.0.1:3000) rvmsudo rails s -p 80 : 使用 80 port, 使用 rvmsudo 是因為 rails 起 80 port 一定要用 sudo 身份 rails s -p 5000 : 換 port, 預設是 3000 rails c : rails console, 可以直接操作 ActiveRecord rails c --sandbox : 沙盒的 console, 在這期間改的 DB 內容在離開時都會還原 rails db : 進入 db console 根據 config/database.</description>
     </item>
     
     <item>
@@ -126,8 +125,8 @@ rails generate devise:install rails generate devise User rails generate devise:v
       
       <guid>/posts/ruby-basics/</guid>
       <description>變數 以此例為例子
-class Var def print puts $hh end $hh = &amp;quot;hh&amp;quot; end t = Var.new t.print  替換以下變數
- $name : 全域變數. 結果: 正常 @name : 實例變數, 作用僅限於 self 指示的物件. 結果: 相當於輸出 nil, 什麼東沒有 @@name : 類別變數, 在 class 內使用, 如果另個物件繼承它的物件, 也可以使用 @@name. 結果: 正常 name : 區域變數 (小寫字母或底線開頭, 初始化前並沒有 nil 值). 結果: undefined local variable or method hh&#39; Name : 常數 (大寫開頭, 不可重覆定義). 結果: 正常  結論 : 定義在 class 內的變數必須是 全域, 類別或常數</description>
+class Var def print puts $hh end $hh = &amp;quot;hh&amp;quot; end t = Var.new t.print 替換以下變數
+$name : 全域變數. 結果: 正常 @name : 實例變數, 作用僅限於 self 指示的物件. 結果: 相當於輸出 nil, 什麼東沒有 @@name : 類別變數, 在 class 內使用, 如果另個物件繼承它的物件, 也可以使用 @@name. 結果: 正常 name : 區域變數 (小寫字母或底線開頭, 初始化前並沒有 nil 值). 結果: undefined local variable or method hh&#39; Name : 常數 (大寫開頭, 不可重覆定義). 結果: 正常 結論 : 定義在 class 內的變數必須是 全域, 類別或常數</description>
     </item>
     
     <item>
@@ -136,11 +135,11 @@ class Var def print puts $hh end $hh = &amp;quot;hh&amp;quot; end t = Var.new t.
       <pubDate>Fri, 29 Nov 2013 01:44:00 +0000</pubDate>
       
       <guid>/posts/ruby-gem/</guid>
-      <description>Install Gem on Ubuntu [1] Update &amp;amp; Upgrade sudo apt-get update sudo apt-get upgrade -y  [2] Install RVM (Ruby Version Manager) Install curl (MacOS doesn&amp;rsquo;t need to execute this)
-sudo apt-get install curl  Install RVM
-\curl -sSL https://get.rvm.io | bash -s stable  讀取 rvm
-source ~/.rvm/scripts/rvm  安裝 rvm 自己相依的東西
-rvm requirements  [3] Install Ruby rvm install ruby rvm use ruby --default  [4] Install RubyGems rvm rubygems current  Gem commands  gem -v : RubyGems 版本 gem update --system : 升級 RubyGems gem install gem_name : 安裝某個套件, 加上 --no-ri --no-rdoc 不產生文件 gem list : 列出安裝的套件 gem update gem_name : 更新最新版本 gem update : 更新所有 Gem gem install -v x.</description>
+      <description>Install Gem on Ubuntu [1] Update &amp;amp; Upgrade sudo apt-get update sudo apt-get upgrade -y [2] Install RVM (Ruby Version Manager) Install curl (MacOS doesn&amp;rsquo;t need to execute this)
+sudo apt-get install curl Install RVM
+\curl -sSL https://get.rvm.io | bash -s stable 讀取 rvm
+source ~/.rvm/scripts/rvm 安裝 rvm 自己相依的東西
+rvm requirements [3] Install Ruby rvm install ruby rvm use ruby --default [4] Install RubyGems rvm rubygems current Gem commands gem -v : RubyGems 版本 gem update --system : 升級 RubyGems gem install gem_name : 安裝某個套件, 加上 --no-ri --no-rdoc 不產生文件 gem list : 列出安裝的套件 gem update gem_name : 更新最新版本 gem update : 更新所有 Gem gem install -v x.</description>
     </item>
     
     <item>
@@ -150,11 +149,11 @@ rvm requirements  [3] Install Ruby rvm install ruby rvm use ruby --default  [4] 
       
       <guid>/posts/ruby-on-rails-installation-and-deployment/</guid>
       <description>Installation (最後更新: 2016-04-14)
-[1] Update &amp;amp; Upgrade sudo apt-get update sudo apt-get upgrade -y  [2] Install RVM (Ruby Version Manager) Install curl (MacOS doesn&amp;rsquo;t need to execute this)
-sudo apt-get install curl  Install RVM
-\curl -sSL https://get.rvm.io | bash -s stable  讀取 rvm
-source ~/.rvm/scripts/rvm  安裝 rvm 自己相依的東西
-rvm requirements  [3] Install Ruby rvm install ruby rvm use ruby --default  [4] Install RubyGems rvm rubygems current  [5] Install rails gem install rails   安裝 rails 的 doc 很久, 可以加上 -no-rdoc --no-ri 忽略 doc</description>
+[1] Update &amp;amp; Upgrade sudo apt-get update sudo apt-get upgrade -y [2] Install RVM (Ruby Version Manager) Install curl (MacOS doesn&amp;rsquo;t need to execute this)
+sudo apt-get install curl Install RVM
+\curl -sSL https://get.rvm.io | bash -s stable 讀取 rvm
+source ~/.rvm/scripts/rvm 安裝 rvm 自己相依的東西
+rvm requirements [3] Install Ruby rvm install ruby rvm use ruby --default [4] Install RubyGems rvm rubygems current [5] Install rails gem install rails 安裝 rails 的 doc 很久, 可以加上 -no-rdoc --no-ri 忽略 doc</description>
     </item>
     
   </channel>

@@ -2,32 +2,27 @@
 <html lang="en-us">
 <title>Rails Model | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-model/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-model/">Rails Model</a></h1>
-    <p class="meta"><time datetime="2015-07-14T12:51:59&#43;08:00">July 14, 2015</time></p>
+    <h1>Rails Model</h1>
+    <time datetime="2015-07-14T12:51:59&#43;08:00">July 14, 2015</time>
   </header>
-  
-
-<h2 id="model-與-table-的-naming-conventions">Model 與 Table 的 Naming Conventions</h2>
-
+  <h2 id="model-與-table-的-naming-conventions">Model 與 Table 的 Naming Conventions</h2>
 <p>Model : 兩個單字以上不使用 <code>_</code> 連接, 並且開頭字母大寫, ex: BookClub
 Table : 兩個單字以上使用 <code>_</code> 連接, ex: book_clubs</p>
-
 <pre><code>Model / Class       Model 檔名          Table / Schema
 --------------------------------------------------------
 Article             article.rb          articles
@@ -36,15 +31,11 @@ Deer                deer.rb             deers
 Mouse               mouse.rb            mice
 Person              person.rb           people
 </code></pre>
-
 <blockquote>
 <p>外連鍵命名 : item_id, order_id</p>
 </blockquote>
-
 <h2 id="crud">CRUD</h2>
-
 <h3 id="read">Read</h3>
-
 <pre><code>User.find(3)
 User.find(3, 4, 5)
 User.first
@@ -65,46 +56,32 @@ User.where(&quot;DAY(created_at) = ?&quot;, DateTime.now.day)         # 本日
 User.where(&quot;MONTH(created_at) = ?&quot;, DateTime.now.month)     # 本月
 User.where(&quot;YEAR(created_at) = ?&quot;, DateTime.now.year)       # 本年
 </code></pre>
-
 <p>Select 某個欄位挑出並 Alias</p>
-
 <pre><code>User.joins(:user_groups).select('user_groups.name AS group_name')
 </code></pre>
-
 <p>AND</p>
-
 <pre><code>where 預設就是 AND 了
 
 你也可以用另一種寫法 :
 User.where('`age` &gt;= ? AND `age` &lt;= ?', 10, 20)
 </code></pre>
-
 <p>OR</p>
-
 <pre><code>User.where('`grade` = ? OR `level` = ?', 80, 3)
 </code></pre>
-
 <blockquote>
 <p>注意! 使用 ` 括起來</p>
 </blockquote>
-
 <p>IN</p>
-
 <pre><code>@users = User.where(name: [value1, value2]).all
 &gt; SELECT * FROM users WHERE name IN (value1, value2, and so on...);
 </code></pre>
-
 <p>LIKE</p>
-
 <pre><code>Product.where(&quot;name LIKE ?&quot;, &quot;%#{@key_words}%&quot;)
 </code></pre>
-
 <blockquote>
 <p>無法 LIKE 的關鍵字 <code>\</code> <code>%</code> <code>_</code></p>
 </blockquote>
-
 <p>是否有改變 attribute</p>
-
 <pre><code>person = Person.find_by_name('Uncle Bob')
 person.changed?       # =&gt; false
 
@@ -114,11 +91,8 @@ person.name_changed?  # =&gt; true
 person.name_was       # =&gt; 'Uncle Bob'
 person.name_change    # =&gt; ['Uncle Bob', 'Bob']
 </code></pre>
-
 <h3 id="create">Create</h3>
-
 <p>先 new 再 save</p>
-
 <pre><code>u = User.new
 u.name = 'Jex'
 u.save
@@ -126,79 +100,51 @@ u.save
 u = User.new(name: 'Jex')
 u.save
 </code></pre>
-
 <p>Create</p>
-
 <pre><code>User.create(name: 'Jex', ages: '26')
 </code></pre>
-
 <p>沒有的話就新增</p>
-
 <pre><code>user.profile.where(user_id: user.id).first_or_create
 </code></pre>
-
 <h3 id="update">Update</h3>
-
 <blockquote>
 <p>以下這幾種 update 方法會有不同的 validation 及 callback 行為, 請參考本文下 Validations &amp; Callbacks 的整理圖表</p>
 </blockquote>
-
 <p>先改再 save</p>
-
 <pre><code>user.name = 'Jex'
 user.save
 
 user.attributes = { name: 'Jex' }
 user.save
 </code></pre>
-
 <p>Update</p>
-
 <pre><code>user.update('name', 'Jex')
 </code></pre>
-
 <p>update_attribute(name, value) 更新單一欄位</p>
-
 <pre><code>user.update_attribute('name', 'Jex')
 </code></pre>
-
 <p>update_attribute(attributes) 更新多個欄位</p>
-
 <pre><code>user.update_attributes(name: 'Jex')
 </code></pre>
-
 <p>update_column(name, value) 更新單一欄位</p>
-
 <pre><code>user.update_column('name', 'Jex')
 </code></pre>
-
 <p>update_columns(attributes) 更新多個欄位</p>
-
 <pre><code>user.update_columns(name: 'Jex')
 </code></pre>
-
 <p>+1 / +n 的簡潔寫法</p>
-
 <pre><code>a.increment!(:case_count)           # case_count += 1
 a.increment!(:case_count, 3)        # case_count += 3
 </code></pre>
-
 <h3 id="delete">Delete</h3>
-
 <p>刪除單筆</p>
-
 <pre><code>User.find(3).destroy
 </code></pre>
-
 <p>刪除全部</p>
-
 <pre><code>User.destroy_all
 </code></pre>
-
-<h3 id="有-與沒有的差別-i-e-create-vs-create">有 <code>!</code> 與沒有的差別(i.e. <code>create</code> vs <code>create!</code>)</h3>
-
+<h3 id="有--與沒有的差別ie-create-vs-create">有 <code>!</code> 與沒有的差別(i.e. <code>create</code> vs <code>create!</code>)</h3>
 <p>create 失敗時不會擲出 exception, 但 create! 會 (Raises a RecordInvalid error if validations fail)</p>
-
 <pre><code>create
 create!
 save
@@ -206,11 +152,8 @@ save!
 update
 update!
 </code></pre>
-
-<h2 id="validations-callbacks">Validations &amp; Callbacks</h2>
-
+<h2 id="validations--callbacks">Validations &amp; Callbacks</h2>
 <h3 id="validation-examples">Validation examples</h3>
-
 <pre><code># 只要是數字就行
 validates :price, numericality: true
 
@@ -260,18 +203,12 @@ end
 # using a lambda  假設你希望某個 enum 的值有存在才驗證這個，可以這樣寫
 validates :discount, inclusion: { in: 0.00..0.99 }, if: lambda { self.enum_discount? }
 </code></pre>
-
 <h3 id="當-validate-失敗時取得-error-messages">當 validate 失敗時取得 Error Messages</h3>
-
 <p>在 controller 可以用以下截取錯誤訊息</p>
-
 <pre><code>@user.errors.full_messages.join(',')
 </code></pre>
-
-<h3 id="custom-validation-custom-errors-message">Custom validation / Custom errors message</h3>
-
+<h3 id="custom-validation--custom-errors-message">Custom validation / Custom errors message</h3>
 <p>如果有個 enabled 欄位, 判斷是否為 0 或 1, 錯誤的話給錯誤訊息</p>
-
 <pre><code>validate :check_enabled
 
 def check_enabled
@@ -281,107 +218,83 @@ def check_enabled
   end
 end
 </code></pre>
-
 <p>即使在 controller 也可以</p>
-
 <pre><code> @user.errors.add(:email, &quot;Not valid&quot;)
  @user.errors[:email] &lt;&lt; &quot;Not valid&quot;
 </code></pre>
-
 <h3 id="幾種-update-方法中不同的-validation-及-callback-行為">幾種 update 方法中不同的 validation 及 callback 行為</h3>
-
 <ul>
 <li>save
-
 <ul>
 <li>行為同 update</li>
-</ul></li>
+</ul>
+</li>
 <li>update(attributes)
-
 <ul>
 <li>Validation and Callback 都會執行</li>
 <li>updated_at 會更新</li>
-</ul></li>
+</ul>
+</li>
 <li>update_attributes(attributes)
-
 <ul>
 <li>Validation 不會執行</li>
 <li>Callback 會執行</li>
 <li>updated_at 會更新</li>
-</ul></li>
+</ul>
+</li>
 <li>update_attribute(name, value)
-
 <ul>
 <li>行為同 update_attributes</li>
-</ul></li>
+</ul>
+</li>
 <li>update_columns(attributes)
-
 <ul>
 <li>直接執行 SQL statement</li>
 <li>Skip Validation and Callback</li>
 <li>updated_at 也不會被 update</li>
-</ul></li>
+</ul>
+</li>
 <li>update_column(name, value)
-
 <ul>
 <li>行為同 update_columns</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h3 id="skip-callback">Skip callback</h3>
-
 <pre><code>attr_accessor :skip_callbacks
 after_create :assign_role, unless: :skip_callbacks
 
 user.skip_callbacks = true
 user.save
 </code></pre>
-
 <h3 id="skip-validation">Skip validation</h3>
-
 <pre><code>user.save(validate: false)
 </code></pre>
-
 <h3 id="針對特定情況才-validate">針對特定情況才 validate</h3>
-
 <pre><code>attr_accessor :need_validation
 validates :real_name, presence: true, on: :update, if: :need_validation
 </code></pre>
-
 <p>當 update 需要 validate 時指定 <code>need_validation: true</code> 就會執行 validate 了</p>
-
 <pre><code>@user.update(real_name: 'Jex Lin', need_validation: true)
 </code></pre>
-
 <h3 id="custom-field-驗證">Custom field 驗證</h3>
-
 <p>有時候會有一些特殊需求, 例如需要一個欄位, 但這些欄位只在 model 的 before_create 前做處理才使用到, 不會存在在 DB 裡, 也因為會需要 validation, 所以放在 model</p>
-
 <p>models/post.rb</p>
-
 <pre><code>attr_accessor :role
 validates :role, presence: true, on: :create
 </code></pre>
-
 <blockquote>
 <p>限制只有在 create 才會做 validate 驗證, 否則 update 也會觸發到</p>
 </blockquote>
-
 <p>controllers/posts_controller.rb</p>
-
 <pre><code># 在 create 前的參數取得要允許 role
 params.require(:post).permit(:title, :content, :role)
 </code></pre>
-
 <p>views/posts/new.html.erb</p>
-
 <pre><code>&lt;%= f.input :role, input_html: { class: 'form-control' } %&gt;
 </code></pre>
-
-<h2 id="before-after">before<em>* / after</em>*</h2>
-
+<h2 id="before_--after_">before_* / after_*</h2>
 <h3 id="if-any-return-false-then-everything-stops">If any return false then everything stops.</h3>
-
 <pre><code>before_validation
 after_validation
 
@@ -397,18 +310,14 @@ after_update
 before_destroy
 after_destroy
 </code></pre>
-
 <h3 id="強制存的-float-只能有一位小數">強制存的 float 只能有一位小數</h3>
-
 <pre><code>before_save do
   if self.price_changed?
     self.price = self.price.round(1)
   end
 end
 </code></pre>
-
-<h3 id="在每次儲存前檢查特定欄位是否有變動-有的話記-flag">在每次儲存前檢查特定欄位是否有變動，有的話記 flag</h3>
-
+<h3 id="在每次儲存前檢查特定欄位是否有變動有的話記-flag">在每次儲存前檢查特定欄位是否有變動，有的話記 flag</h3>
 <pre><code>before_save do |f|
   fields = [
     'name',
@@ -422,11 +331,8 @@ end
   end
 end
 </code></pre>
-
-<h3 id="before-destroy-刪除前檢查是否有其他關聯">before_destroy 刪除前檢查是否有其他關聯</h3>
-
+<h3 id="before_destroy-刪除前檢查是否有其他關聯">before_destroy 刪除前檢查是否有其他關聯</h3>
 <p>category.rb :</p>
-
 <pre><code>has_many :products
 before_destroy :check_for_products
 
@@ -437,22 +343,15 @@ def check_for_products
   end
 end
 </code></pre>
-
 <h2 id="associating-models">Associating models</h2>
-
 <h3 id="through-用法">through 用法</h3>
-
 <pre><code>models/user.rb
 
     has_many :groups  througth =&gt; user_groups
 </code></pre>
-
 <p>User_groups Table 關聯 User.id 及 Group.id</p>
-
 <p>User.groups 會藉由 through 取得 User 擁有的 Groups</p>
-
 <p>官方 example</p>
-
 <pre><code>class Physician &lt; ActiveRecord::Base
   has_many :appointments
   has_many :patients, through: :appointments
@@ -468,140 +367,92 @@ class Patient &lt; ActiveRecord::Base
   has_many :physicians, through: :appointments
 end
 </code></pre>
-
-<h3 id="如果-user-與-translator-的關係為-1-對-1-translatorlanguage-而是用-user-id-的話-當-translator-與-translatorlanguage-以-user-id-關聯寫法">如果 User 與 Translator 的關係為 1 對 1, TranslatorLanguage 而是用 user_id 的話, 當 Translator 與 TranslatorLanguage 以 user_id 關聯寫法</h3>
-
+<h3 id="如果-user-與-translator-的關係為-1-對-1-translatorlanguage-而是用-user_id-的話-當-translator-與-translatorlanguage-以-user_id-關聯寫法">如果 User 與 Translator 的關係為 1 對 1, TranslatorLanguage 而是用 user_id 的話, 當 Translator 與 TranslatorLanguage 以 user_id 關聯寫法</h3>
 <p>Translator</p>
-
 <pre><code>has_many :translator_languages, primary_key: 'user_id', foreign_key: 'user_id'
 </code></pre>
-
 <p>TranslatorLanguage</p>
-
 <pre><code>belongs_to :translator, primary_key: 'user_id', foreign_key: 'user_id'
 </code></pre>
-
 <p>就可以直接用 Translator.user_id 與 TranslatorLanguage.user_id 關聯</p>
-
 <pre><code>Translator.first.translator_languages
 TranslatorLanguage.first.translator
 </code></pre>
-
-<h3 id="如果-order-uuid-與-orderitem-order-uuid-關聯">如果 Order.uuid 與 OrderItem.order_uuid 關聯</h3>
-
+<h3 id="如果-orderuuid-與-orderitemorder_uuid-關聯">如果 Order.uuid 與 OrderItem.order_uuid 關聯</h3>
 <p>假設 OrderItem 沒有 order_id，關聯必須這樣寫</p>
-
 <p>Order :</p>
-
 <pre><code>has_many :order_items, primary_key: 'uuid', foreign_key: 'order_uuid'
 </code></pre>
-
 <blockquote>
 <p>使用 Order.uuid 去關聯 OrderItem.order_uuid</p>
 </blockquote>
-
 <p>OrderItem :</p>
-
 <pre><code>belongs_to :order, primary_key: 'uuid', foreign_key: 'order_uuid'
 </code></pre>
-
 <blockquote>
 <p>關聯回去</p>
 </blockquote>
-
 <p><code>primary_key</code>: 是指自已的 key; <code>foreign_key</code>: 是指要關聯到那個表的 key</p>
-
-<h3 id="thirdcategory-id-與-product-category-id-關聯">ThirdCategory.id 與 Product.category_id 關聯</h3>
-
+<h3 id="thirdcategoryid-與-productcategory_id-關聯">ThirdCategory.id 與 Product.category_id 關聯</h3>
 <p>Product</p>
-
 <pre><code>belongs_to :third_category, foreign_key: 'category_id'
 </code></pre>
-
 <p>ThirdCategory</p>
-
 <pre><code>has_many :products, foreign_key: 'category_id'
 </code></pre>
-
 <p>可以雙向關聯</p>
-
 <pre><code>Product.first.third_category
 ThirdCategory.first.products
 </code></pre>
-
 <h3 id="firstcategory-透過-secondcategory-關聯-thridcategory">FirstCategory 透過 SecondCategory 關聯 ThridCategory</h3>
-
 <p>FirstCategory</p>
-
 <pre><code>has_many :second_categories
 has_many :third_categories, through: :second_categories
 </code></pre>
-
 <p>SecondCategory</p>
-
 <pre><code>belongs_to :first_category
 has_many :third_categories
 </code></pre>
-
 <p>ThridCategory</p>
-
 <pre><code>belongs_to :second_category
 </code></pre>
-
 <h3 id="includes-with-where">includes with where</h3>
-
 <pre><code>Article.includes(:comments).where(comments: { visible: true })
 User.includes(:posts).references(:posts).where('posts.author = ?', 'Jex')
 User.includes(:posts).references(:posts).where('posts.id IS NOT NULL')
 </code></pre>
-
-<h3 id="class-name-has-many-不一定要跟-class-name-一樣">class_name : has_many 不一定要跟 class name 一樣</h3>
-
+<h3 id="class_name--has_many-不一定要跟-class-name-一樣">class_name : has_many 不一定要跟 class name 一樣</h3>
 <pre><code>has_many :profile
 等同於
 has_many :info, class_name: 'Profile'
 </code></pre>
-
-<h3 id="join-where">Join + where</h3>
-
+<h3 id="join--where">Join + where</h3>
 <pre><code>User.all.joins(:user_languages).where(user_languages: { from: 1, to: 2 } )
 
 或
 User.all.joins(:user_languages).where('`from` = ? AND `to` = ?', 1, 2)
 </code></pre>
-
 <h3 id="left-join">LEFT JOIN</h3>
-
 <pre><code>joins('LEFT JOIN categories AS b ON (a.id = b.parent_id)')
 </code></pre>
-
 <h3 id="alias-table-name">Alias table name</h3>
-
 <pre><code>Category.from('categories AS a').where('a.parent_id = ?', 0)
 </code></pre>
-
 <h3 id="將結果的-associationrelation-集合截取特定欄位">將結果的 AssociationRelation 集合截取特定欄位</h3>
-
 <p>顯示 DB 真實的值</p>
-
 <pre><code>Book.pluck(:type)
     &gt; [1, 2, 3]
 
 Book.pluck(:type, :name)
 </code></pre>
-
 <p>如果有 Enum 會自動被轉換, 兩者效果相同 :</p>
-
 <pre><code>Book.all.map(&amp;:name)
     或
 Book.collect(&amp;:type)
     &gt; [tech, food, sport]
 </code></pre>
-
 <h2 id="scope">scope</h2>
-
 <p>Scope (基本用法)</p>
-
 <pre><code>scope :sold, -&gt; { where(state: 'sold') }                        # 一般用法
 scope :teenager, -&gt; { where(&quot;age &gt;= 13 AND age &lt;= 19&quot;) }        # 下 where SQL
 scope :recent, -&gt;{ where(published_at: 2.weeks.ago) }           # 使用 proc object 來避免 date 固定的問題
@@ -609,15 +460,11 @@ scope :recent, -&gt; { order(&quot;created_at desc&quot;).limit(3) }         # O
 scope :recent_red, -&gt;{ recent.where(color: 'red') }             # 處理完再 where
 scope :unpublished, -&gt; {self.published}                         # 使用其他 scope
 </code></pre>
-
 <p>可傳入參數</p>
-
 <pre><code>scope :starts_with, -&gt; (name) { where(&quot;name like ?&quot;, &quot;#{name}%&quot;)}
 @products.starts_with(params[:starts_with])
 </code></pre>
-
 <p>Default scope</p>
-
 <pre><code>default_scope { is_admin }                                      # 也可以是 enum 的值
 default_scope {where(deleted_at: nil)}
 
@@ -625,9 +472,7 @@ default_scope {where(deleted_at: nil)}
 Post.all                # Fires &quot;SELECT * FROM posts WHERE deleted_at IS NULL&quot;
 Post.unscoped.all       # Fires &quot;SELECT * FROM posts&quot;
 </code></pre>
-
 <p>Join scope</p>
-
 <pre><code>scope :feature_products, -&gt; { joins(:products).merge(Product.features) }
 
 Join 完要注意的是要記得 includes
@@ -637,215 +482,145 @@ Join 完要注意的是要記得 includes
 @c = Category.feature_product.includes(:products)
 就會撈 join 裡面的 products 了
 </code></pre>
-
 <p>Includes scope</p>
-
 <pre><code># 傳入 where 的值 `Person.parent_last_name('John Smith')`
 scope :parent_last_name, -&gt;(name) { includes(:parents).where(last_name: name) }
 </code></pre>
-
 <p>Includes nested relationships</p>
-
 <pre><code>Category 可以直接撈 product, 但 product_specs 不行，product_specs 只有跟 product 關聯, 所以用下面的方式 includes products 及 product_specs
 
 Category.first.includes(products: [:product_specs])
 </code></pre>
-
 <h2 id="joins-與-includes-的差別">joins 與 includes 的差別</h2>
-
 <h3 id="joins">joins</h3>
-
 <pre><code>a = User.joins(:translator)
  =&gt; SELECT &quot;users&quot;.* FROM &quot;users&quot; INNER JOIN &quot;translators&quot; ON &quot;translators&quot;.&quot;user_id&quot; = &quot;users&quot;.&quot;id&quot;
 
 a[1].translator
   Translator Load (0.3ms) SELECT ...(略)
 </code></pre>
-
 <p>看這個 SQL 結果知道當兩邊 TABLE 的都有資料的 user (user_id 一樣) 才放入集合, 所以它是沒有關聯到 translator 的, 如果 each print translator 的資料的話會有 N+1 query 的問題</p>
-
 <h3 id="includes">includes</h3>
-
 <pre><code>a = User.includes(:translator)
   User Load (1.3ms)  SELECT &quot;users&quot;.* FROM &quot;users&quot;
 SELECT &quot;users&quot;.* FROM &quot;users&quot;
   Translator Load (2.3ms)  SELECT &quot;translators&quot;.* FROM &quot;translators&quot; WHERE &quot;translators&quot;.&quot;user_id&quot; IN (1, 2,  ...(略)... )
 </code></pre>
-
 <p>這邊會一次將需要的 translator 資料都取出來, 但如果某個 user 沒有 translator 他仍然會在集合裡, 只是要取 translator 時是 nil</p>
-
 <pre><code>a[1].translator
 </code></pre>
-
 <p>就會直接從 cache 取, 不會再下 query 了</p>
-
 <h3 id="先-joins-後-includes-結果不符合預期問題">先 joins 後 includes 結果不符合預期問題</h3>
-
 <p>假如我們要先取出 group_id = 3 的資料, 然候再用 includes 避免 each 有 n+1 query</p>
-
 <pre><code>users = User.with_role(:user)
 users = users.joins(:user_groups).where(user_groups: { group_id: 3 })
 users = users.includes(:user_groups)
 </code></pre>
-
 <p>但會發現最後 user_groups 只會剩 group_id = 3 那筆, 最後一行不使用 includes 改成 preload, 即可避免</p>
-
 <pre><code>users = users.preload(:user_groups)
 </code></pre>
-
-<h3 id="eager-load-vs-includes-vs-preload">eager_load vs includes vs preload</h3>
-
+<h3 id="eager_load-vs-includes-vs-preload">eager_load vs includes vs preload</h3>
 <p>TODO &hellip;</p>
-
 <h2 id="enum">Enum</h2>
-
 <p>models/users.rb</p>
-
 <pre><code>enum gender: {female: 0, male: 1}
 # 也等於 : enum gender: [:female, :male]
 </code></pre>
-
 <h3 id="撈出來就能直接取得對應的值">撈出來就能直接取得對應的值</h3>
-
 <p>顯示 enum 對應表 (也就是 model 裡設定的 enum)</p>
-
 <pre><code>User.genders
  =&gt; {&quot;female&quot;=&gt;0, &quot;male&quot;=&gt;1}
 </code></pre>
-
 <p>直接取得對應後的結果</p>
-
 <pre><code>u = User.find(1)
 u.gender
  =&gt; &quot;female&quot;
 </code></pre>
-
 <blockquote>
 <p>如果指定 gender 一個不存在在 enum 的值會引發錯誤, ex: u.gender = 131</p>
 </blockquote>
-
 <p>更可以直接取得值</p>
-
 <pre><code>u.male?
  =&gt; true
 </code></pre>
-
 <p>where 使用 enum 對應</p>
-
 <pre><code>User.where(gender: User.genders[:male])
 </code></pre>
-
 <p>那麼 view 該如何呈現呢?</p>
-
 <pre><code># simple_form 版
 &lt;%= f.input :gender, as: :radio_buttons, collection: User.genders.keys %&gt;
 </code></pre>
-
 <p>某些時候需要<strong>真實的值</strong>而不是 Enum 轉義過的值</p>
-
 <pre><code>User.find(4).read_attribute('status')
 </code></pre>
-
-<h3 id="enum-i18n-radio-button">Enum + i18n + Radio button</h3>
-
+<h3 id="enum--i18n--radio-button">Enum + i18n + Radio button</h3>
 <p>models/user.rb</p>
-
 <pre><code>enum gender: {female: 0, male: 1}
 def self.genders_i18n(hash = {})
    genders.keys.each { |key| hash[I18n.t(&quot;genders.#{key}&quot;)] = key }
    hash
 end
 </code></pre>
-
 <p>locales/zh-TW.yml</p>
-
 <pre><code>zh-TW:
   genders:
     female: '女'
     male: '男'
 </code></pre>
-
 <p>到 Rails consle 結果是否正確</p>
-
 <pre><code>I18n.locale = 'zh-TW'
 User.genders_i18n
  =&gt; {&quot;女&quot;=&gt;&quot;female&quot;, &quot;男&quot;=&gt;&quot;male&quot;}
 </code></pre>
-
 <p>view : 顯示 radio button (with simple_form)</p>
-
 <pre><code>&lt;%= f.input :gender, as: :radio_buttons, collection: User.genders_i18n %&gt;
 </code></pre>
-
 <p>view : 顯示 gender + i18n</p>
-
 <pre><code>Gender: &lt;%= t('genders.' + current_user.gender) %&gt;
 </code></pre>
-
 <h3 id="enum-同值問題-用-prefix-解決">Enum 同值問題, 用 prefix 解決</h3>
-
 <p>Enum 預設不支援同值, 如果有兩個不同 column 但值相同, 會引發錯誤</p>
-
 <p>ex :</p>
-
 <pre><code>hash = { private: 0, public: 1 }
 
 enum post: hash
 enum name: hash
 </code></pre>
-
 <p>因為 enum 可以這樣用, 如果有兩個一樣值的 enum, 就會產生問題, 不能明確指的是哪一個 column</p>
-
 <pre><code>a.post = 1
 a.public?
  =&gt; true
 </code></pre>
-
 <p>解決方法 : 加上 prefix</p>
-
 <p>己經有人發現這個問題也己經修復了, 使用 <code>enum_prefix</code> 參數即可解決,</p>
-
 <p>但目前 Rails 4.2.3 版還沒有, 只能等下一版發佈才能使用,</p>
-
 <p>在那之前只能先用其他方式達成 :</p>
-
 <pre><code>status = { private: 0, public: 1 }
 
 enum post: Hash[status.map{|k,v| [&quot;post_#{k}&quot;,v]}]
 enum name: Hash[status.map{|k,v| [&quot;name_#{k}&quot;,v]}]
 </code></pre>
-
 <h2 id="transaction">transaction</h2>
-
 <p>確保在 transaction block 裡的程式都成功，最後才會寫進資料庫</p>
-
-<h3 id="最經典的例子-a-匯款給-b">最經典的例子 － A 匯款給 B</h3>
-
+<h3 id="最經典的例子--a-匯款給-b">最經典的例子 － A 匯款給 B</h3>
 <pre><code>ActiveRecord::Base.transaction do
   david.withdrawal(100)
   mary.deposit(100)
 end
 </code></pre>
-
 <h3 id="different-activerecord-classes-in-a-single-transaction">Different ActiveRecord classes in a single transaction</h3>
-
 <p>雖然 transaction 是被 ActiveRecord Calss 呼叫的，但 block 裡面不一定都要是那個 Class 的 instance</p>
-
 <p>你可以混著不同的 model 在同一個 transaction block, This is because transactions are <strong>per-database</strong> connection, not <strong>per-model</strong>.</p>
-
 <pre><code>Client.transaction do       # 或 @client.transaction do
   @client.users.create!
   @user.clients.first.destroy!
   Product.first.destroy!
 end
 </code></pre>
-
 <p><strong>注意!!</strong> 要使用 The bang modifier (!) - <code>save!</code> 而不是 <code>save</code>, 原因是 transaction reset 是經由 rollback 觸發後才重置的，
 然而 rollback 只會被 Exception 觸發，所以當你執行如 <code>update_attribute</code> 等等的 method 時，當它失敗它會擲出 false，
 但它並不會觸發 rollback，所以一定要加上 <code>!</code>，讓它發生錯誤時擲出 Exception</p>
-
 <p>基於上述的觀念也可以得出另個結論 － 如果有 exception 表示有 rollback，沒有的話代表 transaction 是成功的，可以進一步針對失敗時要做的處理</p>
-
 <pre><code>def test
   ActiveRecord::Base.transaction do
     # do something ...
@@ -855,11 +630,8 @@ end
     render json: {updated: false}
 end
 </code></pre>
-
 <h3 id="transactions-are-not-distributed-across-database-connections">Transactions are not distributed across database connections</h3>
-
 <p>一個 transaction 只會作用在單一的 database connection. 如果你有多個指定用途的 databases，那麼你應該使用 nested transaction 來解決</p>
-
 <pre><code>Client.transaction do
   Product.transaction do
     product.buy(@quantity)
@@ -867,19 +639,13 @@ end
   end
 end
 </code></pre>
-
 <blockquote>
 <p>一般情況都是規劃一個 database 運行網站，這樣則不需要用到 nested transaction</p>
 </blockquote>
-
-<h3 id="lock-row-lock">Lock row - <code>.lock!</code></h3>
-
+<h3 id="lock-row---lock">Lock row - <code>.lock!</code></h3>
 <p>這個 example 先將某筆 lock 鎖起來，並且 sleep 後十秒，在這期間內去 update 它觀察它的變化</p>
-
 <p>為了方便直接用 Rails console 測 (要開兩個 console 才能測)</p>
-
 <p>第一個 console</p>
-
 <pre><code>Case.transaction do; @case = Case.find(112); @case.lock!; sleep(10); end
 
 # Case.transaction do
@@ -888,19 +654,13 @@ end
 #   sleep(10)
 # end
 </code></pre>
-
 <p>第二個 console</p>
-
 <pre><code>Case.find(112).update(message: 'VVV')
 </code></pre>
-
 <p>結果你會看到 ： 一筆資料被 lock 了十秒鐘, 如果其他地方 update 這筆資料的話會等在那邊,
 直到解除 (如果是更新同個 TABLE 不同筆資料則不會被 lock)</p>
-
-<h3 id="lock-row-with-lock">Lock row - <code>.with_lock</code></h3>
-
+<h3 id="lock-row---with_lock">Lock row - <code>.with_lock</code></h3>
 <p>作用與 <code>lock!</code> 一樣，不同的是它是個 block :</p>
-
 <pre><code>account = Account.first
 account.with_lock do
   # This block is called within a transaction,
@@ -909,140 +669,98 @@ account.with_lock do
   account.save!
 end
 </code></pre>
-
 <p>ref : <a href="http://markdaggett.com/blog/2011/12/01/transactions-in-rails/">http://markdaggett.com/blog/2011/12/01/transactions-in-rails/</a></p>
-
-<h3 id="lock-row-lock-find-id">Lock row - <code>.lock.find(id)</code></h3>
-
+<h3 id="lock-row---lockfindid">Lock row - <code>.lock.find(id)</code></h3>
 <pre><code>user = User.lock.find(1)
 # do something
 user.save!
 </code></pre>
-
 <h2 id="permalink">Permalink</h2>
-
-<h3 id="permalink-原生-to-param">Permalink 原生 to_param</h3>
-
+<h3 id="permalink-原生-to_param">Permalink 原生 to_param</h3>
 <p>讓你的 URL 更 Friendly (i.e. <code>/article/environment-protection</code>), 使用原生就有支援</p>
-
 <pre><code>def to_param
   &quot;#{id} #{name}&quot;.parameterize
 end
 </code></pre>
-
 <p>id, 與 name 是欄位名稱, 當 url 產生如 : <code>3-peter</code></p>
-
 <p>但中文是不行的, 需要用<a href="https://github.com/norman/babosa">其他套件處理 i.e. Babosa</a></p>
-
-<h3 id="permalink-friendly-id-https-github-com-norman-friendly-id">Permalink - <a href="https://github.com/norman/friendly_id">friendly_id</a></h3>
-
+<h3 id="permalink---friendly_idhttpsgithubcomnormanfriendly_id">Permalink - <a href="https://github.com/norman/friendly_id">friendly_id</a></h3>
 <p>它能將原本的 auto increament 改成使用中文或英文(i.e. <code>environment-protection-is-important</code>) 這種標題, 功能較強大</p>
-
 <h4 id="install">Install</h4>
-
 <pre><code>gem 'friendly_id', '~&gt; 5.1.0'
 </code></pre>
-
 <h4 id="1-migrate">[1] Migrate</h4>
-
 <pre><code>add_column :products, :slug, :string
 add_index :products, :slug, unique: true
 </code></pre>
-
 <h4 id="2-在-product-model-加上">[2] 在 Product Model 加上</h4>
-
 <pre><code>extend FriendlyID
 friendly_id :name, use: :slugged
 </code></pre>
-
 <p>當建立資料後，欄位 <code>slug</code> 的值就會是 product 的 name</p>
-
 <p>但原本已經存在的資料沒有 slug 值，我們也要更新它 :</p>
-
 <pre><code>Product.find_each(&amp;:save)
 </code></pre>
-
-<h4 id="3-設定-friendly-find-自動-手動-2選1">[3] 設定 friendly.find 自動/手動 2選1</h4>
-
-<p>1) <strong>自動</strong> - 讓 find 自動找到 friendly_id</p>
-
+<h4 id="3-設定-friendlyfind-自動手動-2選1">[3] 設定 friendly.find 自動/手動 2選1</h4>
+<ol>
+<li><strong>自動</strong> - 讓 find 自動找到 friendly_id</li>
+</ol>
 <p>目前你應該可以看到 product 的 path 都是產品名稱了，但你可能會發現連結都是壞的，因為 find 還沒有自動對應，我們要來設定它</p>
-
 <pre><code>rails generate friendly_id --skip-migration     # 產生 config/initializers/friendly_id.rb
 </code></pre>
-
 <p>config/initializers/friendly_id.rb</p>
-
 <pre><code>config.use :finders                             # 將原本註解取消
 </code></pre>
-
 <p>如果你用 <code>.find(params[:id])</code> 它就會自動用 <code>params[:id]</code> 去找 <code>:slug</code> 欄位</p>
-
-<p>2) <strong>手動</strong> - 你不想設定自動對應你也可以每次都寫</p>
-
-<pre><code>Product.friendly.find(params[:id])
-</code></pre>
-
+<ol start="2">
+<li>
+<p><strong>手動</strong> - 你不想設定自動對應你也可以每次都寫</p>
+<p>Product.friendly.find(params[:id])</p>
+</li>
+</ol>
 <h4 id="4-完成">[4] 完成</h4>
-
 <p>Done!</p>
-
 <h3 id="改善-url-不要顯示-id-auto-increament">改善 URL 不要顯示 ID Auto-Increament</h3>
-
 <p>有時我們不希望我們的 id 曝露在外，如何將 <code>order/3</code> 改為 <code>order/20160415-ORDER-B9DC88E23A4CE439C13A</code></p>
-
-<p>1) Migration - 首先我們先加上 uuid 欄位, 把它當作另一個主 Key</p>
-
-<pre><code>t.string :uuid, limit: '100'
-
-add_index :orders, [:uuid], unique: true
-</code></pre>
-
-<p>2) Model - create 前亂數產生 uuid</p>
-
-<pre><code>before_create :generate_uuid
-
-def generate_uuid
-    self.uuid = &quot;#{Time.now.strftime('%Y%m%d')}-ORDER-#{SecureRandom.hex(10).upcase}&quot;
-end
-</code></pre>
-
-<p>3) Model - 設定 param, 讓 path 顯示 uuid (讓 uuid 代替 id)</p>
-
-<pre><code>def to_param
-  self.uuid
-end
-</code></pre>
-
-<p>4) View - 不需要特別改，就會顯示 uuid 而不是 id</p>
-
-<pre><code>edit_product_path(p)
-</code></pre>
-
-<p>4) Controller - find by uuid</p>
-
-<pre><code>@order = current_user.orders.find_by_uuid(params[:id])
-</code></pre>
-
-<h2 id="paranoia-https-github-com-rubysherpas-paranoia-軟刪除-soft-deleted"><a href="https://github.com/rubysherpas/paranoia">Paranoia</a> 軟刪除 soft-deleted</h2>
-
+<ol>
+<li>
+<p>Migration - 首先我們先加上 uuid 欄位, 把它當作另一個主 Key</p>
+<p>t.string :uuid, limit: &lsquo;100&rsquo;</p>
+<p>add_index :orders, [:uuid], unique: true</p>
+</li>
+<li>
+<p>Model - create 前亂數產生 uuid</p>
+<p>before_create :generate_uuid</p>
+<p>def generate_uuid
+self.uuid = &ldquo;#{Time.now.strftime(&rsquo;%Y%m%d&rsquo;)}-ORDER-#{SecureRandom.hex(10).upcase}&rdquo;
+end</p>
+</li>
+<li>
+<p>Model - 設定 param, 讓 path 顯示 uuid (讓 uuid 代替 id)</p>
+<p>def to_param
+self.uuid
+end</p>
+</li>
+<li>
+<p>View - 不需要特別改，就會顯示 uuid 而不是 id</p>
+<p>edit_product_path(p)</p>
+</li>
+<li>
+<p>Controller - find by uuid</p>
+<p>@order = current_user.orders.find_by_uuid(params[:id])</p>
+</li>
+</ol>
+<h2 id="paranoiahttpsgithubcomrubysherpasparanoia-軟刪除-soft-deleted"><a href="https://github.com/rubysherpas/paranoia">Paranoia</a> 軟刪除 soft-deleted</h2>
 <p>軟刪除意思是有些資料需要刪除不顯示在頁面上，但又想保留資料，因為不知道未來哪天會需要到；一般作法是透過 deleted_at 欄位來判斷是否已刪除</p>
-
 <p>雖然實作軟刪除很簡單，但如果很多 model 都要寫的話，就會挺煩人的，這是一個軟刪除的套件，幫你這些重覆的事情做掉</p>
-
 <h3 id="gemfile-安裝">Gemfile 安裝</h3>
-
 <pre><code>gem &quot;paranoia&quot;, &quot;~&gt; 2.1.5&quot;
 </code></pre>
-
 <blockquote>
 <p>安裝完要記得重啟 rails</p>
 </blockquote>
-
 <h3 id="對想要軟體除的-model-及-table-建立必備資料">對想要軟體除的 Model 及 Table 建立必備資料</h3>
-
 <p>migration</p>
-
 <pre><code>class AddDeletedAtToClients &lt; ActiveRecord::Migration
   def change
     add_column :clients, :deleted_at, :datetime
@@ -1050,103 +768,72 @@ end
   end
 end
 </code></pre>
-
 <p>model</p>
-
 <pre><code>class Client &lt; ActiveRecord::Base
   acts_as_paranoid
 
 end
 </code></pre>
-
 <h3 id="基本操作">基本操作</h3>
-
 <p>軟刪除</p>
-
 <pre><code>Client.find(5).destroy
 client.destroy
 </code></pre>
-
 <blockquote>
 <p>軟刪除後，<code>Client.all</code> 及 <code>Client.find(5)</code> 都會撈不到，必須用 <code>Client.only_deleted</code> 才剛的到</p>
 </blockquote>
-
 <p>恢復被軟刪除的資料</p>
-
 <pre><code>Client.restore(5)
 Client.only_deleted.find(5).restore
 </code></pre>
-
 <p>顯示所有資料(包含已刪除的資料)</p>
-
 <pre><code>Client.with_deleted
 </code></pre>
-
 <p>顯示被刪除的資料</p>
-
 <pre><code>Client.only_deleted
 </code></pre>
-
 <p>真實刪除(要注意, 是真的刪掉！)</p>
-
 <pre><code>client.really_destroy!
 </code></pre>
-
 <h3 id="console-下-reload-model">Console 下 Reload model</h3>
-
 <p>如果在 model 改的情況下, console 會一直是吃舊的 model 設定, 除非重新啟動 console, 或直接下 reload</p>
-
 <pre><code>&gt; reload!
 Reloading...
  =&gt; true
 </code></pre>
-
 <p>clone 一筆 record</p>
-
 <pre><code>a = User.find(103).dup              # 會自動把 id 為 nil
 User.create(a.dup.attributes)
 或
 a = User.find(103)
 User.create(a.attributes.except(&quot;id&quot;))
 </code></pre>
-
 <h2 id="其他">其他</h2>
-
 <h3 id="i18n">i18n</h3>
-
 <pre><code>zh-TW:
   activerecord:
     attributes:
       user:
         name: '姓名'
 </code></pre>
-
 <blockquote>
 <p><code>姓名 必填</code></p>
 </blockquote>
-
 <h3 id="model-裡使用-asset-helper">model 裡使用 asset helper</h3>
-
 <pre><code># dev production 都 work
 default_url: -&gt;(attachment) { ActionController::Base.helpers.image_path('icons/avatar.png') },
 
 # 後來發現在 dev work, 但 production 不 work
 default_url: ActionController::Base.helpers.image_path('default/avatar-150x150.png')
 </code></pre>
-
 <h3 id="顯示-sql">顯示 SQL</h3>
-
 <pre><code>User.where(:id =&gt; 3).to_sql
 </code></pre>
-
-<h3 id="concerns-model-之間共用-method">concerns - model 之間共用 method</h3>
-
+<h3 id="concerns---model-之間共用-method">concerns - model 之間共用 method</h3>
 <blockquote>
 <p>controllers/concerns 與 models/concerns 是共通的</p>
 </blockquote>
-
 <p>/models/concerns/example.rb</p>
-
 <pre><code>module Example
   def self.location
     {
@@ -1155,9 +842,7 @@ default_url: ActionController::Base.helpers.image_path('default/avatar-150x150.p
   end
 end
 </code></pre>
-
 <p>/models/user.rb</p>
-
 <pre><code>enum location: Example.location
 </code></pre>
 

@@ -2,106 +2,89 @@
 <html lang="en-us">
 <title>Go Scheduler | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/go-scheduler/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/go-scheduler/">Go Scheduler</a></h1>
-    <p class="meta"><time datetime="2018-12-22T15:50:19&#43;08:00">December 22, 2018</time></p>
+    <h1>Go Scheduler</h1>
+    <time datetime="2018-12-22T15:50:19&#43;08:00">December 22, 2018</time>
   </header>
-  
-
-<h2 id="what-is-the-go-scheduler">What is the Go Scheduler?</h2>
-
+  <h2 id="what-is-the-go-scheduler">What is the Go Scheduler?</h2>
 <p>Go scheduler’s purpose is to efficiently distribute goroutines over multiple OS threads.</p>
-
 <p>Kernel thread is expensive; therefore, reducing and reusing kernel threads are keys.</p>
-
 <blockquote>
 <ul>
 <li>initial goroutine stack comsumes 2 KB memory</li>
 <li>default thread stack comsumes 1 MB memory</li>
 </ul>
 </blockquote>
-
 <h2 id="scheduling-basics">Scheduling Basics</h2>
-
 <h3 id="p-processor">P (Processor)</h3>
-
 <ul>
 <li>It is given a Logical Processor (P) for every virtual core.</li>
 <li>Runtime keeps track of each G and maps them onto Logical Processors.</li>
 <li>OS threads run on at most <code>GOMAXPROCS</code> number of processors.</li>
 </ul>
-
 <h3 id="m-machine-os-thread">M (Machine, OS thread)</h3>
-
 <ul>
 <li>M must have an associated P to execute G.</li>
 </ul>
-
 <h3 id="g-goroutine">G (Goroutine)</h3>
-
 <ul>
 <li>G keeps track of its stack and status.</li>
 <li><a href="https://golang.org/src/runtime/runtime2.go">Status</a>
-
 <ul>
 <li>Idle: It was just allocated and has not yet been initialised.</li>
 <li>Runnable: It is on a runqueue.</li>
 <li>Running:
-
 <ul>
 <li>It is assigned an M.</li>
 <li>It executes user code.</li>
-</ul></li>
+</ul>
+</li>
 <li>Syscall:
-
 <ul>
 <li>It is assigned an M</li>
 <li>It is not on a runqueue.</li>
 <li>It is executing a system call and not executing user code.</li>
-</ul></li>
+</ul>
+</li>
 <li>Waiting: Is is blocked in the runtime. (e.g. channel wait queue)</li>
 <li>Moribund unused</li>
 <li>Dead</li>
 <li>Enqueue unused</li>
 <li>Copy stack</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="runqueue">Runqueue</h2>
-
 <ul>
 <li>Local runqueue
-
 <ul>
 <li>Every P has its own local runqueue.</li>
 <li>Once goroutines are created, they are tracked in Ps local runqueue (FIFO).</li>
-</ul></li>
+</ul>
+</li>
 <li>Global runqueue
-
 <ul>
 <li>All Ps share a global runqueue.</li>
 <li>A lower priority runqueue</li>
 <li>Go scheduler runs a background thread called <code>sysmon</code> to detect long-running goroutines (10+ ms, e.g. CPU-bound computation) and put them into global runqueue.</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>P2 has no work to do and P1 has no work to steal (we will talk about work stealing later).</p>
-
 <pre><code>Global Runqueue
 ┏━━━━┓
 ┃ G7 ┃
@@ -116,9 +99,7 @@
   ┗━━━━┫ empty ┃                 ┗━━━━┫ empty ┃
        ┗━━━━━━━┛                      ┗━━━━━━━┛
 </code></pre>
-
 <p>Since there was runnable G <code>G7</code> in global runqueue, P2 got <code>G7</code> from there.</p>
-
 <pre><code>Global Runqueue
 ┏━━━━━━━┓
 ┃ empty ┃
@@ -133,9 +114,7 @@
   ┗━━━━┫ empty ┃                 ┗━━━━┫ empty ┃
        ┗━━━━━━━┛                      ┗━━━━━━━┛
 </code></pre>
-
 <h2 id="context-switching">Context Switching</h2>
-
 <pre><code>┏━━━━━━━━━━━━━━━━━━━━━━┓
 ┃  CPU Core            ┃
 ┃┏━━━━━━━━━━━━━━━━━━━━┓┃
@@ -152,47 +131,41 @@
 ┃┗━━━━━━━━━━━━━━━━━━━━┛┃
 ┗━━━━━━━━━━━━━━━━━━━━━━┛
 </code></pre>
-
 <ul>
 <li>OS Threads are context-switched on and off a core.</li>
 <li>Goroutines are context-switched on and off an M.</li>
 <li>Speed of switching
-
 <ul>
 <li>goroutine switches: tens of ns</li>
 <li>thread switches: a μs</li>
-</ul></li>
+</ul>
+</li>
 <li>Classes of events in Go programs that allow the scheduler to make scheduling decisions.
-
 <ul>
 <li>The use of the keyword <code>go</code> (goroutine)</li>
 <li>Garbage collection</li>
 <li>System calls</li>
 <li>Synchronisation</li>
 <li>Network I/O</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="asynchronous-system-calls">Asynchronous System Calls</h2>
-
 <p>netpoller</p>
-
 <ul>
 <li>Use interface of network poller provided by OS to deal with network sockets.
-
 <ul>
 <li>MacOS: kqueue</li>
 <li>Linux: epoll</li>
 <li>Windows: IOCP (IoCompletionPort)</li>
-</ul></li>
+</ul>
+</li>
 <li>Prevent goroutines from blocking the M when syscalls are made.</li>
 <li>Use its own thread to do network I/O. (no need to create new M)</li>
 </ul>
-
 <p>G1 ran on M1 and made a network call, so it was moved to the netpoller.
 And P1 got <code>G2</code> from its local runqueue and <code>G2</code> was context-switched on M1.
 Until G1 finish its network call, it will be moved back to the P1&rsquo;s local runqueue.</p>
-
 <pre><code>netpoller
 ┏━━━━┓
 ┃ G1 ┃
@@ -207,30 +180,26 @@ Until G1 finish its network call, it will be moved back to the P1&rsquo;s local 
   ┗━━━━┫ G3 ┣━━┃ G4 ┣━━┃ G5 ┃
        ┗━━━━┛  ┗━━━━┛  ┗━━━━┛
 </code></pre>
-
 <h2 id="synchronous-system-calls">Synchronous System Calls</h2>
-
 <ul>
 <li>Goroutine making the syscall will block the M.
-
 <ul>
 <li>System call e.g. open a file</li>
 <li>Synchronisation (atomic, mutex, channel operation call)</li>
-</ul></li>
+</ul>
+</li>
 <li>Handoff
-
 <ul>
 <li>Background monitor thread detects threads which are blocked the M.</li>
 <li>Start a new thread or unpark a idle thread.</li>
 <li>Background monitor hands off the runqueue to new thread.</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>G1 ran on M1 and made a system call that blocked M1.
 M1 with G1 was moved off from P1, then M2 was created and replace M1.
 Then P1 got <code>G2</code> from its local runqueue and <code>G2</code> was context-switched on M2.
 Until G1 finish its system call, it will be moved back to P1&rsquo;s local runqueue and M1 will park as a idle thread for future use.</p>
-
 <pre><code>┏━━━━┓  ┏━━━━┓
 ┃ M1 ┣━━┃ G1 ┃
 ┗━━━━┛  ┗━━━━┛
@@ -244,32 +213,24 @@ Until G1 finish its system call, it will be moved back to P1&rsquo;s local runqu
   ┗━━━━┫ G3 ┣━━┃ G4 ┣━━┃ G5 ┃
        ┗━━━━┛  ┗━━━━┛  ┗━━━━┛
 </code></pre>
-
 <h2 id="spinning-thread">Spinning Thread</h2>
-
 <p>For the reason that hand-off and thread parking/unparking increase latency, minimise these actions for optimal thread management.</p>
-
 <p>The problem is that it is impossible to predict the future whether goroutines are comming.
 We do not want to just park a worker thread and then unpark it.</p>
-
 <p>The solution is to maintain one &ldquo;idle&rdquo; thread on M for incoming goroutines, and this state of worker thread called &ldquo;spinning&rdquo;.</p>
-
 <h2 id="work-stealing">Work Stealing</h2>
-
 <ul>
 <li>Balance the goroutines across all the Ps in order to keep Ms efficient.</li>
 <li>The rules for work stealing are as follows.
-
 <ul>
 <li>Check the local runqueue.</li>
 <li>If not found, try to steal work from other Ps.</li>
 <li>If not found, check the global runqueue.</li>
 <li>If not found, poll network.</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>P2 has finished all work and it will try to steal work from P1.</p>
-
 <pre><code>┏━━━━┓  ┏━━━━┓  ┏━━━━┓         ┏━━━━┓  ┏━━━━┓  ┏━━━━┓
 ┃ P1 ┣━━┃ M1 ┣━━┃ G1 ┃         ┃ P2 ┣━━┃ M2 ┣━━┃    ┃
 ┗━┳━━┛  ┗━━━━┛  ┗━━━━┛         ┗━┳━━┛  ┗━━━━┛  ┗━━━━┛
@@ -279,9 +240,7 @@ We do not want to just park a worker thread and then unpark it.</p>
   ┗━━━━┫ G4 ┣━━┃ G5 ┣━━┃ G6 ┃    ┗━━━━┫ empty ┃
        ┗━━━━┛  ┗━━━━┛  ┗━━━━┛         ┗━━━━━━━┛
 </code></pre>
-
 <p>P2 stealed half of Gs (<code>G4</code> and <code>G5</code>) from P1&rsquo;s local runqueue and <code>G4</code> was context-switched on M2.</p>
-
 <pre><code>┏━━━━┓  ┏━━━━┓  ┏━━━━┓         ┏━━━━┓  ┏━━━━┓  ┏━━━━┓
 ┃ P1 ┣━━┃ M1 ┣━━┃ G1 ┃         ┃ P2 ┣━━┃ M2 ┣━━┃ G4 ┃
 ┗━┳━━┛  ┗━━━━┛  ┗━━━━┛         ┗━┳━━┛  ┗━━━━┛  ┗━━━━┛
@@ -291,17 +250,13 @@ We do not want to just park a worker thread and then unpark it.</p>
   ┗━━━━┫ G6 ┃                    ┗━━━━┫ G5 ┃
        ┗━━━━┛                         ┗━━━━┛
 </code></pre>
-
 <h2 id="trace-go-scheduler">Trace go scheduler</h2>
-
 <p>schedtrace</p>
-
 <pre><code>$ GOMAXPROCS=2 GODEBUG=schedtrace=1000 go run main.go
 ...
 SCHED 2009ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=0 [8 0]
 ...
 </code></pre>
-
 <ul>
 <li>gomaxprocs: Number of processors</li>
 <li>idleprocs: Number of idle processors</li>
@@ -311,9 +266,7 @@ SCHED 2009ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1
 <li>runqueue: Number of goroutines in the global runqueue</li>
 <li>[0 0]: Number of goroutine of respective local runqueue</li>
 </ul>
-
 <p>schedetail</p>
-
 <pre><code>$ GOMAXPROCS=2 GODEBUG=schedtrace=1000,scheddetail=1 go run main.go
 ...
 SCHED 0ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=1 idlethreads=1 runqueue=0 gcwaiting=0 nmidlelocked=0 stopwait=0 sysmonwait=0
@@ -328,7 +281,6 @@ SCHED 0ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=1 idlethreads=1 ru
   G3: status=4(GC sweep wait) m=-1 lockedm=-1
 ...
 </code></pre>
-
 <ul>
 <li>0: idle</li>
 <li>1: runnable</li>
@@ -340,9 +292,7 @@ SCHED 0ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=1 idlethreads=1 ru
 <li>7: enqueue unused</li>
 <li>8: copy stack</li>
 </ul>
-
 <h2 id="ref">Ref:</h2>
-
 <ul>
 <li><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html">Scheduling In Go : Part I - OS Scheduler</a></li>
 <li><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part2.html">Scheduling In Go : Part II - Go Scheduler</a></li>

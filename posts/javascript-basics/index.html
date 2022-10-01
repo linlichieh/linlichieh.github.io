@@ -2,31 +2,26 @@
 <html lang="en-us">
 <title>Javascript Basics | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/javascript-basics/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/javascript-basics/">Javascript Basics</a></h1>
-    <p class="meta"><time datetime="2013-02-19T17:40:00Z">February 19, 2013</time></p>
+    <h1>Javascript Basics</h1>
+    <time datetime="2013-02-19T17:40:00Z">February 19, 2013</time>
   </header>
-  
-
-<h2 id="ajax">Ajax</h2>
-
+  <h2 id="ajax">Ajax</h2>
 <p>jQuery</p>
-
 <pre><code>$(document).ready(function(){
     $.ajax({
         url: '/test/test_response.php',
@@ -47,9 +42,7 @@
     });
 });
 </code></pre>
-
 <p>PHP</p>
-
 <pre><code>// POST
 header('Content-Type: application/json');
 echo 'test='.$_POST['test'].'; test2= '.$_POST['test2'];
@@ -61,38 +54,27 @@ echo 'test='.$_GET['test'].'; test2= '.$_GET['test2'];
 $value = json_decode(file_get_contents('php://input'));         //取得JSON字串並且解析
 echo json_encode($value);                                       //將$value轉成JSON格式傳回
 </code></pre>
-
 <h2 id="regex">Regex</h2>
-
 <h3 id="match">match</h3>
-
 <p>Example 1</p>
-
 <pre><code>str = 'aabbddeeffggiiCC';
 reFee=/cc/i;                        //補上i(忽略大小寫) 才會為true
 document.write(reFee.test(str));    //檢查有沒有cc,會返回 true
 </code></pre>
-
 <p>Example 2</p>
-
 <pre><code>str = 'aabbddeeffCCggii';
 reFee = new RegExp(&quot;cc&quot;,&quot;i&quot;);       //沒補上&quot;i&quot;會返回false , 補上&quot;i&quot;是true
 alert(reFee.test(str));             //檢查有沒有cc,會返回true
 </code></pre>
-
 <h3 id="replace">replace</h3>
-
 <p>Example</p>
-
 <pre><code>str = 'aabbccddeeffCCggiicc';
 var re = new  RegExp('cc');                     // 只比對第一個結果 : aabb哈哈ddeeffCCggiicc
 //var re = new  RegExp('cc','g');               // 字串為'cc'的全部比對 , 結果為 : aabb哈哈ddeeffCCggii哈哈
 //var re = new  RegExp('cc','ig');              // 不分大小寫的全部比對 , 結果為 : aabb哈哈ddeeff哈哈ggii哈哈
 document.write(str.replace(re,'哈哈'));
 </code></pre>
-
 <p>取得比對結果存進RegExp變數 :</p>
-
 <pre><code>var str = 'aabbccddeeffccggiiCC';
 var re =  new RegExp(/(cc)/ig);                 //忽略大小寫及全部比對,才會為true
 document.write(str.replace(re,'[$1]'));         //結果為 : aabb[cc]ddeeff[cc]ggii[CC]
@@ -101,16 +83,11 @@ for(var item in result){
     alert(result[item]);                        //分別alert出 cc ; cc ; CC
 }
 </code></pre>
-
 <p>format 1000000 &gt; $ 1,000,000</p>
-
 <pre><code>&quot;$ &quot; + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, &quot;,&quot;);
 </code></pre>
-
 <h3 id="其他">其他</h3>
-
 <h4 id="處理圖片將-img-轉為-img">處理圖片將 [img] 轉為 <code>&lt;img&gt;</code></h4>
-
 <pre><code>function con_img_code(str)
 {
     var reg = new RegExp(/\[img src='((http[s]{0,1}|ftp):\/\/[a-zA-Z0-9\.\-\_\/]+\.([a-zA-Z]{2,4})(:\d+)?(\/[a-zA-Z0-9\.\-~!@#$%^&amp;*+?:_\/=&lt;&gt;]*)?)']/g);
@@ -120,9 +97,7 @@ for(var item in result){
     return str2;
 }
 </code></pre>
-
 <p>註 :</p>
-
 <ol>
 <li>從資料庫撈出資料並且找出符合的圖片格式</li>
 <li>取代成 <code>&lt;img&gt;</code> 並且指定 <code>class</code> 屬性</li>

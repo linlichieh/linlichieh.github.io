@@ -2,40 +2,31 @@
 <html lang="en-us">
 <title>Linux nc (netcat) | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/netcat/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/netcat/">Linux nc (netcat)</a></h1>
-    <p class="meta"><time datetime="2014-01-19T15:54:00Z">January 19, 2014</time></p>
+    <h1>Linux nc (netcat)</h1>
+    <time datetime="2014-01-19T15:54:00Z">January 19, 2014</time>
   </header>
-  
-
-<h2 id="介紹">介紹</h2>
-
+  <h2 id="介紹">介紹</h2>
 <p>用來連接特定 port, 或啟動一個 port 來監聽, 可以執行簡單的訊息或檔案傳送</p>
-
 <p>有些系統將 nc 改為 netcat</p>
-
 <h2 id="快速看如何使用">快速看如何使用</h2>
-
 <p>啟動 20000 port</p>
-
 <pre><code>nc -l 192.168.1.171 20000
 </code></pre>
-
 <blockquote>
 <ul>
 <li>如果不加上 IP, 就會監聽所有從 20000 port 進來的主機</li>
@@ -43,93 +34,61 @@
 <li>-u ：不使用 TCP 而是使用 UDP 作為連線的封包狀態</li>
 </ul>
 </blockquote>
-
 <p>連線到 20000 port</p>
-
 <pre><code>nc 192.168.1.171 20000
 </code></pre>
-
 <p>然候就可以隨便打一些字, 送出後主機那就會看到了, 也可搭配 stdout, stdin 做互動輸入/輸出</p>
-
-<h2 id="傳送-接收-檔案">傳送/接收 檔案</h2>
-
+<h2 id="傳送接收-檔案">傳送/接收 檔案</h2>
 <p>傳送檔案</p>
-
 <pre><code>$ cat backup.iso | nc 54.250.122.78 3333
 </code></pre>
-
 <p>接收檔案並存入 backup.iso</p>
-
 <pre><code>$ nc -l 3333 &gt;&gt; backup.iso
 </code></pre>
-
 <p>傳送顯示進度條</p>
-
 <pre><code>$ cat backup.iso | pv -b | nc 54.250.122.78 3333
 </code></pre>
-
 <p>接收顯示進度條</p>
-
 <pre><code>$ nc -l 8000 | pv -b &gt;&gt; backup.iso
 </code></pre>
-
 <blockquote>
 <ul>
 <li><code>pv</code> can be used to show a progress indicator.</li>
 <li><code>pv</code> : Pipe Viewer, 顯示通過 pipe 的資料處理進度, 例如應用在 copy, compress, nc 等等..</li>
 </ul>
 </blockquote>
-
 <h2 id="傳送-partition">傳送 partition</h2>
-
 <p>建立一個 partition 的 image 並傳送到遠端主機</p>
-
 <pre><code>$ dd if=/dev/hdb5 | gzip -9 | nc -l 3333
 </code></pre>
-
 <blockquote>
 <p>-9, &ndash;best  : These options change the compression level used, with the -1 option being the fastest, with less compression, and the -9 option being the slowest, with optimal compression. The default compression level is 6.</p>
 </blockquote>
-
 <p>連到傳送端的 server 並且接收 partition image</p>
-
 <pre><code>$ nc 192.168.0.1 3333 | pv -b &gt; myhdb5partition.img.gz
 </code></pre>
-
 <h2 id="傳送資料夾">傳送資料夾</h2>
-
 <p>壓縮檔案並傳到遠端主機</p>
-
 <pre><code>$ tar -czf - /etc/ | nc -l 3333
 </code></pre>
-
 <p>接收檔案</p>
-
 <pre><code>$ nc 192.168.0.1 3333 | pv -b &gt; mybackup.tar.gz
 </code></pre>
-
 <h2 id="使用-ssh-傳送檔案">使用 ssh 傳送檔案</h2>
-
 <p>有兩個好處 :</p>
-
 <ol>
 <li>資料透過加密的通道傳送更為安全</li>
 <li>你不需要在額外開 port, 因為使用的是 ssh port</li>
 </ol>
-
 <p>You pipe the file to a listening socket on the server machine in the same way as before. It is assumed that an SSH server runs on this machine too.
 listen 一個 port 並以 pipe 傳送檔案 (假設 SSH server 已經在這台啟動了)</p>
-
 <pre><code>$ cat backup.iso | nc -l 3333
 </code></pre>
-
 <p>On the client machine connect to the listening socket through an SSH tunnel:
 client server 以 SSH 連到傳送端的主機</p>
-
 <pre><code>$ ssh -f -L 23333:127.0.0.1:3333 me@192.168.0.1 sleep 10; \
                 nc 127.0.0.1 23333 | pv -b &gt; backup.iso
 </code></pre>
-
 <blockquote>
 <ul>
 <li>這個方式可以設定當檔案傳送完後自動關閉連線</li>
@@ -137,19 +96,13 @@ client server 以 SSH 連到傳送端的主機</p>
 <li><code>ssh -L</code> [bind_address:]port:host:hostport : Specifies that the given port on the local (client) host is to be forwarded to the given host and port on the remote side.  This works by allocating a socket to listen to port on the local side, optionally bound to the specified bind_address.</li>
 </ul>
 </blockquote>
-
 <h2 id="監聽一個範圍-port-的-connection">監聽一個範圍 port 的 connection</h2>
-
 <p>可以當作 Port Scanner</p>
-
 <p>使用 <code>-z</code>, netcat 不會 initiate 一個連線到 server, 只會通知這個 port 有找到, 它可以允許 port-range 去掃</p>
-
 <p>例如掃 80~90 的 port, 發送 80 port 有打開 :</p>
-
 <pre><code>$ nc -z 192.168.0.1 80-90
 Connection to 192.168.0.1 80 port [tcp/http] succeeded!
 </code></pre>
-
 <p>ref :
 <a href="http://linux.vbird.org/linux_server/0140networkcommand.php#nc">http://linux.vbird.org/linux_server/0140networkcommand.php#nc</a>
 <a href="http://www.g-loaded.eu/2006/11/06/netcat-a-couple-of-useful-examples/">http://www.g-loaded.eu/2006/11/06/netcat-a-couple-of-useful-examples/</a></p>

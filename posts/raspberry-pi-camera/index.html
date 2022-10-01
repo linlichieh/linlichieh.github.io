@@ -2,113 +2,87 @@
 <html lang="en-us">
 <title>Raspberry Pi camera | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/raspberry-pi-camera/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/raspberry-pi-camera/">Raspberry Pi camera</a></h1>
-    <p class="meta"><time datetime="2014-01-21T22:48:00Z">January 21, 2014</time></p>
+    <h1>Raspberry Pi camera</h1>
+    <time datetime="2014-01-21T22:48:00Z">January 21, 2014</time>
   </header>
-  
-
-<h2 id="硬體規格">硬體規格</h2>
-
+  <h2 id="硬體規格">硬體規格</h2>
 <ul>
 <li>感測器像素 5M Pixel sensor (500 萬)</li>
 <li>靜止拍照解析度 2592 X 1944</li>
 <li>最大錄影解析度 1080p (720p 或 1080p 的 <code>H.264</code> 錄影格式</li>
 <li>最大錄影速度 30fps</li>
 </ul>
-
 <h2 id="安裝">安裝</h2>
-
 <p><a href="http://www.youtube.com/watch?v=GImeVqHQzsE#t=133">硬體參考官網影片教學將 camera 安裝到 Rpi 上</a></p>
-
 <h3 id="安裝-camera">安裝 camera</h3>
-
 <pre><code>sudo apt-get update
 sudo apt-get upgrade
 sudo raspi-config
 </code></pre>
-
 <p>選擇 <code>Enable Camera</code> -&gt; <code>enable</code> 結束 config 時會問你要不要重開機, 選擇要</p>
-
 <h2 id="指令介紹">指令介紹</h2>
-
 <h3 id="raspistill-拍照儲存成jpeg"><code>raspistill</code> 拍照儲存成jpeg</h3>
-
 <pre><code>raspistill -o image.jpg
 </code></pre>
-
 <blockquote>
 <p><code>-o</code> : Output filename</p>
 </blockquote>
-
 <p>輸入完後原本 terminal 的黑畫面會有一層 camera 的影像佔滿螢幕高度</p>
-
 <p>過了大約 5 秒就會拍下來了, 檔案大小大約 2.4 M</p>
-
-<h3 id="raspivid-錄影-5-秒編碼為-h-264"><code>raspivid</code> 錄影 5 秒編碼為 h.264 :</h3>
-
+<h3 id="raspivid-錄影-5-秒編碼為-h264-"><code>raspivid</code> 錄影 5 秒編碼為 h.264 :</h3>
 <pre><code>raspivid -o video.h264
 </code></pre>
-
 <p>會有影像填滿整個螢幕畫面, 檔案大小約 9.9 M</p>
-
-<h3 id="10-秒">10 秒 :</h3>
-
+<h3 id="10-秒-">10 秒 :</h3>
 <pre><code>raspivid -o video.h264 -t 10000
 </code></pre>
-
 <h3 id="查看還有哪些選項可以玩">查看還有哪些選項可以玩</h3>
-
 <pre><code>raspivid | less
 raspistill | less
 </code></pre>
-
 <h2 id="從我的-mac-看-raspberry-pi-的-camera-畫面">從我的 Mac 看 Raspberry Pi 的 camera 畫面</h2>
-
 <h3 id="1-mac-這邊要先-listen-5001-port-接收影像並播放">[1] Mac 這邊要先 listen 5001 port 接收影像並播放</h3>
-
 <blockquote>
 <p>如果先執行 Raspberry pi 把影像丟出來, 沒人聽會直接結束</p>
 </blockquote>
-
 <ol>
-<li><p>先安裝 mplayer (using brew)</p>
-
+<li>
+<p>先安裝 mplayer (using brew)</p>
 <p>sudo brew update               // 還是先更新吧! 發現版本太舊無法安裝
-sudo brew install mplayer</p></li>
-
-<li><p>執行 <code>nc -l 5001 | mplayer -fps 31 -cache 1024 -</code></p></li>
+sudo brew install mplayer</p>
+</li>
+<li>
+<p>執行 <code>nc -l 5001 | mplayer -fps 31 -cache 1024 -</code></p>
+</li>
 </ol>
-
 <h3 id="2-首先讓-raspberry-pi-丟影像到我的-mac-那台的-ip-的-5001-port">[2] 首先讓 Raspberry Pi 丟影像到我的 Mac 那台的 IP 的 5001 port</h3>
-
 <ol>
-<li><p>Raspberry Pi 安裝 : <code>sudo apt-get install mplayer netcat</code></p></li>
-
-<li><p>執行 <code>raspivid -t 999999 -o - | nc 192.168.1.26 5001</code></p></li>
+<li>
+<p>Raspberry Pi 安裝 : <code>sudo apt-get install mplayer netcat</code></p>
+</li>
+<li>
+<p>執行 <code>raspivid -t 999999 -o - | nc 192.168.1.26 5001</code></p>
+</li>
 </ol>
-
 <blockquote>
 <p><code>-</code> 表示 STDOUT</p>
 </blockquote>
-
 <h3 id="3-接著-mac-就會開始接收檔案-並且跳出-mplayer-的影片播放程式了">[3] 接著 Mac 就會開始接收檔案, 並且跳出 MPlayer 的影片播放程式了</h3>
-
 <pre><code>$ nc -l 5001 | mplayer -fps 31 -cache 1024 -
 MPlayer 1.1-4.2.1 (C) 2000-2012 MPlayer Team
 Can't init Apple Remote.
@@ -119,14 +93,11 @@ Cache fill: 17.26% (180944 bytes)
 
 libavformat version 54.6.100 (internal)
 </code></pre>
-
 <p>我是用無線網路傳送, 有夠 lag, 稍微調整一下讓它傳比較快</p>
-
 <ul>
 <li>Mac : <code>nc -l 5001 | mplayer -fps 8 -cache 1024 -</code></li>
 <li>Raspberry Pi : <code>raspivid -t 999999 -h 180 -w 270 -fps 5 -o - | nc 192.168.1.26 5001</code></li>
 </ul>
-
 <p>ref :
 <a href="http://www.raspberrypi.org/camera">http://www.raspberrypi.org/camera</a></p>
 

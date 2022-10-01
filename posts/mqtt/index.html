@@ -2,99 +2,67 @@
 <html lang="en-us">
 <title>MQTT | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/mqtt/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/mqtt/">MQTT</a></h1>
-    <p class="meta"><time datetime="2016-10-20T14:38:29&#43;08:00">October 20, 2016</time></p>
+    <h1>MQTT</h1>
+    <time datetime="2016-10-20T14:38:29&#43;08:00">October 20, 2016</time>
   </header>
-  
-
-<h2 id="introduction">Introduction</h2>
-
+  <h2 id="introduction">Introduction</h2>
 <p>MQTT 是設計給 IOT 的 messaging protocal (pub/sub), 因為它很輕量且效率好, 在 client 實作上它比 AMQP 需要更少的資源, 另外 mqtt 本身沒有支援 authorization (這段需要在 server 端自已實作)</p>
-
 <h2 id="install-client-command">Install client command</h2>
-
 <h3 id="command-line-tool">Command line tool</h3>
-
 <p><a href="https://www.npmjs.com/package/mqtt">node.js 的 mqtt tool</a></p>
-
 <pre><code>npm install mqtt --save
 npm install mqtt -g
 </code></pre>
-
 <h3 id="command">Command</h3>
-
 <p>Subscribe</p>
-
 <pre><code>mqtt sub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password
 </code></pre>
-
 <p>Publish</p>
-
 <pre><code>mqtt pub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password -m 'Hello world'
 </code></pre>
-
 <p>Via SSL</p>
-
 <pre><code>mqtt pub -h my-mqtt-server.com -p 8883 -C mqtts ...(略)
 </code></pre>
-
 <h2 id="install-broker-mqtt-server">Install broker (mqtt server)</h2>
-
 <p>Pull docker image - <a href="https://hub.docker.com/_/eclipse-mosquitto">eclipse-mosquitto</a></p>
-
 <pre><code>docker pull eclipse-mosquitto
 </code></pre>
-
 <p>Create a folder for persistent data</p>
-
 <p>Create a config: <code>mosquitto.conf</code></p>
-
 <pre><code>persistence true
 persistence_location /{ABSOLUTE_PATH}/mosquitto/data/
 log_dest file /mosquitto/log/mosquitto.log
 </code></pre>
-
 <p>Run container</p>
-
 <pre><code>docker run -it -p 1883:1883 -p 9001:9001 -v /{ABSOLUTE_PATH}/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto
 </code></pre>
-
 <p>Connect to <code>tcp://localhost:1883</code>, no username/password needed</p>
-
 <h2 id="qos">QoS</h2>
-
 <ul>
 <li>QoS 0 : received at most once : The packet is sent, and that&rsquo;s it. There is no validation about whether it has been received.</li>
 <li>QoS 1 : received at least once : The packet is sent and stored as long as the client has not received a confirmation from the server. MQTT ensures that it will be received, but there can be duplicates.</li>
 <li>QoS 2 : received exactly once : Same as QoS 1 but there is no duplicates.</li>
 </ul>
-
-<h2 id="golang-paho-mqtt-github-com-eclipse-paho-mqtt-golang">Golang - <a href="github.com/eclipse/paho.mqtt.golang">paho mqtt</a></h2>
-
+<h2 id="golang---paho-mqttgithubcomeclipsepahomqttgolang">Golang - <a href="github.com/eclipse/paho.mqtt.golang">paho mqtt</a></h2>
 <h3 id="介紹">介紹</h3>
-
 <p>這是 golang 實作的 mqtt package, 目前只有 client, 沒有實作 broker</p>
-
 <h3 id="操作">操作</h3>
-
 <p>New &amp; Connect &amp; Close</p>
-
 <pre><code>func New(params map[string]string) (MQTT.Client, error) {
     opts := MQTT.NewClientOptions()
     opts.SetKeepAlive(4 * time.Second)
@@ -125,9 +93,7 @@ if err != nil {
 // Close
 defer mqtt_client.Disconnect(250)
 </code></pre>
-
 <p>Publish</p>
-
 <pre><code>topic := &quot;test/mqtt&quot;
 for {
     msg := strconv.FormatInt(time.Now().UnixNano(), 10)
@@ -138,13 +104,10 @@ for {
     }
 }
 </code></pre>
-
 <blockquote>
 <p>publish 建議用 token.WaitTimeout, 避免極小機率造成 deadlock, ref: <a href="https://github.com/eclipse/paho.mqtt.golang/issues/185">https://github.com/eclipse/paho.mqtt.golang/issues/185</a></p>
 </blockquote>
-
 <p>Subscribe</p>
-
 <pre><code>var msg_payload, msg_topic string
 if token := mqtt_client.Subscribe(&quot;test/mqtt&quot;, 0, func(client MQTT.Client, msg MQTT.Message) {
     msg_payload = string(msg.Payload())
@@ -161,9 +124,7 @@ for {
     pre_msg = msg_payload
 }
 </code></pre>
-
 <p>Unsubscribe</p>
-
 <pre><code>if token := mqtt_client.Unsubscribe(sub_topic); token.Wait() &amp;&amp; token.Error() != nil {
     return token.Error()
 }

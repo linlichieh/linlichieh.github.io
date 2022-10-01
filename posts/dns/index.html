@@ -2,70 +2,51 @@
 <html lang="en-us">
 <title>DNS server | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/dns/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/dns/">DNS server</a></h1>
-    <p class="meta"><time datetime="2015-01-29T23:14:14&#43;08:00">January 29, 2015</time></p>
+    <h1>DNS server</h1>
+    <time datetime="2015-01-29T23:14:14&#43;08:00">January 29, 2015</time>
   </header>
-  
-
-<h2 id="bind9">Bind9</h2>
-
+  <h2 id="bind9">Bind9</h2>
 <p>Bind9 是一個可以架設 dns server 的套件</p>
-
 <h3 id="installation">Installation</h3>
-
 <pre><code>sudo apt-get install bind9 bind9-doc dnsutils
 </code></pre>
-
-<h3 id="etc-bind">/etc/bind</h3>
-
+<h3 id="etcbind">/etc/bind</h3>
 <ul>
 <li><code>named.conf</code> : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案</li>
 <li><code>named.conf.local</code> : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態</li>
 <li><code>named.conf.options</code> : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係</li>
 </ul>
-
-<h3 id="add-blog-example-com">add blog.example.com</h3>
-
-<h4 id="name-conf-options">name.conf.options</h4>
-
+<h3 id="add-blogexamplecom">add blog.example.com</h3>
+<h4 id="nameconfoptions">name.conf.options</h4>
 <p>不用改</p>
-
-<h4 id="name-conf-local">name.conf.local</h4>
-
+<h4 id="nameconflocal">name.conf.local</h4>
 <p>正解 :</p>
-
 <pre><code>zone &quot;example.com&quot; {
     type master;
     file &quot;/etc/bind/zones/example.com.db&quot;;
 };
 </code></pre>
-
 <blockquote>
 <p>反解只有 ISP 可以做到, 所以我就不設定了</p>
 </blockquote>
-
-<h4 id="etc-bind-zones-example-com-db">/etc/bind/zones/example.com.db</h4>
-
+<h4 id="etcbindzonesexamplecomdb">/etc/bind/zones/example.com.db</h4>
 <p>自行建立 zones 資料夾, zone 都放在這裡方便管理</p>
-
 <p><strong>改設定要記得增加Serial值</strong></p>
-
 <pre><code>$TTL 604800
 ; 指定 SOA
 @ IN SOA ns.example.com. root.example.com. (
@@ -82,123 +63,114 @@ ns      IN A    106.185.47.26
 www     IN A    106.185.47.26
 blog IN  CNAME domains.logdown.com.
 </code></pre>
-
-<h3 id="etc-resolv-conf">/etc/resolv.conf</h3>
-
+<h3 id="etcresolvconf">/etc/resolv.conf</h3>
 <p>加到第一行</p>
-
 <pre><code>nameserver 106.185.47.26
 </code></pre>
-
 <h3 id="iptable-open-53-port">iptable open 53 port</h3>
-
 <pre><code>-A INPUT -p tcp --dport 53 -j ACCEPT
 -A INPUT -p udp --dport 53 -j ACCEPT
 </code></pre>
-
 <h3 id="testing">Testing</h3>
-
-<p>1) 先檢查設定檔是否有誤</p>
-
-<pre><code>    $ named-checkzone example.com example.com.db
-    zone example.com/IN: loaded serial 2015013001
-    OK
+<ol>
+<li>
+<p>先檢查設定檔是否有誤</p>
+<pre><code> $ named-checkzone example.com example.com.db
+ zone example.com/IN: loaded serial 2015013001
+ OK
 </code></pre>
-
-<p>2) 重啟 <code>sudo service bind9 restart</code></p>
-
+</li>
+<li>
+<p>重啟 <code>sudo service bind9 restart</code></p>
+</li>
+</ol>
 <blockquote>
 <p>如果有什麼啟動錯誤可以到 <code>/var/log/syslog</code> 搜尋 <code>bind</code> 看是錯在哪裡</p>
 </blockquote>
-
 <p><strong>因為上層的 DNS Record 還沒生效, 所以以下測試要加上 ip</strong></p>
+<ol start="3">
+<li>
+<p><code>host [domain name] [dns server ip]</code></p>
+<pre><code> host blog.example.com 106.185.47.26
+ Using domain server:
+ Name: 106.185.47.26
+ Address: 106.185.47.26#53
+ Aliases:
 
-<p>3) <code>host [domain name] [dns server ip]</code></p>
-
-<pre><code>    host blog.example.com 106.185.47.26
-    Using domain server:
-    Name: 106.185.47.26
-    Address: 106.185.47.26#53
-    Aliases:
-
-    blog.example.com is an alias for domains.logdown.com.
-    domains.logdown.com has address 106.186.25.116
+ blog.example.com is an alias for domains.logdown.com.
+ domains.logdown.com has address 106.186.25.116
 </code></pre>
-
+</li>
+</ol>
 <blockquote>
 <p>也可以多加 <code>-a</code> 參數獲得更完整資訊</p>
 </blockquote>
+<ol start="4">
+<li>
+<p><code>nslookup [domain name] [dns server ip]</code></p>
+<pre><code> nslookup blog.example.com 106.185.47.26
+ Server:         106.185.47.26
+ Address:        106.185.47.26#53
 
-<p>4) <code>nslookup [domain name] [dns server ip]</code></p>
-
-<pre><code>    nslookup blog.example.com 106.185.47.26
-    Server:         106.185.47.26
-    Address:        106.185.47.26#53
-
-    blog.example.com     canonical name = domains.logdown.com.
-    Name:   domains.logdown.com
-    Address: 106.186.25.116
+ blog.example.com     canonical name = domains.logdown.com.
+ Name:   domains.logdown.com
+ Address: 106.186.25.116
 </code></pre>
+</li>
+<li>
+<p><code>dig @[dns server ip] [domain name]</code>, 看<strong>ANSWER SECTION</strong>是否有回應, 有的話代表本機的 dns 是有 work  的</p>
+<pre><code> $ dig @106.185.47.26 blog.example.com
 
-<p>5) <code>dig @[dns server ip] [domain name]</code>, 看<strong>ANSWER SECTION</strong>是否有回應, 有的話代表本機的 dns 是有 work  的</p>
+ ; &lt;&lt;&gt;&gt; DiG 9.9.5-3ubuntu0.1-Ubuntu &lt;&lt;&gt;&gt; @106.185.47.26 blog.example.com
+ ; (1 server found)
+ ;; global options: +cmd
+ ;; Got answer:
+ ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 5392
+ ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 13, ADDITIONAL: 1
 
-<pre><code>    $ dig @106.185.47.26 blog.example.com
+ ;; OPT PSEUDOSECTION:
+ ; EDNS: version: 0, flags:; udp: 4096
+ ;; QUESTION SECTION:
+ ;blog.example.com.                   IN      A
 
-    ; &lt;&lt;&gt;&gt; DiG 9.9.5-3ubuntu0.1-Ubuntu &lt;&lt;&gt;&gt; @106.185.47.26 blog.example.com
-    ; (1 server found)
-    ;; global options: +cmd
-    ;; Got answer:
-    ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 5392
-    ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 13, ADDITIONAL: 1
+ ;; ANSWER SECTION:
+ blog.example.com.            3600    IN      CNAME   domains.logdown.com.
+ domains.logdown.com.    11      IN      A       106.186.25.116
 
-    ;; OPT PSEUDOSECTION:
-    ; EDNS: version: 0, flags:; udp: 4096
-    ;; QUESTION SECTION:
-    ;blog.example.com.                   IN      A
+ ;; AUTHORITY SECTION:
+ .                       3418    IN      NS      i.root-servers.net.
+ .                       3418    IN      NS      d.root-servers.net.
+ .                       3418    IN      NS      j.root-servers.net.
+ .                       3418    IN      NS      c.root-servers.net.
+ .                       3418    IN      NS      h.root-servers.net.
+ .                       3418    IN      NS      e.root-servers.net.
+ .                       3418    IN      NS      f.root-servers.net.
+ .                       3418    IN      NS      m.root-servers.net.
+ .                       3418    IN      NS      b.root-servers.net.
+ .                       3418    IN      NS      l.root-servers.net.
+ .                       3418    IN      NS      k.root-servers.net.
+ .                       3418    IN      NS      g.root-servers.net.
+ .                       3418    IN      NS      a.root-servers.net.
 
-    ;; ANSWER SECTION:
-    blog.example.com.            3600    IN      CNAME   domains.logdown.com.
-    domains.logdown.com.    11      IN      A       106.186.25.116
-
-    ;; AUTHORITY SECTION:
-    .                       3418    IN      NS      i.root-servers.net.
-    .                       3418    IN      NS      d.root-servers.net.
-    .                       3418    IN      NS      j.root-servers.net.
-    .                       3418    IN      NS      c.root-servers.net.
-    .                       3418    IN      NS      h.root-servers.net.
-    .                       3418    IN      NS      e.root-servers.net.
-    .                       3418    IN      NS      f.root-servers.net.
-    .                       3418    IN      NS      m.root-servers.net.
-    .                       3418    IN      NS      b.root-servers.net.
-    .                       3418    IN      NS      l.root-servers.net.
-    .                       3418    IN      NS      k.root-servers.net.
-    .                       3418    IN      NS      g.root-servers.net.
-    .                       3418    IN      NS      a.root-servers.net.
-
-    ;; Query time: 2 msec
-    ;; SERVER: 106.185.47.26#53(106.185.47.26)
-    ;; WHEN: Sat Jan 31 18:04:10 UTC 2015
-    ;; MSG SIZE  rcvd: 300
+ ;; Query time: 2 msec
+ ;; SERVER: 106.185.47.26#53(106.185.47.26)
+ ;; WHEN: Sat Jan 31 18:04:10 UTC 2015
+ ;; MSG SIZE  rcvd: 300
 </code></pre>
-
+</li>
+</ol>
 <blockquote>
 <p><code>106.185.47.26#53</code> 是這台主機第一個會去問的 dns, 如果是家裡上網沒有特別指定 dns 的話可能是 <code>192.168.1.1#53(192.168.1.1)</code></p>
 </blockquote>
-
-<p>6) 確認有無生效可以兩種方式測</p>
-
+<ol start="6">
+<li>確認有無生效可以兩種方式測</li>
+</ol>
 <p>nslookup blo.example.com  看解析的 server 是不是 8.8.8.8</p>
-
 <p>或直接 <code>ping ns.example.com</code></p>
-
 <p>當 dig, nslookup 都能正確解析 domain 不代表 ping 就會 ping 的到, 即使你在 dns server ping ping 自己的 domain</p>
-
 <p>如果 <code>ping: unknown host ns.example.com</code></p>
-
 <p>用 <code>+trace</code> 找問題</p>
-
 <h2 id="dns-補充">DNS 補充</h2>
-
 <ul>
 <li><code>A</code> : 用來解析IP位址, 將 HostName 對應到某個IP.</li>
 <li><code>CNAME</code> : 將 HostName 對應某個網域.</li>
@@ -208,34 +180,24 @@ blog IN  CNAME domains.logdown.com.
 <li><code>AAAA</code> : 等同A記錄,只不過A是IPv4,而AAAA是IPv6.</li>
 <li><code>NS</code> : Name Server, 指定你的DNS要交由哪個NS進行解析.</li>
 </ul>
-
 <h3 id="只能指向-domain-或-ip">只能指向 domain 或 ip</h3>
-
 <p>例如 :</p>
-
 <ul>
 <li>example.com -&gt; 106.173.25.11</li>
 <li>a.example.com -&gt; ttt.example222.com</li>
 </ul>
-
 <p>無法解析到 <code>/</code> 之後, 因為這不是 dns 的工作 :</p>
-
 <ul>
 <li>example.com -&gt; ttt.example.222.com/home</li>
 </ul>
-
 <h3 id="只允許特定-host">只允許特定 host</h3>
-
 <p>只開放 <code>example.com</code>, <code>www.example.com</code>, <code>db.example.com</code></p>
-
 <pre><code>A (Host) 設定
 @       45.33.60.10             =&gt; example.com
 db      45.33.60.10             =&gt; www.example.com
 www     45.33.60.10             =&gt; db.example.com
 </code></pre>
-
-<h3 id="將-www-example-com-導到-example-com">將 www.example.com 導到 example.com</h3>
-
+<h3 id="將-wwwexamplecom-導到-examplecom">將 <a href="https://www.example.com">www.example.com</a> 導到 example.com</h3>
 <pre><code>A (Host) 設定
 @     45.33.60.10
 *     45.33.60.10
@@ -243,44 +205,27 @@ www     45.33.60.10             =&gt; db.example.com
 CName (Alias)
 www   example.com
 </code></pre>
-
-<h3 id="將-example-com-導到-www-example">將 example.com 導到 www.example</h3>
-
+<h3 id="將-examplecom-導到-wwwexample">將 example.com 導到 www.example</h3>
 <p>這要在 http server (nginx) 設定</p>
-
 <h2 id="解決-dns-一直沒有更新問題">解決 DNS 一直沒有更新問題</h2>
-
 <p><strong>解法: 直接用 google 的 dns server (<code>8.8.8.8</code>)</strong></p>
-
 <p>我的 macbook 預設的 DNS 第一個是 seednet, 第二才是 google</p>
-
 <p>我在 godaddy 的 dns 設定將 domain 指向新 IP 時, 在半小時內就生效了</p>
-
 <p>但不管本機 DNS cache 怎麼清 ping 出來的一直是錯的 IP,</p>
-
 <p>用 dig 及 nslookup 以 google dns 去找都可以找到正確的 IP,</p>
-
 <p>猜想是不是 seednet 的 dns server 的資料一直是舊的, 造成我一直抓不到正確的 IP,</p>
-
 <p><strong>索性最後直接把本機的 DNS 改成 googld dns, 問題都解決了</strong>, 改的方法如下 :</p>
-
 <p>到 <code>系統偏好設定</code> -&gt; <code>網路</code> -&gt; <code>USB 乙太網路 下面 進階</code> -&gt; 新增 <code>8.8.8.8</code></p>
-
 <blockquote>
 <p>不需要改 <code>/etc/resolv.conf</code>, 因為改它是沒有用的, mac 每次開機都會自動產生一份檔案</p>
 </blockquote>
-
 <h2 id="dig">dig</h2>
-
 <h3 id="顯示-domain-經由-dns-路徑的主機">顯示 domain 經由 dns 路徑的主機</h3>
-
 <pre><code>$ dig +short NS blog.example.com
 test-user.github.io.
 github.map.fastly.net.
 </code></pre>
-
 <h3 id="顯示完整的-dns-路徑">顯示完整的 DNS 路徑</h3>
-
 <pre><code>dig +trace blog.example.com
 
 ; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; +trace blog.example.com
@@ -301,17 +246,19 @@ example.com.                 86400   IN      NS      ns74.domaincontrol.com.
 blog.example.com.            3600    IN      CNAME   test-user.github.io.
 ;; Received 60 bytes from 216.69.185.47#53(216.69.185.47) in 201 ms     // 第四個 dns server IP
 </code></pre>
-
-<p>1) 先找到全球性的根節點, 問到 .tw 的 dns 主機位置</p>
-
-<p>2) 在 dns.tw 主機問到 example.com 主機位置在 <code>ns73.domaincontrol.com</code> 及 <code>ns74.domaincontrol.com</code>, 這兩個都是我的 domain 商 godaddy 幫我安排的 dns server</p>
-
-<p>3) 在 godaddy ns server 中問到需要 CNAME 到 test-user.github.io</p>
-
+<ol>
+<li>
+<p>先找到全球性的根節點, 問到 .tw 的 dns 主機位置</p>
+</li>
+<li>
+<p>在 dns.tw 主機問到 example.com 主機位置在 <code>ns73.domaincontrol.com</code> 及 <code>ns74.domaincontrol.com</code>, 這兩個都是我的 domain 商 godaddy 幫我安排的 dns server</p>
+</li>
+<li>
+<p>在 godaddy ns server 中問到需要 CNAME 到 test-user.github.io</p>
+</li>
+</ol>
 <h2 id="nslookup">nslookup</h2>
-
 <p>找出 domain 的 dns server</p>
-
 <pre><code>nslookup blog.example.com
 Server:     106.187.35.20
 Address:    106.187.35.20#53        // 第一個 dns server IP, linode DNS server
@@ -322,9 +269,7 @@ test-user.github.io   canonical name = github.map.fastly.net.
 Name:   github.map.fastly.net
 Address: 103.245.222.133
 </code></pre>
-
 <h3 id="ref">ref</h3>
-
 <ul>
 <li><a href="http://wpnote.tw/dnsdomain-name-system%E5%9F%BA%E7%A4%8E%E5%B8%B8%E8%AD%98%EF%BC%8C%E5%A6%82%E4%BD%95%E8%A8%AD%E5%AE%9Adns/">DNS 設定</a></li>
 </ul>

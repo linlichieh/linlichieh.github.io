@@ -2,41 +2,32 @@
 <html lang="en-us">
 <title>Linux upstart | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-upstart/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-upstart/">Linux upstart</a></h1>
-    <p class="meta"><time datetime="2017-08-08T17:48:19&#43;08:00">August 08, 2017</time></p>
+    <h1>Linux upstart</h1>
+    <time datetime="2017-08-08T17:48:19&#43;08:00">August 08, 2017</time>
   </header>
-  
-
-<h2 id="介紹">介紹</h2>
-
+  <h2 id="介紹">介紹</h2>
 <p>upstart 用來管理你的服務, 在機器啟動後自動幫你啟動你的服務, 並且可以選擇在服務死掉後自動重新啟動它</p>
-
 <blockquote>
 <p>ubuntu 16.04 不支援 upstart 改用 systemd</p>
 </blockquote>
-
 <h2 id="first-example">First Example</h2>
-
 <p>這是個簡單的範例只有執行 <code>echo</code>, 執行完也不會有任何背景的 process 在執行</p>
-
 <p>建立 <code>/etc/init/testjob.conf</code>:</p>
-
 <pre><code>description &quot;First example&quot;
 author &quot;test&quot;
 
@@ -44,30 +35,20 @@ start on runlevel [2345]
 
 exec echo `date` &gt;&gt; /tmp/testjob.log
 </code></pre>
-
 <p>測試 conf 語法是否正確</p>
-
 <pre><code>$ init-checkconf /etc/init/testjob.conf
 File /etc/init/testjob.conf: syntax ok
 </code></pre>
-
 <p>開始啟動</p>
-
 <pre><code>$ sudo service testjob start
 testjob stop/waiting
 </code></pre>
-
 <p>顯示結果 <code>/tmp/testjob.log</code>:</p>
-
 <pre><code>Tue Aug 8 11:32:54 UTC 2017
 </code></pre>
-
 <h2 id="second-example">Second Example</h2>
-
 <p>這個範例可以保持你想要的 process 在背景執行</p>
-
 <p>首先我們要先有一個不會停止的程式供測試, <code>/tmp/test.sh</code>:</p>
-
 <pre><code>#!/bin/sh
 while true
 do
@@ -75,14 +56,10 @@ do
     /bin/sleep 1s
 done
 </code></pre>
-
 <p>給予執行權限</p>
-
 <pre><code>chmod +x /tmp/test.sh
 </code></pre>
-
 <p>建立 <code>/etc/init/testjob.conf</code>:</p>
-
 <pre><code>description &quot;Second example&quot;
 author &quot;test&quot;
 
@@ -90,102 +67,66 @@ start on runlevel [2345]
 
 exec /tmp/test.sh
 </code></pre>
-
 <p>開始啟動</p>
-
 <pre><code>$ sudo service testjob start
 testjob stop/waiting
 </code></pre>
-
 <p>背景可以看到它一直在執行</p>
-
 <pre><code>PID   %CPU %MEM   RSS COMMAND
 20755  0.0  0.0   648 test.sh
 </code></pre>
-
 <p>每秒可以看到執行結果 <code>/tmp/testjob.log</code>:</p>
-
 <pre><code>Tue Aug 8 12:43:02 UTC 2017
 </code></pre>
-
 <p>手動停止, 就會把背景執行的程式關掉了</p>
-
 <pre><code>sudo service testjob stop
 </code></pre>
-
 <p>但是如果它被 kill 掉, 就不會再背景執行</p>
-
 <pre><code>sudo kill -9 20755
 </code></pre>
-
 <h3 id="讓程式死了也能重新執行">讓程式死了也能重新執行</h3>
-
 <p>在 <code>/etc/init/testjob.conf</code> 最後面加上</p>
-
 <pre><code>respawn
 </code></pre>
-
 <p>即使被 kill 了, 它還是會被重新執行</p>
-
 <h2 id="指令">指令</h2>
-
 <p>重新讀取 upstart 設定</p>
-
 <pre><code>initctl reload-configuration
 </code></pre>
-
 <blockquote>
 <p>amz-linux 剛新增 config 完要先執行此指令</p>
 </blockquote>
-
 <p>手動開啟</p>
-
 <pre><code>sudo service testjob start
 or
 sudo start testjob
 or
 sudo initctl start testjob
 </code></pre>
-
 <p>手動關閉</p>
-
 <pre><code>sudo service testjob stop
 or
 sudo stop testjob
 or
 sudo initctl stop testjob
 </code></pre>
-
 <p>查看在 init 清單各程序運作的狀況</p>
-
 <pre><code>sudo initctl list
 </code></pre>
-
 <h2 id="其他設定">其他設定</h2>
-
 <h3 id="user">User</h3>
-
 <p>它預設執行的 user 是 <code>root</code>, 你可以改成你想要的</p>
-
 <pre><code>setuid ec2-user
 </code></pre>
-
 <h3 id="respawn">Respawn</h3>
-
 <p>30 秒內, 被 kill 3 次, 就會不再執行了</p>
-
 <pre><code>respawn limit 3 30
 </code></pre>
-
 <h3 id="將-nginx-加到-upstart-清單裡">將 nginx 加到 upstart 清單裡</h3>
-
 <p>nginx 安裝完本身一開機就會執行, 先把它取消掉</p>
-
 <pre><code>sudo update-rc.d nginx disable
 </code></pre>
-
 <p>新增 <code>/etc/init/nginx.conf</code>:</p>
-
 <pre><code># nginx
 
 description &quot;nginx http daemon&quot;
@@ -211,25 +152,19 @@ end script
 
 exec $DAEMON
 </code></pre>
-
 <p>[註] Fix <code>nginx start up script was run before the network interface was up</code></p>
-
 <pre><code>start on (filesystem and net-device-up IFACE!=lo)
 </code></pre>
-
 <h2 id="其他">其他</h2>
-
 <ul>
 <li>upstart log path
-
 <ul>
 <li>ubuntu: <code>/var/log/upstart/</code></li>
 <li>amz-linux: 沒有</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>ref :</p>
-
 <ul>
 <li><a href="https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it">https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it</a></li>
 <li><a href="https://www.nginx.com/resources/wiki/start/topics/examples/ubuntuupstart/">https://www.nginx.com/resources/wiki/start/topics/examples/ubuntuupstart/</a></li>

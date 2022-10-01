@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>octopress on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in octopress on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 24 Mar 2015 10:27:48 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/octopress/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 24 Mar 2015 10:27:48 +0000</lastBuildDate><atom:link href="/categories/octopress/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>jekyll Octopress</title>
       <link>/posts/octopress/</link>
@@ -22,7 +18,8 @@
 運作原理 source 存放著主程式，當 generate 時會產生在 /public 下，如果執行 preview 其實是看到這資料夾底下的檔案
 當執行 deploy 時，會將原本的 _deploy 刪除，並將 /public 資料 copy 為 _deploy 並且 push 到 master
 所以 github 上的 master 就是你的 _deploy 資料夾，在這資料夾外面，包含根目錄等等都是 source
-而你輸入 example.github.io 就會連到 example.github.io 的 master branch</description>
+而你輸入 example.github.io 就會連到 example.github.io 的 master branch
+Octopress 3.</description>
     </item>
     
   </channel>

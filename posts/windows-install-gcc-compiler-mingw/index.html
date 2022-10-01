@@ -2,89 +2,59 @@
 <html lang="en-us">
 <title>Windows - Install the gcc compiler MinGW | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/windows-install-gcc-compiler-mingw/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/windows-install-gcc-compiler-mingw/">Windows - Install the gcc compiler MinGW</a></h1>
-    <p class="meta"><time datetime="2013-12-17T23:16:00Z">December 17, 2013</time></p>
+    <h1>Windows - Install the gcc compiler MinGW</h1>
+    <time datetime="2013-12-17T23:16:00Z">December 17, 2013</time>
   </header>
-  
-
-<h2 id="mingw-介紹">MinGW 介紹</h2>
-
+  <h2 id="mingw-介紹">MinGW 介紹</h2>
 <blockquote>
 <p>MinGW 全稱 Minimalist GNU For Windows，是個精簡的Windows平台C/C++、ADA及Fortran編譯器，相比Cygwin而言，體積要小很多，使用較為方便。MinGW提供了一套完整的開源編譯工具集，以適合Windows平台應用開發，且不依賴任何第三方C運行時庫。</p>
 </blockquote>
-
 <h3 id="mingw包括">MinGW包括：</h3>
-
 <ul>
 <li>一套集成編譯器，包括C、C++、ADA語言和Fortran語言編譯器</li>
 <li>用於生成Windows二進製文件的GNU工具的（編譯器、鏈接器和檔案管理器）</li>
 <li>用於Windows平台安裝和部署MinGW和MSYS的命令行安裝器（mingw-get）</li>
 <li>用於命令行安裝器的GUI打包器（mingw-get-inst）</li>
 </ul>
-
 <h2 id="下載-mingw">下載 MinGW</h2>
-
 <p>到 <a href="http://sourceforge.net/projects/mingw/files/">mingw 下載頁面</a> 上面應該有可以直接下載最新版的連結</p>
-
 <p>Looking for the latest version? <strong>Download mingw-get-setup.exe (86.5 kB)</strong></p>
-
-<h2 id="安裝套件-c-c-編譯器">安裝套件 - C/C++ 編譯器</h2>
-
+<h2 id="安裝套件---cc-編譯器">安裝套件 - C/C++ 編譯器</h2>
 <p>安裝完後會跳出一個視窗讓你選擇你要安裝的套件,</p>
-
 <p>在 <code>mingw32-gcc-g++</code> 上按右鍵選擇 Mark for Installation 把它勾選起來</p>
-
-<p><img src="/images/posts/windows-install-gcc-compiler-mingw.jpg" alt="gc  .JPG" /></p>
-
+<p><img src="/images/posts/windows-install-gcc-compiler-mingw.jpg" alt="gc  .JPG"></p>
 <p>然候左上角 Installation 選擇 Apply Change 就會開始安裝 C/C++ 編譯器了,</p>
-
 <h2 id="設定系統環變數">設定系統環變數</h2>
-
 <p>安裝完後要將 GCC 的路徑 <code>C:\MinGW\bin</code> 加到系統環境變數 PATH, 才能使用,</p>
-
 <p>我的電腦右鍵 -&gt; 內容 -&gt; 進階系統設定 -&gt; 進階TAB, 點選在下面的環境變數 -&gt; 在下面的系統變數那新增</p>
-
-<hr />
-
+<hr>
 <p>變數名稱 : <code>PATH</code>
 變數值   : <code>%SystemRoot%\system32;%SystemRoot%;C:\MinGW\bin</code></p>
-
-<hr />
-
+<hr>
 <p>重開機, 讓變數生效</p>
-
 <h2 id="測試是否安裝完成">測試是否安裝完成</h2>
-
 <p>可以在 cmd 輸入 <code>gcc -v</code>, 如果出現 gcc 的相關資訊表示安裝成功!</p>
-
-<p><img src="/images/posts/windows-install-gcc-compiler-mingw2.jpg" alt="gccVersion.JPG" /></p>
-
+<p><img src="/images/posts/windows-install-gcc-compiler-mingw2.jpg" alt="gccVersion.JPG"></p>
 <h2 id="windows-8">windows 8</h2>
-
 <p>如果 windows 8 安裝完 MinGW 是沒有 <code>C:\MinGW\bin\gcc.exe</code> 而是 <code>C:\MinGW\bin\g++.exe</code></p>
-
 <p>所以 cmd 指令要改下 <code>g++ -v</code></p>
-
 <h2 id="compile-c-檔案">Compile C++ 檔案</h2>
-
 <p>在 <code>C:\MinGW</code> 下新增 hello.cpp :</p>
-
 <pre><code>#include &lt;iostream&gt;  // Basic input and output library
 #include &lt;cstdlib&gt;   // system(&quot;pause&quot;)
 
@@ -97,25 +67,16 @@ int main()
     return 0;
 }
 </code></pre>
-
 <p>cmd :</p>
-
 <pre><code>cd C:\MinGW
 g++ hello.cpp -o hello.exe
 </code></pre>
-
-<h2 id="cc1plus-exe-系統錯誤">cc1plus.exe - 系統錯誤</h2>
-
+<h2 id="cc1plusexe---系統錯誤">cc1plus.exe - 系統錯誤</h2>
 <p><code>無法啟動程式，因為您的電腦遺失 libgmp-10.dll。請嘗試重新安裝以修正這個問題。</code></p>
-
-<p><img src="/images/posts/windows-install-gcc-compiler-mingw3.png" alt="error.PNG" /></p>
-
+<p><img src="/images/posts/windows-install-gcc-compiler-mingw3.png" alt="error.PNG"></p>
 <p>再打開安裝檔 MinGW Installation Manager 或 <code>C:\MinGW\bin\mingw-get.exe</code>, 他們是一樣的東西</p>
-
 <p>然候再安裝 <code>mingw32-base</code>, 即可解決此問題</p>
-
-<p><img src="/images/posts/windows-install-gcc-compiler-mingw4.png" alt="install mingw32-base.PNG" /></p>
-
+<p><img src="/images/posts/windows-install-gcc-compiler-mingw4.png" alt="install mingw32-base.PNG"></p>
 <p>ref:
 <a href="http://www.metsky.com/archives/588.html">MinGW</a>
 <a href="http://www.cnblogs.com/ghj1976/p/3175591.html">windows go</a>

@@ -2,38 +2,31 @@
 <html lang="en-us">
 <title>Rails Form | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-form/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-form/">Rails Form</a></h1>
-    <p class="meta"><time datetime="2015-04-12T19:15:40&#43;08:00">April 12, 2015</time></p>
+    <h1>Rails Form</h1>
+    <time datetime="2015-04-12T19:15:40&#43;08:00">April 12, 2015</time>
   </header>
-  
-
-<h2 id="introduction">Introduction</h2>
-
+  <h2 id="introduction">Introduction</h2>
 <ul>
 <li><a href="https://github.com/plataformatec/simple_form">simple_form</a> 讓表單寫起來更乾淨, 也支援 bootstrap 樣式, 推薦這套, 它也支援 devise</li>
 <li><a href="https://github.com/bootstrap-ruby/rails-bootstrap-forms">bootstrap_form</a> 也是讓表單更簡單, 但預設使用的是 bootstrap 樣式</li>
 </ul>
-
 <h2 id="rails-原生表單">Rails 原生表單</h2>
-
 <h3 id="form">form</h3>
-
 <pre><code># method 預設是 post
 &lt;%= form_for @post, url: posts_path(@post) do |f| %&gt;
     &lt;%= f.label :title %&gt;
@@ -43,80 +36,50 @@
     &lt;%= f.button :submit, disable_with: 'Submiting' %&gt;
 &lt;% end %&gt;
 </code></pre>
-
-<h3 id="form-for-與-form-tag-差別">form_for 與 form_tag 差別</h3>
-
+<h3 id="form_for-與-form_tag-差別">form_for 與 form_tag 差別</h3>
 <p>使用 form_for 的話一定要在 controller 的先 new 好 (<code>@post = Post.new</code>)</p>
-
 <p>所以要 create 必須先 new 好</p>
-
 <p>view :</p>
-
 <pre><code>form_for @post, do |p|
     p.text_field :title
 end
 </code></pre>
-
 <p>title 必須與 db 一致, 因為它會去抓 model 的欄位</p>
-
 <p>使用 form_tag 的話欄位名稱就可以自己取, 只不過要自己手動抓欄位名稱 (<code>aaa = params[:title]</code>)</p>
-
 <h3 id="顯示-validation-錯誤訊息">顯示 validation 錯誤訊息</h3>
-
 <p>顯示在欄位後面</p>
-
 <pre><code>&lt;%= f.label :title %&gt; : &lt;%= f.text_field :title, :placeholder =&gt; 'At least 5 characters' %&gt;&lt;%= @post.errors.full_messages_for(:title).first %&gt;
 </code></pre>
-
 <p>全部錯誤訊息</p>
-
 <pre><code>&lt;% @post.errors.full_messages.each do |msg| %&gt;
   &lt;li&gt;&lt;%= msg %&gt;&lt;/li&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>全部錯誤訊息的第一個</p>
-
 <pre><code>&lt;%= @post.errors.full_messages.first if @post.errors.any? %&gt;
 </code></pre>
-
 <p>顯示某個欄位的錯誤</p>
-
 <pre><code>&lt;%= @post.errors.full_messages_for(:title).first %&gt;
 </code></pre>
-
 <h3 id="當-form-的錯誤訊息發生-造成跑版">當 form 的錯誤訊息發生, 造成跑版</h3>
-
 <p>因為 label 及 text_field 會被 <code>&lt;div class=&quot;field_with_errors&quot;&gt;</code> 包起來, 所以造成跑版</p>
-
 <p>在 config/application.rb 加上就會顯示原始的 html 了</p>
-
 <pre><code>config.action_view.field_error_proc = Proc.new { |html_tag, instance|
   html_tag
 }
 </code></pre>
-
-<h3 id="actioncontroller-invalidauthenticitytoken">ActionController::InvalidAuthenticityToken</h3>
-
+<h3 id="actioncontrollerinvalidauthenticitytoken">ActionController::InvalidAuthenticityToken</h3>
 <p>如果是自己寫 HTML 的 form 送出表單造成沒有一起把 token 送出去, 加入以下這行到 form 即可解決</p>
-
 <pre><code>&lt;%= tag(:input, :type =&gt; &quot;hidden&quot;, :name =&gt; request_forgery_protection_token.to_s, :value =&gt; form_authenticity_token) %&gt;
 </code></pre>
-
-<h2 id="simple-form">simple_form</h2>
-
+<h2 id="simple_form">simple_form</h2>
 <h3 id="install">Install</h3>
-
 <pre><code>gem 'simple_form'
 </code></pre>
-
 <p>執行</p>
-
 <pre><code>rails generate simple_form:install
 </code></pre>
-
 <p>基本用法</p>
-
 <pre><code>&lt;%= simple_form_for @user, defaults: { input_html: { class: 'default_class' } } do |f| %&gt;
   &lt;%= f.input :username, input_html: { class: 'special' }, wrapper_html: { class: 'username' }  %&gt;          # wrapper_html 會在 label 及 input 外層包一個 div
   &lt;%= f.input :password, input_html: { maxlength: 20 }, label_html: { class: 'my_class' } %&gt;
@@ -125,15 +88,11 @@ end
   &lt;%= f.button :submit %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <blockquote>
 <p>f.input 包含了 label, input</p>
 </blockquote>
-
 <h3 id="bootstrap">bootstrap</h3>
-
 <p>執行</p>
-
 <pre><code>$ rails generate simple_form:install --bootstrap
 
    identical  config/initializers/simple_form.rb
@@ -142,13 +101,10 @@ end
    identical  config/locales/simple_form.en.yml
    identical  lib/templates/erb/scaffold/_form.html.erb
 </code></pre>
-
 <blockquote>
 <p>locales 只會產生出 simple_form EN 的, 自己再 copy 改成 zh-TW 版本的</p>
 </blockquote>
-
 <p>基本用法</p>
-
 <pre><code>&lt;div class=&quot;row&quot;&gt;
   &lt;div class=&quot;col-md-6&quot;&gt;
     &lt;div class=&quot;panel panel-primary&quot;&gt;
@@ -168,39 +124,26 @@ end
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-
 <blockquote>
 <p>連錯誤訊息都會自動顯示在欄位下, 非常方便</p>
 </blockquote>
-
 <p>submit button 不能用 <code>f.submit</code>, 應該用 :</p>
-
 <pre><code>`&lt;%= f.button :submit, t('form.submit'), class: 'btn btn-success' %&gt;`
 </code></pre>
-
 <p>default value, fail validation 會填原本送出的值</p>
-
 <pre><code>&lt;%= f.input :contact_email, required: true, input_html: {value: (params[:user].nil?) ? f.object.email : params[:user]['contact_email']} %&gt;
 </code></pre>
-
 <h3 id="i18n">i18n</h3>
-
 <p>copy <code>config/locales/simple_form.en.yml</code> to <code>config/locales/simple_form.zh-TW.yml</code>, 替換第一行 <code>en</code> -&gt; <code>zh-TW</code></p>
-
-<h3 id="collection-i18n">collection + i18n:</h3>
-
+<h3 id="collection--i18n">collection + i18n:</h3>
 <p>Radio</p>
-
 <pre><code>&lt;%= f.input :sex, as: :radio_buttons, collection: [:male, :female] %&gt;
 &lt;%= f.input :sex, as: :radio_buttons, collection: User.genders.keys.map { |x| x.to_sym } %&gt;
 </code></pre>
-
 <blockquote>
 <p>collection 不能直接用 User.genders.keys, 因為它只是 array, 值一定要 symbol i18n 才會 work</p>
 </blockquote>
-
 <p>simple_form.zh-TW.yml :</p>
-
 <pre><code>simple_form:
     options:
       user:
@@ -214,14 +157,10 @@ end
       user:
         gender: &quot;請選擇性別&quot;
 </code></pre>
-
 <p>Radio + ActiveRecord enum</p>
-
 <pre><code>&lt;%= f.input :gender, as: :radio_buttons, collection: User.genders.keys %&gt;
 </code></pre>
-
-<h3 id="devise-simple-form-bootstrap-sign-up">devise + simple_form + bootstrap - Sign_up</h3>
-
+<h3 id="devise--simple_form--bootstrap---sign_up">devise + simple_form + bootstrap - Sign_up</h3>
 <pre><code>&lt;div class=&quot;row&quot;&gt;
   &lt;div class=&quot;col-md-4 col-md-offset-4&quot;&gt;
     &lt;h2&gt;&lt;%= t('.sign_up', :default =&gt; &quot;Sign up&quot;) %&gt;&lt;/h2&gt;
@@ -238,21 +177,15 @@ end
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-
-<h2 id="bootstrap-form">bootstrap_form</h2>
-
+<h2 id="bootstrap_form">bootstrap_form</h2>
 <pre><code>gem 'bootstrap_form'
 </code></pre>
-
 <p>application.css 加上</p>
-
 <pre><code>/*
  *= require rails_bootstrap_forms
  */
 </code></pre>
-
 <p>基本用法</p>
-
 <pre><code>&lt;%= bootstrap_form_for(@user) do |f| %&gt;
   &lt;%= f.email_field :email %&gt;
   &lt;%= f.password_field :password %&gt;
@@ -260,9 +193,7 @@ end
   &lt;%= f.submit &quot;Log In&quot; %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>它會產生</p>
-
 <pre><code>&lt;form accept-charset=&quot;UTF-8&quot; action=&quot;/users&quot; class=&quot;new_user&quot; id=&quot;new_user&quot; method=&quot;post&quot;&gt;
   &lt;div class=&quot;form-group&quot;&gt;
     &lt;label for=&quot;user_email&quot;&gt;Email&lt;/label&gt;
@@ -271,45 +202,28 @@ end
   ...略...
 &lt;/form&gt;
 </code></pre>
-
 <h2 id="paperclip">Paperclip</h2>
-
 <p><a href="https://github.com/thoughtbot/paperclip">paperclip</a>, 上傳檔案或處理圖片, 對 avatar 可以處理的很乾淨</p>
-
 <h3 id="安裝-paperclip">安裝 paperclip</h3>
-
 <pre><code>gem &quot;paperclip&quot;, &quot;~&gt; 4.3&quot;
 </code></pre>
-
 <h3 id="安裝-imagemagick">安裝 imagemagick</h3>
-
 <p>Mac</p>
-
 <pre><code>brew install imagemagick
 </code></pre>
-
 <p>Ubuntu</p>
-
 <pre><code>sudo apt-get install imagemagick -y
 </code></pre>
-
 <h4 id="設定-imagemagick-utilities-的指令路徑">設定 ImageMagick utilities 的指令路徑</h4>
-
 <p>可用以下方法確認你的 <code>convert</code> 指令找的到, 有的話可以先不用設定</p>
-
 <pre><code>$ which convert
 /usr/local/bin/convert
 </code></pre>
-
 <p>如果不能正常運作, 再設定 <code>config/environments/development.rb</code> :</p>
-
 <pre><code>Paperclip.options[:command_path] = &quot;/usr/local/bin/&quot;
 </code></pre>
-
 <h3 id="上傳-avatar-圖片">上傳 avatar 圖片</h3>
-
-<h4 id="1-models-user-rb">1) models/user.rb</h4>
-
+<h4 id="1-modelsuserrb">1) models/user.rb</h4>
 <pre><code>has_attached_file :avatar,
   styles: { medium: &quot;300x300&gt;&quot;, thumb: &quot;100x100&gt;&quot; },
   # default_url: &quot;/images/:style/missing.png&quot;,
@@ -320,7 +234,6 @@ validates_attachment :avatar, presence: true,
   content_type: { content_type: /\Aimage\/.*\Z/ },                          # 或特定類型 content_type: &quot;image/jpeg&quot; or content_type: ['image/jpeg', 'image/png', 'image/gif']
   size: { in: 0..20.megabyte }                                             # 或 KB { in: 0..20.kilobytes }
 </code></pre>
-
 <blockquote>
 <ul>
 <li><code>validates_attachment_content_type :avatar, :content_type =&gt; /\Aimage\/.*\Z/</code></li>
@@ -328,14 +241,10 @@ validates_attachment :avatar, presence: true,
 <li>要注意 nginx 的上傳檔案大小 <code>client_max_body_size       50M;</code></li>
 </ul>
 </blockquote>
-
 <h4 id="2-新增-avatar-所需的-db-欄位">2) 新增 avatar 所需的 DB 欄位</h4>
-
 <pre><code>rails generate paperclip user avatar
 </code></pre>
-
 <p>產生 <code>db/migrate/20150713155732_add_attachment_avatar_to_users.rb</code>, 內容為</p>
-
 <pre><code>class AddAttachmentAvatarToUsers &lt; ActiveRecord::Migration
   def self.up
     change_table :users do |t|
@@ -348,48 +257,34 @@ validates_attachment :avatar, presence: true,
   end
 end
 </code></pre>
-
 <p>執行 <code>rake db:migrate</code></p>
-
 <p>它會在你的 users 加上這些欄位</p>
-
 <pre><code>t.string   &quot;avatar_file_name&quot;
 t.string   &quot;avatar_content_type&quot;
 t.integer  &quot;avatar_file_size&quot;
 t.datetime &quot;avatar_updated_at&quot;
 </code></pre>
-
 <p>如果只是要增加欄位</p>
-
 <pre><code>add_attachment :users, :avatar
 </code></pre>
-
 <h4 id="3-加上-avatar-相關程式">3) 加上 avatar 相關程式</h4>
-
 <p>views/dashboard/welcome/index.html.erb</p>
-
 <pre><code>&lt;%= form_for @user, :url =&gt; users_path, :html =&gt; { :multipart =&gt; true } do |form| %&gt;
   &lt;%= form.file_field :avatar %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>或 simple_form 版</p>
-
 <pre><code>&lt;%= simple_form_for @user, url: dashboard_welcome_update_avatar_path do |form| %&gt;
   &lt;%= form.input :avatar, as: :file %&gt;
   &lt;%= form.submit '上傳' %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>顯示原圖, medium and thumb 大小圖片</p>
-
 <pre><code>&lt;%= image_tag @user.avatar.url %&gt;
 &lt;%= image_tag @user.avatar.url(:medium) %&gt;
 &lt;%= image_tag @user.avatar.url(:thumb) %&gt;
 </code></pre>
-
 <p>controllers/dashboard/welcome_controller.rb</p>
-
 <pre><code>class Dashboard::WelcomeController &lt; ApplicationController
   def index
     @user = current_user
@@ -408,56 +303,41 @@ t.datetime &quot;avatar_updated_at&quot;
   end
 end
 </code></pre>
-
 <p>config/routes.rb</p>
-
 <pre><code>namespace :dashboard do
   root 'welcome#index'
   patch 'welcome/update_avatar'
 end
 </code></pre>
-
 <h3 id="參數說明">參數說明</h3>
-
 <ul>
 <li><code>:url</code> : host 後面那段 url 路徑，也是檔案相對路徑</li>
 <li><code>:path</code> : 檔案儲存位置的完整路徑</li>
 <li><code>:default_url</code> : 如果找不到圖片時的預設圖</li>
 <li><code>:styles</code> : A hash of thumbnail styles with geometries. If you need copies of uploaded files with particular dimensions then specify them here.</li>
 </ul>
-
 <p>hash</p>
-
 <pre><code>has_attached_file :avatar, {
     :url =&gt; &quot;/system/:hash.:extension&quot;,
     :hash_secret =&gt; &quot;longSecretString&quot;
 }
 </code></pre>
-
 <p>image</p>
-
 <pre><code>has_attached_file :avatar, :styles =&gt; {:thumb =&gt; 'x100', :croppable =&gt; '600x600&gt;', :big =&gt; '1000x1000&gt;'}
 has_attached_file :cover, :styles =&gt; {:small =&gt; 'x100', :large =&gt; '1000x1000&gt;'}
 has_attached_file :sample, :styles =&gt; {:thumb =&gt; 'x100'}
 </code></pre>
-
 <p>Dynamic Processor</p>
-
 <pre><code>has_attached_file :avatar, :styles =&gt; lambda { |attachment| { :thumb =&gt; (attachment.instance.boss? ? &quot;300x300&gt;&quot; : &quot;100x100&gt;&quot;) } }
 
 has_attached_file :avatar, :processors =&gt; lambda { |instance| instance.processors }
 attr_accessor :processors
 </code></pre>
-
 <p>不檢查檔案格式一定要加上</p>
-
 <pre><code>do_not_validate_attachment_file_type :client_uploading
 </code></pre>
-
 <h3 id="尺寸的符號">尺寸的符號</h3>
-
 <p><code>:styles =&gt; { :medium =&gt; &quot;300x300&gt;&quot;, :thumb =&gt; &quot;100x100&gt;&quot; }</code></p>
-
 <ul>
 <li><code>&gt;</code>  : 等比例, 將圖片的大小縮到小於這尺寸, 較常用</li>
 <li><code>&lt;</code>  : 等比例, 將圖片的大小縮到大於這尺寸</li>
@@ -466,9 +346,7 @@ attr_accessor :processors
 <li><code>^</code>  : 等比例, 圖片的大小最小要那麼大</li>
 <li><code>無</code> : 等比例, 圖片的大小最大要那麼大</li>
 </ul>
-
 <h3 id="儲存路徑參數">儲存路徑參數</h3>
-
 <ul>
 <li><code>:style</code> : original</li>
 <li><code>:basename</code> : 檔名</li>
@@ -479,9 +357,7 @@ attr_accessor :processors
 <li><code>:extension</code> : .jpeg</li>
 <li><code>:class</code> : model name, ex: users</li>
 </ul>
-
 <p>不同大小的 avatar</p>
-
 <pre><code>url: &quot;/:class/:id/avatar/:style.:extension&quot;,
 path: &quot;:rails_root/public:url&quot;,
 
@@ -489,67 +365,45 @@ path: &quot;:rails_root/public:url&quot;,
 /users/4/avatars/medium.jpeg?1436890118
 /users/4/avatars/thumb.jpeg?1436890118
 </code></pre>
-
 <p>檔案不公開, 在根目錄建立 private (與 public 同層)</p>
-
 <pre><code>url: &quot;/:class/:id/:basename.:extension&quot;,
 path: &quot;:rails_root/private:url&quot;
 
 /users/3/profile.png
 </code></pre>
-
 <p>Custom path</p>
-
 <pre><code>url: &quot;/:class/:uuid/avatar/:style.:extension&quot;
 
 Paperclip.interpolates :uuid do |attachment, style|
   attachment.instance.uuid              # uuid 是欄位名稱
 end
 </code></pre>
-
 <h3 id="default-url">Default url</h3>
-
 <p>預設</p>
-
 <pre><code>default_url: &quot;/images/:style/missing.png&quot;,
 </code></pre>
-
 <p>如果要使用 assets/images 下的圖片，必須這樣設置，在 production 才會正確顯示出來</p>
-
 <pre><code>default_url: -&gt;(attachment) { ActionController::Base.helpers.image_path('icons/avatar.png') },
 </code></pre>
-
 <h3 id="其他">其他</h3>
-
 <p>刪除檔案</p>
-
 <pre><code>u.avatar = nil
 u.save(validate: false)
 </code></pre>
-
 <p>Private 檔案下載</p>
-
 <pre><code>if @case &amp;&amp; @case.original_file &amp;&amp; File.exist?(@case.original_file.path)
     send_file @case.original_file.path
 end
 </code></pre>
-
 <p>判斷是否已上傳檔案</p>
-
 <pre><code>@users.avatar.exists?
 </code></pre>
-
 <p>必須上傳圖片</p>
-
 <pre><code>validates :photo, presence: true
 </code></pre>
-
-<h3 id="paperclip-crop">Paperclip + Crop</h3>
-
+<h3 id="paperclip--crop">Paperclip + Crop</h3>
 <h4 id="簡易-crop">簡易 crop</h4>
-
 <p>加上 convert_options</p>
-
 <pre><code>has_attached_file :avatar,
 styles: { medium: &quot;300x300&gt;&quot;, thumb: &quot;100x100&gt;&quot; },
 url: &quot;/:class/:id/avatar/:style.:extension&quot;,
@@ -560,27 +414,18 @@ convert_options: {
   :medium =&gt; &quot;-gravity northwest -crop 101x100+100+0 +repage&quot;, #crop to 100x100 starting 100 pixels to the right of the upper left corner
 }
 </code></pre>
-
 <h4 id="使用-papercrop">使用 papercrop</h4>
-
 <p>Gemfile</p>
-
 <pre><code>gem 'papercrop', '~&gt; 0.3.0'
 </code></pre>
-
 <p>application.js</p>
-
 <pre><code>//= require jquery.jcrop
 //= require papercrop
 </code></pre>
-
 <p>application.scss</p>
-
 <pre><code>*= require jquery.jcrop
 </code></pre>
-
 <p>controller</p>
-
 <pre><code>def upload_avatar
   current_user.update(avatar_params)
   redirect_to action: :edit
@@ -599,9 +444,7 @@ def crop_params
   params[:user].permit(:avatar_original_w, :avatar_original_h, :avatar_aspect, :avatar_box_w, :avatar_crop_x, :avatar_crop_y, :avatar_crop_w, :avatar_crop_h)
 end
 </code></pre>
-
 <p>model</p>
-
 <pre><code>has_attached_file :avatar,
   styles: { medium: &quot;300x300&gt;&quot;, thumb: &quot;100x100&gt;&quot; },
   url: &quot;/:class/:id/avatar/:style.:extension&quot;,
@@ -610,9 +453,7 @@ end
 validates_attachment :avatar, content_type: { content_type: ['image/jpeg', 'image/png', 'image/gif'] }, size: { in: 0..10.megabyte }
 crop_attached_file :avatar              # 加上它
 </code></pre>
-
 <p>view</p>
-
 <pre><code>上傳的 view
 &lt;%= form_for @user, url: upload_avatar_info_user_path(@user), method: :PATCH do |f| %&gt;
   &lt;%= image_tag @user.avatar.url %&gt;
@@ -629,73 +470,69 @@ crop 的 view
   &lt;%= f.submit 'Save' %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <blockquote>
 <p>crop 不會修改 original 的圖片只會改 thumb 及 medium 的圖</p>
 </blockquote>
-
 <h3 id="paperclip-上傳到-s3">Paperclip 上傳到 S3</h3>
-
-<h4 id="安裝-設定">安裝 &amp; 設定</h4>
-
+<h4 id="安裝--設定">安裝 &amp; 設定</h4>
 <p>Install <a href="https://github.com/aws/aws-sdk-ruby">aws-sdk</a></p>
-
 <pre><code>gem &quot;paperclip&quot;, &quot;~&gt; 5.0.0.beta2&quot;           # 注意! 5 版以上才支援 aws-sdk 2 版
 gem 'aws-sdk', '~&gt; 2.2.37'
 </code></pre>
-
-<p>1) 先到 IAM 建立一個有 S3 權限的 User, 並記下 <code>Access Key ID</code> <code>Secret Access Key</code></p>
-
-<p>2) 到 S3 -&gt; Create Bucket -&gt; 設定 Policy, 設定後簡單使用 command 上傳測試是否 work, 請<a href="/posts/aws/">參考此篇 - AWS-SDK / AWS-CLI 上傳及下載</a></p>
-
-<p>3) 設定給 paperclip 讀取 s3 的 config。可以設定在 <code>config/application.rb</code></p>
-
-<pre><code>config.paperclip_defaults = {
-  storage: :s3,
-  s3_region: 'ap-northeast-1',
-  s3_credentials: {
-    bucket: 'my-bucket',
-    access_key_id: 'Access Key ID',
-    secret_access_key: 'Secret Access Key',
-  }
+<ol>
+<li>
+<p>先到 IAM 建立一個有 S3 權限的 User, 並記下 <code>Access Key ID</code> <code>Secret Access Key</code></p>
+</li>
+<li>
+<p>到 S3 -&gt; Create Bucket -&gt; 設定 Policy, 設定後簡單使用 command 上傳測試是否 work, 請<a href="/posts/aws/">參考此篇 - AWS-SDK / AWS-CLI 上傳及下載</a></p>
+</li>
+<li>
+<p>設定給 paperclip 讀取 s3 的 config。可以設定在 <code>config/application.rb</code></p>
+<p>config.paperclip_defaults = {
+storage: :s3,
+s3_region: &lsquo;ap-northeast-1&rsquo;,
+s3_credentials: {
+bucket: &lsquo;my-bucket&rsquo;,
+access_key_id: &lsquo;Access Key ID&rsquo;,
+secret_access_key: &lsquo;Secret Access Key&rsquo;,
 }
-</code></pre>
-
-<p>4) Model 的 Paperclip 設定</p>
-
-<pre><code>s3_host_name: &quot;s3-ap-northeast-1.amazonaws.com&quot;,
-url: &quot;/:class/:attachment/:id/:style.:extension&quot;,
-path: &quot;:url&quot;    # path 跟 url 一樣就好了
-</code></pre>
-
-<p>5) 輸出 <code>@product.photo.url(:thumb)</code> 它就會自動組出正確的 url 了</p>
-
-<pre><code>http://s3-ap-northeast-1.amazonaws.com/my-bucket/products/photos/1/thumb.jpeg?1461739010
-</code></pre>
-
-<p>6) 完成</p>
-
+}</p>
+</li>
+<li>
+<p>Model 的 Paperclip 設定</p>
+<p>s3_host_name: &ldquo;s3-ap-northeast-1.amazonaws.com&rdquo;,
+url: &ldquo;/:class/:attachment/:id/:style.:extension&rdquo;,
+path: &ldquo;:url&rdquo;    # path 跟 url 一樣就好了</p>
+</li>
+<li>
+<p>輸出 <code>@product.photo.url(:thumb)</code> 它就會自動組出正確的 url 了</p>
+<p><a href="http://s3-ap-northeast-1.amazonaws.com/my-bucket/products/photos/1/thumb.jpeg?1461739010">http://s3-ap-northeast-1.amazonaws.com/my-bucket/products/photos/1/thumb.jpeg?1461739010</a></p>
+</li>
+<li>
+<p>完成</p>
+</li>
+</ol>
 <h4 id="區分-development-使用本機空間-production-使用-s3">區分 Development 使用本機空間, Production 使用 S3</h4>
-
-<p>1) 加上環境判斷, <code>config/application.rb</code></p>
-
-<pre><code>if Rails.env.production?
-  config.paperclip_defaults = {
-    ...
-  }
-end
-</code></pre>
-
-<p>2) (選項)區分 path</p>
-
-<pre><code># 如果是 development 上傳到網站根目錄的 /public
-path: (Rails.env.production?) ? &quot;:url&quot; : &quot;:rails_root/public:url&quot;
-
-# s3_host_name 不需處理它, 即使 development 存在這個參數也無妨
-s3_host_name: &quot;s3-ap-northeast-1.amazonaws.com&quot;,
-</code></pre>
-
-<p>3) 完成! 記得要重啟動 Rails</p>
+<ol>
+<li>
+<p>加上環境判斷, <code>config/application.rb</code></p>
+<p>if Rails.env.production?
+config.paperclip_defaults = {
+&hellip;
+}
+end</p>
+</li>
+<li>
+<p>(選項)區分 path</p>
+<h1 id="如果是-development-上傳到網站根目錄的-public">如果是 development 上傳到網站根目錄的 /public</h1>
+<p>path: (Rails.env.production?) ? &ldquo;:url&rdquo; : &ldquo;:rails_root/public:url&rdquo;</p>
+<h1 id="s3_host_name-不需處理它-即使-development-存在這個參數也無妨">s3_host_name 不需處理它, 即使 development 存在這個參數也無妨</h1>
+<p>s3_host_name: &ldquo;s3-ap-northeast-1.amazonaws.com&rdquo;,</p>
+</li>
+<li>
+<p>完成! 記得要重啟動 Rails</p>
+</li>
+</ol>
 
 </article>
 

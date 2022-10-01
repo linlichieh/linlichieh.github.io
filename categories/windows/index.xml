@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>windows on Jack&#39;s Note</title>
@@ -6,25 +6,22 @@
     <description>Recent content in windows on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Dec 2013 23:16:00 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/windows/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 17 Dec 2013 23:16:00 +0000</lastBuildDate><atom:link href="/categories/windows/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Windows - Install the gcc compiler MinGW</title>
       <link>/posts/windows-install-gcc-compiler-mingw/</link>
       <pubDate>Tue, 17 Dec 2013 23:16:00 +0000</pubDate>
       
       <guid>/posts/windows-install-gcc-compiler-mingw/</guid>
-      <description>MinGW 介紹  MinGW 全稱 Minimalist GNU For Windows，是個精簡的Windows平台C/C++、ADA及Fortran編譯器，相比Cygwin而言，體積要小很多，使用較為方便。MinGW提供了一套完整的開源編譯工具集，以適合Windows平台應用開發，且不依賴任何第三方C運行時庫。
- MinGW包括：  一套集成編譯器，包括C、C++、ADA語言和Fortran語言編譯器 用於生成Windows二進製文件的GNU工具的（編譯器、鏈接器和檔案管理器） 用於Windows平台安裝和部署MinGW和MSYS的命令行安裝器（mingw-get） 用於命令行安裝器的GUI打包器（mingw-get-inst）  下載 MinGW 到 mingw 下載頁面 上面應該有可以直接下載最新版的連結
+      <description>MinGW 介紹 MinGW 全稱 Minimalist GNU For Windows，是個精簡的Windows平台C/C++、ADA及Fortran編譯器，相比Cygwin而言，體積要小很多，使用較為方便。MinGW提供了一套完整的開源編譯工具集，以適合Windows平台應用開發，且不依賴任何第三方C運行時庫。
+MinGW包括： 一套集成編譯器，包括C、C++、ADA語言和Fortran語言編譯器 用於生成Windows二進製文件的GNU工具的（編譯器、鏈接器和檔案管理器） 用於Windows平台安裝和部署MinGW和MSYS的命令行安裝器（mingw-get） 用於命令行安裝器的GUI打包器（mingw-get-inst） 下載 MinGW 到 mingw 下載頁面 上面應該有可以直接下載最新版的連結
 Looking for the latest version? Download mingw-get-setup.exe (86.5 kB)
 安裝套件 - C/C++ 編譯器 安裝完後會跳出一個視窗讓你選擇你要安裝的套件,
 在 mingw32-gcc-g++ 上按右鍵選擇 Mark for Installation 把它勾選起來
 然候左上角 Installation 選擇 Apply Change 就會開始安裝 C/C++ 編譯器了,
 設定系統環變數 安裝完後要將 GCC 的路徑 C:\MinGW\bin 加到系統環境變數 PATH, 才能使用,
-我的電腦右鍵 -&amp;gt; 內容 -&amp;gt; 進階系統設定 -&amp;gt; 進階TAB, 點選在下面的環境變數 -&amp;gt; 在下面的系統變數那新增</description>
+我的電腦右鍵 -&amp;gt; 內容 -&amp;gt; 進階系統設定 -&amp;gt; 進階TAB, 點選在下面的環境變數 -&amp;gt; 在下面的系統變數那新增
+變數名稱 : PATH 變數值 : %SystemRoot%\system32;%SystemRoot%;C:\MinGW\bin</description>
     </item>
     
     <item>
@@ -34,15 +31,15 @@ Looking for the latest version? Download mingw-get-setup.exe (86.5 kB)
       
       <guid>/posts/windows/</guid>
       <description>修改 win8 host (C:\Windows\System32\Drivers\etc) [1] 修改編輯權限
-選擇 hosts 右鍵-&amp;gt;內容-&amp;gt;安全性-&amp;gt;點擊&amp;rdquo;群組或使用者名稱&amp;rdquo;下面的編輯-&amp;gt;修改 ALL APPLICATION PACKAGES 權限-&amp;gt;將&amp;rdquo;修改&amp;rdquo;勾選允許
+選擇 hosts 右鍵-&amp;gt;內容-&amp;gt;安全性-&amp;gt;點擊&amp;quot;群組或使用者名稱&amp;quot;下面的編輯-&amp;gt;修改 ALL APPLICATION PACKAGES 權限-&amp;gt;將&amp;quot;修改&amp;quot;勾選允許
 [2] notepad++ 以系統管理員執行身份
 C:\Program Files (x86)\Notepad++\notepad++.exe 右鍵-&amp;gt;以系統管理員身份執行
 [3] 就可以在 hosts 加入要對應的 ip 跟 domain
 發生 &#39;ping&#39; 不是內部或外部命令、可執行的程式或批次檔。 發生原因 : C:\Windows\system32 放一些如 ping.exe, 所以當 PATH 路徑未指到 C:\Windows\system32
 解決方法1 :
-cd C:\Windows\system32 ping www.google.com.tw  解決方法2 :
+cd C:\Windows\system32 ping www.google.com.tw 解決方法2 :
 將 PATH 全域變數指向 %SystemRoot%\system32;%SystemRoot%
-  如果 PATH 本身已有設定值, 以 ; 分隔 %systemRoot% 是 C:\Windows   .bat 語法  pause : 暫停, 當指令執行完不要直接關閉視窗  清除 dns cache ipconfig /flushdns  清除瀏覽器指令 :  chrome : chrome://net-internals/#dns firefox : about:config -&amp;gt; network.</description>
+如果 PATH 本身已有設定值, 以 ; 分隔 %systemRoot% 是 C:\Windows .bat 語法 pause : 暫停, 當指令執行完不要直接關閉視窗 清除 dns cache ipconfig /flushdns 清除瀏覽器指令 : chrome : chrome://net-internals/#dns firefox : about:config -&amp;gt; network.</description>
     </item>
     
   </channel>

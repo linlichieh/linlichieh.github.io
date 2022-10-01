@@ -2,55 +2,41 @@
 <html lang="en-us">
 <title>Go AWS | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/go-aws/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/go-aws/">Go AWS</a></h1>
-    <p class="meta"><time datetime="2016-09-12T12:54:44&#43;08:00">September 12, 2016</time></p>
+    <h1>Go AWS</h1>
+    <time datetime="2016-09-12T12:54:44&#43;08:00">September 12, 2016</time>
   </header>
-  
-
-<h2 id="如何使用-aws-api">如何使用 AWS API</h2>
-
+  <h2 id="如何使用-aws-api">如何使用 AWS API</h2>
 <p>在使用它的任何一個 service 前要先準備好 credential 然候再建立 session，然候再跟 AWS services 互動，</p>
-
 <p>Session 可以讓全部 AWS services 共用 (在使用各服務前會需要用 session 建立) ，最好 cache 起來，</p>
-
 <p>每次要用之前再從 cache 拿出來， 避免每一次重新建立連線耗費資源。</p>
-
 <h3 id="1-初始化-credential">[1] 初始化 credential</h3>
-
 <p>可以使用 aws-cli 指令 <code>aws configure</code> 幫你產生或手動建立檔案</p>
-
 <p>~/.aws/config</p>
-
 <pre><code>[這裡填 profile name]
 region = us-west-2
 output = json
 </code></pre>
-
 <p>~/.aws/credentials</p>
-
 <pre><code>[這裡填 profile name]
 aws_access_key_id = A******************A
 aws_secret_access_key = 9**************************************V
 </code></pre>
-
 <p>常用的 credential 有幾種，以下會按照順序，哪個可以取到就使用</p>
-
 <pre><code>func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) {
     config := aws.NewConfig()
     var ProviderList []credentials.Provider = []credentials.Provider{
@@ -68,9 +54,7 @@ aws_secret_access_key = 9**************************************V
     return cred, config
 }
 </code></pre>
-
 <p>(或) credential 也可以直接帶入 access key 與 secret key</p>
-
 <pre><code>cred := credentials.NewStaticCredentials(accessKey, secretKey, ``)
 svc := s3.New(session.New(),
     &amp;aws.Config{
@@ -79,9 +63,7 @@ svc := s3.New(session.New(),
     },
 )
 </code></pre>
-
 <h3 id="2-初始化設定檔">[2] 初始化設定檔</h3>
-
 <pre><code>func InitAWSConfig(region string) (*aws.Config, error) {
     cred, conf := GetAWSCredentialChain()
     val, err := cred.Get()
@@ -93,18 +75,14 @@ svc := s3.New(session.New(),
     return conf, nil
 }
 </code></pre>
-
 <p>或直接返回 session</p>
-
 <pre><code>func NewSession(region string) *session.Session {
     cred, conf := GetAWSCredentialChain()
     conf.WithRegion(region).WithCredentials(cred)
     return session.New(conf)
 }
 </code></pre>
-
-<h3 id="3-建立-session-e-g-dynamo-db">[3] 建立 Session (e.g. dynamo db)</h3>
-
+<h3 id="3-建立-session-eg-dynamo-db">[3] 建立 Session (e.g. dynamo db)</h3>
 <pre><code>func GetDynamodbInstance() (*dynamodb.DynamoDB, error) {
     conf, err := InitAWSConfig(&quot;Dynamo DB 的 Region name e.g. us-west-2&quot;)
     if err != nil {
@@ -116,9 +94,7 @@ svc := s3.New(session.New(),
     return svc, nil
 }
 </code></pre>
-
 <h3 id="4-測試-列出-dynamodb-的-table-list">[4] 測試 (列出 DynamoDB 的 Table list)</h3>
-
 <pre><code>svc, _ := services.GetDynamodbInstance()
 result, err := svc.ListTables(&amp;dynamodb.ListTablesInput{})
 if err != nil {
@@ -131,9 +107,7 @@ for _, table := range result.TableNames {
     log.Println(*table)
 }
 </code></pre>
-
-<h3 id="補充">補充 :</h3>
-
+<h3 id="補充-">補充 :</h3>
 <pre><code>sess := session.New(&amp;aws.Config{
     Region:      aws.String(&quot;ap-northeast-1&quot;),
     Credentials: credentials.NewSharedCredentials(&quot;/Users/home/.aws/credentials&quot;, &quot;aws-cred-profile&quot;),
@@ -142,17 +116,12 @@ for _, table := range result.TableNames {
 
 svc := sqs.New(sess)
 </code></pre>
-
 <h2 id="dynamodb">DynamoDB</h2>
-
 <ul>
 <li><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html">保留字</a></li>
 </ul>
-
 <h3 id="型態">型態</h3>
-
 <p>DynamoDB 有自定義的型態，像傳遞參數或接收參收要再將它的型態轉成我們熟悉的</p>
-
 <pre><code>B []byte `type:&quot;blob&quot;`
 
 // A Boolean data type.
@@ -182,9 +151,7 @@ S *string `type:&quot;string&quot;`
 // A String Set data type.
 SS []*string `type:&quot;list&quot;`
 </code></pre>
-
 <h3 id="getiteminput">GetItemInput</h3>
-
 <pre><code>params = &amp;dynamodb.GetItemInput{
     TableName: aws.String(&quot;user_contact&quot;),
     Key: map[string]*dynamodb.AttributeValue{ // Required
@@ -206,11 +173,8 @@ for key, val := range contact_list {
     logs.Info(val.S)
 }
 </code></pre>
-
 <h3 id="batchgetiteminput">BatchGetItemInput</h3>
-
 <p>最多只可以取 100 筆</p>
-
 <pre><code>params = &amp;dynamodb.BatchGetItemInput{
     RequestItems: map[string]*dynamodb.KeysAndAttributes{
         &quot;user_contacts&quot;: {
@@ -240,9 +204,7 @@ for _, val := range resp.Responses[&quot;user_contacts&quot;] {
     }
 }
 </code></pre>
-
 <p>補充 : 用迴圈組出 BatchGetItem 需要的參數</p>
-
 <pre><code>id_keys []map[string]*dynamodb.AttributeValue
 for _, id := range ids {
     id_key := map[string]*dynamodb.AttributeValue{
@@ -260,15 +222,11 @@ params := &amp;dynamodb.BatchGetItemInput{
     },
 }
 </code></pre>
-
 <blockquote>
 <p>BatchGetItem &amp; GetItem key 不支援用 index, 只能用 primary key</p>
 </blockquote>
-
 <h3 id="putitem">PutItem</h3>
-
 <p>建立一個 list 裡面有兩個 map</p>
-
 <pre><code>var list []*dynamodb.AttributeValue
 var item dynamodb.AttributeValue
 item.M = map[string]*dynamodb.AttributeValue{
@@ -289,9 +247,7 @@ params := &amp;dynamodb.PutItemInput{
 
 resp, err := svc.PutItem(params)    // 即使成功 resp 不會有回傳值
 </code></pre>
-
 <p>建立一個 Map{&ldquo;time&rdquo;: map{&hellip;}, &ldquo;friends&rdquo;: list: [map{&hellip;}]}</p>
-
 <pre><code>結構 :
 
     contacts : {
@@ -330,9 +286,7 @@ contacts = map[string]*dynamodb.AttributeValue{
     &quot;friends&quot;: {L: friends},
 }
 </code></pre>
-
 <p>Optional 的值，一定要宣告一個空物件，不要用 <code>var</code></p>
-
 <pre><code>condition := map[string]*dynamodb.AttributeValue{}
 if 是否有值 {
     time := &amp;dynamodb.AttributeValue{
@@ -351,9 +305,7 @@ params := &amp;dynamodb.PutItemInput{
     },
 }
 </code></pre>
-
 <h3 id="deleteitem">DeleteItem</h3>
-
 <pre><code>params := &amp;dynamodb.DeleteItemInput{
     TableName: aws.String(&quot;user_name&quot;),
     Key: map[string]*dynamodb.AttributeValue{
@@ -365,11 +317,8 @@ params := &amp;dynamodb.PutItemInput{
 
 resp, err := svc.DeleteItem(params)     // 即使成功 resp 不會有回傳值
 </code></pre>
-
 <h3 id="updateitem">UpdateItem</h3>
-
 <p>Update 使用上每次都是整筆資料更新會比較簡單一點，也就是當沒有資料時，也要給它一個空物件，這樣 Update 時就可以把欄位刪除了，沒有空物件會引發錯誤</p>
-
 <pre><code>// info 為 optional 的值
 info := map[string]*dynamodb.AttributeValue{}
 friend_list []*string = []*string{aws.String(user_id)}
@@ -404,14 +353,10 @@ params := &amp;dynamodb.UpdateItemInput{
 
 resp, err = svc.UpdateItem(params)      // 即使成功 resp 不會有回傳值
 </code></pre>
-
 <p>更新巢狀資料下的某個值, 假設 friends 下有很多 friend_id 為 key 的 map, UpdateExpression 這樣寫:</p>
-
 <pre><code>SET friends.#friend_id.name = :val
 </code></pre>
-
 <p>(optional) info map</p>
-
 <pre><code>if 當有資料再更新 {
     var time map[string]*dynamodb.AttributeValue
     time = map[string]*dynamodb.AttributeValue{
@@ -421,16 +366,13 @@ resp, err = svc.UpdateItem(params)      // 即使成功 resp 不會有回傳值
     info[&quot;time&quot;] = &amp;dynamodb.AttributeValue{M: time}
 }
 </code></pre>
-
 <blockquote>
 <ul>
 <li>不存在的資料會新增</li>
 <li>UpdateExpression 不能 ADD 一個 item 到 Map, 必須用 SET，但前提是欄位要先存在</li>
 </ul>
 </blockquote>
-
 <p><a href="http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.Modifying.html">update expression 其他說明</a></p>
-
 <pre><code>SET list[0] = :val1
 REMOVE #m.nestedField1, #m.nestedField2
 ADD aNumber :val2, anotherNumber :val3
@@ -438,11 +380,8 @@ DELETE aSet :val4
 
 SET list[0] = :val1 REMOVE #m.nestedField1, #m.nestedField2 ADD aNumber :val2, anotherNumber :val3 DELETE aSet :val4
 </code></pre>
-
 <h3 id="query">Query</h3>
-
 <p>第一種方法 : dynamodb 除了 GetItem (用 partition key 取得資料) 也可以使用其中某個欄位取得，不過要先到 Dynamodb 的 AWS Console 上對那個欄位建立 index</p>
-
 <pre><code>params := &amp;dynamodb.QueryInput{
     TableName:              aws.String(&quot;users&quot;), // Required
     IndexName:              aws.String(&quot;user_id-index&quot;),
@@ -458,13 +397,10 @@ SET list[0] = :val1 REMOVE #m.nestedField1, #m.nestedField2 ADD aNumber :val2, a
     },
 }
 </code></pre>
-
 <blockquote>
 <p>Query 支援用 index, GetItem 不支援用 index</p>
 </blockquote>
-
 <p>ExpressionAttributeNames 也可以只寫成這樣</p>
-
 <pre><code>KeyConditionExpression: aws.String(&quot;user_id = :user_id&quot;),
 ExpressionAttributeValues:  map[string]*dynamodb.AttributeValue{
     ':user_id': {
@@ -472,22 +408,17 @@ ExpressionAttributeValues:  map[string]*dynamodb.AttributeValue{
     },
 },
 </code></pre>
-
 <p>ExpressionAttributeNames 代入 int : 最然對程式來說他是 int 但是實際上還是要用 string，只不過要指定 <code>N</code> (Number)</p>
-
 <pre><code>ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
     &quot;:num&quot;: {N: aws.String(&quot;1&quot;)}
 }
 
 resp, err = svc.Query(params)
 </code></pre>
-
 <blockquote>
 <p>如果沒有資料，不會引起 <code>err</code> 喔! 要記得判斷 resp 是否為 <code>nil</code></p>
 </blockquote>
-
 <p>第二種方法 : 假設你有設 partition key 及 sort key ，但你只知道 partition key 不知道 sort key 你會沒辦法用 GetItem，這時也可以用 Query 直接對 partition key 取資料</p>
-
 <pre><code>params := &amp;dynamodb.QueryInput{
     TableName:      aws.String(table), // Required
     ConsistentRead: aws.Bool(false),
@@ -502,19 +433,12 @@ resp, err = svc.Query(params)
     },
 }
 </code></pre>
-
 <h3 id="scan">Scan</h3>
-
 <p>用來取這個 Table 的全部資料, 不可以設定條件 (where)</p>
-
 <h3 id="轉換-dynamodb-格式">轉換 dynamodb 格式</h3>
-
 <p>從 dynamodb 取出來的資料有它自已的格式，在取的時候有時候蠻麻煩的，sdk 有提供轉換格式的函式</p>
-
 <p>如果用 Marshal/Unmarshal User struct，它會優先依照 tag <code>dynamodbav</code> 將值 Map 到 struct 欄位，其次才是 tag <code>json</code></p>
-
 <p>GetItem (struct)</p>
-
 <pre><code>type User struct {
     Name string `json:&quot;name&quot; dynamodbav:&quot;user_name&quot;`  // 避開 dynamodb 保留字
 }
@@ -524,9 +448,7 @@ err = dynamodbattribute.UnmarshalMap(resp.Item, &amp;u)
 var m map[string]interface{}
 err = dynamodbattribute.UnmarshalMap(resp.Item, &amp;m)
 </code></pre>
-
 <p>BatchGetItem</p>
-
 <pre><code>// Specific table (user_contacts)
 var m []map[string]interface{}
 err = dynamodbattribute.UnmarshalListOfMaps(resp.Responses[&quot;user_contacts&quot;], &amp;m)
@@ -543,17 +465,12 @@ for k, v := range resp.Responses {
     m[k] = tmp
 }
 </code></pre>
-
 <p>Query</p>
-
 <pre><code>var m []map[string]interface{}
 err = dynamodbattribute.UnmarshalListOfMaps(resp.Items, &amp;m)
 </code></pre>
-
 <h2 id="s3">S3</h2>
-
 <h3 id="putobject">PutObject</h3>
-
 <pre><code>params := &amp;s3.PutObjectInput{
     Bucket: aws.String(&quot;bucket_name&quot;),
     Key:    aws.String(&quot;file_name&quot;),
@@ -567,13 +484,10 @@ resp :
       ETag: &quot;\&quot;b8468dbe0941b5164253860813663edf\&quot;&quot;
     }
 </code></pre>
-
 <blockquote>
 <p>需要注意的是成功上傳後的檔案預設的 ACL 都是 private, 除非你的 bucket 有設定對放開放, 不然就要指定 ACL, 可<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUTacl.html">參考官方文件</a></p>
 </blockquote>
-
 <h3 id="deleteobject">DeleteObject</h3>
-
 <pre><code>params := &amp;s3.DeleteObjectInput{
     Bucket: aws.String(&quot;bucket_name&quot;),
     Key:    aws.String(&quot;file_name&quot;),
@@ -581,13 +495,10 @@ resp :
 svc, err := GetS3Instance()
 resp, err := svc.DeleteObject(params)  // 即使成功 resp 不會有回傳值
 </code></pre>
-
 <blockquote>
 <p>無法直接刪除一個 folder</p>
 </blockquote>
-
 <h3 id="deleteobjects">DeleteObjects</h3>
-
 <pre><code>params := &amp;s3.DeleteObjectsInput{
     Bucket: aws.String(bucket),
     Delete: &amp;s3.Delete{
@@ -603,13 +514,10 @@ resp, err := svc.DeleteObject(params)  // 即使成功 resp 不會有回傳值
 svc, err := GetS3Instance()
 resp, err = svc.DeleteObjects(params)
 </code></pre>
-
 <blockquote>
 <p>如果要刪除整個 folder, 要用 loop 再搭配 listObject 刪除, 直到 listObject 取不到東西為止</p>
 </blockquote>
-
 <h3 id="listobject">ListObject</h3>
-
 <pre><code>params := &amp;s3.ListObjectsInput{
     Bucket: aws.String(bucket),
     Prefix: aws.String(path),
@@ -617,9 +525,7 @@ resp, err = svc.DeleteObjects(params)
 }
 result, err = s.Service.ListObjects(params)
 </code></pre>
-
 <p>result:</p>
-
 <pre><code>{
   Contents: [
     {
@@ -644,13 +550,10 @@ result, err = s.Service.ListObjects(params)
   Prefix: &quot;test-dir&quot;
 }
 </code></pre>
-
 <blockquote>
 <p>最多一次只能取出 1000 個 item</p>
 </blockquote>
-
 <h3 id="getobject">GetObject</h3>
-
 <pre><code>params := &amp;s3.GetObjectInput{
     Bucket: aws.String(&quot;bucket_name&quot;),
     Key:    aws.String(&quot;file_name&quot;),
@@ -673,22 +576,17 @@ fmt.Println(string(json_str))
   }
 })
 </code></pre>
-
 <h3 id="headobject">HeadObject</h3>
-
 <blockquote>
 <p>可以用來判斷 object 是否存在在 s3</p>
 </blockquote>
-
 <pre><code>params := &amp;s3.HeadObjectInput{
     Bucket: aws.String(bucket),
     Key:    aws.String(key),
 }
 res, err = svc.HeadObject(params)
 </code></pre>
-
 <p>HeadObjectOutput</p>
-
 <pre><code>{
   AcceptRanges: &quot;bytes&quot;,
   ContentLength: 80936,
@@ -700,9 +598,7 @@ res, err = svc.HeadObject(params)
   }
 }
 </code></pre>
-
-<h3 id="getobjectrequest-pre-signed-url-for-downloading-get">GetObjectRequest (pre-signed url for downloading - GET)</h3>
-
+<h3 id="getobjectrequest-pre-signed-url-for-downloading---get">GetObjectRequest (pre-signed url for downloading - GET)</h3>
 <pre><code>svc, err := GetS3Instance()
 req, _ := svc.GetObjectRequest(&amp;s3.GetObjectInput{
     Bucket: aws.String(&quot;bucket_name&quot;),
@@ -710,9 +606,7 @@ req, _ := svc.GetObjectRequest(&amp;s3.GetObjectInput{
 })
 pre_url, err = req.Presign(time.Duration(10) * time.Second)     // within 10 seconds for downloading file
 </code></pre>
-
-<h3 id="putobjectrequest-pre-signed-url-for-uploading-put">PutObjectRequest (pre-signed url for uploading - PUT)</h3>
-
+<h3 id="putobjectrequest-pre-signed-url-for-uploading---put">PutObjectRequest (pre-signed url for uploading - PUT)</h3>
 <pre><code>svc, err := GetS3Instance()
 req, _ := svc.PutObjectRequest(&amp;s3.PutObjectInput{
     Bucket: aws.String(&quot;bucket_name&quot;),
@@ -720,18 +614,12 @@ req, _ := svc.PutObjectRequest(&amp;s3.PutObjectInput{
 })
 pre_url, err := req.Presign(15 * time.Minute)                   // within 15 minutes for uploading file
 </code></pre>
-
 <p>關於 ACL, 不知道為什麼參數加上 ACL 指定 <code>public-read</code> 當上傳時 AWS 會回 403 錯誤訊息為 <code>SignatureDoesNotMatch</code>, 後來解法是上傳成功後再去 call <code>PutObjectAcl</code> 改變 ACL</p>
-
 <p>curl 測試是否可以上傳</p>
-
 <pre><code>curl -v -T /tmp/test.mp4 &quot;https://my_bucket.s3-us-west-2.amazonaws.com/videos/test.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=ASIAJXSKW3C6...略...&quot;
 </code></pre>
-
 <h3 id="copyobject">CopyObject</h3>
-
 <p>可從一個 bucket 裡的檔案 copy 到另一個 bucket 下</p>
-
 <pre><code>svc, err := GetS3Instance()
 _, err = svc.CopyObject(&amp;s3.CopyObjectInput{
     CopySource: aws.String(from_path),          // 注意!! 來源的組成是 {bucket}/{file_path}
@@ -740,13 +628,10 @@ _, err = svc.CopyObject(&amp;s3.CopyObjectInput{
     ACL:        aws.String(&quot;public-read&quot;),      // optional
 })
 </code></pre>
-
 <blockquote>
 <p>需要注意的是成功上傳後的檔案預設的 ACL 都是 private, 除非你的 bucket 有設定對放開放, 不然就要指定 ACL, 可<a href="http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectPUTacl.html">參考官方文件</a></p>
 </blockquote>
-
 <h3 id="putobjectacl">PutObjectAcl</h3>
-
 <pre><code>svc, err := GetS3Instance()
 params := &amp;s3.PutObjectAclInput{
     Bucket: aws.String(bucket),
@@ -755,17 +640,11 @@ params := &amp;s3.PutObjectAclInput{
 }
 _, err = svc.PutObjectAcl(params)
 </code></pre>
-
 <h2 id="cloudfront">CloudFront</h2>
-
 <h3 id="pre-signed-url">pre-signed url</h3>
-
 <p>產生的 pre-signed url 是 custom domain 而不是 aws s3 的 domain</p>
-
 <p>前置作業請參考 <a href="/posts/aws/">aws cloudfront - pre-signed url + custom domain 設定</a></p>
-
 <p>以上完成後，到這裡應該已經將 private key 上傳到主機了, 就可以開始實作 :</p>
-
 <pre><code>file_url := &quot;https://cdn.your-custom-domain.com/test.jpg&quot;                                                              // custom domain + S3 file
 key_id := &quot;APK**************Y2A&quot;                                                                        // Access Key ID
 priv_key, err := sign.LoadPEMPrivKeyFile(&quot;/tmp/cloudfront-private_key-pk-APK**************Y2A.pem&quot;)     // Private key path
@@ -780,20 +659,13 @@ if err != nil {
     logs.Info(&quot;signed_url: %s&quot;, signed_url)
 }
 </code></pre>
-
 <p>signed url :</p>
-
 <pre><code>https://cdn.your-custom-domain.com/test.jpg?Expires=1500302808&amp;Signature=mhh8YmrYMs91Cc4qoTeDSUjOeQChe-U7Ksm0Ue92WJufMlKkEAOHR3GeoEaoc3nSpitA5KV-4op6EePTfYG8DMqr-J8Oh55gCNGMjicaiMdz~VOCEoSUTeYgLFnj-dQT5OGjdg~iELDX5LROZ2UL~5vJgSKrlgiH2VLp4WMO~AoDe~CiZAWtQ49Jbrx1XZtVX3i9lCDAL4881psx8xt7W4dANJ0uo1oelBo5P0BhM0v400un9UT4FG-ZYrXB1iDYszwxhLx4TWZSa2MWXWTJyXzeZwcVcbulvdP7apokPC5aMrLaPfel6v22HSFAEP62Unety01SN4HWYtLCW7v9VQ__&amp;Key-Pair-Id=APKAIZQ4PTQ4P7ZNQY2A
 </code></pre>
-
 <h2 id="sqs">SQS</h2>
-
-<h3 id="send-message-receive-message-delete-message">Send Message / Receive Message / Delete Message</h3>
-
+<h3 id="send-message--receive-message--delete-message">Send Message / Receive Message / Delete Message</h3>
 <p>參考 : <a href="https://github.com/jacklin293/golang-aws-sqs-example">golang-aws-sqs-example</a></p>
-
 <h3 id="send-message-batch-request">Send Message Batch Request</h3>
-
 <pre><code>var entries []*sqs.SendMessageBatchRequestEntry
 for i := 1; i &lt;= 5; i++ {
     f := sqs.SendMessageBatchRequestEntry{ // Required
@@ -808,9 +680,7 @@ params := &amp;sqs.SendMessageBatchInput{
 }
 resp, err := svc.SendMessageBatch(params)
 </code></pre>
-
 <h3 id="get-queue-attributes">Get queue attributes</h3>
-
 <pre><code>params := &amp;sqs.GetQueueAttributesInput{
     QueueUrl: aws.String(QueueUrl), // Required
     AttributeNames: []*string{
@@ -820,9 +690,7 @@ resp, err := svc.SendMessageBatch(params)
 }
 resp, err := svc.GetQueueAttributes(params)
 </code></pre>
-
 <h3 id="set-queue-attributes">Set queue attributes</h3>
-
 <pre><code>params := &amp;sqs.SetQueueAttributesInput{
     Attributes: map[string]*string{
         &quot;ReceiveMessageWaitTimeSeconds&quot;: aws.String(&quot;0&quot;),
@@ -831,9 +699,7 @@ resp, err := svc.GetQueueAttributes(params)
 }
 _, err := svc.SetQueueAttributes(params) // 成功不會返回內容
 </code></pre>
-
 <p>設定 RedrivePolicy (retry 機制)</p>
-
 <pre><code>Attributes: map[string]*string{
     // 刪除
     &quot;RedrivePolicy&quot;: aws.String(&quot;&quot;),
@@ -842,9 +708,7 @@ _, err := svc.SetQueueAttributes(params) // 成功不會返回內容
     &quot;RedrivePolicy&quot;: aws.String(&quot;{\&quot;maxReceiveCount\&quot;:\&quot;3\&quot;, \&quot;deadLetterTargetArn\&quot;:\&quot;arn:aws:sqs:ap-northeast-1:3**********2:MyDeadLetterQueue\&quot;}&quot;),
 },
 </code></pre>
-
 <h3 id="change-visibility-timeout">Change visibility timeout</h3>
-
 <pre><code>// Change visibility timeout
 change_params := &amp;sqs.ChangeMessageVisibilityInput{
     QueueUrl:          aws.String(QueueUrl),  // Required
@@ -853,15 +717,10 @@ change_params := &amp;sqs.ChangeMessageVisibilityInput{
 }
 _, err = w.Svc.ChangeMessageVisibility(change_params) // 成功不會返回內容
 </code></pre>
-
 <h2 id="cloudwatch">CloudWatch</h2>
-
 <h3 id="putmetricdata">PutMetricData</h3>
-
 <p>自已推一些數據讓 cloudwatch 幫你監控；上報 metric，不需要去 CloudWatch 設定，如果是新的 metric，它自已會新增</p>
-
 <p>支援一次上報多個 metric data, 所以以下設計成多個</p>
-
 <pre><code>// Metric collection
 metric_collection := map[string]float64{}{
     &quot;success&quot;: 1,
@@ -895,20 +754,14 @@ for k, v := range metric_collection {
 }
 _, err = c.Service.PutMetricData(params)
 </code></pre>
-
 <h2 id="ses">SES</h2>
-
 <p>AWS 為了防止自已的 mail server 被當作濫發 email 的工具，所以目前我們都是在 SES sandbox 模式下發信的，它有一些限制</p>
-
 <ul>
 <li>要先到 SES 後台 Email Addresses 新增你的 email，認證後才可以寄信, 收信也是</li>
 <li>一天最多 200 封信，每秒最多一封</li>
 </ul>
-
 <p>要突破以上限制則需要另外<a href="https://console.aws.amazon.com/support/home?region=us-east-1#/case/create?issueType=service-limit-increase&amp;limitType=service-code-ses">向 AWS 申請</a></p>
-
 <h3 id="sendemail">SendEmail</h3>
-
 <pre><code>svc := ses.New(sess)
 params := &amp;ses.SendEmailInput{
     Destination: &amp;ses.Destination{ // Required
@@ -949,26 +802,18 @@ if err != nil {
     return errors.New(&quot;SES response error: &quot; + err.Error())
 }
 </code></pre>
-
 <p>resp :</p>
-
 <pre><code>(*ses.SendEmailOutput)(0xc42002c0a0)({
   MessageId: &quot;010101581e1837c2-e0c68369-e7c4-47e4-b01e-3f7f6afca529-000000&quot;
 })
 </code></pre>
-
 <h3 id="sendor-from-只支援-ascill-如果要改用-utf-8-字元要改成">Sendor (from) 只支援 Ascill, 如果要改用 utf-8 字元要改成</h3>
-
 <pre><code>=?utf-8?B?V2ktRmnjgqvjg6Hjg6k=?= &lt;noreply@example.com&gt;
 </code></pre>
-
 <h2 id="sns">SNS</h2>
-
-<h3 id="topics-publish-to-topic">Topics - Publish to topic</h3>
-
+<h3 id="topics---publish-to-topic">Topics - Publish to topic</h3>
 <p>先建立一個 Topic 然候再 Subscribe 它，選擇你要使用什麼收到你訂閱的東西，
 最簡單是用 email 的方式 - 填上自已的 email 後，你需要收信驗證，驗證完後只要有人 publish 到這個 topic 就會收到 email 了</p>
-
 <pre><code>params := &amp;sns.PublishInput{
     Message:  aws.String(&quot;message&quot;), // Required
     TopicArn: aws.String(&quot;arn:aws:sns:ap-northeast-1:4**********7:event_update&quot;),
@@ -980,16 +825,12 @@ if err != nil {
     return
 }
 </code></pre>
-
 <p>resp :</p>
-
 <pre><code>{
   MessageId: &quot;f56bf715-2584-5fe4-8f0a-a7b9c0c2c757&quot;
 }
 </code></pre>
-
-<h3 id="applications-push-notification">Applications - Push Notification</h3>
-
+<h3 id="applications---push-notification">Applications - Push Notification</h3>
 <p>先去 SNS 的 Applications 註冊 Push Notification 的服務，並把 ARN 記下來，
 手機裡的 App 會有個 UUID (app 跟 gcm/apns 註冊拿到的)，帶這個上來到 Server，
 拿這個 UUID 向 SNS 註冊 Token (createPlatformEndpoint 帶上面註冊 SNS 的 ARN, 及 app UUID, enabled: true (enabled 預設是 false, 所以要改成 true))，會拿到 EndpointArn，
@@ -997,24 +838,16 @@ if err != nil {
 註冊完後 AWS 的 SNS web UI 後台就有一筆 record ，也可以直接用 web UI 發送 notification 做測試，
 每筆 record 後面都有 enabled 值，如果是 false 就代表不能推送，只要 SNS 推送一次但送不成功後就會把它改成 false，
 後端要推送只要對 EndpointArn 發送 message 就可以了，格式可以選擇 raw 或 json</p>
-
 <p>GCM 可以帶 title, 但 APNS 的 title 預設是 application name</p>
-
 <p>GCM</p>
-
 <pre><code>{ &quot;GCM&quot;: &quot;{ \&quot;notification\&quot;: { \&quot;body\&quot;: \&quot;test body\&quot;,\&quot;title\&quot;: \&quot;test titel\&quot;,\&quot;icon\&quot;: \&quot;test icon\&quot; },\&quot;data\&quot;: { \&quot;custom_field\&quot;: \&quot;custom_value\&quot; } }&quot; }
 </code></pre>
-
 <p>APNS or APNS_SANDBOX (dev)</p>
-
 <pre><code> { &quot;APNS&quot;:&quot;{\&quot;aps\&quot;:{\&quot;alert\&quot;:\&quot;Hello World!!\&quot;},\&quot;custom_field\&quot;: \&quot;custom_value\&quot;}&quot; }
  { &quot;APNS_SANDBOX&quot;:&quot;{\&quot;aps\&quot;:{\&quot;alert\&quot;:\&quot;Hello World!!\&quot;},\&quot;custom_field\&quot;: \&quot;custom_value\&quot;}&quot; }
 </code></pre>
-
 <p>上面 payload 要注意的是最後總共<code>要 json encode 兩次</code> (最外層 <code>GCM</code>/<code>APNS</code> key 的值已經先被 json encode 過一次了)</p>
-
 <p>Code :</p>
-
 <pre><code>params := &amp;sns.PublishInput{
     Message:          aws.String(message), // Required
     TargetArn:        aws.String(target_arn),
@@ -1023,11 +856,8 @@ if err != nil {
 
 _, err = s.Service.Publish(params)
 </code></pre>
-
 <h2 id="rekognition">Rekognition</h2>
-
 <h3 id="detectlabels-image-file">DetectLabels (image file)</h3>
-
 <pre><code>ff, _ := os.Open(&quot;test.jpg&quot;)
 defer ff.Close()
 bin = make([]byte, 500000)
@@ -1042,9 +872,7 @@ params := &amp;rekognition.DetectLabelsInput{
 }
 resp, err = svc.DetectLabels(params)
 </code></pre>
-
 <h3 id="detectlabels-s3">DetectLabels (s3)</h3>
-
 <pre><code>params := &amp;rekognition.DetectLabelsInput{
     Image: &amp;rekognition.Image{
         S3Object: &amp;rekognition.S3Object{

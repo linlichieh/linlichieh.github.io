@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>go on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in go on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Dec 2018 15:50:19 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/go/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 22 Dec 2018 15:50:19 +0800</lastBuildDate><atom:link href="/categories/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go Scheduler</title>
       <link>/posts/go-scheduler/</link>
@@ -19,7 +15,7 @@
       <guid>/posts/go-scheduler/</guid>
       <description>What is the Go Scheduler? Go scheduler’s purpose is to efficiently distribute goroutines over multiple OS threads.
 Kernel thread is expensive; therefore, reducing and reusing kernel threads are keys.
-  initial goroutine stack comsumes 2 KB memory default thread stack comsumes 1 MB memory   Scheduling Basics P (Processor)  It is given a Logical Processor (P) for every virtual core. Runtime keeps track of each G and maps them onto Logical Processors.</description>
+initial goroutine stack comsumes 2 KB memory default thread stack comsumes 1 MB memory Scheduling Basics P (Processor) It is given a Logical Processor (P) for every virtual core. Runtime keeps track of each G and maps them onto Logical Processors. OS threads run on at most GOMAXPROCS number of processors.</description>
     </item>
     
     <item>
@@ -33,9 +29,9 @@ Session 可以讓全部 AWS services 共用 (在使用各服務前會需要用 s
 每次要用之前再從 cache 拿出來， 避免每一次重新建立連線耗費資源。
 [1] 初始化 credential 可以使用 aws-cli 指令 aws configure 幫你產生或手動建立檔案
 ~/.aws/config
-[這裡填 profile name] region = us-west-2 output = json  ~/.aws/credentials
-[這裡填 profile name] aws_access_key_id = A******************A aws_secret_access_key = 9**************************************V  常用的 credential 有幾種，以下會按照順序，哪個可以取到就使用
-func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config := aws.NewConfig() var ProviderList []credentials.</description>
+[這裡填 profile name] region = us-west-2 output = json ~/.aws/credentials
+[這裡填 profile name] aws_access_key_id = A******************A aws_secret_access_key = 9**************************************V 常用的 credential 有幾種，以下會按照順序，哪個可以取到就使用
+func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config := aws.NewConfig() var ProviderList []credentials.Provider = []credentials.</description>
     </item>
     
     <item>
@@ -44,9 +40,9 @@ func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config :=
       <pubDate>Sun, 04 Sep 2016 10:21:39 +0800</pubDate>
       
       <guid>/posts/go-frameworks/</guid>
-      <description>Beego 上手資源  官網文件 作者中文影片教學  安裝 按照官網指令即可
+      <description>Beego 上手資源 官網文件 作者中文影片教學 安裝 按照官網指令即可
 Routers 基本語法
-beego.Router(&amp;quot;/api/:id&amp;quot;, &amp;amp;controllers.RController{}) beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;*:ListFood&amp;quot;) # * = ANY, 可替換為 post / put beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get,post:ApiFunc&amp;quot;) # 指定兩個 Http method 到同一個 func beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get:GetFunc;post:PostFunc&amp;quot;) # 指定到不同 Http method 即不同的 Func beego.AutoRouter(&amp;quot;&amp;amp;controllers.ObjectController{}) # 自動 Match /object/blog/2013/09/12 -&amp;gt; ObjectController 的 blog 方法，參數: map[0: 2013 1:09 2:12]  Match  /api:id : Match /api/123 (即使沒有 :id, :id 相當於 .* 任意字元) /api/:id! : Match /api/123 (:id 一定要有值) /api/:id([0-9]+) = api/:id:int : 指定要配對的字元 /news/:all : Match /news/path/to/123.</description>
+beego.Router(&amp;quot;/api/:id&amp;quot;, &amp;amp;controllers.RController{}) beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;*:ListFood&amp;quot;) # * = ANY, 可替換為 post / put beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get,post:ApiFunc&amp;quot;) # 指定兩個 Http method 到同一個 func beego.Router(&amp;quot;/api/list&amp;quot;, &amp;amp;RestController{}, &amp;quot;get:GetFunc;post:PostFunc&amp;quot;) # 指定到不同 Http method 即不同的 Func beego.AutoRouter(&amp;quot;&amp;amp;controllers.ObjectController{}) # 自動 Match /object/blog/2013/09/12 -&amp;gt; ObjectController 的 blog 方法，參數: map[0: 2013 1:09 2:12] Match /api:id : Match /api/123 (即使沒有 :id, :id 相當於 .* 任意字元) /api/:id! : Match /api/123 (:id 一定要有值) /api/:id([0-9]+) = api/:id:int : 指定要配對的字元 /news/:all : Match /news/path/to/123.</description>
     </item>
     
     <item>
@@ -56,15 +52,16 @@ beego.Router(&amp;quot;/api/:id&amp;quot;, &amp;amp;controllers.RController{}) b
       
       <guid>/posts/go-testing/</guid>
       <description>Commands Test all file
-go test  Test all file including subdirectory
-go test ./...   ./... will cache your testing result
- Expires all test results
-go clean -testcache  Ignore specific package
-go test `go list ./... | grep -v your_go_app/utilities`  Test specific package
-go test your_go_app/utilities/ip  Test specific func
-go test -run TestListEvent  Benchmark
-go test -bench=.  Race detection
-go test -race  Coverage Show coverage of code</description>
+go test Test all file including subdirectory
+go test ./... ./... will cache your testing result
+Expires all test results
+go clean -testcache Ignore specific package
+go test `go list ./... | grep -v your_go_app/utilities` Test specific package
+go test your_go_app/utilities/ip Test specific func
+go test -run TestListEvent Benchmark
+go test -bench=. Race detection
+go test -race Coverage Show coverage of code
+go test -cover PASS coverage: 37.</description>
     </item>
     
     <item>
@@ -73,8 +70,8 @@ go test -race  Coverage Show coverage of code</description>
       <pubDate>Tue, 06 Jan 2015 16:11:25 +0800</pubDate>
       
       <guid>/posts/go-third-party-packages/</guid>
-      <description>redigo github.com/garyburd/redigo/redis  Connect to redis server One connection
-conn, err := redis.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;:6379&amp;quot;) if err != nil { panic(err) } defer conn.Close()  Connection pool
+      <description>redigo github.com/garyburd/redigo/redis Connect to redis server One connection
+conn, err := redis.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;:6379&amp;quot;) if err != nil { panic(err) } defer conn.Close() Connection pool
 pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections in the pool. MaxActive: 5, // Maximum number of connections allocated by the pool at a given time. IdleTimeout: 20 * time.Second, // Close connections after remaining idle for this duration. Applications should set the timeout to a value less than the server&#39;s timeout.</description>
     </item>
     
@@ -87,7 +84,8 @@ pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections
       <description>QT, OpenGL Qt is an application framework, where you can build (almost) everything within Qt.
 OpenGL is a graphic library. The difference between library and framework is simple: Library is used for one specific thing, i.e. drawing, or doing data stuff, framework on the other hand is a set of libraries.
 ref: https://www.quora.com/What-are-the-difference-between-QT-OpenGL-Unity
-therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本</description>
+therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本
+如果都安裝成功後跑 basic example 就可以看到 GUI 介面了</description>
     </item>
     
     <item>
@@ -96,11 +94,11 @@ therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我�
       <pubDate>Mon, 20 Jan 2014 22:25:00 +0000</pubDate>
       
       <guid>/posts/go-basics/</guid>
-      <description>Declare var t *T = new(T) // t := new(T) var a uint64 = 22 // a := uint64(22) a := 0x12 // 18  Multiple variables
-ff, xx := 3, &amp;quot;cc&amp;quot;  []interface{}
-hMap := make(map[string]interface{}) hMap[&amp;quot;ID&amp;quot;] = &amp;quot;06&amp;quot; hMap[&amp;quot;Info&amp;quot;] = map[string]string{ &amp;quot;Name&amp;quot;: &amp;quot;Jack&amp;quot; } resque2 := map[string]interface{}{ &amp;quot;class&amp;quot;: &amp;quot;hnap&amp;quot;, &amp;quot;args&amp;quot;: []interface{}{hMap}, }  map[string]interface{}
-x := map[string]interface{}{ &amp;quot;foo&amp;quot;: []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}, &amp;quot;bar&amp;quot;: &amp;quot;foo&amp;quot;, &amp;quot;baz&amp;quot;: 10.4, }  map[string]interface{}
-t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&amp;quot;] = &amp;quot;realtime&amp;quot; t[&amp;quot;data&amp;quot;] = []map[string]string{ { &amp;quot;did&amp;quot;: &amp;quot;did1&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action1&amp;quot;, }, { &amp;quot;did&amp;quot;: &amp;quot;did2&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action2&amp;quot;, }, } 但不可以, 無法這樣給值 var t map[string]interface{} t[&amp;quot;xxx&amp;quot;] = &amp;quot;xxx&amp;quot;  map[string]map[string]string</description>
+      <description>Declare var t *T = new(T) // t := new(T) var a uint64 = 22 // a := uint64(22) a := 0x12 // 18 Multiple variables
+ff, xx := 3, &amp;quot;cc&amp;quot; []interface{}
+hMap := make(map[string]interface{}) hMap[&amp;quot;ID&amp;quot;] = &amp;quot;06&amp;quot; hMap[&amp;quot;Info&amp;quot;] = map[string]string{ &amp;quot;Name&amp;quot;: &amp;quot;Jack&amp;quot; } resque2 := map[string]interface{}{ &amp;quot;class&amp;quot;: &amp;quot;hnap&amp;quot;, &amp;quot;args&amp;quot;: []interface{}{hMap}, } map[string]interface{}
+x := map[string]interface{}{ &amp;quot;foo&amp;quot;: []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}, &amp;quot;bar&amp;quot;: &amp;quot;foo&amp;quot;, &amp;quot;baz&amp;quot;: 10.4, } map[string]interface{}
+t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&amp;quot;] = &amp;quot;realtime&amp;quot; t[&amp;quot;data&amp;quot;] = []map[string]string{ { &amp;quot;did&amp;quot;: &amp;quot;did1&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action1&amp;quot;, }, { &amp;quot;did&amp;quot;: &amp;quot;did2&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action2&amp;quot;, }, } 但不可以, 無法這樣給值 var t map[string]interface{} t[&amp;quot;xxx&amp;quot;] = &amp;quot;xxx&amp;quot; map[string]map[string]string</description>
     </item>
     
     <item>
@@ -114,9 +112,9 @@ t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&a
 Mac : https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz
 [2] Install Linux : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
 Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
- 如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
- [3] Create essential folders 在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin
- src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方 pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它 bin 是程式編譯後產生的 binary 執行檔  .</description>
+如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
+[3] Create essential folders 在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin
+src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方 pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它 bin 是程式編譯後產生的 binary 執行檔 .</description>
     </item>
     
     <item>
@@ -125,7 +123,7 @@ Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
       <pubDate>Mon, 20 Jan 2014 13:05:03 +0800</pubDate>
       
       <guid>/posts/go-built-in-packages/</guid>
-      <description>fmt 輸出固定長度 fmt.Printf(&amp;quot;ID : %-10s&amp;quot;, id) // 十個字元的長度, 向左對齊 fmt.Printf(&amp;quot;ID : %10s&amp;quot;, id) // 十個字元的長度, 向右對齊 fmt.Printf(&amp;quot;ID : %.10s&amp;quot;, id) // 印出頭十個字元 fmt.Printf(&amp;quot;%q&amp;quot;, []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}) // 印 slice `[&amp;quot;a&amp;quot; &amp;quot;b&amp;quot;]`  前面補 0 fmt.Sprintf(&amp;quot;%02d:%02d&amp;quot;, 5, 3) // 05:03  接收 command 輸入的值 fmt.Print(&amp;quot;Enter a number: &amp;quot;) var input float64 fmt.Scanf(&amp;quot;%f&amp;quot;, &amp;amp;input)  印出顏色 fmt.Println(&amp;quot;\x1b[31;1mHello, World!\x1b[0m&amp;quot;)  最簡單的方法, 不過有個缺點是它會是 string fmt.Sprintf(&amp;quot;%.7f&amp;quot;, 123.123456789) // 123.1234568  不改變本身的型態 val := 123.123456789 pow10_n := math.</description>
+      <description>fmt 輸出固定長度 fmt.Printf(&amp;quot;ID : %-10s&amp;quot;, id) // 十個字元的長度, 向左對齊 fmt.Printf(&amp;quot;ID : %10s&amp;quot;, id) // 十個字元的長度, 向右對齊 fmt.Printf(&amp;quot;ID : %.10s&amp;quot;, id) // 印出頭十個字元 fmt.Printf(&amp;quot;%q&amp;quot;, []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}) // 印 slice `[&amp;quot;a&amp;quot; &amp;quot;b&amp;quot;]` 前面補 0 fmt.Sprintf(&amp;quot;%02d:%02d&amp;quot;, 5, 3) // 05:03 接收 command 輸入的值 fmt.Print(&amp;quot;Enter a number: &amp;quot;) var input float64 fmt.Scanf(&amp;quot;%f&amp;quot;, &amp;amp;input) 印出顏色 fmt.Println(&amp;quot;\x1b[31;1mHello, World!\x1b[0m&amp;quot;) 最簡單的方法, 不過有個缺點是它會是 string fmt.Sprintf(&amp;quot;%.7f&amp;quot;, 123.123456789) // 123.1234568 不改變本身的型態 val := 123.123456789 pow10_n := math.Pow10(7) // 1e7 = 10000000 d := math.</description>
     </item>
     
   </channel>

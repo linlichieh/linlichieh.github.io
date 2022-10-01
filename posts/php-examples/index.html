@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>PHP Examples | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/php-examples/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/php-examples/">PHP Examples</a></h1>
-    <p class="meta"><time datetime="2013-07-21T14:35:00Z">July 21, 2013</time></p>
+    <h1>PHP Examples</h1>
+    <time datetime="2013-07-21T14:35:00Z">July 21, 2013</time>
   </header>
-  
-
-<h2 id="轉換容量顯示方式-ex-15-31gb">轉換容量顯示方式 (ex: 15.31GB)</h2>
-
+  <h2 id="轉換容量顯示方式-ex-1531gb">轉換容量顯示方式 (ex: 15.31GB)</h2>
 <pre><code>function reable_size($bytes)
 {
     if ($bytes == 0)
@@ -43,9 +39,7 @@
     return number_format($show_size, 2) . ' ' . $unit[$i];
 }
 </code></pre>
-
 <h2 id="ip">IP:</h2>
-
 <pre><code>function get_ip()
 {
     $inspect_type = array(
@@ -74,14 +68,10 @@
     return $_SERVER[&quot;REMOTE_ADDR&quot;];
 }
 </code></pre>
-
-<h2 id="產生唯一字串-共32個小寫英文及數字">產生唯一字串(共32個小寫英文及數字)</h2>
-
+<h2 id="產生唯一字串共32個小寫英文及數字">產生唯一字串(共32個小寫英文及數字)</h2>
 <pre><code>echo md5(uniqid(rand(), TRUE));
 </code></pre>
-
-<h2 id="產生亂數陣列-每個數字唯一-srand指定亂數產生">產生亂數陣列(每個數字唯一，srand指定亂數產生)</h2>
-
+<h2 id="產生亂數陣列每個數字唯一srand指定亂數產生">產生亂數陣列(每個數字唯一，srand指定亂數產生)</h2>
 <pre><code>php &gt; $a = range(0, 29);
 php &gt; srand(333);           &lt;= 隨意指定隨機數字
 php &gt; shuffle($a);          &lt;= 按照隨機數字做排序
@@ -95,9 +85,7 @@ Array
     [29] =&gt; 24
 )
 </code></pre>
-
-<h2 id="判斷是否為ajax-傳進來的值-而不是submit傳入">判斷是否為ajax 傳進來的值(而不是submit傳入)</h2>
-
+<h2 id="判斷是否為ajax-傳進來的值而不是submit傳入">判斷是否為ajax 傳進來的值(而不是submit傳入)</h2>
 <pre><code>if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
 {
     if (mb_strtoupper($_SERVER['HTTP_X_REQUESTED_WITH']) === &quot;XMLHTTPREQUEST&quot;)
@@ -107,47 +95,30 @@ Array
     }
 }
 </code></pre>
-
 <h2 id="日期與時間">日期與時間</h2>
-
 <p>設定台北時區</p>
-
 <pre><code>date_default_timezone_set(&quot;Asia/Taipei&quot;);
 </code></pre>
-
 <p>現在的時間（秒）</p>
-
 <pre><code>time();                                         //13551194547
 </code></pre>
-
 <p>將日期時間轉換為秒</p>
-
 <pre><code>strtotime('05/29/2013');
 </code></pre>
-
 <p>獲取目前的日期與時間</p>
-
 <pre><code>date('Y-m-d H:i:s');                            //2012-12-11 02:55:08
 </code></pre>
-
 <p>日期加1天、加5個月</p>
-
 <pre><code>date('Y-m-d', strtotime('+1 day'));             //加一天
 date('Y-m-d', strtotime('+5 month'));           //加五個月
 </code></pre>
-
 <p>將時間（秒）還原回日期與時間正常格式</p>
-
 <pre><code>strftime('%m/%d/%Y %H:%M:%S', 1283846400);      //09/07/2010 16:00:00
 </code></pre>
-
 <p>產生時間數字型態（同strtotime)</p>
-
 <pre><code>mktime(0, 0, 0, date('m'), date('d'), date('Y')) + (60 * 60 * 24 * $day_offset);
 </code></pre>
-
 <p>Timestamp 產生至小數位</p>
-
 <pre><code>microtime(true);    // 1504695682.0988
 
 註: .0000 也不會出錯
@@ -166,19 +137,13 @@ date('Y-m-d', strtotime('+5 month'));           //加五個月
 1504695868.0004
 1504695868.0005
 </code></pre>
-
 <p>DateTime 產生至小數位(推薦此方法)</p>
-
 <pre><code>$now = DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''));
 echo $now-&gt;format('Y-m-d H:i:s.u').&quot;&lt;br&gt;&quot;;
 </code></pre>
-
 <p>DateTime 產生至小數位 DateTime createFromFormat error: <code>call to a member function format() on boolean</code></p>
-
 <p>不要用 <code>$now = DateTime::createFromFormat('U.u', microtime(TRUE))</code> 當0000,  <code>$now-&gt;format('Y-m-d H:i:s.u')</code> 會得到 fatal error : call to a member function format() on boolean</p>
-
 <p>即使用 <code>if (is_bool($now)) $now = DateTime::createFromFormat('U.u', $aux += 0.001)</code> 在超過 9999 有一段極短的時間日期會是 1970-01-01</p>
-
 <pre><code>    2017-08-25 03:06:59.999900
     2017-08-25 03:06:59.999900
     2017-08-25 03:06:59.999900
@@ -187,32 +152,24 @@ echo $now-&gt;format('Y-m-d H:i:s.u').&quot;&lt;br&gt;&quot;;
     1970-01-01 00:00:00.003000
     1970-01-01 00:00:00.004000
 </code></pre>
-
 <p>DateTime 使用 time zone</p>
-
 <pre><code>$timezone = new DateTimeZone(&quot;Asia/Taipei&quot;);
 $time = new DateTime(&quot;now&quot;, $timezone);
 $now = $time-&gt;format(&quot;Y-m-d H:i:s&quot;);
 </code></pre>
-
 <p>DateTime 使用 time zone 取前一分鐘</p>
-
 <pre><code>$timezone = new DateTimeZone(&quot;Asia/Taipei&quot;);
 $time = new DateTime(&quot;1 minutes ago&quot;, $timezone);
 $timestamp = $time-&gt;format(&quot;YmdHi&quot;);
 </code></pre>
-
 <p>Convert time and date from one time zone to another</p>
-
 <pre><code>$date = new DateTime('2000-01-01', new DateTimeZone('Pacific/Nauru'));
 echo $date-&gt;format('Y-m-d H:i:sP') . &quot;\n&quot;;
 
 $date-&gt;setTimezone(new DateTimeZone('Pacific/Chatham'));
 echo $date-&gt;format('Y-m-d H:i:sP') . &quot;\n&quot;;
 </code></pre>
-
-<h2 id="刪除test-txt檔再將日期寫入test-txt檔100000次">刪除test.txt檔再將日期寫入test.txt檔100000次</h2>
-
+<h2 id="刪除testtxt檔再將日期寫入testtxt檔100000次">刪除test.txt檔再將日期寫入test.txt檔100000次</h2>
 <pre><code>$ts = array_sum(explode(&quot; &quot;, microtime()));
 
 unlink(&quot;./test.txt&quot;);
@@ -221,22 +178,16 @@ for ($i = 0; $i &lt; 100000; ++$i) {
 }
 echo array_sum(explode(&quot; &quot;, microtime())) - $ts, &quot;\n&quot;;
 </code></pre>
-
 <blockquote>
 <p>FILE_APPEND參數可參考<a href="http://php.net/manual/en/function.file-put-contents.php">php manual</a></p>
 </blockquote>
-
 <h2 id="輸出-csv-供下載">輸出 csv 供下載</h2>
-
 <p>產生時間做為檔名，並且開啟檔案，檔案若不存在會自行建立</p>
-
 <pre><code>$file_name = array_sum(explode(&quot; &quot;, microtime())) . '.csv';
 $file_path = '/var/www/csv/' . $file_name;
 $fp = fopen($file_path, 'w');
 </code></pre>
-
 <p>將陣列寫入csv檔</p>
-
 <pre><code>fputcsv($fp, array('field1', 'field2', 'field3');
 foreach ($record as $row)
 {
@@ -244,40 +195,27 @@ foreach ($record as $row)
 }
 fclose($fp);
 </code></pre>
-
 <p>讓瀏覽器可以輸出下載</p>
-
 <pre><code>header('Content-Type: application/csv');
 header(&quot;Content-Disposition: attachment; filename={$file_name}&quot;);
 header('Pragma: no-cache');
 readfile($file_path);
 </code></pre>
-
 <h2 id="php-將陣列組回url">php 將陣列組回url</h2>
-
 <p>EX:</p>
-
 <pre><code>echo urldecode(http_build_query(array('a' =&gt; array(1, 2, 3))));
 </code></pre>
-
 <p>結果 :</p>
-
 <pre><code>a[0]=1&amp;a[1]=2&amp;a[2]=3
 </code></pre>
-
 <p>uids array :</p>
-
 <pre><code>$uids = [&quot;1&quot;,&quot;2&quot;,&quot;4&quot;,&quot;5&quot;];
 echo urldecode(http_build_query(array('uids' =&gt; $uids)));
 </code></pre>
-
 <p>結果 :</p>
-
 <pre><code>uids[0]=1&amp;uids[1]=2&amp;uids[2]=4&amp;uids[3]=5
 </code></pre>
-
 <h2 id="顯示目錄結構">顯示目錄結構</h2>
-
 <pre><code>$dir = dir('/var/www/test');
 while ($folder = $dir-&gt;read())
 {
@@ -288,25 +226,17 @@ while ($folder = $dir-&gt;read())
     echo &quot;{$folder}\n&quot;;
 }
 </code></pre>
-
 <h2 id="php-two-files-combine">php two files combine</h2>
-
 <pre><code>$file1_path = '/home/test/test/qq';
 $file2 = file_get_contents('/home/test/test/cc');
 file_put_contents($file1_path, $file2, FILE_APPEND);
 </code></pre>
-
 <h2 id="連接-db-及測試是否正常">連接 DB 及測試是否正常</h2>
-
 <p>建立測試的 DB 及 Table, 並透過 PDO 執行測試結果</p>
-
 <p>sql :</p>
-
 <pre><code>建立 testDB Database 及 tt Table, 及建立一筆測試資料
 </code></pre>
-
 <p>php :</p>
-
 <pre><code>$db = new PDO('mysql:host=localhost;dbname=testdb;charset=utf8', 'root', '');
 $stat = $db-&gt;prepare(&quot;Select * from tt&quot;);
 $stat-&gt;execute();
@@ -317,11 +247,8 @@ $stat = $db-&gt;prepare(&quot;SELECT * FROM users WHERE account = ? AND password
 $stat-&gt;execute(array($account, $password));
 $result = $stat-&gt;fetch(PDO::FETCH_ASSOC);  // 如果沒找到是 false，有的話是 array
 </code></pre>
-
-<h2 id="server-push-by-http1-1-chunked-都由-server-推給-client">Server push by http1.1 chunked (都由 server 推給 client)</h2>
-
+<h2 id="server-push-by-http11-chunked-都由-server-推給-client">Server push by http1.1 chunked (都由 server 推給 client)</h2>
 <p>view :</p>
-
 <pre><code>&lt;html lang=&quot;zh-TW&quot;&gt;
 &lt;head&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -329,9 +256,7 @@ $result = $stat-&gt;fetch(PDO::FETCH_ASSOC);  // 如果沒找到是 false，有�
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-
 <p>image server :</p>
-
 <pre><code>&lt;?php
 $boundary = 'thisIsTheBoundary';
 
@@ -352,9 +277,7 @@ for( $i=1 ; $i&lt;= 10 ; $i++ )
 }
 ?&gt;
 </code></pre>
-
 <h2 id="php-memory">PHP Memory</h2>
-
 <pre><code>function convert($size)
 {
    $unit=array('b','kb','mb','gb','tb','pb');
@@ -362,9 +285,7 @@ for( $i=1 ; $i&lt;= 10 ; $i++ )
 }
 echo $this-&gt;convert(memory_get_usage(true)); // 123 kb
 </code></pre>
-
 <h2 id="費式數列">費式數列</h2>
-
 <pre><code>function fibonacci($n,$first = 0,$second = 1)
 {
     $fib = [$first,$second];
@@ -377,11 +298,8 @@ echo $this-&gt;convert(memory_get_usage(true)); // 123 kb
 
 print_r($this-&gt;fibonacci(50));
 </code></pre>
-
 <h2 id="寄信">寄信</h2>
-
 <p>PHP 原生 mail 函數是使用 sendmail 來寄送, 請先<a href="/posts/email/">安裝 sendmail</a></p>
-
 <pre><code>$email = &quot;test@gmail.com&quot;;
 $subject = &quot;Test&quot;;
 $msg = &quot;Hello world!&quot;;
@@ -399,43 +317,29 @@ else
     echo &quot;fail&quot;;
 }
 </code></pre>
-
-<h2 id="mb-substr-問題">mb_substr 問題</h2>
-
+<h2 id="mb_substr-問題">mb_substr 問題</h2>
 <p>之前碰到一個問題, 在 apache 與 cli 下 mb_substr 的結果不一樣,</p>
-
 <p>如果只是將解析出來的 string 在 log 印出來是長一樣的, 但是將它寫進 file 的話結果就不同了</p>
-
 <p>以下兩個環境解析出來字串的差別, 幾乎長一樣, 不一樣的是在最後面的字元</p>
-
 <ul>
 <li>apache : <code>% lt&lt;8b&gt;^@~&lt;8f&gt;¡ÅU¼0^Nß|×ÈI</code></li>
 <li>cli : <code>% lt&lt;8b&gt;^@~&lt;8f&gt;¡ÅU¼0^Nß|</code></li>
 </ul>
-
 <p>最後去查官方文件 <code>string mb_substr ( string $str , int $start [, int $length = NULL [, string $encoding = mb_internal_encoding() ]] )</code></p>
-
 <p>原來最後一個編碼的參數是抓 PHP 的系統參數, 然候我再把這個參數印出來看</p>
-
 <ul>
 <li>apache : <code>UTF-8</code></li>
 <li>cli : <code>ISO-8859-1</code></li>
 </ul>
-
 <p>確認是採用的編碼不同, 造成字串截取的結果不一樣</p>
-
 <p>解決的方法可以設定在系統變數, 或寫在 <code>mb_substr</code> 參數裡或直接設定 <code>mb_internal_encoding('ISO-8859-1');</code></p>
-
 <h2 id="aes-加解密">AES 加解密</h2>
-
 <ul>
 <li>密鑰 : AES 使用對稱式密鑰，加解密都要用同一把密鑰</li>
 <li>IV (Initialization Vector) : 避免加密結果每次都一樣</li>
 <li>Paadding : 對未加密的資料做填充, 補滿 128 位元, 常見的方式為 PKCS5</li>
 </ul>
-
 <p>example :</p>
-
 <pre><code>$iv_length = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
 $iv = mcrypt_create_iv($iv_length, MCRYPT_RAND);
 $key = 'test';
@@ -449,9 +353,7 @@ echo base64_encode($encrypt) . &quot;\n&quot;;        // 0gSYCbCcf/u1S78uIVXWZw=
 $decrypt = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $encrypt, MCRYPT_MODE_CBC, $iv);
 echo $decrypt . &quot;\n&quot;;                       // secret data
 </code></pre>
-
 <h2 id="jsonp">JSONP</h2>
-
 <pre><code>protected function _outputJSON($data)
 {
     $callback = $this-&gt;input-&gt;get_post('callback', TRUE);
@@ -468,9 +370,7 @@ echo $decrypt . &quot;\n&quot;;                       // secret data
     exit;
 }
 </code></pre>
-
-<h2 id="linux-檔案脫逸-支援-windows-支援的符號-也就是除了">linux 檔案脫逸,支援 windows 支援的符號(也就是除了 \ / : * ? &ldquo; &lt; &gt; |)</h2>
-
+<h2 id="linux-檔案脫逸支援-windows-支援的符號也就是除了---------">linux 檔案脫逸,支援 windows 支援的符號(也就是除了 \ / : * ? &quot; &lt; &gt; |)</h2>
 <pre><code>private function _escape_cmd_argv($path)
 {
     $path = str_replace(
@@ -481,11 +381,8 @@ echo $decrypt . &quot;\n&quot;;                       // secret data
     return $path;
 }
 </code></pre>
-
 <h2 id="將-json-輸出在-html-hidden-欄位裡">將 JSON 輸出在 html hidden 欄位裡</h2>
-
 <p>php :</p>
-
 <pre><code>$convenience_store = [
     array(
         'value'     =&gt; 70,
@@ -494,23 +391,16 @@ echo $decrypt . &quot;\n&quot;;                       // secret data
     ),
 ];
 </code></pre>
-
 <p>html :</p>
-
 <pre><code>&lt;input type=&quot;hidden&quot; id=&quot;getData&quot; value=&quot;&quot;&lt;?php echo htmlspecialchars($convenience_store, ENT_QUOTES); ?&gt;&quot;/&gt;
 </code></pre>
-
 <blockquote>
 <p>注意 <code>htmlspecialchars</code> 的 <code>ENT_QUOTES</code> 參數</p>
 </blockquote>
-
 <p>js :</p>
-
 <pre><code>var getData = JSON.parse($('#getData').val());
 </code></pre>
-
-<h2 id="output-mp4-support-range">output mp4 - support range</h2>
-
+<h2 id="output-mp4---support-range">output mp4 - support range</h2>
 <pre><code>&lt;?php
 $file = 'test.mp4';
 $fp = @fopen($file, 'rb');
@@ -564,11 +454,8 @@ fclose($fp);
 exit();
 ?&gt;
 </code></pre>
-
 <p>Ref : <a href="http://www.tuxxin.com/php-mp4-streaming/">http://www.tuxxin.com/php-mp4-streaming/</a></p>
-
 <h2 id="send-a-notification-to-android-device">Send a notification to android device.</h2>
-
 <pre><code>define(&quot;GOOGLE_API_KEY&quot;, &quot;***************************************&quot;);
 define(&quot;GOOGLE_GCM_URL&quot;, &quot;https://android.googleapis.com/gcm/send&quot;);
 
@@ -622,9 +509,7 @@ echo $e . &quot;\n&quot;;
 
 */
 </code></pre>
-
 <h2 id="send-a-notification-to-ios-device">Send a notification to ios device.</h2>
-
 <pre><code>function send_notify2APNS($deviceToken, $message, $env = 'development', $debug=FALSE)
 {
 
@@ -669,35 +554,22 @@ list($s, $m) = send_notify2APNS($deviceToken, $message);
 echo $m . &quot;\n&quot;;
 */
 </code></pre>
-
 <h2 id="php-array-處理">php array 處理</h2>
-
-<h3 id="確保-json-encode-後不會有索引">確保 json_encode 後不會有索引</h3>
-
+<h3 id="確保-json_encode-後不會有索引">確保 json_encode 後不會有索引</h3>
 <p>array_unique 做 json_encode 時，會得到索引-&gt;值, 當其他強型態語言(e.g. golang)在事先指定只接收 array 的話，在 decode 時會出錯, 可以用此方法做 unique 但 encode 不會有 key</p>
-
 <pre><code>array_keys(array_flip($test_array))
 </code></pre>
-
 <p>array_map(&lsquo;strval&rsquo;, 將 value 都轉成 string，避免值是 int 造成其他強型態語言錯誤</p>
-
 <pre><code>array_map('strval', array_keys(array_flip($test_array)))
 </code></pre>
-
 <h2 id="curl-上傳">curl 上傳</h2>
-
 <p>php 5.6 用 <code>@</code></p>
-
 <pre><code>'image' =&gt; '@' . $_FILES['image']['tmp_name']   // e.g. @/tmp/phpDV7N6h
 </code></pre>
-
 <p>php 7.0 用 CURLFile</p>
-
 <pre><code>'image' =&gt; new CURLFile($_FILES['image']['tmp_name'], 'image/jpeg', $_FILES['image']['name']),
 </code></pre>
-
 <p>code</p>
-
 <pre><code>$post_data = [
     'image' =&gt; new CURLFile($_FILES['image']['tmp_name'], 'image/jpeg', $_FILES['image']['name']),
 ];

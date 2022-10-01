@@ -2,46 +2,35 @@
 <html lang="en-us">
 <title>Linux logrotate | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/logrotate/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/logrotate/">Linux logrotate</a></h1>
-    <p class="meta"><time datetime="2014-08-05T21:11:35&#43;08:00">August 05, 2014</time></p>
+    <h1>Linux logrotate</h1>
+    <time datetime="2014-08-05T21:11:35&#43;08:00">August 05, 2014</time>
   </header>
-  
-
-<p>(最後更新: 2016-04-27)</p>
-
+  <p>(最後更新: 2016-04-27)</p>
 <h2 id="介紹">介紹</h2>
-
 <p>設定 log 定期壓縮及輩份，通常是 <code>/var/log</code> 下的 log，主要是控制 log 的大小不要越來越大</p>
-
 <h2 id="如何設定">如何設定</h2>
-
 <p>有兩個地方可以設定</p>
-
 <ul>
 <li><code>/etc/logrotate.conf</code> : 直接寫在裡面</li>
 <li><code>/etc/logrotate.d/</code> : 新增你想要控制 log 的程式，比較建議寫在這裡，一個程序 (i.e. nginx) 就是一個檔案，方便管理</li>
 </ul>
-
 <p>但不管寫在哪裡效果都是一樣的，因為 <code>/etc/logrotate.d/</code> 下的檔案最後也是會被讀取到 <code>/etc/logrotate.conf</code> 裡執行</p>
-
 <h3 id="參數">參數</h3>
-
 <ul>
 <li>daily | weekly | monthly : 進行 rotate 的間隔</li>
 <li>rotate 7 : 保留 7 份 log, 也就是只會保留到 <code>mysql.log.7.gz</code></li>
@@ -57,23 +46,17 @@
 <li>notifempty 表示如果 log 檔是空的，就不 rotate</li>
 <li>copytruncate 先複製 log 檔的內容後，在清空的作法，因為有些程式一定 log 在本來的檔名，例如 rails。另一種方法是 create。</li>
 </ul>
-
 <blockquote>
 <ul>
 <li>If the size directive is used, logrotate will ignore the daily, weekly, monthly, and yearly directives.</li>
-<li>rotate 完的 log 檔大約會是原檔大小的 1.<sup>2</sup>&frasl;<sub>10</sub> e.g. 452MB -&gt; 50MB, 1.5GB -&gt; 170MB, 建議在記算 size 跟 rotate 次數的話抓, 1.5 比較保險</li>
+<li>rotate 完的 log 檔大約會是原檔大小的 1.2/10 e.g. 452MB -&gt; 50MB, 1.5GB -&gt; 170MB, 建議在記算 size 跟 rotate 次數的話抓, 1.5 比較保險</li>
 </ul>
 </blockquote>
-
 <h3 id="語法參考">語法參考</h3>
-
 <p>你也可以一次指定兩個 log 位置</p>
-
 <pre><code>/var/log/mysql.log /var/log/mysql/*log {
 </code></pre>
-
 <p>Apache <code>/etc/logrotate.d/apache2</code> :</p>
-
 <pre><code>/var/log/apache/*.log {
         daily
         missingok
@@ -95,9 +78,7 @@
         endscript
 }
 </code></pre>
-
 <p>Nginx (預設) <code>/etc/logrotate.d/nginx</code> :</p>
-
 <pre><code>/var/log/nginx/*.log {
     weekly
     missingok
@@ -117,9 +98,7 @@
     endscript
 }
 </code></pre>
-
 <p>Rails production logrotate <code>/etc/logrotate.d/rails</code> :</p>
-
 <pre><code>/var/www/practice_rails/log/*.log {
   daily
   missingok
@@ -130,18 +109,12 @@
   copytruncate
 }
 </code></pre>
-
 <h2 id="何時生效">何時生效</h2>
-
 <p>設定好之後，可以等明天或是執行強制 rotate</p>
-
 <pre><code>sudo logrotate -f /etc/logrotate.conf
 </code></pre>
-
 <h3 id="如果設定的-logrotate-沒運作成功">如果設定的 logrotate 沒運作成功</h3>
-
 <p>使用 <code>-v</code> 啟動顯示模式，會顯示 logrotate 運作的過程</p>
-
 <pre><code>$ sudo logrotate -v /etc/logrotate.conf
 
 reading config file /etc/logrotate.conf
@@ -153,45 +126,30 @@ Ignoring test-program because of bad file mode.
 reading config file dpkg
 reading config file landscape-client
 </code></pre>
-
 <p>可以看到某一個被 Ignore 了, <code>Ignoring test-program because of bad file mode.</code></p>
-
 <p>這是因為 logrotate 要求你的 <code>.conf</code> 的 owner 是 root 且權限為 644, 如下:</p>
-
 <pre><code>-rw-r--r-- 1 root     ec2-user  146 Apr 17 09:35 test-program.conf
 </code></pre>
-
 <p>改完後再執行一次就可以正常運作了</p>
-
 <blockquote>
 <ul>
 <li><code>-d</code> : 開啟除錯模式。在除錯模式之下，紀錄檔將不會有任何的改變</li>
 <li><code>-f</code> : 不論設定檔是否符合需要 rotate 的條件，都會強迫執行 rotate 的動作</li>
 </ul>
 </blockquote>
-
 <h3 id="手動觸發生效">手動觸發生效</h3>
-
 <p>command</p>
-
 <pre><code>sudo /etc/cron.daily/logrotate
 </code></pre>
-
 <h3 id="讓-logrotate-執行更頻繁">讓 logrotate 執行更頻繁</h3>
-
 <blockquote>
 <p>預設執行 logrotate 的時間是每天, 所以即使 log 超過了設定的 size 也不會被 rotate, 要等到下一天執行時才會觸發</p>
 </blockquote>
-
 <p>每小時執行: on Ubuntu, you can easily switch to hourly rotation by moving the script <code>/etc/cron.daily/logrotate</code> to <code>/etc/cron.hourly/logrotate</code></p>
-
 <p>每 5 mins 執行: add above to your <code>/etc/crontab</code> file. To run it every 5 minutes.</p>
-
 <pre><code>*/5 * * * * /etc/cron.daily/logrotate
 </code></pre>
-
 <h3 id="reference">reference</h3>
-
 <ul>
 <li><a href="http://ihower.tw/blog/archives/3565">http://ihower.tw/blog/archives/3565</a></li>
 <li><a href="http://canred.blogspot.tw/2013/03/logrotate.html">http://canred.blogspot.tw/2013/03/logrotate.html</a></li>

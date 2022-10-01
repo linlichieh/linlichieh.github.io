@@ -2,54 +2,38 @@
 <html lang="en-us">
 <title>PHP yahoo oauth | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/php-yahoo-oauth/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/php-yahoo-oauth/">PHP yahoo oauth</a></h1>
-    <p class="meta"><time datetime="2013-11-26T22:43:00Z">November 26, 2013</time></p>
+    <h1>PHP yahoo oauth</h1>
+    <time datetime="2013-11-26T22:43:00Z">November 26, 2013</time>
   </header>
-  
-
-<h2 id="申請">申請</h2>
-
+  <h2 id="申請">申請</h2>
 <p>[1] 到<a href="http://developer.yahoo.com/">Yahoo! Developer Network</a>登入後 -&gt; 右上角 My Projects -&gt; Create a Project</p>
-
 <p>[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret</p>
-
 <p>[3] 填入 domain 後記得驗證它, 才能用於線上</p>
-
 <h2 id="登入-oauth-並透過-yql-取得使用者資料-使用-codeigniter">登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter)</h2>
-
 <h3 id="oauth">Oauth</h3>
-
 <p>原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子</p>
-
 <h3 id="yql">YQL</h3>
-
 <p>原以為做登入 Oauth 取得的 GUID 再透過 <a href="http://developer.yahoo.com/yql/console">YQL Console</a> 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK</p>
-
 <p>例如我想取得使用者資料 <a href="http://developer.yahoo.com/yql/console">YQL Console</a> 執行</p>
-
 <pre><code>select * from social.profile where guid = &quot;{我的GUID}&quot;
 </code></pre>
-
 <p>完成後頁面下面有 url : <code>http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;format=json&amp;diagnostics=true&amp;callback=</code></p>
-
 <p>果然事情不是憨人想得這麼簡單, 直接拿來用會得到 ERROR 頁面</p>
-
 <pre><code>{
     error: {
         lang: &quot;en-US&quot;,
@@ -58,15 +42,10 @@
     }
 }
 </code></pre>
-
 <p>YQL Console 頁面應該是塞了 Token, 所以只好使用正統的方法來取得了</p>
-
 <p>我們要使用 Yahoo! Social SDK 請將 <a href="https://github.com/yahoo/yos-social-php">yos-social-php</a> 下載到 <code>/application/third_party</code>, 稍後的 Library 會引入它</p>
-
 <p>此練習只是取得使用者資料為例子, 取得 YQL 其它資料應該也是差不多</p>
-
 <p>Oauth Library :</p>
-
 <pre><code>&lt;?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Oauth {
@@ -178,9 +157,7 @@ class Oauth {
     }
 }
 </code></pre>
-
 <p>Controller :</p>
-
 <pre><code>public function __construct()
 {
     parent::__construct();
@@ -232,11 +209,8 @@ private function _output_JSON_raw($result)
     );
 }
 </code></pre>
-
 <p>瀏覽器執行 <code>http://{你的 domain}/{你的 controller}/get_request_token</code>, 輸出結果如下 :</p>
-
-<p><img src="/images/posts/php-yahoo-oauth.jpg" alt="yahoo-oauth.jpg" /></p>
-
+<p><img src="/images/posts/php-yahoo-oauth.jpg" alt="yahoo-oauth.jpg"></p>
 <p>ref :
 <a href="http://code.gunblues.com/2011/02/yahoo-api-oauth.html">http://code.gunblues.com/2011/02/yahoo-api-oauth.html</a></p>
 

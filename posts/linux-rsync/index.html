@@ -2,34 +2,28 @@
 <html lang="en-us">
 <title>Linux rsync | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-rsync/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-rsync/">Linux rsync</a></h1>
-    <p class="meta"><time datetime="2013-05-24T18:25:50Z">May 24, 2013</time></p>
+    <h1>Linux rsync</h1>
+    <time datetime="2013-05-24T18:25:50Z">May 24, 2013</time>
   </header>
-  
-
-<h2 id="本機同步資料夾">本機同步資料夾</h2>
-
+  <h2 id="本機同步資料夾">本機同步資料夾</h2>
 <p>以 <code>/tmp/destination/</code> 為主要, 將 /tmp/source/ 同步</p>
-
 <pre><code>rsync -avr --delete /tmp/destination/ /tmp/source/
 </code></pre>
-
 <blockquote>
 <ul>
 <li>-a, &ndash;archive               archive mode; equals -rlptgoD (no -H,-A,-X)</li>
@@ -39,65 +33,44 @@
 <li>-e, &ndash;rsh=COMMAND           specify the remote shell to use</li>
 </ul>
 </blockquote>
-
 <h2 id="將本機資料夾複製到遠端-projects-下">將本機資料夾複製到遠端 projects/ 下</h2>
-
 <pre><code>rsync -ae &quot;ssh -p 9022&quot; test test@106.185.77.26:/home/test/note/projects/
 </code></pre>
-
 <h2 id="將遠端的-test-資料夾-sync-到-tmp">將遠端的 test 資料夾 sync 到 /tmp</h2>
-
 <pre><code>rsync -av -e ssh test@example.com:~/test/ /tmp
 </code></pre>
-
 <blockquote>
 <ul>
 <li>注意!! test 資料夾後面一定要加<code>/</code></li>
 <li>以上指令不會將 tmp 有但 test 沒有的檔案做刪除, 如果要與 test 完全一樣, 加上 <code>--delete</code> 參數即可</li>
 </ul>
 </blockquote>
-
 <h2 id="將本地的資料夾-sync-到遠端">將本地的資料夾 sync 到遠端</h2>
-
 <pre><code>rsync -av -e ssh /tmp/test test@example.com:/tmp
 </code></pre>
-
 <p>同上, 不過指定金鑰</p>
-
 <pre><code>rsync -av -e &quot;ssh -i .ssh/aws-me-tokyo.pem&quot; ~/test ubuntu@my_web:/tmp
 </code></pre>
-
 <blockquote>
 <p>如果來源資料夾有些檔案刪除再去做同步後，目的資料夾是不會刪掉的原本存在的檔案，除非加上 <code>--delete</code></p>
 </blockquote>
-
 <h2 id="同步到遠端-指定-port">同步到遠端, 指定 port</h2>
-
 <pre><code>rsync -av --delete --checksum --rsh=/usr/bin/ssh /tmp test:/tmp -e &quot;ssh -p 3333&quot;
 </code></pre>
-
 <blockquote>
 <p>-c, &ndash;checksum              skip based on checksum, not mod-time &amp; size</p>
 </blockquote>
-
 <h2 id="以-ssh-rsync-到遠端-如果資料夾不存在自動建立">以 ssh rsync 到遠端, 如果資料夾不存在自動建立</h2>
-
 <pre><code>rsync -avr --rsh='ssh -p41111' reporting/ jx@my-base:/home/m/reporting/
 /usr/bin/rsync -rlpvz --delete --exclude-from=/tmp/exclude_file --checksum --rsh=/usr/bin/ssh /home/test/code/ test@remoteServer.com:/var/www/code -e &quot;ssh -p 1234&quot;
 </code></pre>
-
 <h2 id="exclude">exclude</h2>
-
 <pre><code>rsync -av --exclude 'modules/qq' --exclude 'modules/cc'  /home/test/index /tmp/
 </code></pre>
-
 <h2 id="exclude-file">exclude file</h2>
-
 <pre><code>rsync -av --exclude-from=$HOME/exclude_file /home/test/index /tmp/
 </code></pre>
-
 <p>$HOME/exclude_file :</p>
-
 <pre><code>.git
 .gitignore
 .htaccess

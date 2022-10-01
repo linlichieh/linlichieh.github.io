@@ -2,38 +2,32 @@
 <html lang="en-us">
 <title>Raspberry Pi camera RTSP | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/raspberry-pi-camera-rtsp-video-streaming/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/raspberry-pi-camera-rtsp-video-streaming/">Raspberry Pi camera RTSP</a></h1>
-    <p class="meta"><time datetime="2014-01-22T01:35:00Z">January 22, 2014</time></p>
+    <h1>Raspberry Pi camera RTSP</h1>
+    <time datetime="2014-01-22T01:35:00Z">January 22, 2014</time>
   </header>
-  
-
-<h2 id="什麼是-rtp-rtcp-rtsp-rtmp">什麼是 RTP/RTCP/RTSP/RTMP</h2>
-
+  <h2 id="什麼是-rtprtcprtsprtmp">什麼是 RTP/RTCP/RTSP/RTMP</h2>
 <ul>
 <li>RTP (Real-time Transport Protocol) 是一種傳遞音訊和視訊的協定, 主要應用在 UDP 上, 大多用在一對一傳播</li>
 <li>RTCP (Real-time Transport Control Protocol) 為 RTP 提供 out-of-band 控制, 本身不傳輸數據, 但和RTP一起協作將 media data 打包和發送</li>
 <li>RTSP (Real Time Streaming Protocol) 控制聲音及影像的多媒體串流協定, 運作跟 HTTP/1.1 類似, 支援 Multicast, 不強調時間同步等特性, 通常處理 RTP 及 RTCP 協定使用, 可選擇 TCP 或 UDP 傳送</li>
 <li>RTMP (Real Time Messaging Protocol) 是 Adobe Flash 的多媒體串流協定</li>
 </ul>
-
 <h3 id="rtmp-vs-rtsp">RTMP vs RTSP</h3>
-
 <ul>
 <li>做的事情基本是一樣的, rtsp 是公開的 protocal, rtmp 是 adobe 的 protocal</li>
 <li>rtsp on web: Realplayer / Quicktime player / VLC player</li>
@@ -42,11 +36,8 @@
 <li>camera 幾乎都是走 h.264</li>
 <li>rtmp 可以轉輸出 vp8 格式, 都會很吃 cpu</li>
 </ul>
-
 <h2 id="webrtc">WebRTC</h2>
-
 <p>WebRTC Google 推的協定, 主要應用在 Browser 上的影印串流 i.e. 視訊聊天</p>
-
 <ul>
 <li>並不適合用在 device, 因為要 porting 在 device 端太複雜及困難, 不過成功後可以提供 p2p 的路線可以省頻寬</li>
 <li>需要另外架設 signal server, stun server, turn server</li>
@@ -54,50 +45,36 @@
 <li>TURN servers are used to relay traffic if direct (peer to peer) connection fails.</li>
 <li>webrtc port 到 device 裡, 推流就都是走 webrtc protocal, web 也是 webrtc 的 protocal, device 不能走 rtmp -&gt; WebRTC</li>
 </ul>
-
 <blockquote>
 <ul>
 <li>Just to reiterate: TURN is used to relay audio/video/data streaming between peers, not signaling data!</li>
 <li>signal server 是讓 WebRTC client 媒合配對用的, 確定雙方要開始連接後再各自報位置給 stun server 打洞, 如果打不通就改用 relay (turn server, turn 有自已的 protocal)</li>
 </ul>
 </blockquote>
-
 <h2 id="什麼是-live555">什麼是 live555</h2>
-
 <p>是一套 C++ 的函式庫, 可以實作出 RTSP/RTP server, VLC 是基於此函式庫開發的</p>
-
 <p>支援傳輸方式</p>
-
 <ul>
 <li>RTP over UDP</li>
 <li>RTP over RTSP</li>
 <li>RTP/RTSP over HTTP</li>
 <li>等等..</li>
 </ul>
-
 <p>支援的影音格式</p>
-
 <ul>
 <li>H.264</li>
 <li>MPEG4</li>
 <li>MP3</li>
 <li>等等..</li>
 </ul>
-
 <h2 id="install-live555">Install live555</h2>
-
 <p>Easiest way is first ensure you have the appropriate compiler:</p>
-
 <pre><code>sudo apt-get install build-essential
 </code></pre>
-
 <p>then make sure you don&rsquo;t have the repository live555 libraries on your system:</p>
-
 <pre><code>sudo apt-get remove liblivemedia-dev
 </code></pre>
-
 <p>and finally download, build and install the libraries:</p>
-
 <pre><code>cd /tmp
 wget http://www.live555.com/liveMedia/public/live555-latest.tar.gz
 tar xvf live555-latest.tar.gz
@@ -107,71 +84,46 @@ make
 sudo cp -r /tmp/live /usr/lib
 make clean
 </code></pre>
-
 <h2 id="啟動-rtsp-server">啟動 RTSP server</h2>
-
 <p>將影音檔 (h.264, mp4 etc..) copy 到 <code>/usr/lib/live/mediaServer</code> 下</p>
-
 <blockquote>
 <p>h.264 副檔名為 <code>.264</code>, mp4 副檔名為 <code>.m4e</code></p>
 </blockquote>
-
 <p>執行</p>
-
 <pre><code>cd /usr/lib/live/mediaServer
 ./live555MediaServer
 </code></pre>
-
 <p>安裝並打開 VLC 播放器, 選擇播放網路串流,</p>
-
 <p>輸入 : <code>rtsp://54.250.138.78:8554/akb.m4e</code></p>
-
 <blockquote>
 <p>建議在 <code>/usr/lib/live/mediaServer</code> 建立 my_video 資料夾, 將影音與程式分開 (<code>rtsp://54.250.138.78:8554/my_video/akb.m4e</code>)</p>
 </blockquote>
-
 <h2 id="用-raspberry-pi-camera-播放即時影像">用 Raspberry Pi camera 播放即時影像</h2>
-
 <blockquote>
 <p>此方法太沒效率了, 不建議使用</p>
 </blockquote>
-
 <p>啟動 RTSP server 及接收 Raspberry Pi 傳來的資料儲存成檔案:</p>
-
 <pre><code>cd /usr/lib/live/mediaServer/my_video
 touch rpi.264
 nc -l 8080 | pv -b &gt; rpi.264
 </code></pre>
-
 <p>將 camera 的影像傳到遠端 server :</p>
-
 <pre><code>raspivid -t 999999 -h 180 -w 270 -o - | pv -b | nc 54.250.138.76 8080
 </code></pre>
-
 <p>VLC -&gt; open network : <code>rtsp://54.250.138.78:8554/my_video/rpi.264</code></p>
-
 <blockquote>
 <p>原本想要做一個能讓很多人同時看即時影像的 server, 所以將 Raspberry Pi 的串流丟到外面的 server,  但效果不太好, 傳輸速率很慢, 即使不用 wifi 傳輸也一樣很慢, 大概過 10 幾秒才能看到影像 (這已經是將影像的畫質調到很低的狀態下)</p>
 </blockquote>
-
 <h2 id="troubleshootings">Troubleshootings</h2>
-
-<h3 id="發生錯誤-streamparser-internal-error-149997-4-150000-aborted-core-dumped">發生錯誤 : <code>StreamParser internal error (149997 + 4 &gt; 150000) Aborted (core dumped)</code></h3>
-
+<h3 id="發生錯誤--streamparser-internal-error-149997--4--150000-aborted-core-dumped">發生錯誤 : <code>StreamParser internal error (149997 + 4 &gt; 150000) Aborted (core dumped)</code></h3>
 <p>原因 :  傳送一幀非常大的 H.264 影像 (default 150000) 造成的</p>
-
 <p>查到的解決方法 :</p>
-
 <p>修改 <code>/usr/lib/live/liveMedia/StreamParser.cpp</code>,</p>
-
 <p>找到 <code>BANK_SIZE</code> 建議將值設為 150000~300000 之間</p>
-
 <p>改完要 compile :</p>
-
 <pre><code>cd /usr/lib/live
 sudo make
 </code></pre>
-
 <blockquote>
 <ul>
 <li>但我仍然還是一樣發生此 buffer 問題, 但播放 mp3 及 aac 沒問題</li>
@@ -179,23 +131,16 @@ sudo make
 <li>但<a href="http://www.qvidium.com/captures/">這邊下載</a>的 <code>.ts</code> 影片是能播放的</li>
 </ul>
 </blockquote>
-
 <h2 id="其他">其他</h2>
-
 <p>現在多數瀏覽器支援播放 H.264 影片但可惜沒有瀏覽器的 HTML5 播放器支援播放 RTSP 串流影片, 所以只能透過像 VLC 這種播放器來播放,</p>
-
 <p>目前 RTMP 應該算是 live streaming 的通用解, 看來要擺脫 flash 還有很長一段路要走</p>
-
 <p>比較可惜的還有 webm (vp8) 無法普及, 不然它的編解碼效率也很不錯, 重要的是它是開源的</p>
-
-<h3 id="市面上常見的-player-比較">市面上常見的 player 比較 :</h3>
-
+<h3 id="市面上常見的-player-比較-">市面上常見的 player 比較 :</h3>
 <ul>
 <li>Realplayer : 原生不支援 H.264 影片, 必須安裝 quicktime plugin 才能對 H.264 解碼</li>
 <li>Quicktime player : 不支援 RTP/AVP/TCP 傳輸, RTP/AVP (UDP) 傳輸不包括 NAT 打洞, 因此唯一適合的傳輸是 HTTP tunneling</li>
 <li>VLC player : RTP/AVP 傳輸也不支援 NAT 打洞, 但可以用 RTP/AVP/TCP 傳輸</li>
 </ul>
-
 <p>ref:
 <a href="http://ubuntuforums.org/showthread.php?t=1324290">http://ubuntuforums.org/showthread.php?t=1324290</a>
 <a href="http://www.raspberrypi.org/phpBB3/viewtopic.php?&amp;t=52071">http://www.raspberrypi.org/phpBB3/viewtopic.php?&amp;t=52071</a></p>

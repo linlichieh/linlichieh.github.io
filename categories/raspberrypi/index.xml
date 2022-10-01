@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>raspberryPi on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in raspberryPi on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Dec 2014 13:02:45 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 16 Dec 2014 13:02:45 +0800</lastBuildDate><atom:link href="/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Raspberry Pi with ffmpeg</title>
       <link>/posts/raspberry-pi-ffmpeg/</link>
@@ -19,8 +15,8 @@
       <guid>/posts/raspberry-pi-ffmpeg/</guid>
       <description>rpi camera 只支援輸出 raw h.264 雖然 chrome 跟 safari （firefox 不援, 而 safari 因為是 call 自己的 quicktime 去播放影片所以支援的又更廣) 都支援解碼 h.264 codec 但不支援解 raw h.264
 但可以解 container 一定要是 mp4, 所以輸出 h.264 還需要經過一層轉檔成 mp4 才能在瀏覽器上看到
-install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get update sudo apt-get install ffmpeg  convert raw h264 to mp4 ffmpeg -r 30 -i test2.h264 -vcodec copy test2.mp4  ffserver /etc/ffserver.conf 加上
-&amp;lt;Stream live.mp4&amp;gt; Format mp4 Feed feed1.ffm VideoCodec libx264 VideoFrameRate 30 VideoSize 320x240 NoAudio &amp;lt;/Stream&amp;gt;  啟動 ffserver : ffserver -f /etc/ffserver.</description>
+install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get update sudo apt-get install ffmpeg convert raw h264 to mp4 ffmpeg -r 30 -i test2.h264 -vcodec copy test2.mp4 ffserver /etc/ffserver.conf 加上
+&amp;lt;Stream live.mp4&amp;gt; Format mp4 Feed feed1.ffm VideoCodec libx264 VideoFrameRate 30 VideoSize 320x240 NoAudio &amp;lt;/Stream&amp;gt; 啟動 ffserver : ffserver -f /etc/ffserver.</description>
     </item>
     
     <item>
@@ -29,7 +25,7 @@ install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get u
       <pubDate>Wed, 22 Jan 2014 01:35:00 +0000</pubDate>
       
       <guid>/posts/raspberry-pi-camera-rtsp-video-streaming/</guid>
-      <description>什麼是 RTP/RTCP/RTSP/RTMP  RTP (Real-time Transport Protocol) 是一種傳遞音訊和視訊的協定, 主要應用在 UDP 上, 大多用在一對一傳播 RTCP (Real-time Transport Control Protocol) 為 RTP 提供 out-of-band 控制, 本身不傳輸數據, 但和RTP一起協作將 media data 打包和發送 RTSP (Real Time Streaming Protocol) 控制聲音及影像的多媒體串流協定, 運作跟 HTTP/1.1 類似, 支援 Multicast, 不強調時間同步等特性, 通常處理 RTP 及 RTCP 協定使用, 可選擇 TCP 或 UDP 傳送 RTMP (Real Time Messaging Protocol) 是 Adobe Flash 的多媒體串流協定  RTMP vs RTSP  做的事情基本是一樣的, rtsp 是公開的 protocal, rtmp 是 adobe 的 protocal rtsp on web: Realplayer / Quicktime player / VLC player rtmp on web: flash (目前直播 live 幾乎都走 rtmp) youtube 是 vp8 (一種 codec 格式) camera 幾乎都是走 h.</description>
+      <description>什麼是 RTP/RTCP/RTSP/RTMP RTP (Real-time Transport Protocol) 是一種傳遞音訊和視訊的協定, 主要應用在 UDP 上, 大多用在一對一傳播 RTCP (Real-time Transport Control Protocol) 為 RTP 提供 out-of-band 控制, 本身不傳輸數據, 但和RTP一起協作將 media data 打包和發送 RTSP (Real Time Streaming Protocol) 控制聲音及影像的多媒體串流協定, 運作跟 HTTP/1.1 類似, 支援 Multicast, 不強調時間同步等特性, 通常處理 RTP 及 RTCP 協定使用, 可選擇 TCP 或 UDP 傳送 RTMP (Real Time Messaging Protocol) 是 Adobe Flash 的多媒體串流協定 RTMP vs RTSP 做的事情基本是一樣的, rtsp 是公開的 protocal, rtmp 是 adobe 的 protocal rtsp on web: Realplayer / Quicktime player / VLC player rtmp on web: flash (目前直播 live 幾乎都走 rtmp) youtube 是 vp8 (一種 codec 格式) camera 幾乎都是走 h.</description>
     </item>
     
     <item>
@@ -56,7 +52,8 @@ install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get u
       
       <guid>/posts/raspberry-pi-camera-mjpg-streamer-server/</guid>
       <description>MJPG-streamer 是一個能截取 camera 影像的套件, 將每幅影像壓成 jpg, 並且起一個 server 將影像輸出, 好處是跨瀏覽器、編解碼容易、運算能力需求低, 缺點是即時性差(在高解析的影像更是明顯)
-安裝 MJPG-streamer 安裝必要的相依套件 sudo apt-get install subversion libjpeg8-dev imagemagick libv4l-dev  下載並安裝 MJPG-streamer cd ~ svn co https://svn.code.sf.net/p/mjpg-streamer/code/ cd mjpg-streamer/mjpg-streamer make sudo make install    svn 點斷了可到官方下載 最後一行安裝指令會將一些檔案搬到以下路徑 mjpg_streamer : /usr/local/bin input_uvc.so output_file.so output_udp.so input_testpicture.so input_file.so : /usr/local/lib www/* : /usr/local/www   Starting the Webcam Server cd ~/mjpg-streamer/mjpg-streamer ./mjpg_streamer -i &amp;quot;./input_uvc.so -r 320x240 -f 1&amp;quot; -o &amp;quot;.</description>
+安裝 MJPG-streamer 安裝必要的相依套件 sudo apt-get install subversion libjpeg8-dev imagemagick libv4l-dev 下載並安裝 MJPG-streamer cd ~ svn co https://svn.code.sf.net/p/mjpg-streamer/code/ cd mjpg-streamer/mjpg-streamer make sudo make install svn 點斷了可到官方下載 最後一行安裝指令會將一些檔案搬到以下路徑 mjpg_streamer : /usr/local/bin input_uvc.so output_file.so output_udp.so input_testpicture.so input_file.so : /usr/local/lib www/* : /usr/local/www Starting the Webcam Server cd ~/mjpg-streamer/mjpg-streamer ./mjpg_streamer -i &amp;quot;./input_uvc.so -r 320x240 -f 1&amp;quot; -o &amp;quot;./output_http.so -w ./www&amp;quot; 320x240, fps:1
+Watch the stream in your browser 你可以在同一個 lan 的電腦打開瀏覽器輸入你的 ip:8080 (i.</description>
     </item>
     
     <item>
@@ -65,11 +62,12 @@ install ffmpeg sudo apt-add-repository ppa:jon-severinsson/ffmpeg sudo apt-get u
       <pubDate>Tue, 21 Jan 2014 22:48:00 +0000</pubDate>
       
       <guid>/posts/raspberry-pi-camera/</guid>
-      <description>硬體規格  感測器像素 5M Pixel sensor (500 萬) 靜止拍照解析度 2592 X 1944 最大錄影解析度 1080p (720p 或 1080p 的 H.264 錄影格式 最大錄影速度 30fps  安裝 硬體參考官網影片教學將 camera 安裝到 Rpi 上
-安裝 camera sudo apt-get update sudo apt-get upgrade sudo raspi-config  選擇 Enable Camera -&amp;gt; enable 結束 config 時會問你要不要重開機, 選擇要
-指令介紹 raspistill 拍照儲存成jpeg raspistill -o image.jpg   -o : Output filename
- 輸入完後原本 terminal 的黑畫面會有一層 camera 的影像佔滿螢幕高度
-過了大約 5 秒就會拍下來了, 檔案大小大約 2.</description>
+      <description>硬體規格 感測器像素 5M Pixel sensor (500 萬) 靜止拍照解析度 2592 X 1944 最大錄影解析度 1080p (720p 或 1080p 的 H.264 錄影格式 最大錄影速度 30fps 安裝 硬體參考官網影片教學將 camera 安裝到 Rpi 上
+安裝 camera sudo apt-get update sudo apt-get upgrade sudo raspi-config 選擇 Enable Camera -&amp;gt; enable 結束 config 時會問你要不要重開機, 選擇要
+指令介紹 raspistill 拍照儲存成jpeg raspistill -o image.jpg -o : Output filename
+輸入完後原本 terminal 的黑畫面會有一層 camera 的影像佔滿螢幕高度
+過了大約 5 秒就會拍下來了, 檔案大小大約 2.4 M
+raspivid 錄影 5 秒編碼為 h.</description>
     </item>
     
     <item>

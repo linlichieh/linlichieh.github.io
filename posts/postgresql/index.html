@@ -2,196 +2,127 @@
 <html lang="en-us">
 <title>PostgreSQL | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/postgresql/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/postgresql/">PostgreSQL</a></h1>
-    <p class="meta"><time datetime="2016-05-01T13:45:44&#43;08:00">May 01, 2016</time></p>
+    <h1>PostgreSQL</h1>
+    <time datetime="2016-05-01T13:45:44&#43;08:00">May 01, 2016</time>
   </header>
-  
-
-<p>(最後更新 : 2016-05-01)</p>
-
+  <p>(最後更新 : 2016-05-01)</p>
 <h2 id="介紹">介紹</h2>
-
 <p>和 MySQL 一樣都是關聯型資料庫，一樣使用 SQL 來執行 query</p>
-
 <p>正確念法為 <code>post-gress-Q-L</code> 或簡稱 <code>postgres</code></p>
-
 <h2 id="安裝">安裝</h2>
-
 <h3 id="安裝-postgres">安裝 Postgres</h3>
-
 <p>Ubuntu : todo&hellip;</p>
-
 <p>Mac :</p>
-
 <pre><code>brew install postgres
 </code></pre>
-
 <h3 id="初始化-database">初始化 Database</h3>
-
 <p>安裝完要始初化一個 Database, 而它的 owner 就是執行這指令的 User</p>
-
 <pre><code>initdb /usr/local/var/postgres -E utf8
 </code></pre>
-
 <h4 id="database-已存在">Database 已存在</h4>
-
 <pre><code>initdb: directory &quot;/usr/local/var/postgres&quot; exists but is not empty
 If you want to create a new database system, either remove or empty
 the directory &quot;/usr/local/var/postgres&quot; or run initdb
 with an argument other than &quot;/usr/local/var/postgres&quot;.
 </code></pre>
-
 <p>剛安裝完就已經有了，把它刪除再初始化一次 (??? 不確定是否有必要)</p>
-
 <pre><code>rm -r /usr/local/var/postgres
 </code></pre>
-
 <h3 id="啟動-postgresql">啟動 PostgreSQL</h3>
-
 <p>開機自動啟動</p>
-
 <pre><code>ln -sfv /usr/local/Cellar/postgresql/9.4.0/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents
 </code></pre>
-
 <p>啟動</p>
-
 <pre><code>postgres -D /usr/local/var/postgres
 或
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 </code></pre>
-
 <p>關閉</p>
-
 <pre><code>pg_ctl -D /usr/local/var/postgres stop -s -m fast
 </code></pre>
-
-<h3 id="option-安裝-lunchy-讓你方便的-start-stop-你的-postgres">[Option] 安裝 Lunchy - 讓你方便的 start / stop 你的 postgres</h3>
-
+<h3 id="option-安裝-lunchy---讓你方便的-start--stop-你的-postgres">[Option] 安裝 Lunchy - 讓你方便的 start / stop 你的 postgres</h3>
 <pre><code>gem install lunchy
 </code></pre>
-
 <p>啟動</p>
-
 <pre><code>lunchy start postgres
 </code></pre>
-
 <p>關閉</p>
-
 <pre><code>lunchy stop postgres
 </code></pre>
-
 <h2 id="連到-console">連到 console</h2>
-
 <p>以目前的 User 連線</p>
-
 <pre><code>psql
 </code></pre>
-
 <p>指定其他參數</p>
-
 <pre><code>psql -U username -d dbname -h 127.0.0.1
 </code></pre>
-
 <p>離開 console : <code>\q</code> 或 <code>ctrl</code> + <code>d</code></p>
-
-<h3 id="error-global-pg-filenode-map">Error <code>global/pg_filenode.map</code></h3>
-
+<h3 id="error-globalpg_filenodemap">Error <code>global/pg_filenode.map</code></h3>
 <pre><code>psql: FATAL:  could not open relation mapping file &quot;global/pg_filenode.map&quot;: No such file or directory
 </code></pre>
-
 <p>可能是有些程序還沒刪乾淨，先刪除所有 pid 再重啟</p>
-
 <pre><code>killall postgres
 </code></pre>
-
 <h3 id="error-database-does-not-exist">Error <code>database does not exist</code></h3>
-
 <pre><code>psql: FATAL:  database &quot;test&quot; does not exist
 </code></pre>
-
 <p>建立 Database</p>
-
 <pre><code>createdb &lt;user&gt;
 </code></pre>
-
 <h2 id="基本指令">基本指令</h2>
-
 <h3 id="command">command</h3>
-
 <p>建立 Database</p>
-
 <pre><code>createdb &lt;user&gt;
 </code></pre>
-
 <p>刪除 Database</p>
-
 <pre><code>dropdb &lt;user&gt;
 </code></pre>
-
 <h3 id="console-指令">console 指令</h3>
-
 <p>顯示已建立的 DB</p>
-
 <pre><code>command 下 :
 psql -l
 
 console 下 :
 \l
 </code></pre>
-
 <p>連接 DB</p>
-
 <pre><code>\c dbname
 </code></pre>
-
 <p>顯示 Table</p>
-
 <pre><code>\d
 </code></pre>
-
 <p>Show the permission of table (it will list the permission of table that you designate e.g. SELECT,UPDATE,INSERT,DELETE</p>
-
 <pre><code>SELECT grantee, privilege_type FROM information_schema.role_table_grants WHERE table_name='mytable'
 </code></pre>
-
 <p>Give permission of table to specific user</p>
-
 <pre><code>GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO username
 </code></pre>
-
 <p>Give permission of sequence to specific user</p>
-
 <pre><code>Insufficient privilege: 7 ERROR:  permission denied for sequence jobs_id_seq
 
 GRANT USAGE, SELECT ON SEQUENCE jobs_id_seq TO username
 </code></pre>
-
 <h2 id="troubleshootings">Troubleshootings</h2>
-
 <h3 id="database-xxx-is-being-accessed-by-other-users">database &ldquo;XXX&rdquo; is being accessed by other users</h3>
-
 <pre><code>PG::ObjectInUse: ERROR:  database &quot;example_development&quot; is being accessed by other users
 DETAIL:  There are 3 other sessions using the database.
 </code></pre>
-
 <p>config/initializers/postgresql_database_tasks.rb</p>
-
 <pre><code>module ActiveRecord
   module Tasks
     class PostgreSQLDatabaseTasks
@@ -204,31 +135,20 @@ DETAIL:  There are 3 other sessions using the database.
   end
 end
 </code></pre>
-
 <p>重啟 Rails app, 並且 restart postgres, 建議手動把 postgres 的 pid 先殺光光再啟動</p>
-
-<h3 id="permission-denied-for-sequence-field-name">permission denied for sequence <code>field_name</code></h3>
-
+<h3 id="permission-denied-for-sequence-field_name">permission denied for sequence <code>field_name</code></h3>
 <p>Error:</p>
-
 <pre><code>An exception occurred while executing 'SELECT NEXTVAL('jobs_id_seq')
 Insufficient privilege: 7 ERROR:  permission denied for sequence jobs_id_seq
 </code></pre>
-
 <h5 id="view-privilege">view privilege</h5>
-
 <p>table</p>
-
 <pre><code>select tablename from pg_tables where schemaname = 'public';
 </code></pre>
-
 <p>view</p>
-
 <pre><code>select table_name from information_schema.views where table_schema = 'public';
 </code></pre>
-
 <p>sequence</p>
-
 <pre><code>select sequence_name from information_schema.sequences where sequence_schema = 'public';
 </code></pre>
 

@@ -2,70 +2,50 @@
 <html lang="en-us">
 <title>Linux nmap | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/nmap/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/nmap/">Linux nmap</a></h1>
-    <p class="meta"><time datetime="2013-12-15T18:00:00Z">December 15, 2013</time></p>
+    <h1>Linux nmap</h1>
+    <time datetime="2013-12-15T18:00:00Z">December 15, 2013</time>
   </header>
-  
-
-<h2 id="介紹">介紹</h2>
-
+  <h2 id="介紹">介紹</h2>
 <p>有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查</p>
-
 <h2 id="安裝">安裝</h2>
-
 <p>ubuntu :</p>
-
 <pre><code>sudo apt-get install nmap
 </code></pre>
-
 <h2 id="使用">使用</h2>
-
 <h3 id="假如已經有確定的-port-想知道是否開放可直接用-telnet-nc">假如已經有確定的 port 想知道是否開放可直接用 telnet nc</h3>
-
 <pre><code>telnet xxx.oo 8010
 </code></pre>
-
 <p>或</p>
-
 <pre><code>$ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306
 Connection to test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 port [tcp/mysql] succeeded!
 </code></pre>
-
 <ul>
 <li><code>-z</code>: Specifies that nc should just scan for listening daemons, without sending any data to them.  It is an error to use this option in conjunction with the -l option.</li>
 <li><code>-v</code>: Have nc give more verbose output.</li>
 </ul>
-
-<h3 id="sp-掃網段下有使用的-ip"><code>-sP</code> 掃網段下有使用的 ip</h3>
-
+<h3 id="-sp-掃網段下有使用的-ip"><code>-sP</code> 掃網段下有使用的 ip</h3>
 <pre><code>nmap -sP 192.168.1.0/24
 </code></pre>
-
 <p>or</p>
-
 <pre><code>nmap -sP 192.168.1.1-254
 </code></pre>
-
-<h3 id="st-tcp-connect-掃描-port-scanning"><code>-sT</code> : TCP connect 掃描(Port Scanning)</h3>
-
+<h3 id="-st--tcp-connect-掃描port-scanning"><code>-sT</code> : TCP connect 掃描(Port Scanning)</h3>
 <p>這是對 TCP 的最基本形式的偵測，直接連到目標主機進行埠掃描並完成一個完整的三次交握過程 (SYN, SYN/ACK, ACK)，但因為服務器接受了一個連接但它卻馬上斷開，於是其記錄會顯示出一連串的連接及錯誤資訊很容易被目標主電腦察覺並記錄下來，因此缺點是容易被目標系統檢測到。</p>
-
 <pre><code>$ nmap -sT 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:12 CST
@@ -80,11 +60,8 @@ PORT     STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.12 seconds
 </code></pre>
-
-<h3 id="su-udp掃描-udp-scanning"><code>-sU</code> : UDP掃描 (UDP Scanning)</h3>
-
+<h3 id="-su--udp掃描-udp-scanning"><code>-sU</code> : UDP掃描 (UDP Scanning)</h3>
 <p>可用來確定遠端主機開放哪些 UDP Port 原理為送出零位元組的 UDP 封包到目標主機的各連接埠，如果我們收到一個 ICMP port unreachable 無法到達的回應則可確定連接埠是關閉的，否則我們可認為該埠是打開的。</p>
-
 <pre><code>$ sudo nmap -sU 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:24 CST
@@ -98,11 +75,8 @@ PORT    STATE         SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 1.28 seconds
 </code></pre>
-
-<h3 id="ss-tcp-syn-半公開-掃描"><code>-sS</code> : TCP SYN（半公開）掃描</h3>
-
+<h3 id="-ss--tcp-syn半公開掃描"><code>-sS</code> : TCP SYN（半公開）掃描</h3>
 <p>這種掃描技術也叫半公開式掃描 (half-open scanning)，因為它沒有完成一個完整的 TCP 連接三次交握過程。此方法為向目標 Port 發送一個 SYN 封包，如果目標 Port 回應 SYN / ACK 封包則表示該 Port 處於打開狀態；若回應的是 RST / ACK 封包則表示該 Port 為關閉狀態。這種掃描方法比 TCP Connect Scan 更具隱蔽性，只有極少數的網站會對它作出記錄因此比較不會在目標系統中留下掃描痕跡。</p>
-
 <pre><code>sudo nmap -sS 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:16 CST
@@ -117,11 +91,8 @@ PORT     STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds
 </code></pre>
-
-<h3 id="sf-sx-sn-stealth-fin-xmas-tree或-null秘密掃描-stealth-scanning"><code>-sF</code> <code>-sX</code> <code>-sN</code> : Stealth FIN、Xmas Tree或 NULL秘密掃描(Stealth Scanning)</h3>
-
+<h3 id="-sf--sx--sn--stealth-finxmas-tree或-null秘密掃描stealth-scanning"><code>-sF</code> <code>-sX</code> <code>-sN</code> : Stealth FIN、Xmas Tree或 NULL秘密掃描(Stealth Scanning)</h3>
 <p>一些防火墻及 Packet 過濾裝置會在重要連接 Port 守護，半公開的 SYN 封包掃描會在此時會被截獲因此要有更秘密的進行掃描；而 FIN、Xmas、NULL 掃描方法則是關閉的連接埠會對你送出的探測資訊包返回一個 RST，而打開的連接埠則對其忽略不理可參考 [RFC793]，其中 FIN 掃瞄使用空的 FIN 資訊包作為探針、Xmas tree 使用 FIN、URG、PUSH 標記、Null 掃描則不用任何標記，但微軟不支援此一標準，所以 -sF,-sX,-sN 的掃瞄顯示所有連接埠都是關閉的但一個 SYN(-sS) 掃瞄卻顯示有打開連接埠，那你就能大致推斷它是 WINDOWS 平台。</p>
-
 <pre><code>$ sudo nmap -sF 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:19 CST
@@ -136,15 +107,11 @@ PORT     STATE         SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 1.27 seconds
 </code></pre>
-
 <blockquote>
 <p><code>-sF</code> <code>-sX</code> <code>-sN</code> 三個指令的結果一樣</p>
 </blockquote>
-
-<h3 id="sp-icmp-掃描-ping-sweeping"><code>-sP</code> ICMP 掃描 (Ping Sweeping)</h3>
-
+<h3 id="-sp-icmp-掃描-ping-sweeping"><code>-sP</code> ICMP 掃描 (Ping Sweeping)</h3>
 <p>若僅想了解網路上有哪些主電腦是開放的，你可對你指定的IP地址送出一個 ICMP 的 Echo Request 封包來偵測。但有些站台會把 ICMP 的 Echo Request 封包給關掉 (例如Microsoft.com)。在這種情況下可利用發送 TCP Ping 送一個 ACK 到目標網路上的每個主機。網路上的主機如果在線，則會返回一個 TCP RST 響應。使用帶有 Ping 掃描的 TCP Ping 選項，也就是 -PT 選項可以對網絡上指定 Port 進行掃描，它將可能通過目標邊界路由器甚至是防火牆。注意，被探測的主機上的目標 Port 無須打開，關鍵取決於是否在網路上。</p>
-
 <pre><code>$ sudo nmap -sP 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:23 CST
@@ -152,18 +119,14 @@ Nmap scan report for 10.0.2.15
 Host is up.
 Nmap done: 1 IP address (1 host up) scanned in 0.02 seconds
 </code></pre>
-
-<h3 id="sl-列出子網路所有ip及對應的主機名稱"><code>-sL</code> : 列出子網路所有IP及對應的主機名稱</h3>
-
+<h3 id="-sl--列出子網路所有ip及對應的主機名稱"><code>-sL</code> : 列出子網路所有IP及對應的主機名稱</h3>
 <pre><code>$ sudo nmap -sL 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:29 CST
 Nmap scan report for 10.0.2.15
 Nmap done: 1 IP address (0 hosts up) scanned in 0.03 seconds
 </code></pre>
-
-<h3 id="ps-偵測遠端主機已開啟的通訊埠"><code>-PS</code> : 偵測遠端主機已開啟的通訊埠</h3>
-
+<h3 id="-ps--偵測遠端主機已開啟的通訊埠"><code>-PS</code> : 偵測遠端主機已開啟的通訊埠</h3>
 <pre><code>$ sudo nmap -PS 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:34 CST
@@ -178,13 +141,10 @@ PORT     STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.10 seconds
 </code></pre>
-
 <blockquote>
 <p>與 <code>-sT</code> 結果一樣</p>
 </blockquote>
-
-<h3 id="pu-使用udp協定-ping-遠端的主機"><code>-PU</code> : 使用UDP協定 ping 遠端的主機</h3>
-
+<h3 id="-pu--使用udp協定-ping-遠端的主機"><code>-PU</code> : 使用UDP協定 ping 遠端的主機</h3>
 <pre><code>$ sudo nmap -PU 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:35 CST
@@ -199,9 +159,7 @@ PORT     STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.09 seconds
 </code></pre>
-
-<h3 id="so-偵測遠端主機已開啟哪些通訊協定-tcp-udp-icmp"><code>-sO</code> : 偵測遠端主機已開啟哪些通訊協定 TCP,UDP,ICMP,&hellip;</h3>
-
+<h3 id="-so--偵測遠端主機已開啟哪些通訊協定-tcpudpicmp"><code>-sO</code> : 偵測遠端主機已開啟哪些通訊協定 TCP,UDP,ICMP,&hellip;</h3>
 <pre><code>$ sudo nmap -sO 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:36 CST
@@ -219,11 +177,8 @@ PROTOCOL STATE         SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 1.23 seconds
 </code></pre>
-
-<h3 id="p80-指定-port-掃描是否開啟-ex-80-port"><code>-p80</code> : 指定 port 掃描是否開啟, ex: 80 port</h3>
-
+<h3 id="-p80--指定-port-掃描是否開啟-ex-80-port"><code>-p80</code> : 指定 port 掃描是否開啟, ex: 80 port</h3>
 <p>80 port 是 open 的 :</p>
-
 <pre><code>    $ sudo nmap -p80 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:33 CST
@@ -234,9 +189,7 @@ PORT   STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 0.06 seconds
 </code></pre>
-
 <p>81 port 是 closed 的 :</p>
-
 <pre><code>$ sudo nmap -p81 10.0.2.15
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:33 CST
@@ -245,9 +198,7 @@ Host is up (0.000048s latency).
 PORT   STATE  SERVICE
 81/tcp closed hosts2-ns
 </code></pre>
-
 <h3 id="掃描網段內有開啟-80-port-的-ip">掃描網段內有開啟 80 port 的 IP</h3>
-
 <pre><code>$ sudo nmap -p80 10.0.2.0/24
 
 Starting Nmap 6.00 ( http://nmap.org ) at 2013-12-15 18:38 CST
@@ -276,31 +227,42 @@ PORT   STATE SERVICE
 
 Nmap done: 256 IP addresses (4 hosts up) scanned in 10.09 seconds
 </code></pre>
-
 <h3 id="掃網段指定-port">掃網段指定 port</h3>
-
 <p>nmap comes with a nice output parameter -oG (grepable output) which makes parsing more easy.</p>
-
 <p>Also it is not necessary to iterate through all IP addresses you want to scan. nmap is netmask aware.</p>
-
 <pre><code>nmap -p80 192.168.0.0/24 -oG - | grep 80/open
 </code></pre>
-
 <p>The -oG enables the grepable output, and - specifies the file to output to (in this case stdout).
 The pipe symbol redirects the output of nmap (stdout) to grep, which only returns lines containing 80/open in this case.</p>
-
 <blockquote>
 <ul>
 <li>-oG filespec (grepable output) .</li>
-<li>This output format is covered last because it is deprecated. The XML output format is</li>
-<li>far more powerful, and is nearly as convenient for experienced users. XML is a standard</li>
-<li>for which dozens of excellent parsers are available, while grepable output is my own</li>
-<li>simple hack. XML is extensible to support new Nmap features as they are released, while</li>
-<li>I often must omit those features from grepable output for lack of a place to put them.</li>
-<li>(&hellip;略&hellip;)</li>
+<li>
+<pre><code>This output format is covered last because it is deprecated. The XML output format is
+</code></pre>
+</li>
+<li>
+<pre><code>far more powerful, and is nearly as convenient for experienced users. XML is a standard
+</code></pre>
+</li>
+<li>
+<pre><code>for which dozens of excellent parsers are available, while grepable output is my own
+</code></pre>
+</li>
+<li>
+<pre><code>simple hack. XML is extensible to support new Nmap features as they are released, while
+</code></pre>
+</li>
+<li>
+<pre><code>I often must omit those features from grepable output for lack of a place to put them.
+</code></pre>
+</li>
+<li>
+<pre><code>(...略...)
+</code></pre>
+</li>
 </ul>
 </blockquote>
-
 <p>ref:
 <a href="http://stackoverflow.com/questions/3773183/how-to-determine-which-ips-in-a-given-range-have-port-80-using-nmap">http://stackoverflow.com/questions/3773183/how-to-determine-which-ips-in-a-given-range-have-port-80-using-nmap</a>
 <a href="http://www.weithenn.org/cgi-bin/wiki.pl?Nmap-%E6%8E%83%E7%9E%84%E4%B8%BB%E6%A9%9F%E6%89%80%E9%96%8B%E5%95%9F%E7%9A%84_Port">不自量力</a>

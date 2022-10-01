@@ -2,41 +2,33 @@
 <html lang="en-us">
 <title>Load Testing | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/load-testing/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/load-testing/">Load Testing</a></h1>
-    <p class="meta"><time datetime="2014-06-05T00:02:45&#43;08:00">June 05, 2014</time></p>
+    <h1>Load Testing</h1>
+    <time datetime="2014-06-05T00:02:45&#43;08:00">June 05, 2014</time>
   </header>
-  
-
-<h2 id="siege">Siege</h2>
-
-<h3 id="設定檔-etc-siege">設定檔 /etc/siege</h3>
-
+  <h2 id="siege">Siege</h2>
+<h3 id="設定檔-etcsiege">設定檔 /etc/siege</h3>
 <ul>
 <li>siegerc : 設定檔, 可以將 verbose 改為 true, 預設就是 <code>-v</code> 了</li>
 <li>urls.txt : 將 url 或 post 資料寫在裡面, 下指令可以不用指定 url, 預設會讀取這裡</li>
 </ul>
-
 <h3 id="example">Example</h3>
-
 <pre><code>siege -c200 -t10S www.google.com -v
 </code></pre>
-
 <blockquote>
 <ul>
 <li>-c, &ndash;concurrent=NUM      CONCURRENT users, default is 10</li>
@@ -44,9 +36,7 @@
 <li>-v, &ndash;verbose             VERBOSE, prints notification to screen.</li>
 </ul>
 </blockquote>
-
 <p>結果 :</p>
-
 <pre><code>Transactions:                    652 hits
 Availability:                 100.00 %
 Elapsed time:                   3.09 secs
@@ -60,24 +50,17 @@ Failed transactions:               0
 Longest transaction:            0.60
 Shortest transaction:           0.00
 </code></pre>
-
 <ul>
 <li>Response time 超過 2 秒就代表網站效能很慢了</li>
 <li>Concurrency 是每秒能同步處理的 request</li>
 </ul>
-
 <blockquote>
 <p>可搭配 <code>htop</code> 觀看 cpu 動態</p>
 </blockquote>
-
 <h2 id="boom">boom</h2>
-
 <p>golang 寫的類似 siege 功能的壓力測試工具</p>
-
 <h3 id="install">Install</h3>
-
 <p>go get github.com/rakyll/boom</p>
-
 <pre><code>test@test:/tmp$ boom -n 1000 -c 100 http://example.com
 1000 / 1000 Boooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo! 100.00 %
 

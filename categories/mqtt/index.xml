@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>mqtt on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in mqtt on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 20 Oct 2016 14:38:29 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/mqtt/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 20 Oct 2016 14:38:29 +0800</lastBuildDate><atom:link href="/categories/mqtt/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MQTT</title>
       <link>/posts/mqtt/</link>
@@ -19,9 +15,10 @@
       <guid>/posts/mqtt/</guid>
       <description>Introduction MQTT 是設計給 IOT 的 messaging protocal (pub/sub), 因為它很輕量且效率好, 在 client 實作上它比 AMQP 需要更少的資源, 另外 mqtt 本身沒有支援 authorization (這段需要在 server 端自已實作)
 Install client command Command line tool node.js 的 mqtt tool
-npm install mqtt --save npm install mqtt -g  Command Subscribe
-mqtt sub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password  Publish
-mqtt pub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password -m &#39;Hello world&#39;  Via SSL</description>
+npm install mqtt --save npm install mqtt -g Command Subscribe
+mqtt sub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password Publish
+mqtt pub -h my-mqtt-server.com -t my_topic -u mqtt_username -P mqtt_password -m &#39;Hello world&#39; Via SSL
+mqtt pub -h my-mqtt-server.</description>
     </item>
     
   </channel>

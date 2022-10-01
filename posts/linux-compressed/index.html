@@ -2,29 +2,25 @@
 <html lang="en-us">
 <title>Linux Compression | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/linux-compressed/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/linux-compressed/">Linux Compression</a></h1>
-    <p class="meta"><time datetime="2013-09-07T15:15:00Z">September 07, 2013</time></p>
+    <h1>Linux Compression</h1>
+    <time datetime="2013-09-07T15:15:00Z">September 07, 2013</time>
   </header>
-  
-
-<h2 id="gzip">gzip</h2>
-
+  <h2 id="gzip">gzip</h2>
 <pre><code>Usage: gzip [OPTION]... [FILE]...
 Compress or uncompress FILEs (by default, compress FILES in-place).
 
@@ -50,40 +46,29 @@ Mandatory arguments to long options are mandatory for short options too.
 
 With no FILE, or when FILE is -, read standard input.
 </code></pre>
-
 <p>qq 資料夾下的檔案</p>
-
 <pre><code>$ ls qq
 c.txt  d.txt  f.txt  q.txt
 </code></pre>
-
 <p>壓縮資料夾</p>
-
 <pre><code>$ gzip -r qq
 $ ls qq
 c.txt.gz  d.txt.gz  f.txt.gz  q.txt.gz
 </code></pre>
-
 <p>壓縮單檔</p>
-
 <pre><code>$ gzip qq.log
 $ ls
 $ qq.log.gz
 </code></pre>
-
 <p>解壓縮</p>
-
 <pre><code>$ gzip -rd qq
 $ ls qq
 c.txt  d.txt  f.txt  q.txt
 </code></pre>
-
 <blockquote>
 <p>gzip僅能壓縮單一檔案</p>
 </blockquote>
-
 <h2 id="tar">tar</h2>
-
 <blockquote>
 <ul>
 <li>-z, &ndash;gzip, &ndash;gunzip, &ndash;ungzip   filter the archive through gzip</li>
@@ -91,36 +76,25 @@ c.txt  d.txt  f.txt  q.txt
 <li>-f, &ndash;file=ARCHIVE         use archive file or device ARCHIVE</li>
 </ul>
 </blockquote>
-
 <p>壓縮 qq 資料夾成 qq.tar.gz</p>
-
 <pre><code>tar -zcv -f qq.tar.gz qq
 </code></pre>
-
 <blockquote>
 <p>-c, &ndash;create               create a new archive</p>
 </blockquote>
-
 <p>查看 qq.tar.gz 裡有哪些檔案</p>
-
 <pre><code>tar -ztv -f qq.tar.gz
 </code></pre>
-
 <blockquote>
 <p>-t, &ndash;list                 list the contents of an archive</p>
 </blockquote>
-
 <p>解壓縮 qq.tar.gz</p>
-
 <pre><code>tar -zxv -f qq.tar.gz
 </code></pre>
-
 <blockquote>
 <p>-x, &ndash;extract, &ndash;get       extract files from an archive</p>
 </blockquote>
-
 <p>解壓縮到 /tmp</p>
-
 <pre><code>tar -zxv -f qq.tar.gz -C /tmp
 qq/
 qq/d.txt
@@ -128,53 +102,36 @@ qq/c.txt
 qq/f.txt
 qq/q.txt
 </code></pre>
-
 <blockquote>
 <ul>
 <li>-C, &ndash;directory=DIR        change to directory DIR</li>
 <li>原本的qq目錄也還會在</li>
 </ul>
 </blockquote>
-
 <p>exclude 忽略檔案或資料夾</p>
-
 <pre><code>tar -zcv -f test.tar.gz test --exclude '.git*' --exclude 'cli.php'
 </code></pre>
-
 <blockquote>
 <p>忽略 .git 及 cli.php</p>
 </blockquote>
-
 <h2 id="gunzip">gunzip</h2>
-
 <p>解壓縮 <code>.gz</code> 的檔案</p>
-
 <pre><code>gunzip access.log-20170725.gz
 </code></pre>
-
 <h2 id="解壓縮-zip-無法使用-tar-或-gzip-來解壓縮">解壓縮 .zip 無法使用 <code>tar</code> 或 <code>gzip</code> 來解壓縮</h2>
-
 <p><strong>必須使用 zip / unzip 做</strong></p>
-
 <p>安裝 :</p>
-
 <pre><code>sudo apt-get install zip unzip
 </code></pre>
-
 <p>解壓縮 :</p>
-
 <pre><code>unzip weibo-phpsdk-v2-2013-02-20.zip -d qq
 </code></pre>
-
 <blockquote>
 <p>解壓縮並放在 qq 資料夾裡, 如果不加上 <code>-d qq</code> 檔案就會散落在目前資料夾</p>
 </blockquote>
-
 <p>壓縮 :</p>
-
 <pre><code>zip -r qq.zip qq
 </code></pre>
-
 <blockquote>
 <ul>
 <li>將 qq 資料夾壓縮成 qq.zip</li>

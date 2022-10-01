@@ -2,49 +2,37 @@
 <html lang="en-us">
 <title>Raspberry Pi with ffmpeg | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/raspberry-pi-ffmpeg/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/raspberry-pi-ffmpeg/">Raspberry Pi with ffmpeg</a></h1>
-    <p class="meta"><time datetime="2014-12-16T13:02:45&#43;08:00">December 16, 2014</time></p>
+    <h1>Raspberry Pi with ffmpeg</h1>
+    <time datetime="2014-12-16T13:02:45&#43;08:00">December 16, 2014</time>
   </header>
-  
-
-<h2 id="rpi-camera-只支援輸出-raw-h-264">rpi camera 只支援輸出 raw h.264</h2>
-
+  <h2 id="rpi-camera-只支援輸出-raw-h264">rpi camera 只支援輸出 raw h.264</h2>
 <p>雖然 chrome 跟 safari （firefox 不援, 而 safari 因為是 call 自己的 quicktime 去播放影片所以支援的又更廣) 都支援解碼 h.264 codec 但不支援解 raw h.264</p>
-
 <p>但可以解 container 一定要是 mp4, 所以輸出 h.264 還需要經過一層轉檔成 mp4 才能在瀏覽器上看到</p>
-
 <h3 id="install-ffmpeg">install ffmpeg</h3>
-
 <pre><code>sudo apt-add-repository ppa:jon-severinsson/ffmpeg
 sudo apt-get update
 sudo apt-get install ffmpeg
 </code></pre>
-
 <h3 id="convert-raw-h264-to-mp4">convert raw h264 to mp4</h3>
-
 <pre><code>ffmpeg -r 30 -i test2.h264 -vcodec copy test2.mp4
 </code></pre>
-
 <h2 id="ffserver">ffserver</h2>
-
 <p><code>/etc/ffserver.conf</code> 加上</p>
-
 <pre><code>&lt;Stream live.mp4&gt;
    Format mp4
    Feed feed1.ffm
@@ -56,19 +44,12 @@ sudo apt-get install ffmpeg
    NoAudio
 &lt;/Stream&gt;
 </code></pre>
-
 <p>啟動 ffserver : <code>ffserver -f /etc/ffserver.conf</code></p>
-
 <p>將 ffmpeg 轉檔的 stream 傳到 feed1.ffm : <code>ffmpeg -i /tmp/t.h264 -copyinkf -codec copy -f mpegts udp://localhost:8090/feed1.ffm</code></p>
-
 <p>打開瀏覽器 : <code>http://107.185.47.26:9080/live.mp4</code></p>
-
-<h3 id="mp4-h-264-aac-or-mp3">MP4 H.264 (AAC or MP3)</h3>
-
+<h3 id="mp4-h264-aac-or-mp3">MP4 H.264 (AAC or MP3)</h3>
 <p>H.264 video codec 及 ACC audio codec 的 MP4 container 格式可以被桌機及手機的 IE, Safari, Chrome 原生支援, 但 Chromium 及 Opera 不支援此格式, IE 及 Chrome 也支援 MP4 container 裡的 MP3 audio codec, 但 Safari 不支援, 不過 Firefox 在 Android 及 Firefox OS 裡只有在 thrid-party decoder 支援的情況下才支援</p>
-
 <h2 id="browser-support">Browser support</h2>
-
 <ul>
 <li>chrome : webm ogv mp4</li>
 <li>firefox : webm ogv</li>

@@ -2,53 +2,41 @@
 <html lang="en-us">
 <title>Go Frameworks | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/go-frameworks/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/go-frameworks/">Go Frameworks</a></h1>
-    <p class="meta"><time datetime="2016-09-04T10:21:39&#43;08:00">September 04, 2016</time></p>
+    <h1>Go Frameworks</h1>
+    <time datetime="2016-09-04T10:21:39&#43;08:00">September 04, 2016</time>
   </header>
-  
-
-<h2 id="beego">Beego</h2>
-
+  <h2 id="beego">Beego</h2>
 <h3 id="上手資源">上手資源</h3>
-
 <ul>
 <li><a href="http://beego.me/docs/quickstart/">官網文件</a></li>
 <li><a href="https://www.youtube.com/watch?v=l0Ex0uAejEc">作者中文影片教學</a></li>
 </ul>
-
 <h3 id="安裝">安裝</h3>
-
 <p>按照<a href="http://beego.me/">官網</a>指令即可</p>
-
 <h4 id="routers">Routers</h4>
-
 <p>基本語法</p>
-
 <pre><code>beego.Router(&quot;/api/:id&quot;, &amp;controllers.RController{})
 beego.Router(&quot;/api/list&quot;, &amp;RestController{}, &quot;*:ListFood&quot;)  # * = ANY, 可替換為 post / put
 beego.Router(&quot;/api/list&quot;, &amp;RestController{}, &quot;get,post:ApiFunc&quot;)  # 指定兩個 Http method 到同一個 func
 beego.Router(&quot;/api/list&quot;, &amp;RestController{}, &quot;get:GetFunc;post:PostFunc&quot;)  # 指定到不同 Http method 即不同的 Func
 beego.AutoRouter(&quot;&amp;controllers.ObjectController{}) # 自動 Match /object/blog/2013/09/12 -&gt; ObjectController 的 blog 方法，參數: map[0: 2013 1:09 2:12]
 </code></pre>
-
 <h4 id="match">Match</h4>
-
 <ul>
 <li><code>/api:id</code> : Match <code>/api/123</code> (即使沒有 <code>:id</code>, <code>:id</code> 相當於 <code>.*</code> 任意字元)</li>
 <li><code>/api/:id!</code> : Match <code>/api/123</code> (<code>:id</code> 一定要有值)</li>
@@ -58,64 +46,44 @@ beego.AutoRouter(&quot;&amp;controllers.ObjectController{}) # 自動 Match /obje
 <li><code>/user/:username([\w]+)</code> = <code>/user/:username:string</code> : Match username = 字串</li>
 <li><code>/download/*.*</code> : Match <code>/download/file/api.xml</code></li>
 </ul>
-
 <h4 id="404">404</h4>
-
 <pre><code>beego.ErrorHandler(&quot;404&quot;, page_not_found)
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
     rw.Write([]byte(&quot;404&quot;))
 }
 </code></pre>
-
 <h4 id="match-url-path-直接在-router-層輸出">match url path 直接在 router 層輸出</h4>
-
 <pre><code>import &quot;github.com/astaxie/beego/context&quot;
 
 beego.Get(&quot;/gl&quot;, func(ctx *context.Context) {
     ctx.Output.Body([]byte(&quot;ok&quot;))
 })
 </code></pre>
-
 <h3 id="controllers">Controllers</h3>
-
 <h4 id="基本語法">基本語法</h4>
-
 <p>輸出字串</p>
-
 <pre><code>this.Ctx.WriteString(&quot;hello&quot;)
 this.Ctx.Output.Body([]byte(&quot;ok&quot;))
 </code></pre>
-
 <p>產生 view</p>
-
 <pre><code>this.Data[&quot;show&quot;] = &quot;Test&quot;
 this.TplName = &quot;user/index.tpl&quot;
 </code></pre>
-
 <p>改變輸出的 status code</p>
-
 <pre><code>this.Ctx.Output.SetStatus(400)
 </code></pre>
-
 <h4 id="取得-parameters-變數">取得 parameters 變數</h4>
-
 <p>取得 form 變數</p>
-
 <pre><code>this.Ctx.Input.Param(&quot;user_id&quot;)    // 注意！有 `:`
 </code></pre>
-
 <p>取得 router 對應的變數 (url params mapping)</p>
-
 <pre><code>router:
     beego.Router(&quot;/users/:user_id/&quot;, &amp;controllers.UserController{}, &quot;post:update&quot;)
 this.Ctx.Input.Param(&quot;:user_id&quot;)    // 注意！有 `:`
 </code></pre>
-
 <h4 id="讓-struct-int-參數支援選填">讓 struct int 參數支援選填</h4>
-
 <p>因為 int 初始值為 0, 所以這裡用 pointer 來支援 nil, 再額外判斷如果有值再放到 struct 裡</p>
-
 <pre><code>type AddReq struct {
     Gender *int
 }
@@ -128,30 +96,21 @@ if err == nil {
 
 log.Println(*req.Age)
 </code></pre>
-
 <h3 id="conf">conf</h3>
-
 <h4 id="取得變數值">取得變數值</h4>
-
 <p>單一值</p>
-
 <pre><code>httpport = 8080
 
 beego.AppConfig.String(&quot;httpport&quot;) # dev
 </code></pre>
-
 <p>Section 值/陣列</p>
-
 <pre><code>[demo]
 peers = one;two;three
 
 beego.AppConfig.Strings(&quot;demo::peers&quot;) # [one two three]
 </code></pre>
-
 <h4 id="根據環境不同讀取不同的設定檔">根據環境不同讀取不同的設定檔</h4>
-
 <p>app.conf</p>
-
 <pre><code>runmode = dev
 sessionon = true            # 啟用 session, 預設使用 mem
 copyrequestbody = true      # 要打開，否則 this.Ctx.Input.RequestBody 抓不到資料
@@ -162,26 +121,18 @@ host = 127.0.0.1
 [prod]
 host = 137.111.120.179
 </code></pre>
-
 <p>取變數時 :</p>
-
 <pre><code>beego.AppConfig.String(&quot;runmode&quot;)
 </code></pre>
-
 <h3 id="log">log</h3>
-
 <p>在 beego 目錄下產生 log file, 更多參數請參考<a href="http://beego.me/docs/module/logs.md">官方文件</a></p>
-
 <pre><code>beego.SetLogger(logs.AdapterFile, `{&quot;filename&quot;:&quot;project.log&quot;}`)
 beego.Run()
 
 // logs.SetLogger(logs.AdapterMultiFile, ``{&quot;filename&quot;:&quot;test.log&quot;,&quot;separate&quot;:[&quot;emergency&quot;, &quot;alert&quot;, &quot;critical&quot;, &quot;error&quot;, &quot;warning&quot;, &quot;notice&quot;, &quot;info&quot;, &quot;debug&quot;]}``)
 </code></pre>
-
 <h3 id="orm">ORM</h3>
-
 <p>Beego orm 相當地方便，雖然 beego orm 是包在 beego 裡面，但是它分的相當的乾淨，你可以在任何 project 上引入, 以下是使用 MySQL 的 example :</p>
-
 <pre><code>import (
     &quot;fmt&quot;
 
@@ -217,20 +168,14 @@ func main() {
     }
 }
 </code></pre>
-
 <p>WHERE 多項條件</p>
-
 <pre><code>user := User{UserId: &quot;2c024jka-cc06-4fc1-8fd3-f1c72dw22dac&quot;, Name: &quot;Jex&quot;}
 err := o.Read(&amp;user, &quot;user_id&quot;, &quot;name&quot;)
 </code></pre>
-
 <p>切換到另一個 DB</p>
-
 <pre><code>err = orm.Using(&quot;another_db&quot;)
 </code></pre>
-
 <p>SELECT 取一筆 record (limit: 1)</p>
-
 <pre><code>var users []orm.Params
 num, err := o.QueryTable(new(model.User)).Filter(&quot;user_id&quot;, user_id).OrderBy(&quot;-created_at&quot;).Limit(1).Values(&amp;users)
 
@@ -240,33 +185,24 @@ err := o.QueryTable(new(Device)).Filter(&quot;did&quot;, &quot;A123&quot;).One(&
 user := User{UserId: &quot;2c024jka-cc06-4fc1-8fd3-f1c72dw22dac&quot;}
 err := o.Read(&amp;user, &quot;user_id&quot;)
 </code></pre>
-
 <blockquote>
 <p>Read vs Values : Read 取不到值時會擲 error, Values 則不會</p>
 </blockquote>
-
 <p>Count</p>
-
 <pre><code>num, err = o.QueryTable(new(model.User)).Filter(&quot;user_id&quot;, user_id).Count()
 </code></pre>
-
 <p>Update 特定欄位</p>
-
 <pre><code>affected_num, err := o.QueryTable(new(model.User)).Filter(&quot;user_id&quot;, user_id).Update(orm.Params{
     &quot;name&quot;: name,
 })
 </code></pre>
-
 <p>Update 特定欄位</p>
-
 <pre><code>o := orm.NewOrm()
 user.Name = &quot;Jex&quot;
 user.Address = &quot;Taiwan ... &quot;
 o.Update(user, &quot;name&quot;, &quot;address&quot;)
 </code></pre>
-
 <p>Raw Query</p>
-
 <pre><code>_, err = j.Service.MySQL.Raw(&quot;UPDATE user SET name = ? WHERE uid = ?&quot;, 'Bob', 'uid00001').Exec()
 </code></pre>
 

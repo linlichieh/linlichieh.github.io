@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>mac on Jack&#39;s Note</title>
@@ -6,21 +6,17 @@
     <description>Recent content in mac on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 20 Sep 2013 21:34:00 +0000</lastBuildDate>
-    
-	<atom:link href="/categories/mac/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 20 Sep 2013 21:34:00 +0000</lastBuildDate><atom:link href="/categories/mac/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mac OS X</title>
       <link>/posts/mac-environment/</link>
       <pubDate>Fri, 20 Sep 2013 21:34:00 +0000</pubDate>
       
       <guid>/posts/mac-environment/</guid>
-      <description>一般鍵盤接 Mac  系統偏好設定→鍵盤 TAG選鍵盤，再點下面的變更鍵 下拉選單選USB插上的鍵盤 → OPTION 選 ⌘ 而 ⌘ 選 OPTION   也就是兩個對調，ALT 就成了⌘ 鍵
- RAR 安裝
-brew install unrar  將 multi part rar files 解開 unrar x -e video.part1.rar   會自動將其它部份一起解開
- iTerm  ⌘ + d : 垂直 split windows ⌘ + shift + d : 水平 split windows ⌘ + t : 打開分頁 ⌘ + shift + 左右鍵 : 移動 tab 位置 ⌘ + 左右 : 切換 iterm2 的 tab ⌘ + shift + { or } : 切換 tab // 與上行功能一樣, 可刪?</description>
+      <description>一般鍵盤接 Mac 系統偏好設定→鍵盤 TAG選鍵盤，再點下面的變更鍵 下拉選單選USB插上的鍵盤 → OPTION 選 ⌘ 而 ⌘ 選 OPTION 也就是兩個對調，ALT 就成了⌘ 鍵
+RAR 安裝
+brew install unrar 將 multi part rar files 解開 unrar x -e video.part1.rar 會自動將其它部份一起解開
+iTerm ⌘ + d : 垂直 split windows ⌘ + shift + d : 水平 split windows ⌘ + t : 打開分頁 ⌘ + shift + 左右鍵 : 移動 tab 位置 ⌘ + 左右 : 切換 iterm2 的 tab ⌘ + shift + { or } : 切換 tab // 與上行功能一樣, 可刪?</description>
     </item>
     
   </channel>

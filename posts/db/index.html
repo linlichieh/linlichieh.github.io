@@ -2,46 +2,38 @@
 <html lang="en-us">
 <title>Database | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/db/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/db/">Database</a></h1>
-    <p class="meta"><time datetime="2014-10-29T10:24:54&#43;08:00">October 29, 2014</time></p>
+    <h1>Database</h1>
+    <time datetime="2014-10-29T10:24:54&#43;08:00">October 29, 2014</time>
   </header>
-  
-
-<h2 id="acid">ACID</h2>
-
+  <h2 id="acid">ACID</h2>
 <ul>
 <li>原子性 (atomicity, 或稱不可分割性)  : 一個交易（transaction）中的所有操作，要就全部完成，不然就全部不完成，不會結束在中間某個環節。事務執行過程中其中一個環境發生錯誤，會被回滾（Rollback）到一開始的狀態，就像事務從來沒有執行過一樣。</li>
 <li>一致性 (consistency)                : 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。</li>
 <li>隔離性 (isolation, 又稱獨立性)      : 隔離性：當兩個或者多個事務並發訪問（此處訪問指查詢和修改的操作）資料庫的同一數據時所表現出的相互關係。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和串列&gt;化（Serializable）。</li>
 <li>持久性 (durability)                 : 持久性：在事務完成以後，該事務對資料庫所作的更改便持久地保存在資料庫之中，並且是完全的。</li>
 </ul>
-
 <h2 id="mysql-innodb-vs-myisam">MySQL InnoDB vs MyIsam</h2>
-
 <ul>
 <li>InnoDB 支援 transaction</li>
 <li>InnoDB 支援 row lock</li>
 <li>InnoDB 不需要等 row 上的 lock 釋放就可以讀取 row 上的 snapshot</li>
 </ul>
-
 <h2 id="mysql-int-length">MySQL int length</h2>
-
 <pre><code>型態                Byte(s)     預設長度    範圍                                        Unsigned
 ---------------------------------------------------------------------------------------------------------------
 TINYINT[(長度)]     1           4           -128~127                                    0~255 (unisgned 的預設長度會是 3, 因為沒有負號, 最多就 3 位數)
@@ -50,31 +42,21 @@ MEDIUMINT[(長度)]   3           9           -8388608~8388607                  
 INT[(長度)]         4           11          -2147683648~2147683647                      0~4294967295
 BIGINT[(長度)]      8           20          -9223372036854775808~9223372036854775807    0~18446744073709551615
 </code></pre>
-
 <h2 id="mysql-char-vs-varchar-比較">MySQL Char vs Varchar 比較</h2>
-
 <p>官方詳細說明 : <a href="https://dev.mysql.com/doc/refman/5.7/en/char.html">https://dev.mysql.com/doc/refman/5.7/en/char.html</a></p>
-
 <p><strong>如果字串長度都固定的話使用 <code>char</code></strong>, mysql 會分配固定的 bytes 儲存它</p>
-
 <p><strong>如果字串長度不固定使用 <code>varchar</code></strong>, mysql 會分配浮動的 bytes + 長度 byte 給它, 而長度 byte 有可能是 1 byte 或 2 bytes, 取決於儲存的 bytes 有沒有超過 255 bytes</p>
-
 <p>e.g. 如果儲存 &lsquo;abcd&rsquo; 會用到幾 bytes?</p>
-
 <ul>
 <li>char : 4 bytes</li>
 <li>varchar : 4 + 1 bytes</li>
 </ul>
-
 <p>e.g. 如果儲存 &lsquo;abcd..(略)&hellip;&rsquo;, 假設共有256個字元, 會用到幾 bytes?</p>
-
 <ul>
 <li>char : 256 bytes</li>
 <li>varchar : 256 + 2 bytes</li>
 </ul>
-
 <h2 id="mysql-型態儲存長度-data-type-and-storage-required">MySQL 型態儲存長度 (Data Type and Storage Required)</h2>
-
 <ul>
 <li>&lsquo;abcd&rsquo; in CHAR(72) CHARACTER SET ascii occupies 72 bytes on disk.</li>
 <li>&lsquo;abcd&rsquo; in CHAR(72) CHARACTER SET utf8 occupies 3*72 bytes on disk.</li>
@@ -84,9 +66,7 @@ BIGINT[(長度)]      8           20          -9223372036854775808~9223372036854
 <li>&lsquo;abcd&rsquo; in TEXT occupies 2+4 bytes on disk.</li>
 <li>&lsquo;abcd&rsquo; in LONGTEXT occupies 4+4 bytes on disk.</li>
 </ul>
-
 <p>詳細</p>
-
 <ul>
 <li>CHAR(M) M × w bytes, 0 &lt;= M &lt;= 255, where w is the number of bytes required for the maximum-length character in the character set. See Section 14.2.6.7, “Physical Row Structure” for information about CHAR data type storage requirements for InnoDB tables.</li>
 <li>BINARY(M) M bytes, 0 &lt;= M &lt;= 255</li>

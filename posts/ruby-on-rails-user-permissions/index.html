@@ -2,108 +2,93 @@
 <html lang="en-us">
 <title>Rails devise / cancancan / rolify | Jack&#39;s Note</title>
 <meta charset="utf-8">
-<meta name="generator" content="Hugo 0.58.3" />
+<meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
 <link rel="canonical" href="/posts/ruby-on-rails-user-permissions/">
 <link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
-<link rel="stylesheet" href="/css/theme.css">
-<link rel="stylesheet" href="/css/classes.css">
 
-<header class="dark">
-  <h2><a href="/">Jack&#39;s Note</a></h2>
-  <nav>
-    
-  </nav>
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
 </header>
 
 <article>
   <header>
-    <h1><a href="/posts/ruby-on-rails-user-permissions/">Rails devise / cancancan / rolify</a></h1>
-    <p class="meta"><time datetime="2015-04-12T19:11:19&#43;08:00">April 12, 2015</time></p>
+    <h1>Rails devise / cancancan / rolify</h1>
+    <time datetime="2015-04-12T19:11:19&#43;08:00">April 12, 2015</time>
   </header>
-  
-
-<h2 id="introduction">Introduction</h2>
-
+  <h2 id="introduction">Introduction</h2>
 <ul>
 <li><a href="https://github.com/plataformatec/devise">devise</a> : 提供註冊, 登入, 登出一整套 solution</li>
 <li><a href="https://github.com/CanCanCommunity/cancancan">cancancan</a> : 授權功能, 判斷 user 是否可以做什麼, 不可以做什麼</li>
 <li><a href="https://github.com/RolifyCommunity/rolify">rolify</a> : 身份功能, 賦與 user 身份 ex: 一般 user 或 admin 等等..</li>
 </ul>
-
 <blockquote>
 <p>cancancan 設計上跟 model 綁太緊我覺得實作上會有些綁手綁腳，而 rolify 適合用在 role 分很多的情況下使用，如果希望專案引入的東西單純一點，我建議只需要 devise 就夠了</p>
 </blockquote>
-
 <h2 id="devise">Devise</h2>
-
 <h3 id="安裝">安裝</h3>
-
-<p>1) Gemfile :</p>
-
-<pre><code>gem 'bcrypt'
-gem 'devise', '~&gt; 3.5.6'
-</code></pre>
-
+<ol>
+<li>
+<p>Gemfile :</p>
+<p>gem &lsquo;bcrypt&rsquo;
+gem &lsquo;devise&rsquo;, &lsquo;~&gt; 3.5.6&rsquo;</p>
+</li>
+</ol>
 <ul>
 <li>devise 預設使用 bcrypt 做加密</li>
 </ul>
-
-<p>2) Init :</p>
-
-<pre><code>rails generate devise:install
+<ol start="2">
+<li>
+<p>Init :</p>
+<p>rails generate devise:install
 rails generate devise User
 rails generate devise:views
-rake db:migrate
-</code></pre>
-
-<p>3) 補上 zh-TW 旳 rails-i18n 及 devise i18n :</p>
-
+rake db:migrate</p>
+</li>
+<li>
+<p>補上 zh-TW 旳 rails-i18n 及 devise i18n :</p>
+</li>
+</ol>
 <p>rails i18n (validate 等等會用到的 i18n) 及 devise i18n (devise 專屬的 i18n, 主要是一些流程的訊息) 都有套件可以直接引入，但我不這麼做，因為如果有訊息需要客製會不好改，所以我建議還是手動新增 i18n</p>
-
 <ul>
 <li>預設安裝完 devise 只會產生 <code>config/locales/devise.en.yml</code>, 這樣訊息只會有英文版</li>
 <li>新增 <code>devise.zh-TW.yml</code>, 內容從<a href="https://github.com/tigrish/devise-i18n/blob/master/rails/locales/zh-TW.yml">devise-i18n 這裡</a> copy</li>
 <li>新增 <code>rails-i18n.zh-TW.yml</code>, 內容從<a href="https://github.com/svenfuchs/rails-i18n/blob/master/rails/locale/zh-TW.yml">rails-i18n 這裡</a> copy</li>
 </ul>
-
-<p>4) 設定預設為 <code>zh-TW</code>, config/application.rb :</p>
-
-<pre><code>config.i18n.default_locale = :'zh-TW'
-</code></pre>
-
-<p>5) 修改 config/initializers/devise.rb</p>
-
-<pre><code>config.secret_key = 'rake secret 產生的 key 貼到這裡'
-
-# 寄件人 (email header 的 From 及 Reply-To)
-config.mailer_sender = 'dev@mail.com'
-
-# 用 custom devise view (views/users 下)
-config.scoped_views = true
-</code></pre>
-
-<p>6) [必要] 設定 mailer 的 host, 在 <code>config/environments/development.rb</code> 加在 block 裡面 :</p>
-
-<pre><code>config.action_mailer.default_url_options = { host: 'localhost:3000' }
-config.action_mailer.delivery_method     = :sendmail
-</code></pre>
-
-<p>7)  Confirm email</p>
-
+<ol start="4">
+<li>
+<p>設定預設為 <code>zh-TW</code>, config/application.rb :</p>
+<p>config.i18n.default_locale = :&lsquo;zh-TW&rsquo;</p>
+</li>
+<li>
+<p>修改 config/initializers/devise.rb</p>
+<p>config.secret_key = &lsquo;rake secret 產生的 key 貼到這裡&rsquo;</p>
+<h1 id="寄件人-email-header-的-from-及-reply-to">寄件人 (email header 的 From 及 Reply-To)</h1>
+<p>config.mailer_sender = &lsquo;<a href="mailto:dev@mail.com">dev@mail.com</a>&rsquo;</p>
+<h1 id="用-custom-devise-view-viewsusers-下">用 custom devise view (views/users 下)</h1>
+<p>config.scoped_views = true</p>
+</li>
+<li>
+<p>[必要] 設定 mailer 的 host, 在 <code>config/environments/development.rb</code> 加在 block 裡面 :</p>
+<p>config.action_mailer.default_url_options = { host: &rsquo;localhost:3000&rsquo; }
+config.action_mailer.delivery_method     = :sendmail</p>
+</li>
+<li>
+<p>Confirm email</p>
+</li>
+</ol>
 <p>首先到 <code>app/models/user.rb</code> 加上 <code>:confirmable</code></p>
-
 <pre><code>devise :database_authenticatable, :registerable,
            :recoverable, :rememberable, :trackable, :validatable, :confirmable
 </code></pre>
-
 <p>再增加 confirm 欄位到 users</p>
-
 <pre><code>rails g migration add_confirmable_to_devise
 </code></pre>
-
 <p>migrate/20150703173329_add_confirmable_to_devise.rb (不要使用 change) :</p>
-
 <pre><code>class AddConfirmableToDevise &lt; ActiveRecord::Migration
   # Note: You can't use change, as User.update_all will fail in the down migration
   def up
@@ -132,69 +117,42 @@ config.action_mailer.delivery_method     = :sendmail
   end
 end
 </code></pre>
-
-<p>8) <code>config/initializers/devise.rb</code> :</p>
-
-<pre><code>config.reconfirmable = false
-</code></pre>
-
-<p>9) 顯示按鈕及訊息 <code>app/views/layouts/application.html.erb</code> :</p>
-
-<pre><code>&lt;% if notice %&gt;
-  &lt;p class=&quot;alert alert-success&quot;&gt;&lt;%= notice %&gt;&lt;/p&gt;
-&lt;% end %&gt;
-&lt;% if alert %&gt;
-  &lt;p class=&quot;alert alert-danger&quot;&gt;&lt;%= alert %&gt;&lt;/p&gt;
-&lt;% end %&gt;
-
-&lt;p class=&quot;navbar-text pull-right&quot;&gt;
-    &lt;% if user_signed_in? %&gt;
-      Logged in as &lt;strong&gt;&lt;%= current_user.email %&gt;&lt;/strong&gt;.
-      &lt;%= link_to 'Edit profile', edit_user_registration_path, :class =&gt; 'navbar-link' %&gt; |
-      &lt;%= link_to &quot;Logout&quot;, destroy_user_session_path, method: :delete, :class =&gt; 'navbar-link'  %&gt;
-    &lt;% else %&gt;
-      &lt;%= link_to &quot;Sign up&quot;, new_user_registration_path, :class =&gt; 'navbar-link'  %&gt; |
-      &lt;%= link_to &quot;Login&quot;, new_user_session_path, :class =&gt; 'navbar-link'  %&gt;
-    &lt;% end %&gt;
-&lt;/p&gt;
-</code></pre>
-
+<ol start="8">
+<li>
+<p><code>config/initializers/devise.rb</code> :</p>
+<p>config.reconfirmable = false</p>
+</li>
+<li>
+<p>顯示按鈕及訊息 <code>app/views/layouts/application.html.erb</code> :</p>
+<p>&lt;% if notice %&gt;</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+</li>
+</ol>
 <blockquote>
 <p><strong>assets 要引入 <code>jquery_ujs</code>, logout 才會 work, 因為要靠它送出 Http method 為 <code>delete</code> 的 request</strong></p>
 </blockquote>
-
-<p>10) 完成!</p>
-
+<ol start="10">
+<li>完成!</li>
+</ol>
 <h3 id="如果-sign-up-後沒有收到信">如果 sign up 後沒有收到信</h3>
-
 <p>看 rails log 有沒有組出 email 的內容,</p>
-
 <p>有的話可以直接 copy email 內容的 confirm link, 先手動 confirm email</p>
-
 <pre><code>http://localhost:3000/users/confirmation?confirmation_token=hhdRjPszSyPS5w8iczwH
 </code></pre>
-
 <blockquote>
 <p>不使用第三方服務，用本機寄信很可能被 gmail 擋掉, 可以先以 sendmail 下指令看 <code>/var/log/mail.log</code> 的錯誤訊息</p>
 </blockquote>
-
 <h3 id="判斷是否登入">判斷是否登入</h3>
-
 <p>application_controller.rb :</p>
-
 <pre><code>before_action :authenticate_user!
 </code></pre>
-
 <blockquote>
 <p>現在應該就可以看到效果了, 首頁會顯示 notice 及 alert</p>
 </blockquote>
-
 <h3 id="判斷-login-status">判斷 login status</h3>
-
 <p>在 User 新增 status 欄位用來判斷帳號的登入狀態，透過 devise 登入時我們僅需要多加兩個 method 在 <code>user.rb</code>, devise 會自動使用它們</p>
-
 <p>models/user.rb :</p>
-
 <pre><code>enum status: {
   freeze: 0,            # 無法登入
   active: 1,            # 可以正常登入
@@ -213,20 +171,15 @@ def inactive_message
   end
 end
 </code></pre>
-
 <ul>
 <li>凍結的帳號，即使已經登入了，操作其他頁面時仍然會被強制登出</li>
 <li>如果你有整合 facebook 登入，用戶使用 Facebook 登入時，它也會檢查 status 是否為 active，行為如同使用 devise 登入</li>
 </ul>
-
 <h3 id="判斷原密碼是否正確">判斷原密碼是否正確</h3>
-
 <pre><code>User.find(2).valid_password?('00000000')
 =&gt; true
 </code></pre>
-
 <h3 id="驗證碼">驗證碼</h3>
-
 <pre><code>class User::SessionsController &lt; ::Devise::SessionsController
   before_action :check_otp, :only =&gt; [:create]
 
@@ -240,32 +193,20 @@ end
   end
 end
 </code></pre>
-
 <h3 id="設定-session-存活時間">設定 session 存活時間</h3>
-
 <p>一般來說, session 存活的時間是看 browser 的 cookie 存活時間, 但也可以透過 devise 去限制 session 存活時間</p>
-
 <p>models/user.rb :</p>
-
 <pre><code>devise :timeoutable
 </code></pre>
-
 <p>config/initializers/devise.rb :</p>
-
 <pre><code>config.timeout_in = 30.minutes
 </code></pre>
-
 <h3 id="開發環境可一鍵登入">開發環境可一鍵登入</h3>
-
 <p>讓連結 GET <code>users/sign_in?user_id=1</code> 可以直接登入</p>
-
 <p>view :</p>
-
 <pre><code>&lt;%= link_to '一鍵登入', new_user_session_path + &quot;?user_id=#{user.id}&quot;, class: 'btn btn-info btn-xs' %&gt;
 </code></pre>
-
 <p>controllers/users/sessions_controller.rb :</p>
-
 <pre><code>class Users::SessionsController &lt; ::Devise::SessionsController
   before_action :fast_pass, only: [:new]
 
@@ -282,24 +223,16 @@ end
   end
 end
 </code></pre>
-
 <p>config/routes.rb</p>
-
 <pre><code># 將 devise_for 改成 :
 devise_for :users, :controllers =&gt; {:sessions =&gt; &quot;users/sessions&quot;}
 </code></pre>
-
 <h3 id="註冊加入自訂欄位">註冊加入自訂欄位</h3>
-
 <p>情景 : 判斷 user sign_up 選擇的 role 再做 assign</p>
-
-<h4 id="views-users-registrations-new-html-erb">views/users/registrations/new.html.erb</h4>
-
+<h4 id="viewsusersregistrationsnewhtmlerb">views/users/registrations/new.html.erb</h4>
 <pre><code>&lt;%= f.input :role, collection: ['user','translator'], prompt: &quot;Select your age&quot;, selected: 21 %&gt;
 </code></pre>
-
-<h4 id="models-user-rb">models/user.rb</h4>
-
+<h4 id="modelsuserrb">models/user.rb</h4>
 <pre><code>attr_accessor :role
 validates :role, presence: true
 after_create :assign_role
@@ -312,9 +245,7 @@ def assign_role
   end
 end
 </code></pre>
-
-<h4 id="controllers-application-controller-rb">controllers/application_controller.rb</h4>
-
+<h4 id="controllersapplication_controllerrb">controllers/application_controller.rb</h4>
 <pre><code>before_filter :configure_permitted_parameters, if: :devise_controller?
 
 protected
@@ -323,28 +254,19 @@ def configure_permitted_parameters
   devise_parameter_sanitizer.for(:sign_up) &lt;&lt; :role
 end
 </code></pre>
-
 <p>其他寫法</p>
-
 <pre><code>devise_parameter_sanitizer.for(:sign_up) {|u|u.permit(:name,:nick_name,:mobile,:email,:password,:password_confirmation)}
 devise_parameter_sanitizer.for(:account_update) &lt;&lt; :full_name
 </code></pre>
-
 <blockquote>
 <p>可參考 <a href="https://github.com/plataformatec/devise#user-content-strong-parameters">strong parameter</a></p>
 </blockquote>
-
 <h3 id="改變註冊完成去的頁面">改變註冊完成去的頁面</h3>
-
 <p>routes :</p>
-
 <pre><code>devise_for :users, :controllers =&gt; { registrations: &quot;users/registrations&quot; }
 </code></pre>
-
 <p>controllers/users/registrations_controller.rb</p>
-
 <p><strong>如果沒有開啟 email confirmable 的話, 使用這個 method</strong></p>
-
 <pre><code>class Users::RegistrationsController &lt; Devise::RegistrationsController
   protected
 
@@ -353,9 +275,7 @@ devise_parameter_sanitizer.for(:account_update) &lt;&lt; :full_name
   end
 end
 </code></pre>
-
 <p><strong>有開啟 email confirmable 使用它</strong></p>
-
 <pre><code>class Users::RegistrationsController &lt; Devise::RegistrationsController
   protected
 
@@ -365,16 +285,11 @@ end
   end
 end
 </code></pre>
-
 <h3 id="edit-時不能改變-email-及不用再輸入密碼">Edit 時不能改變 Email 及不用再輸入密碼</h3>
-
 <p>routes :</p>
-
 <pre><code>devise_for :users, :controllers =&gt; { registrations: &quot;users/registrations&quot; }
 </code></pre>
-
 <p>controllers/users/registrations_controller.rb</p>
-
 <pre><code>class Users::RegistrationsController &lt; Devise::RegistrationsController
 
   def update
@@ -409,9 +324,7 @@ end
   end
 end
 </code></pre>
-
 <p>如果只需要修改密碼</p>
-
 <pre><code>def update
   @user = User.find(current_user.id)
   if @user.update_with_password(account_update_params)
@@ -427,11 +340,8 @@ def account_update_params
   params[:user].permit(:password, :password_confirmation, :current_password)
 end
 </code></pre>
-
-<h3 id="關閉預設有的-unhappy-cancel-my-account-功能-https-github-com-plataformatec-devise-wiki-how-to-disable-user-from-destroying-their-account"><a href="https://github.com/plataformatec/devise/wiki/How-To:-Disable-user-from-destroying-their-account">關閉預設有的 <code>Unhappy? Cancel my account</code> 功能</a></h3>
-
+<h3 id="關閉預設有的-unhappy-cancel-my-account-功能httpsgithubcomplataformatecdevisewikihow-to-disable-user-from-destroying-their-account"><a href="https://github.com/plataformatec/devise/wiki/How-To:-Disable-user-from-destroying-their-account">關閉預設有的 <code>Unhappy? Cancel my account</code> 功能</a></h3>
 <p>routes :</p>
-
 <pre><code>devise_for :users, skip: :registrations
 devise_scope :user do
   resource :registration,
@@ -444,20 +354,14 @@ devise_scope :user do
     end
 end
 </code></pre>
-
 <p>你會發現原本刪除帳號的 route 己經不見了 :</p>
-
 <pre><code>edit_user_registration DELETE /users(.:format)                  users/registrations#destroy
 </code></pre>
-
 <blockquote>
 <p>主要是剛剛 route 的 <code>only</code> 那段把 <code>:delete</code> 拿掉，如果不想用 devise 提供的修改 user 功能，也可以再把 <code>:edit</code> <code>:update</code> 拿掉</p>
 </blockquote>
-
 <h3 id="不使用-devise-的修改資料功能">不使用 devise 的修改資料功能</h3>
-
 <p>先拿掉 devise 修改基本資料功能</p>
-
 <pre><code>devise_for :users, skip: :registrations
 devise_scope :user do
   resource :registration,
@@ -472,13 +376,10 @@ end
 
 resources :users, only: [:edit, :update]
 </code></pre>
-
 <blockquote>
 <p>雖然可以直接複寫 devise 的 method，但如果要客製自已功能的話，建議還是自已建新的 controller, view</p>
 </blockquote>
-
 <p>controllers/users_controller.rb :</p>
-
 <pre><code>class UsersController &lt; ApplicationController
 
   def edit
@@ -498,9 +399,7 @@ resources :users, only: [:edit, :update]
 
 end
 </code></pre>
-
 <p>views/users/edit.html.erb</p>
-
 <pre><code>&lt;h2&gt;修改會員資料&lt;/h2&gt;
 
 &lt;%= form_for current_user, url: user_path(current_user), html: { method: :put } do |f| %&gt;
@@ -515,18 +414,12 @@ end
 &lt;%= f.submit 'OK' %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <p>ref : <a href="https://github.com/plataformatec/devise/wiki/How-To:-Allow-users-to-edit-their-password">Allow users to edit their password</a></p>
-
 <h3 id="after-email-confirmation">After email confirmation</h3>
-
 <p>routes :</p>
-
 <pre><code>devise_for :users, controllers: { confirmations: &quot;users/confirmations&quot; }
 </code></pre>
-
 <p>controllers/users/confirmations_controller.rb</p>
-
 <pre><code>class Users::ConfirmationsController &lt; ::Devise::ConfirmationsController
 
     protected
@@ -538,11 +431,8 @@ end
 
 end
 </code></pre>
-
-<h3 id="覆寫-devise-sign-in-後去的頁面">覆寫 devise sign_in 後去的頁面</h3>
-
+<h3 id="覆寫-devise-sign_in-後去的頁面">覆寫 devise sign_in 後去的頁面</h3>
 <p>controllers/application_controller.rb</p>
-
 <pre><code>def after_sign_in_path_for(resource)
   sign_in_url = new_user_session_url
   if request.referer == sign_in_url
@@ -552,42 +442,38 @@ end
   end
 end
 </code></pre>
-
-<h3 id="加上-recaptcha-https-github-com-plataformatec-devise-wiki-how-to-use-recaptcha-with-devise"><a href="https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise">加上 reCAPTCHA</a></h3>
-
-<p>1) 到 <a href="https://www.google.com/recaptcha/intro/index.html">Google reCAPTCHA</a> 申請</p>
-
-<p>2) Install</p>
-
-<pre><code>gem &quot;recaptcha&quot;, :require =&gt; &quot;recaptcha/rails&quot;
-</code></pre>
-
-<p>3) config/initializers/recaptcha.rb</p>
-
-<pre><code>Recaptcha.configure do |config|
-  config.public_key  = '6Lc6BAAAAAAAAChqRbQZcn_yyyyyyyyyyyyyyyyy'           # Site key
-  config.private_key = '6Lc6BAAAAAAAAKN3DRm6VA_xxxxxxxxxxxxxxxxx'           # Secret key
-end
-
-# [Optional] Skip Test Env
-Recaptcha.configuration.skip_verify_env.delete(&quot;test&quot;)
-</code></pre>
-
-<p>4) 使用</p>
-
-<pre><code>&lt;%= form_for @foo do |f| %&gt;
-  &lt;%= recaptcha_tags %&gt;
-&lt;% end %&gt;
-</code></pre>
-
+<h3 id="加上-recaptchahttpsgithubcomplataformatecdevisewikihow-to-use-recaptcha-with-devise"><a href="https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise">加上 reCAPTCHA</a></h3>
+<ol>
+<li>
+<p>到 <a href="https://www.google.com/recaptcha/intro/index.html">Google reCAPTCHA</a> 申請</p>
+</li>
+<li>
+<p>Install</p>
+<p>gem &ldquo;recaptcha&rdquo;, :require =&gt; &ldquo;recaptcha/rails&rdquo;</p>
+</li>
+<li>
+<p>config/initializers/recaptcha.rb</p>
+<p>Recaptcha.configure do |config|
+config.public_key  = &lsquo;6Lc6BAAAAAAAAChqRbQZcn_yyyyyyyyyyyyyyyyy&rsquo;           # Site key
+config.private_key = &lsquo;6Lc6BAAAAAAAAKN3DRm6VA_xxxxxxxxxxxxxxxxx&rsquo;           # Secret key
+end</p>
+<h1 id="optional-skip-test-env">[Optional] Skip Test Env</h1>
+<p>Recaptcha.configuration.skip_verify_env.delete(&ldquo;test&rdquo;)</p>
+</li>
+<li>
+<p>使用</p>
+<p>&lt;%= form_for @foo do |f| %&gt;
+&lt;%= recaptcha_tags %&gt;
+&lt;% end %&gt;</p>
+</li>
+</ol>
 <blockquote>
 <p>打開頁面就能看到了, 不需要特別引入 reCAPTCHA 的 <code>&lt;script&gt;</code>, 因為 gem 已經幫你引入了</p>
 </blockquote>
-
-<p>5) 建立 RegistrationsController</p>
-
+<ol start="5">
+<li>建立 RegistrationsController</li>
+</ol>
 <p>users/registrations_controller.rb</p>
-
 <pre><code>class RegistrationsController &lt; Devise::RegistrationsController
     def create
       if verify_recaptcha
@@ -602,119 +488,109 @@ Recaptcha.configuration.skip_verify_env.delete(&quot;test&quot;)
     end
 end
 </code></pre>
-
 <p>routes :</p>
-
 <pre><code>devise_for :users, controllers: {registrations: &quot;users/registrations&quot;}
 </code></pre>
-
-<p>6) 完成! 如果不通過就會以 alert 的方式顯示</p>
-
-<h3 id="oauth-facebook-https-github-com-plataformatec-devise-wiki-omniauth-overview"><a href="https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview">oauth-facebook</a></h3>
-
+<ol start="6">
+<li>完成! 如果不通過就會以 alert 的方式顯示</li>
+</ol>
+<h3 id="oauth-facebookhttpsgithubcomplataformatecdevisewikiomniauth-overview"><a href="https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview">oauth-facebook</a></h3>
 <blockquote>
 <p>最好使用以下的步驟，不要單獨另外自已整合 oauth-facebook，會踩很多雷</p>
 </blockquote>
-
-<p>0) 先將 Facebook 的 App 申請好</p>
-
-<p>1) 安裝</p>
-
-<pre><code>gem 'omniauth-facebook', '~&gt; 3.0.0'
-</code></pre>
-
-<p>2) Migrate</p>
-
-<pre><code>rails g migration add_oamniauth_to_users
-
-add_column :users, :oauth_provider, :string
+<ol start="0">
+<li>
+<p>先將 Facebook 的 App 申請好</p>
+</li>
+<li>
+<p>安裝</p>
+<p>gem &lsquo;omniauth-facebook&rsquo;, &lsquo;~&gt; 3.0.0&rsquo;</p>
+</li>
+<li>
+<p>Migrate</p>
+<p>rails g migration add_oamniauth_to_users</p>
+<p>add_column :users, :oauth_provider, :string
 add_column :users, :oauth_uid, :string
 add_column :users, :oauth_token, :string
-add_column :users, :oauth_expires_at, :datetime
-</code></pre>
-
-<p>3) config/initializers/devise.rb</p>
-
-<pre><code>config.omniauth :facebook, &quot;APP_ID&quot;, &quot;APP_SECRET&quot;
-</code></pre>
-
-<p>4) app/models/user.rb</p>
-
-<pre><code># 在原本的後面加上這兩項
-devise :omniauthable, :omniauth_providers =&gt; [:facebook]
-</code></pre>
-
+add_column :users, :oauth_expires_at, :datetime</p>
+</li>
+<li>
+<p>config/initializers/devise.rb</p>
+<p>config.omniauth :facebook, &ldquo;APP_ID&rdquo;, &ldquo;APP_SECRET&rdquo;</p>
+</li>
+<li>
+<p>app/models/user.rb</p>
+<h1 id="在原本的後面加上這兩項">在原本的後面加上這兩項</h1>
+<p>devise :omniauthable, :omniauth_providers =&gt; [:facebook]</p>
+</li>
+</ol>
 <blockquote>
 <p>devise 會自動加上這兩個 routes ( <code>user_omniauth_authorize_path(provider)</code>, <code>user_omniauth_callback_path(provider)</code> )</p>
 </blockquote>
-
-<p>5) 重新啟動 rails server</p>
-
-<p>6) 加上 Login Link</p>
-
-<pre><code>&lt;%= link_to &quot;Sign in with Facebook&quot;, user_omniauth_authorize_path(:facebook) %&gt;
-</code></pre>
-
+<ol start="5">
+<li>
+<p>重新啟動 rails server</p>
+</li>
+<li>
+<p>加上 Login Link</p>
+<p>&lt;%= link_to &ldquo;Sign in with Facebook&rdquo;, user_omniauth_authorize_path(:facebook) %&gt;</p>
+</li>
+</ol>
 <blockquote>
 <p>Logout 用原本 devise 的登出就行了</p>
 </blockquote>
-
-<p>7) 加上 callback route</p>
-
-<pre><code>devise_for :users, :controllers =&gt; { :omniauth_callbacks =&gt; &quot;users/omniauth_callbacks&quot; }
+<ol start="7">
+<li>
+<p>加上 callback route</p>
+<p>devise_for :users, :controllers =&gt; { :omniauth_callbacks =&gt; &ldquo;users/omniauth_callbacks&rdquo; }</p>
+</li>
+<li>
+<p>建立 <code>app/controllers/users/omniauth_callbacks_controller.rb</code></p>
+<p>class Users::OmniauthCallbacksController &lt; Devise::OmniauthCallbacksController
+def facebook
+# You need to implement the method below in your model (e.g. app/models/user.rb)
+@user = User.from_omniauth(request.env[&ldquo;omniauth.auth&rdquo;])</p>
+<pre><code> if @user.persisted?
+   sign_in_and_redirect @user, :event =&gt; :authentication #this will throw if @user is not activated
+   set_flash_message(:notice, :success, :kind =&gt; &quot;Facebook&quot;) if is_navigational_format?
+ else
+   session[&quot;devise.facebook_data&quot;] = request.env[&quot;omniauth.auth&quot;]
+   redirect_to new_user_registration_url
+ end
 </code></pre>
-
-<p>8) 建立 <code>app/controllers/users/omniauth_callbacks_controller.rb</code></p>
-
-<pre><code>class Users::OmniauthCallbacksController &lt; Devise::OmniauthCallbacksController
-  def facebook
-    # You need to implement the method below in your model (e.g. app/models/user.rb)
-    @user = User.from_omniauth(request.env[&quot;omniauth.auth&quot;])
-
-    if @user.persisted?
-      sign_in_and_redirect @user, :event =&gt; :authentication #this will throw if @user is not activated
-      set_flash_message(:notice, :success, :kind =&gt; &quot;Facebook&quot;) if is_navigational_format?
-    else
-      session[&quot;devise.facebook_data&quot;] = request.env[&quot;omniauth.auth&quot;]
-      redirect_to new_user_registration_url
-    end
-  end
-
-  def failure
-    redirect_to root_path
-  end
+<p>end</p>
+<p>def failure
+redirect_to root_path
 end
-</code></pre>
-
-<p>9) models/user.rb</p>
-
-<pre><code>def self.from_omniauth(auth)
-  where(oauth_provider: auth.provider, oauth_uid: auth.uid).first_or_create do |user|
-    user.email = auth.info.email
-    user.password = Devise.friendly_token[0,20]         # 密碼必填
-    user.confirmed_at = Time.now                        # 直接通過 confirmation
-    user.oauth_token = auth.credentials.token
-    user.oauth_expires_at = Time.at(auth.credentials.expires_at)
-    # user.name = auth.info.name   # assuming the user model has a name
-    # user.image = auth.info.image # assuming the user model has an image
-  end
+end</p>
+</li>
+<li>
+<p>models/user.rb</p>
+<p>def self.from_omniauth(auth)
+where(oauth_provider: auth.provider, oauth_uid: auth.uid).first_or_create do |user|
+user.email = auth.info.email
+user.password = Devise.friendly_token[0,20]         # 密碼必填
+user.confirmed_at = Time.now                        # 直接通過 confirmation
+user.oauth_token = auth.credentials.token
+user.oauth_expires_at = Time.at(auth.credentials.expires_at)
+# user.name = auth.info.name   # assuming the user model has a name
+# user.image = auth.info.image # assuming the user model has an image
 end
-
-def self.new_with_session(params, session)
-  super.tap do |user|
-    if data = session[&quot;devise.facebook_data&quot;] &amp;&amp; session[&quot;devise.facebook_data&quot;][&quot;extra&quot;][&quot;raw_info&quot;]
-      user.email = data[&quot;email&quot;] if user.email.blank?
-    end
-  end
+end</p>
+<p>def self.new_with_session(params, session)
+super.tap do |user|
+if data = session[&ldquo;devise.facebook_data&rdquo;] &amp;&amp; session[&ldquo;devise.facebook_data&rdquo;][&ldquo;extra&rdquo;][&ldquo;raw_info&rdquo;]
+user.email = data[&ldquo;email&rdquo;] if user.email.blank?
 end
-</code></pre>
-
-<p>10) 完成!</p>
-
+end
+end</p>
+</li>
+<li>
+<p>完成!</p>
+</li>
+</ol>
 <h3 id="devise-view-取得適當的錯誤訊息">Devise view 取得適當的錯誤訊息</h3>
-
 <p>以重寄驗證信來說，如果 User 已經 confirm 過再寄驗證信，預設會得到不那麼好看的錯誤訊息</p>
-
 <pre><code>&lt;%= devise_error_messages! %&gt;
 
 顯示 :
@@ -722,163 +598,123 @@ end
 有 1 個錯誤導致 用戶 不能被儲存：
 電子郵箱 已經驗證，請直接登入。
 </code></pre>
-
 <p>但我們僅需要直接跟使用者說原因就好</p>
-
 <pre><code>&lt;%= resource.errors.full_messages_for(:email).first %&gt;
 &lt;%= resource.errors.messages[:email].first if resource.errors.messages.include?(:email) %&gt;
 </code></pre>
-
 <h3 id="未登入情況下觸發-ajax-得到-401">未登入情況下觸發 ajax 得到 401</h3>
-
-<p>如果在未登入的情況下做一些 ajax 的操作，ajax 的 request 可能會因為 <code>authenticate_user</code> 得到 401 且內容為 &ldquo;您需要先登入或註冊後才能繼續。&rdquo;，
+<p>如果在未登入的情況下做一些 ajax 的操作，ajax 的 request 可能會因為 <code>authenticate_user</code> 得到 401 且內容為 &ldquo;您需要先登入或註冊後才能繼續。&quot;，
 為了讓這個訊息可以正確被顯示出來要加上以下的 js</p>
-
 <pre><code>$(document).ajaxError(function (e, xhr, settings) {
     if (xhr.status == 401) {
         alert(xhr.responseText);
     }
 });
 </code></pre>
-
 <h3 id="讓-devise-輸出-json-api">讓 devise 輸出 json api</h3>
-
 <p>要在 <code>application_controller.rb</code> 加上 :</p>
-
 <pre><code>respond_to :html, :json
 </code></pre>
-
 <blockquote>
 <p>在 devise 裡面的 controller e.g. <code>registrations_controller.rb</code> 是沒有用的</p>
 </blockquote>
-
 <h2 id="rolify">Rolify</h2>
-
 <h3 id="安裝-1">安裝</h3>
-
 <p>Gemfile :</p>
-
 <pre><code>gem 'rolify'
 </code></pre>
-
 <p>Init :</p>
-
 <pre><code>rails generate rolify Role User
 rake db:migrate
 </code></pre>
-
 <h3 id="method">Method</h3>
-
 <p>Add role</p>
-
 <pre><code>u1 = User.create({email: &quot;example@gmail.com&quot;, password: &quot;00000000&quot;})
 u1.add_role :root
 </code></pre>
-
 <p>Remove role</p>
-
 <pre><code># rolify 會很聰明的去找 users_roles TABLE 目前這個 role 是不是最後一個 role 正在被使用, 如果是的話, 它不但會刪 users_roles 記錄, 也會去 roles 刪那筆 role
 u.remove_role(:admin)
 </code></pre>
-
 <p>Has role?</p>
-
 <pre><code>u1.has_role? :admin
  =&gt; true
 </code></pre>
-
 <p>Find all users with specific role</p>
-
 <pre><code>User.with_role(:admin)
 </code></pre>
-
 <p>Find all users with A role or B role</p>
-
 <pre><code>User.with_any_role(:user, :admin)
 </code></pre>
-
 <p>Find all users with A role and B role</p>
-
 <pre><code>User.with_all_roles(:user, :admin)
 </code></pre>
-
 <h2 id="cancancan">Cancancan</h2>
-
 <h3 id="安裝-2">安裝</h3>
-
 <p>Gemfile</p>
-
 <pre><code>gem 'cancancan'
 </code></pre>
-
 <p>Init :</p>
-
 <pre><code>rails generate cancan:ability
 rake db:migrate
 </code></pre>
-
 <h3 id="example">Example</h3>
+<ol>
+<li>
+<p>app/models/ability.rb :</p>
+<p>class Ability
+include CanCan::Ability</p>
+<p>def initialize(user)</p>
+<pre><code> if user.blank?
 
-<p>1) app/models/ability.rb :</p>
+   cannot :manage, :all
 
-<pre><code>class Ability
-  include CanCan::Ability
+ elsif user.has_role?(:root) || user.has_role?(:admin)
 
-  def initialize(user)
+   can :manage, :all
 
-    if user.blank?
+ elsif user.has_role?(:translator)
 
-      cannot :manage, :all
+   can :index, Post
 
-    elsif user.has_role?(:root) || user.has_role?(:admin)
+ elsif user.has_role?(:user)
 
-      can :manage, :all
-
-    elsif user.has_role?(:translator)
-
-      can :index, Post
-
-    elsif user.has_role?(:user)
-
-      cannot :index, Post
-    end
-
-  end
-end
+   cannot :index, Post
+ end
 </code></pre>
-
+<p>end
+end</p>
+</li>
+</ol>
 <blockquote>
 <p>這個 user 其實就是 devise 提供你在 controller 使用的 current_user</p>
 </blockquote>
-
-<p>2) app/controllers/application_controller.rb</p>
-
-<pre><code>rescue_from CanCan::AccessDenied do |exception|
-  redirect_to root_url, :alert =&gt; exception.message
-end
-</code></pre>
-
-<p>3) app/controllers/posts_controller.rb</p>
-
-<pre><code>load_and_authorize_resource
-</code></pre>
-
-<p>4) Check ability in view</p>
-
-<pre><code>&lt;% if can? :index, Post %&gt;
-  &lt;%= link_to 'Posts', posts_path, class: 'btn btn-success' %&gt;
-&lt;% end %&gt;
-</code></pre>
-
-<p>4) 測試</p>
-
+<ol start="2">
+<li>
+<p>app/controllers/application_controller.rb</p>
+<p>rescue_from CanCan::AccessDenied do |exception|
+redirect_to root_url, :alert =&gt; exception.message
+end</p>
+</li>
+<li>
+<p>app/controllers/posts_controller.rb</p>
+<p>load_and_authorize_resource</p>
+</li>
+<li>
+<p>Check ability in view</p>
+<p>&lt;% if can? :index, Post %&gt;
+&lt;%= link_to &lsquo;Posts&rsquo;, posts_path, class: &lsquo;btn btn-success&rsquo; %&gt;
+&lt;% end %&gt;</p>
+</li>
+<li>
+<p>測試</p>
+</li>
+</ol>
 <ul>
 <li>如果使用 user 的帳號不會看到 Post button, 即使打網址到 /posts, 也被導到首頁, 並顯示 <code>You are not authorized to access this page.</code></li>
 <li>如果使用 translator, admin, admin 可正常看到 Post button, 也能正常到 /posts</li>
 </ul>
-
 <h3 id="action">Action</h3>
-
 <ul>
 <li><code>:manage</code> : 這個 controller 內所有的 action</li>
 <li><code>:read</code> : <code>:index</code> 和 <code>:show</code></li>
@@ -889,21 +725,15 @@ end
 <li><code>:qq</code> : 也可指定非 restful 的 action, 只要是 controller 下的 action, 都能限制</li>
 <li><code>:all</code> : 所有 object (resource), 也就是 model name</li>
 </ul>
-
 <p>也能這樣寫 :</p>
-
 <pre><code>can :read, [ Post, Comment ]
 can [ :create, :update ], [ Post, Comment ]
 </code></pre>
-
 <h3 id="alias-action">Alias action</h3>
-
 <pre><code>alias_action :update, :destroy, :to =&gt; :modify
 can :modify, Comment
 </code></pre>
-
 <p>or method</p>
-
 <pre><code>protected
 
 def basic_read_only
@@ -912,11 +742,8 @@ def basic_read_only
   can :search,  Post
 end
 </code></pre>
-
 <h3 id="ability">Ability</h3>
-
 <p>只能編輯自己的文章</p>
-
 <pre><code>can :update, Post do |post|
   (post.user_id == user.id)
 end
@@ -924,35 +751,26 @@ end
 # 也可以這樣寫
 can :update, Post, user_id: user.id
 </code></pre>
-
 <h3 id="view-注意傳入的物件">View 注意傳入的物件</h3>
-
 <p>是否能建立 Post</p>
-
 <pre><code>&lt;% if can? :create, Post %&gt;
   &lt;%= link_to 'New Post', new_post_path, class: 'btn btn-success' %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <blockquote>
 <p>傳入的是 <code>Post</code></p>
 </blockquote>
-
 <p>只能編輯自己的 Post</p>
-
 <pre><code>&lt;% @posts.each do |post| %&gt;
     &lt;% if can? :update, post %&gt;
       &lt;%= link_to 'Edit', edit_post_path(post), class: 'btn btn-warning btn-xs' %&gt;
     &lt;% end %&gt;
 &lt;% end %&gt;
 </code></pre>
-
 <blockquote>
 <p>注意! each 裡傳入的是 <code>post</code> 而不是 <code>Post</code>, 否則 view 會與 ability.rb 的 <code>can :update, Post, user_id: user.id</code> 不一致</p>
 </blockquote>
-
 <h3 id="捕捉-access-deny-error">捕捉 Access Deny Error</h3>
-
 <pre><code>rescue_from CanCan::AccessDenied do |exception|
   flash[:warning] = exception.message
   redirect_to root_path
@@ -960,33 +778,20 @@ end
 
 raise CanCan::AccessDenied.new(&quot;You are not authorized to perform this action!&quot;, :custom_action, Project)
 </code></pre>
-
-<h3 id="測試將-post-controller-rb-的-load-and-authorize-resource-拿掉">測試將 post_controller.rb 的 <code>load_and_authorize_resource</code> 拿掉</h3>
-
+<h3 id="測試將-post_controllerrb-的-load_and_authorize_resource-拿掉">測試將 post_controller.rb 的 <code>load_and_authorize_resource</code> 拿掉</h3>
 <p>view 仍然會依照 ability.rb 的設定顯示或不顯示,</p>
-
 <p>如果權限不夠, 直接去 /posts 也是能正常瀏覽,</p>
-
 <p>但如果將 <code>load_and_authorize_resource</code> 加回來,</p>
-
 <p>就會導致 Access Deny 了, 符合預期結果,</p>
-
 <p>ability.rb 設定完一定要在 post_controller.rb 加上 <code>load_and_authorize_resource</code> 才能真正起到權限管理作用</p>
-
 <h3 id="authorization-for-namespaced-controllers">Authorization for Namespaced Controllers</h3>
-
 <p>controllers/dashboard/dashboard_controller.rb</p>
-
 <pre><code>class Dashboard::DashboardController &lt; ApplicationController
 </code></pre>
-
 <p>controllers/dashboard/log_controller.rb</p>
-
 <pre><code>class Dashboard::LogController &lt; Dashboard::DashboardController
 </code></pre>
-
 <p>application_controller.rb</p>
-
 <pre><code>private
 
 def current_ability
@@ -997,9 +802,7 @@ def current_ability
   Ability.new(current_user, controller_namespace)
 end
 </code></pre>
-
 <p>ability.rb</p>
-
 <pre><code>class Ability
   include CanCan::Ability
 
@@ -1011,71 +814,46 @@ end
   end
 end
 </code></pre>
-
 <h3 id="uninitialized-constant-welcome-錯誤"><code>uninitialized constant Welcome</code> 錯誤</h3>
-
 <p>load_and_authorize_resource 會自動使用 RESTful style 驗證 Controller 及依 Controller Name 去找對應的 Model</p>
-
 <p>會發生這原因是沒有 Welcome model</p>
-
 <p>很多情況我們的 Controller 可能不會有對應的 model,</p>
-
 <p>所以我們可以用以下兩種方式達到 authorize 這個 controller</p>
-
 <h3 id="1-call-authorize">1) Call authorize</h3>
-
 <p>這個 controller 不要寫 <code>authorize_resource</code></p>
-
 <p>直接在 action 寫</p>
-
 <p>def roll_logs
-    authorize! :roll, :logs
-  end</p>
-
+authorize! :roll, :logs
+end</p>
 <p>在 Ability(models/ability.rb) 加上</p>
-
 <pre><code>can :roll, :logs if user.admin?
 </code></pre>
-
 <blockquote>
 <p>authorize 可以通過兩個 symbol 給予這個 authorize 的行為命名而不需要跟 controller 或 model name 一樣</p>
 </blockquote>
-
 <h3 id="2-讓-ability-不要去找它的-model">2) 讓 Ability 不要去找它的 model</h3>
-
 <pre><code>class ToolsController &lt; ApplicationsController
   authorize_resource class: false
   def show
   end
 end
 </code></pre>
-
 <p>它會自動地去 call authorize!(:show, :tool)</p>
-
 <p>在 Ability 加上 :</p>
-
 <pre><code>can :show, :tool if user.admin?
 </code></pre>
-
 <h3 id="其他">其他</h3>
-
 <p>預設 resource 與 Controller 同名</p>
-
 <p>load_and_authorize_resource = <code>load_resource</code> + <code>authorize_resource</code></p>
-
 <p><code>load_resource</code> 會自動在 Action 裡執行對應的 instance</p>
-
 <pre><code>new :
     @post = Post.new`
 
 show :
     @post = Post.find(params[:id])
 </code></pre>
-
 <p><code>authorize_resource</code> 的 resource 與 <code>models/ability.rb</code> 設定的相同, ex: <code>can :manage, Post</code></p>
-
 <p>如果是 PostController 預設的 resource 就是 Post, instance 也就是 <code>@post</code>, 也可以另外指定</p>
-
 <pre><code>authorize_resource :message
 
 can :manage, Message

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Jack&#39;s Note</title>
@@ -6,11 +6,7 @@
     <description>Recent content in Categories on Jack&#39;s Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Jan 2019 11:02:08 +0800</lastBuildDate>
-    
-	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 25 Jan 2019 11:02:08 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>linux</title>
       <link>/categories/linux/</link>
@@ -219,15 +215,6 @@
     </item>
     
     <item>
-      <title>c/c&#43;&#43;</title>
-      <link>/categories/c/c&#43;&#43;/</link>
-      <pubDate>Sun, 09 Mar 2014 23:06:12 +0800</pubDate>
-      
-      <guid>/categories/c/c&#43;&#43;/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>windows</title>
       <link>/categories/windows/</link>
       <pubDate>Tue, 17 Dec 2013 23:16:00 +0000</pubDate>
@@ -323,6 +310,15 @@
       <pubDate>Wed, 16 Jan 2013 18:10:00 +0000</pubDate>
       
       <guid>/categories/regex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>c/c&#43;&#43;</title>
+      <link>/categories/c/c&#43;&#43;/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/c/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
