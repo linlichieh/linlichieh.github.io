@@ -113,8 +113,12 @@ Mac : https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz
 [2] Install Linux : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
 Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
 如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
-[3] Create essential folders 在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin
-src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方 pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它 bin 是程式編譯後產生的 binary 執行檔 .</description>
+[3] Create essential folders 在家目錄下建立 go, 將外部套件與原始程式分離
+.bashrc(linux) / .bash_profile(mac) :
+export GOROOT=/usr/local/go export PATH=$PATH:$GOROOT/bin:$GOPATH/bin Linux exec : source ~/.bashrc
+Mac exec : source ~/.bash_profile
+解壓縮完且 .bashrc 設定好以上就算安裝完成了, 可用 go version 測試是否安裝成功
+Upgrade go version 移除 /usr/local/go 將官網載下來的 go 解壓縮到 /usr/local Done!</description>
     </item>
     
     <item>

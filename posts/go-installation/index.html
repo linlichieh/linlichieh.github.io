@@ -32,12 +32,7 @@
 <p>如果要重安裝直接 remove <code>/usr/local/go</code> 再執行上面指令就可以了</p>
 </blockquote>
 <h3 id="3-create-essential-folders">[3] Create essential folders</h3>
-<p>在家目錄下建立 mygo, 並且將 GOPATH 指向這裡, 這是 golang 一個很重要的設定, 可以將外部套件與原始程式分離, 你還必須在 mygo 下建立 3 個資料夾, src、pkg 及 bin</p>
-<ul>
-<li>src 是放置外部套件(go get github.com/xx/cc 會載至這裡)及開發程式的地方</li>
-<li>pkg 是程式編譯時產生的 .a 檔, 一般開發可以不用理會它</li>
-<li>bin 是程式編譯後產生的 binary 執行檔</li>
-</ul>
+<p>在家目錄下建立 go, 將外部套件與原始程式分離</p>
 <p>.bashrc(linux) / .bash_profile(mac) :</p>
 <pre><code>export GOROOT=/usr/local/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
