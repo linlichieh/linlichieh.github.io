@@ -26,6 +26,24 @@
     </item>
     
     <item>
+      <title>algorithms</title>
+      <link>/categories/algorithms/</link>
+      <pubDate>Sat, 20 May 2017 18:56:16 +0800</pubDate>
+      
+      <guid>/categories/algorithms/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>data-structures</title>
+      <link>/categories/data-structures/</link>
+      <pubDate>Sat, 20 May 2017 18:53:13 +0800</pubDate>
+      
+      <guid>/categories/data-structures/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>golang</title>
       <link>/categories/golang/</link>
       <pubDate>Sun, 06 Nov 2016 00:12:00 +0800</pubDate>

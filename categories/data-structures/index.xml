@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>data-structures on Jack&#39;s Note</title>
+    <link>/categories/data-structures/</link>
+    <description>Recent content in data-structures on Jack&#39;s Note</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 20 May 2017 18:53:13 +0800</lastBuildDate><atom:link href="/categories/data-structures/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Structures</title>
+      <link>/posts/data-structures/</link>
+      <pubDate>Sat, 20 May 2017 18:53:13 +0800</pubDate>
+      
+      <guid>/posts/data-structures/</guid>
+      <description>時間複雜度 O(n), Big O notation 用來比較不同演算法花多少時間的方法
+變因 除法比加法慢一點 記憶體存取區塊不同也有差異 測試規模大的時候能測的比較準確 操作次數的量級重要於精確的值 計算 假設所有操作都是一樣的時間 (加減乘除/取餘數/存取記憶體/判斷運算子) 假設演算法 3n^2 + 2n + 7, 電腦每秒執行 100萬次, n=2000, 需要 12,004,007 次的加法操作才能解決此問題, 此電腦需要 12 秒才能跑完 一般電腦是 2,000~8,000萬次/秒 Big-O : O(f(n)) Little-o : o(f(n)) n 是輸入的規模 常見的幾種時間複雜度與演算法 O(n!) &amp;gt; O(2^n) &amp;gt; O(n^2) &amp;gt; O(nlogn) &amp;gt; O(n) &amp;gt; O(logn) &amp;gt; O(1)
+O(1) constant 陣列讀取 (已經知道要從陣列取出哪一個 index) O(logn) logarithmic an array storing 1M items, will do 19 comparison with binary search 二分搜尋 (從小到大的排列裡面每次搜尋都取中間值) O(n) linear 簡易搜尋 (搜尋時從頭跑到尾) for loop an array storing 1 to 10, linear search String[] copy = new String[names.</description>
+    </item>
+    
+  </channel>
+</rss>

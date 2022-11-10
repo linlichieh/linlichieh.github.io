@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Algorithms | Jack&#39;s Note</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/algorithms/">
+<link rel="alternate" type="application/rss+xml" href="" title="Jack&#39;s Note">
+
+<header>
+  
+    <a href="/" class="title">Jack&#39;s Note</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Algorithms</h1>
+    <time datetime="2017-05-20T18:56:16&#43;08:00">May 20, 2017</time>
+  </header>
+  <h1 id="search">search</h1>
+<h3 id="depth-first-search-dfs-on-a-binary-tree">Depth First Search (DFS) on a Binary tree</h3>
+<p>與 BFS 一樣是用來看這個點有沒有辦法到另一個點或是否某個點有存在在 graph 裡 (如果所有點都有連接)</p>
+<ul>
+<li>root node <code>&gt;</code> 左節點; root node <code>&lt;</code> 右節點</li>
+<li>原理是先往左再往右找, 從深找到淺</li>
+<li>深到沒有子 node 再&quot;回頭&quot;換右邊</li>
+<li>如果最後回到 root node (最上層) 就代表要找的 node 沒有存在</li>
+</ul>
+<h3 id="binary-search">binary search</h3>
+<ul>
+<li>必須是已經排序過的陣列</li>
+<li>每一次取中間位置的值, 比對大小再向左向右找</li>
+<li>最佳時間複雜度：O(1)</li>
+<li>平均時間複雜度：O(log n)</li>
+<li>最差時間複雜度：O(log n)</li>
+<li>空間複雜度：O(1)</li>
+</ul>
+<h1 id="sorting">sorting</h1>
+<h3 id="sorting-algorithm">Sorting algorithm</h3>
+<ul>
+<li>SelectionSort</li>
+<li>InsertionSort</li>
+<li>BubbleSort</li>
+<li>MergeSort</li>
+<li>QuickSort</li>
+</ul>
+<h3 id="insertion-sorting">Insertion sorting</h3>
+<p>兩兩比較及交換, 並且比前面小要移到最前面</p>
+<pre><code> *        # start from index=1
+524613
+  *
+254613    # 2,5
+   *
+245613    # 4,5
+    *
+245613
+     *
+124563    # 1,6  1,5  1,4  1,2   將 1 換到最前面
+
+124563    # 3,6  3,5  3,4
+</code></pre>
+<ul>
+<li>Each step is O(n) swaps/compares</li>
+<li>Total: O(n2)</li>
+<li>compares are more expensive than swaps</li>
+</ul>
+<p>比較改用 binary search on A[0:i-1] in O(log i) time. O(nlog n) compares</p>
+<h3 id="merge-sort">Merge sort</h3>
+<p>步驟</p>
+<ol>
+<li>size n</li>
+<li>分成 2 array of size n/2</li>
+<li>sorted array of size n/2</li>
+<li>合回來 sorted array of size n</li>
+</ol>
+<p>合併兩個已 sorted array, 先比較兩邊最小的, 再依大小填入 array.</p>
+<p>Complexity T(n) = C1 (divie) + 2T(n/2) (recursive part) + C*N (merge part)</p>
+<h1 id="horners-method">Horner&rsquo;s Method</h1>
+<p>polynomial</p>
+<pre><code>4x^3 + 5x^2 + 7x + 9
+</code></pre>
+<p>can be written in the &ldquo;nested multiplication&rdquo; form:</p>
+<pre><code>((4x+5) * x + 7) * x + 9
+</code></pre>
+<h1 id="interview">Interview</h1>
+<h3 id="top-6-coding-interview-concepts">Top 6 Coding Interview Concepts</h3>
+<ul>
+<li>Heaps
+<ul>
+<li>min-heaps</li>
+<li>max-heaps</li>
+<li>K closest points to origin</li>
+<li>network delay time</li>
+<li>min cost to connect all points</li>
+</ul>
+</li>
+<li>sliding window
+<ul>
+<li>Best time to buy/sell a stock</li>
+</ul>
+</li>
+<li>Binary search
+<ul>
+<li>Guess number higher or lower</li>
+<li>search a 2-D matrix</li>
+<li>binary search</li>
+</ul>
+</li>
+<li>DFS &amp; BFS
+<ul>
+<li>usually O(V+E), time &amp; space complexity</li>
+<li>number of islands</li>
+</ul>
+</li>
+<li>Recursion
+<ul>
+<li>includes Trees, Graphs, Backtracking, DP</li>
+<li>N-queens</li>
+</ul>
+</li>
+<li>Hash maps
+<ul>
+<li>Two sum</li>
+</ul>
+</li>
+</ul>
+<h3 id="the-10-most-important-concepts-for-coding-interviews">The 10 Most Important Concepts For Coding Interviews</h3>
+<ul>
+<li>logarithum</li>
+<li>DFS/BFS</li>
+<li>binary search</li>
+<li>sliding window</li>
+<li>recursion</li>
+<li>inverting a binary tree and reverting a linked list</li>
+<li>suffix trees</li>
+<li>heaps</li>
+<li>dynamic programming</li>
+<li>sorting algorithum</li>
+</ul>
+<h4 id="ref">ref</h4>
+<ul>
+<li><a href="https://www.interviewcake.com/article/java/big-o-notation-time-and-space-complexity">Big O Notation</a></li>
+<li><a href="https://goo.gl/mKYH19">初學者學演算法｜從時間複雜度認識常見演算法（一）</a></li>
+</ul>
+
+</article>
+
+
+
+</html>
