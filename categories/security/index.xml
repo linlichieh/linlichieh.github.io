@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>security on Note</title>
+    <title>security on Software</title>
     <link>/categories/security/</link>
-    <description>Recent content in security on Note</description>
+    <description>Recent content in security on Software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 05 Dec 2014 11:52:58 +0800</lastBuildDate><atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />

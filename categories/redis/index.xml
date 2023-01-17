@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>redis on Note</title>
+    <title>redis on Software</title>
     <link>/categories/redis/</link>
-    <description>Recent content in redis on Note</description>
+    <description>Recent content in redis on Software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 03 Sep 2014 12:36:07 +0800</lastBuildDate><atom:link href="/categories/redis/index.xml" rel="self" type="application/rss+xml" />
