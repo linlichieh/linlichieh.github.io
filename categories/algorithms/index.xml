@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>algorithms on Jack&#39;s Note</title>
+    <title>algorithms on Note</title>
     <link>/categories/algorithms/</link>
-    <description>Recent content in algorithms on Jack&#39;s Note</description>
+    <description>Recent content in algorithms on Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 20 May 2017 18:56:16 +0800</lastBuildDate><atom:link href="/categories/algorithms/index.xml" rel="self" type="application/rss+xml" />

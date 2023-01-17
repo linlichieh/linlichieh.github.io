@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>raspberryPi on Jack&#39;s Note</title>
+    <title>raspberryPi on Note</title>
     <link>/categories/raspberrypi/</link>
-    <description>Recent content in raspberryPi on Jack&#39;s Note</description>
+    <description>Recent content in raspberryPi on Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 16 Dec 2014 13:02:45 +0800</lastBuildDate><atom:link href="/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />

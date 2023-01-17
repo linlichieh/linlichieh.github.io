@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>nginx on Jack&#39;s Note</title>
+    <title>nginx on Note</title>
     <link>/categories/nginx/</link>
-    <description>Recent content in nginx on Jack&#39;s Note</description>
+    <description>Recent content in nginx on Note</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 23 May 2014 10:59:34 +0800</lastBuildDate><atom:link href="/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
