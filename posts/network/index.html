@@ -79,13 +79,15 @@ When server recevied delayed packet to ask for closing connection, server can us
 been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from messing up the new connection from the same address.</p>
 <p>TIME_WAIT might not hold a FD, it only consumes a local port.</p>
 <h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
-<p>It is a function to track connections managed by kernel. It might be only used in haproxy server.
-If it is full, it won&rsquo;t accept new connection.
-There are 3 ways to fix it.</p>
+<p>It is a feature to allow kernel to keep track of connections.
+It might be only used in haproxy server.
+When NAT or firewall work, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
+so that the packets can be directed to the right end.</p>
+<p>Note: If it is full, it won&rsquo;t accept new connection. There are 3 ways to fix it:</p>
 <ul>
-<li>Increase the maximum number of nf_conntrack.</li>
-<li>Reduce the timeout of connection being tracked.</li>
 <li>Disable connection track. (recommend)</li>
+<li>Reduce the timeout of connection being tracked</li>
+<li>Increase the maximum of connection tracking table</li>
 </ul>
 <h2 id="http--https">HTTP / HTTPS</h2>
 <h3 id="keep-alive-1">Keep-alive</h3>
