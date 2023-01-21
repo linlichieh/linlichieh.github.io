@@ -81,11 +81,11 @@ been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from mess
 <h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
 <p>It is a feature to allow kernel to keep track of connections.
 It might be only used in haproxy server.
-When NAT or firewall work, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
-so that the packets can be directed to the right end.</p>
+When NAT or firewall works, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
+so that the packets can be sent to the right end.</p>
 <p>Note: If it is full, it won&rsquo;t accept new connection. There are 3 ways to fix it:</p>
 <ul>
-<li>Disable connection track. (recommend)</li>
+<li>Disable connection track (recommend)</li>
 <li>Reduce the timeout of connection being tracked</li>
 <li>Increase the maximum of connection tracking table</li>
 </ul>
