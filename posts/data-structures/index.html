@@ -48,6 +48,7 @@
 </li>
 <li>O(logn) logarithmic
 <ul>
+<li>base is 2</li>
 <li>an array storing 1M items, will do 19 comparison with binary search</li>
 <li>二分搜尋 (從小到大的排列裡面每次搜尋都取中間值)</li>
 </ul>
@@ -336,9 +337,10 @@ int main() {
     Node* head;     // 紀錄起點
 }
 </code></pre>
-<h3 id="雙向">雙向</h3>
+<h3 id="雙向-doubly-linked-list">雙向 (doubly linked list)</h3>
 <ul>
 <li>每個 node 紀錄上一個跟下一個的位置</li>
+<li>跟單向比的好處是它可以 start from the end and go backward</li>
 </ul>
 <h3 id="環狀">環狀</h3>
 <ul>

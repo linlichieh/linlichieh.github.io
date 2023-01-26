@@ -93,7 +93,7 @@ root node &amp;gt; 左節點; root node &amp;lt; 右節點 原理是先往左再
       <guid>/posts/data-structures/</guid>
       <description>時間複雜度 O(n), Big O notation 用來比較不同演算法花多少時間的方法
 變因 除法比加法慢一點 記憶體存取區塊不同也有差異 測試規模大的時候能測的比較準確 操作次數的量級重要於精確的值 計算 假設所有操作都是一樣的時間 (加減乘除/取餘數/存取記憶體/判斷運算子) 假設演算法 3n^2 + 2n + 7, 電腦每秒執行 100萬次, n=2000, 需要 12,004,007 次的加法操作才能解決此問題, 此電腦需要 12 秒才能跑完 一般電腦是 2,000~8,000萬次/秒 Big-O : O(f(n)) Little-o : o(f(n)) n 是輸入的規模 常見的幾種時間複雜度與演算法 O(n!) &amp;gt; O(2^n) &amp;gt; O(n^2) &amp;gt; O(nlogn) &amp;gt; O(n) &amp;gt; O(logn) &amp;gt; O(1)
-O(1) constant 陣列讀取 (已經知道要從陣列取出哪一個 index) O(logn) logarithmic an array storing 1M items, will do 19 comparison with binary search 二分搜尋 (從小到大的排列裡面每次搜尋都取中間值) O(n) linear 簡易搜尋 (搜尋時從頭跑到尾) for loop an array storing 1 to 10, linear search String[] copy = new String[names.</description>
+O(1) constant 陣列讀取 (已經知道要從陣列取出哪一個 index) O(logn) logarithmic base is 2 an array storing 1M items, will do 19 comparison with binary search 二分搜尋 (從小到大的排列裡面每次搜尋都取中間值) O(n) linear 簡易搜尋 (搜尋時從頭跑到尾) for loop an array storing 1 to 10, linear search String[] copy = new String[names.</description>
     </item>
     
     <item>
@@ -1145,14 +1145,13 @@ cd C:\Windows\system32 ping www.google.com.tw 解決方法2 :
       <pubDate>Tue, 01 Oct 2013 22:21:00 +0000</pubDate>
       
       <guid>/posts/frontend/</guid>
-      <description>SEO 搜尋引擎將在子網域的網站視為完全不同的站
-而將子目錄視為一個已存在的網站組成的一部份
-加上 rich snippet 這是一個提供額外的資訊當在搜尋引擎列出結果時, 然候你要列出來的資訊有很多型態, 可能是你的產品, 額外想要顯示的售價等等
-型態被定義在 schema.org, 你必須先確定你想顯示的資料型態為何, 再按照這個型態所定義的標籤屬性
-例如 Product, 格式就要參考 schema.org/Product, code 請參考 Google 範例
-如何加上? 在 body 或 header 任意地方加上 schema 規定的屬性 即可, 可以利用 google - Structured Data Testing Tool 幫忙檢查你要加上的是否被正確分析 :
-&amp;lt;div itemscope itemtype=&amp;quot;http://schema.org/Book&amp;quot;&amp;gt; &amp;lt;span itemprop=&amp;quot;name&amp;quot;&amp;gt; Inbound Marketing and SEO: Insights from the Moz Blog&amp;lt;/span&amp;gt; &amp;lt;span itemprop=&amp;quot;author&amp;quot;&amp;gt;Rand Fishkin&amp;lt;/span&amp;gt; &amp;lt;/div&amp;gt; 可參考 此站
-覆寫網站所有字型 html * { font-family: &#39;Arial Black&#39;, &#39;Arial&#39;, &amp;quot;新細明體&amp;quot;, &#39;PMingLiU&#39;, &#39;sans-serif&#39;; } PMingLiU : 新細明體的英文版名稱 sans-serif : 無襯線字 base64 圖檔 &amp;lt;img src=&amp;quot;data:image/jpeg;base64,/9j/4AAQSknK2h//2Q==&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt; Preview image and get actual width and height HTML :</description>
+      <description>How Javascript works (This example is from udemy)
+There are 4 pillars.
+JS
+Memory Heap Call stack browser Web APIs (DOM document, AJAX XMLHttpRequest, Timeout setTimeout) Event loop (check) -&amp;gt; callback queue (onClick, onLoad, onDone) example code:
+console.log(&#39;1); setTimeout(() =&amp;gt; { console.log(&#39;2&#39;); }, 2000) console.log(3); result:
+1 3 undefined 2 The steps:
+console.log(&#39;1&#39;) goes to CALL STACK and gets run setTimeout() goes to CALL STACK and gets run setTimeout() isn&amp;rsquo;t part of Js and pops out of CALL STACK then goes to WEB API WEB API starts a timer with 2 seconds console.</description>
     </item>
     
     <item>

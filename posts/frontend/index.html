@@ -20,7 +20,45 @@
     <h1>Frontend Basics HTML / CSS / JS</h1>
     <time datetime="2013-10-01T22:21:00Z">October 01, 2013</time>
   </header>
-  <h2 id="seo">SEO</h2>
+  <h2 id="how-javascript-works">How Javascript works</h2>
+<p>(This example is from udemy)</p>
+<p>There are 4 pillars.</p>
+<p>JS</p>
+<ul>
+<li>Memory Heap</li>
+<li>Call stack
+browser</li>
+<li>Web APIs (DOM document, AJAX XMLHttpRequest, Timeout setTimeout)</li>
+<li>Event loop (check) -&gt; callback queue (onClick, onLoad, onDone)</li>
+</ul>
+<p>example code:</p>
+<pre><code>console.log('1);
+setTimeout(() =&gt; {
+    console.log('2');
+}, 2000)
+console.log(3);
+</code></pre>
+<p>result:</p>
+<pre><code>1
+3
+undefined
+2
+</code></pre>
+<p>The steps:</p>
+<ol>
+<li><code>console.log('1')</code> goes to CALL STACK and gets run</li>
+<li><code>setTimeout()</code> goes to CALL STACK and gets run</li>
+<li><code>setTimeout()</code> isn&rsquo;t part of Js and pops out of CALL STACK then goes to WEB API</li>
+<li>WEB API starts a timer with 2 seconds</li>
+<li><code>console.log('3')</code> goest to CALL STACK and gets run</li>
+<li>After 2 seconds, <code>setTimeout()</code> is done and pops out of WEB API. <code>callback()</code> is added into CALLBACK QUEUE</li>
+<li>EVENT LOOP keeps track CALLBACK QUEUE, found <code>callback()</code> then put it into CALL STACK</li>
+<li><code>callback()</code> goest to CALL STACK and gets run</li>
+<li><code>console.log('2')</code> goets to CALL STACK and gets run</li>
+<li><code>console.log('2')</code> pops out of CALL STACK</li>
+<li><code>callback()</code> pops out of CALL STACK</li>
+</ol>
+<h2 id="seo">SEO</h2>
 <p>搜尋引擎將在子網域的網站視為完全不同的站</p>
 <p>而將子目錄視為一個已存在的網站組成的一部份</p>
 <h3 id="加上-rich-snippet">加上 rich snippet</h3>
