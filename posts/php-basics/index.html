@@ -790,6 +790,16 @@ static =&gt; child
 </code></pre>
 <p>self only use Parent&rsquo;s variable, static can override the parent&rsquo;s variable</p>
 <h2 id="troubleshootings">Troubleshootings</h2>
+<h3 id="fix-for-upgrading-php-72-to-74">Fix for upgrading php 7.2 to 7.4</h3>
+<p>PHP7.2 treating a non array as an array worked within isset, but in 7.4 it errors with this message:</p>
+<pre><code>find . -name &quot;*.php&quot; -exec sed -i '' 's/\(isset(\($[^\[]*\)\[['&quot;'&quot;'|&quot;][^'&quot;'&quot;'&quot;]*['&quot;'&quot;'|&quot;]\])\)/is_array(\2) \&amp;\&amp; \1/' {} \;
+</code></pre>
+<p>will change</p>
+<pre><code>$error = isset($body['error']) ? $body['error'] : '';
+</code></pre>
+<p>To</p>
+<pre><code>$error = is_array($body) &amp;&amp; isset($body['error']) ? $body['error'] : '';
+</code></pre>
 <h3 id="mysql-回覆-too-many-connections-錯誤">MySQL 回覆 Too many connections 錯誤</h3>
 <p>發生原因是 request 量太大，並且操作 MySQL 造成 MySQL server 無法處理他同時最大能處理的連線數所導致的</p>
 <p>可以查看目前與 MySQL 建立的 connections 數量</p>
