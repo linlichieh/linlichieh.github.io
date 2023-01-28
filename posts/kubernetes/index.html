@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Kubernetes | Software</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/kubernetes/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software">
+
+<header>
+  
+    <a href="/" class="title">Software</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Kubernetes</h1>
+    <time datetime="2023-01-28T15:10:34&#43;08:00">January 28, 2023</time>
+  </header>
+  <h1 id="features">Features</h1>
+<ul>
+<li>CI/CD</li>
+<li>containerized infrastructure</li>
+<li>Auto-scalable infrastructure</li>
+<li>Environment consistency across dev/testing/prod</li>
+<li>Loosely coupled infrastructure</li>
+</ul>
+<h1 id="main-components">Main components</h1>
+<ul>
+<li>Master components (control plane)
+<ul>
+<li>etcd
+<ul>
+<li>stores the configuration information that can be used by each node</li>
+<li>is accessible only by API server</li>
+<li>kubernetes backing store</li>
+</ul>
+</li>
+<li>API Server
+<ul>
+<li>exposes kubernetes API</li>
+<li>provides all the operation on cluster via API</li>
+<li>entrypoint to k8s cluster</li>
+</ul>
+</li>
+<li>Controller Manager
+<ul>
+<li>regulates the state of cluster and performs a task</li>
+<li>runs in nonterminating loop and is responsible for collecting and sending info to API server</li>
+<li>keeps track of what&rsquo;s happening in the cluster</li>
+<li>handles multiple nodes</li>
+</ul>
+</li>
+<li>Scheduler
+<ul>
+<li>distributes the workload</li>
+<li>tracks utilization of working load on cluster nodes</li>
+<li>places the workload on which resources are available and accept the workload</li>
+<li>allocates pods to available nodes</li>
+<li>ensures pods placement</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Node (multiple) components
+<ul>
+<li>Docker
+<ul>
+<li>runs the encapsulated application containers</li>
+</ul>
+</li>
+<li>Kubelet Service
+<ul>
+<li>relays information to and from control plane service</li>
+<li>interacts with etcd store to read configuration details and write values</li>
+<li>communicates with the master component to receive commands and work</li>
+<li>maintains the state of work and the node server</li>
+<li>manages network rules, port forwarding, etc.</li>
+</ul>
+</li>
+<li>Kubernetes Proxy Service
+<ul>
+<li>makes services available to the external host</li>
+<li>forwards the request to correct containers and is capable of performing primitive load balancing</li>
+<li>manages pods on node, volumes, secrets, creating new containers’ health checkup, etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="more-components-explaination">More components explaination</h1>
+<ul>
+<li>Node
+<ul>
+<li>TODO <a href="https://www.youtube.com/watch?v=s_o8dwzRlu4">https://www.youtube.com/watch?v=s_o8dwzRlu4</a> 9:49</li>
+<li>can be physical, VM or a cloud instance</li>
+</ul>
+</li>
+<li>Service
+<ul>
+<li>can be defined as a logical set of pods</li>
+<li>an abstraction on the top of the pod which provides a single IP address and DNS name by which pods can be accessed</li>
+<li>manages load balancing configuration</li>
+</ul>
+</li>
+<li>Pod
+<ul>
+<li>a collection of container(s), it can be Single container pod / Multi container pod</li>
+<li>its storage inside a node</li>
+<li>is possible to create a pod with multiple containers inside it</li>
+<li>e.g. keeps a DB container and data container in the same pod</li>
+</ul>
+</li>
+<li>Replication Controller
+<ul>
+<li>manages the pod lifecycle</li>
+<li>makes sure that the specified number of pod replicas are running at any point of time</li>
+<li>is used in time when one wants to make sure that the specified number of pod or at lease one pod is running</li>
+<li>has the capability to bring up or down the specified pod</li>
+</ul>
+</li>
+<li>Replica Sets
+<ul>
+<li>ensures how many replica of pod should berunning</li>
+<li>a replacement of replication controller</li>
+<li>an upgraded version of the replication controller</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Key difference between Replication Controller and Replica Sets: the replication controller only supports equality-based selector whereas the replica set supports set-based selector</p>
+<ul>
+<li>Equality-based Selectors: They allow filtering by key and value. Matching objects should satisfy all the specified labels</li>
+<li>Set-based Selectors: Set-based selectors allow filtering of keys according to a set of values.</li>
+</ul>
+</blockquote>
+<ul>
+<li>Deployments
+<ul>
+<li>are upgraded and higher version of replication controller</li>
+<li>updates the replica set and are also capable of rolling back to the previous version</li>
+</ul>
+</li>
+<li>Kubernetes Volumes (not Docker Volumes)
+<ul>
+<li>a directory</li>
+<li>is accessible to the containers in a pod</li>
+<li>isn&rsquo;t the same as Docker Volumes (as soon as the life of a pod ended, the volume was also lost)</li>
+<li>the volumes that are created through Kubernetes is not limited to any container</li>
+<li>supports any or all the containers deployed inside the pod</li>
+<li>supports different kind of storage wherein the pod can use multiple of them at the same time</li>
+</ul>
+</li>
+<li>Secrets
+<ul>
+<li>sotres sensitive data such as user name and password with encryption</li>
+</ul>
+</li>
+<li>Network Policy
+<ul>
+<li>defines how the pods will communicate with each other and the network endpoint</li>
+<li>uses labels to select the pods and defines rules to allow traffic to a specific pod</li>
+</ul>
+</li>
+</ul>
+<h1 id="advanced">Advanced</h1>
+<p>(TODO)</p>
+<h1 id="setup">Setup</h1>
+<p>(TODO)</p>
+<ul>
+<li>Install docker engine, etcd 2.0</li>
+<li>Configure kube-apiserver, controller manager, node configuration</li>
+</ul>
+<h3 id="ref">ref:</h3>
+<ul>
+<li><a href="https://www.tutorialspoint.com/kubernetes/kubernetes_architecture.htm">https://www.tutorialspoint.com/kubernetes/kubernetes_architecture.htm</a></li>
+<li><a href="https://www.youtube.com/watch?v=s_o8dwzRlu4">https://www.youtube.com/watch?v=s_o8dwzRlu4</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

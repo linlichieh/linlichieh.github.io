@@ -6,7 +6,16 @@
     <description>Recent content in Categories on Software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Jan 2019 11:02:08 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 28 Jan 2023 15:10:34 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>docker</title>
+      <link>/categories/docker/</link>
+      <pubDate>Sat, 28 Jan 2023 15:10:34 +0800</pubDate>
+      
+      <guid>/categories/docker/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>linux</title>
       <link>/categories/linux/</link>
@@ -157,15 +166,6 @@
       <pubDate>Thu, 29 Jan 2015 23:14:14 +0800</pubDate>
       
       <guid>/categories/network/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>/categories/docker/</link>
-      <pubDate>Wed, 24 Dec 2014 00:53:54 +0800</pubDate>
-      
-      <guid>/categories/docker/</guid>
       <description></description>
     </item>
     
