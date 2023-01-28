@@ -20,10 +20,9 @@
     <h1>Git</h1>
     <time datetime="2013-07-21T14:51:00Z">July 21, 2013</time>
   </header>
-  <h1 id="git-add"><code>git add</code></h1>
-<h3 id="加入空的目錄">加入空的目錄</h3>
-<p>建立 <code>gitkeep</code> 或 <code>.keep</code> 在空的目錄</p>
-<h1 id="git-branch"><code>git branch</code></h1>
+  <h1 id="command-git-add">[command] git add</h1>
+<p>加入空的目錄: 建立 <code>gitkeep</code> 或 <code>.keep</code> 在空的目錄</p>
+<h1 id="command-git-branch">[command] git branch</h1>
 <ul>
 <li>都不加 : 顯示 local branch</li>
 <li><code>-r</code> : 顯示 remote branch</li>
@@ -32,20 +31,20 @@
 <li><code>--merged</code> : 列出已經merge的branch</li>
 <li><code>--no-merged</code> : 列出尚未merge的branch</li>
 </ul>
-<h3 id="rename-branch">Rename branch</h3>
+<p>Rename branch</p>
 <pre><code>git branch -m {old_name} {new_name}
 </code></pre>
-<h3 id="rename-current-branch">Rename current branch</h3>
+<p>Rename current branch</p>
 <pre><code>git branch -m {new_name}
 </code></pre>
-<h3 id="刪除branch">刪除branch</h3>
+<p>刪除branch</p>
 <pre><code>git branch -d developXD
 git branch -D {branch name}
 </code></pre>
 <blockquote>
 <p>git branch —no-merged</p>
 </blockquote>
-<h3 id="remove-outdated-local-branch">Remove outdated local branch</h3>
+<p>Remove outdated local branch</p>
 <ol>
 <li><code>git checkout master</code></li>
 <li><code>git branch —merged</code> or <code>git branch -vv</code></li>
@@ -53,12 +52,11 @@ git branch -D {branch name}
 <blockquote>
 <p>[origin/bug/more-phan-fixes: gone] [REFACTOR] Phan fixes</p>
 </blockquote>
-<h1 id="git-merge"><code>git merge</code></h1>
-<h3 id="讓-commit-log-紀錄您是開分支出去再-merge-回來的">讓 commit log 紀錄您是開分支出去再 merge 回來的。</h3>
+<h1 id="command-git-merge">[command] git merge</h1>
+<p>讓 commit log 紀錄您是開分支出去再 merge 回來的。</p>
 <pre><code>git merge --no-ff develop
 </code></pre>
-<h3 id="undo-某一個-merged-但未-push-的-branch">Undo 某一個 merged 但未 push 的 branch</h3>
-<p>有幾種方法:</p>
+<p>Undo 某一個 merged 但未 push 的 branch, 有幾種方法:</p>
 <ol>
 <li><code>git reset --hard HEAD~1</code></li>
 <li>先用 <code>git reflog</code> 看 log, 再把 <code>HEAD@{1}</code> 的 SHA1 記下來 (不是 <code>HEAD@{0}</code> 的, 因為那是你目前的點, 我們要還原到前一動), 再執行 <code>git reset --hard {SHA1}</code></li>
@@ -67,28 +65,34 @@ git branch -D {branch name}
 <blockquote>
 <p>如果對結果不太確定的話, 建議先用目前的 branch 建一個測試用的 branch 練習, 確定結果符合你要的再做在原本的 branch</p>
 </blockquote>
-<h1 id="git-rebase"><code>git rebase</code></h1>
-<h3 id="rebase-基本操作概念">rebase 基本操作概念</h3>
-<p>類似 merge, 但將兩個不同的 branch 合併成同一條線且不會有 merge commit, tig 的線圖也會比較漂亮</p>
+<h1 id="command-git-rebase">[command] git rebase</h1>
+<p>rebase 基本操作概念</p>
 <ol>
 <li>
 <p>rebase master</p>
-<p>git checkout feature
-git rebase master</p>
+<pre><code> git checkout feature
+ git rebase master
+</code></pre>
 </li>
 <li>
 <p>merge 回 master</p>
-<p>git checkout master
-git merge feature</p>
+<pre><code> git checkout master
+ git merge feature
+</code></pre>
 </li>
 </ol>
-<h3 id="如果有發生-conflict-並修好後要繼續-rebase">如果有發生 conflict 並修好後要繼續 rebase</h3>
+<blockquote>
+<p>類似 merge, 但將兩個不同的 branch 合併成同一條線且不會有 merge commit, tig 的線圖也會比較漂亮</p>
+</blockquote>
+<p>如果有發生 conflict 並修好後要繼續 rebase</p>
 <pre><code>git rebase --continue
 </code></pre>
-<h3 id="修改-past-commit-message">修改 past commit message</h3>
+<p>修改 past commit message</p>
 <pre><code>git rebase -i 637bd5ac^
 </code></pre>
+<blockquote>
 <p>Choose &ldquo;reword&rdquo; for the commit in question, then you&rsquo;ll have an opportunity to edit the message.</p>
+</blockquote>
 <h3 id="conflict-standard-vs-diff3">conflict standard vs diff3</h3>
 <p>Example 1</p>
 <pre><code>[standerd]
@@ -139,8 +143,7 @@ Pizza 🍕
 Unicorn 🦄
 Avocado 🥑
 </code></pre>
-<p>ref: <a href="https://github.community/t5/Support-Protips/Git-Tips-Tricks-and-Hacks/ba-p/20651">https://github.community/t5/Support-Protips/Git-Tips-Tricks-and-Hacks/ba-p/20651</a></p>
-<h3 id="edit-specific-commit">Edit specific commit</h3>
+<p>Edit specific commit</p>
 <ol>
 <li><code>git rebase -i HEAD~3</code></li>
 <li>Mark <code>e</code> for the commit that you want to change</li>
@@ -148,7 +151,7 @@ Avocado 🥑
 <li><code>git commit —amend</code></li>
 <li><code>git rebase —continue</code></li>
 </ol>
-<h3 id="rebase-a-specific-commit">rebase a specific commit</h3>
+<p>rebase a specific commit</p>
 <ol>
 <li>(edit files)</li>
 <li>git add</li>
@@ -157,7 +160,7 @@ Avocado 🥑
 <li>mark fixup on the commit that you want it to go (called commit C)</li>
 <li>change the order of commit C to middle, because it will rebase onto the commit above it</li>
 </ol>
-<h1 id="git-merge-與-git-rebase-差異"><code>git merge 與 git rebase</code> 差異</h1>
+<h1 id="command-git-merge-與-git-rebase-差異">[command] git merge 與 git rebase 差異</h1>
 <p>兩者結果是一樣的，產生的 history 不同點 :</p>
 <ul>
 <li>git merge
@@ -174,58 +177,61 @@ Avocado 🥑
 </ul>
 </li>
 </ul>
-<h1 id="git-checkout"><code>git checkout</code></h1>
-<h3 id="新增-develop-branch-並且切換過去">新增 develop branch 並且切換過去</h3>
+<h1 id="command-git-checkout">[command] git checkout</h1>
+<p>新增 develop branch 並且切換過去</p>
 <pre><code>$ git checkout -b develop
 </code></pre>
-<h3 id="新增由-develop-分支出來的-myfeature">新增由 develop 分支出來的 myfeature</h3>
+<p>新增由 develop 分支出來的 myfeature</p>
 <pre><code>$ git checkout -b myfeature develop
 </code></pre>
-<h3 id="使檔案回復成最近一次commit的狀態">使檔案回復成最近一次commit的狀態</h3>
+<p>使檔案回復成最近一次commit的狀態</p>
 <pre><code>$ git checkout -- test.php
 </code></pre>
-<h3 id="強制回復己在-add-狀態被修改過的檔案-untracked-files-則不受影響">強制回復己在 add 狀態被修改過的檔案, Untracked files 則不受影響</h3>
+<p>強制回復己在 add 狀態被修改過的檔案, Untracked files 則不受影響</p>
 <pre><code>git checkout -f
 </code></pre>
-<h3 id="所有track中且修改過的檔案回復成最近一次commit的狀態">所有track中且修改過的檔案回復成最近一次commit的狀態</h3>
+<p>所有track中且修改過的檔案回復成最近一次commit的狀態</p>
 <pre><code>git checkout .
 </code></pre>
-<h3 id="切到某一個-commit">切到某一個 commit</h3>
+<p>切到某一個 commit</p>
 <pre><code>git checkout 62a4a5c9a6e8a323a1ea12ec54ac35da7ce1b662
 </code></pre>
-<h3 id="從某個-commit-切回原本-branch">從某個 commit 切回原本 branch</h3>
+<p>從某個 commit 切回原本 branch</p>
 <pre><code>git checkout -
 相當於 git checkout master (不一定是 master 取決於在哪一個 branch)
 </code></pre>
-<h1 id="git-commit"><code>git commit</code></h1>
+<h1 id="command-git-commit">[command] git commit</h1>
 <ul>
 <li><code>--amend</code> : 修改最後一次commit message</li>
 </ul>
-<h1 id="git-reset"><code>git reset</code></h1>
+<h1 id="command-git-reset">[command] git reset</h1>
 <ul>
 <li><code>--soft</code> : 回復到之前的狀態, 但修改過的檔案仍不變</li>
 <li><code>--hard</code> : 回復到之前的狀態, <strong>但修改過的檔案仍會保留</strong></li>
 </ul>
-<h3 id="回復到某一個-commit-id">回復到某一個 commit id</h3>
+<p>回復到某一個 commit id</p>
 <pre><code>git reset --hard {commit id}
 </code></pre>
-<h3 id="回復上一個-commit-包含-merge">回復上一個 commit (包含 merge)</h3>
-<p>但修改的資料不保留，也就是回覆到上一個 commit 的初始狀態</p>
+<p>回復上一個 commit (包含 merge)</p>
 <pre><code>git reset HEAD^ --hard
 </code></pre>
-<h3 id="回復上一個-commit-但修改的資料保留下來">回復上一個 commit 但修改的資料保留下來</h3>
+<blockquote>
+<p>但修改的資料不保留，也就是回覆到上一個 commit 的初始狀態</p>
+</blockquote>
+<p>回復上一個 commit 但修改的資料保留下來</p>
 <pre><code>git reset HEAD^ --soft
 </code></pre>
-<h3 id="回復到-originmaster-的狀態">回復到 origin/master 的狀態</h3>
-<p>當 merge 或做了什麼後悔的事, 在還沒 push 前都可以使用此指令還原到 remote 的最新狀態</p>
+<p>回復到 origin/master 的狀態</p>
 <pre><code>git reset --hard origin/master
 </code></pre>
-<h3 id="git-reset-head---hard-如何救回"><code>git reset HEAD^ --hard</code> 如何救回</h3>
-<p>流程</p>
+<blockquote>
+<p>當 merge 或做了什麼後悔的事, 在還沒 push 前都可以使用此指令還原到 remote 的最新狀態</p>
+</blockquote>
+<p><code>git reset HEAD^ --hard</code> 如何救回</p>
 <pre><code>git reflog                  # 會有你的每條 git 操作的 log, 左邊有 commit id, 記下你要回復的 commit id
 git reset --hard bceefb7    # 這樣就可以救回了
 </code></pre>
-<p>如果不放心可以自行測試</p>
+<p>(補充)如果不放心可以自行測試</p>
 <pre><code>$ git init
 Initialized empty Git repository in .git/
 
@@ -259,54 +265,59 @@ HEAD is now at f6e5064... added file2
 $ cat file2
 added new file
 </code></pre>
-<p>ref: <a href="https://stackoverflow.com/questions/5473/how-can-i-undo-git-reset-hard-head1">stackoverflow</a></p>
-<h1 id="git-revert"><code>git revert</code></h1>
+<h1 id="command-git-revert">[command] git revert</h1>
+<blockquote>
 <p>與 reset 不同的事他回復是會有紀錄的，log 會疊下去，所以如果你不小心 push 了一個 commit 到 master，你想回復，用 revert 會比 reset 簡單操作</p>
-<h3 id="回復上一個-commit">回復上一個 commit</h3>
+</blockquote>
+<p>回復上一個 commit</p>
 <pre><code>git revert HEAD
 </code></pre>
-<h3 id="回復到某一個-commit-id-1">回復到某一個 commit id</h3>
+<p>回復到某一個 commit id</p>
 <pre><code>git revert {commit_id}
 </code></pre>
-<h3 id="將某一個已經-commitmerge-的-commit_id-回復">將某一個已經 commit/merge 的 commit_id 回復</h3>
+<p>將某一個已經 commit/merge 的 commit_id 回復</p>
 <pre><code>git revert --strategy resolve 305a9bd07ae40c585ac2f2761dea4374e7fee93e
 </code></pre>
+<blockquote>
 <p>回復後它會有一個 commit 紀錄, 如果想再把它加回來, 無法用 merge (<code>Already up-to-date.</code>), 但可以用 cherry-pick 加回來</p>
-<h1 id="git-cherry-pick"><code>git cherry-pick</code></h1>
+</blockquote>
+<h1 id="command-git-cherry-pick">[command] git cherry-pick</h1>
 <ul>
 <li><code>-x</code>: Preserve original commit id</li>
 </ul>
-<h3 id="在某一個branch加上每個commitfrom-another-branch">在某一個branch加上每個commit(from another branch)</h3>
-<p>將某一個 branch 的<strong>某一個</strong> commit 的變動 merge 到另一條 branch, 假如 develop 只想要 merge feature 的某一個 commit, 則需要先把 feature 的那條 commit id 記下來, 再切到 develop 做 cherry-pick</p>
+<p>在某一個branch加上每個commit(from another branch)</p>
 <pre><code>git checkout develop
 git cherry-pick f08515bc579a06dd9c8bd7f2dfc30ad4d5a73646
 </code></pre>
-<h1 id="git-rerere">git rerere</h1>
+<blockquote>
+<p>將某一個 branch 的<strong>某一個</strong> commit 的變動 merge 到另一條 branch, 假如 develop 只想要 merge feature 的某一個 commit, 則需要先把 feature 的那條 commit id 記下來, 再切到 develop 做 cherry-pick</p>
+</blockquote>
+<h1 id="command-git-rerere">[command] git rerere</h1>
 <p>It is used for cherry-pick
 Especially for fixing conflict when cherry-pick latest commits from develop branch against an old tag commit
 Basically, it records the change you made and apply the fixes to next conflicts</p>
 <p>See more: <a href="https://git-scm.com/docs/git-rerere">https://git-scm.com/docs/git-rerere</a></p>
-<h1 id="git-show"><code>git show</code></h1>
-<h3 id="查看某一個-tag-的變動">查看某一個 tag 的變動</h3>
+<h1 id="command-git-show">[command] git show</h1>
+<p>查看某一個 tag 的變動</p>
 <pre><code>git show v1.0.0
 </code></pre>
-<h3 id="查看-commit-id-修改內容">查看 commit id 修改內容</h3>
+<p>查看 commit id 修改內容</p>
 <pre><code>git show 41e24b9349acc9bbc1b8853284866f498892ce4b
 </code></pre>
-<h1 id="git-log"><code>git log</code></h1>
+<h1 id="command-git-log">[command] git log</h1>
 <ul>
 <li><code>--stat</code> : 列出有增減的檔案</li>
 <li><code>--oneline</code> : 精簡的log，每一次的commit資訊為一行，只顯示前7碼的SHA1及message</li>
 </ul>
-<h3 id="最近一次-commit-改過的檔案">最近一次 commit 改過的檔案</h3>
+<p>最近一次 commit 改過的檔案</p>
 <pre><code>git log -n 1 --stat
 </code></pre>
-<h3 id="最近一次-commit-的更改細節">最近一次 commit 的更改細節</h3>
+<p>最近一次 commit 的更改細節</p>
 <pre><code>git log -n 1 -p
 </code></pre>
-<h1 id="git-reflog"><code>git reflog</code></h1>
+<h1 id="command-git-reflog">[command] git reflog</h1>
 <p>顯示 git 的每個 log (包括操作 command 及 commit 內容等等)</p>
-<h1 id="git-diff"><code>git diff</code></h1>
+<h1 id="command-git-diff">[command] git diff</h1>
 <ul>
 <li>default or <code>--</code> : 非 staged 裡的與目前版本的差異</li>
 <li><code>--staged</code> or <code>--cached</code>(1.6版前) : stage 裡的與目前版本的差異</li>
@@ -315,20 +326,20 @@ Basically, it records the change you made and apply the fixes to next conflicts<
 <li><code>--stat</code> : 查看差異的概要 (顯示一堆 <code>+</code>, <code>-</code>)</li>
 <li><code>sha1..sha1</code> : 比較兩個commit差異</li>
 </ul>
-<h3 id="未加入-stage-時直接下">未加入 stage 時直接下</h3>
+<p>未加入 stage 時直接下</p>
 <pre><code>git diff qq.php
 </code></pre>
-<h3 id="已加入-stage-要下">已加入 stage 要下</h3>
+<p>已加入 stage 要下</p>
 <pre><code>git diff HEAD qq.php
 </code></pre>
-<h3 id="比較兩個-branch">比較兩個 branch</h3>
+<p>比較兩個 branch</p>
 <pre><code>git diff develop master
 </code></pre>
-<h1 id="git-diff-tree"><code>git diff-tree</code></h1>
+<h1 id="command-git-diff-tree">[command] git diff-tree</h1>
 <p>List modified files on a specific commid id</p>
 <pre><code>git diff-tree --no-commit-id --name-only -r cf5f610b67ce52c8d6e39a526e6405675f430bd8
 </code></pre>
-<h1 id="git-config"><code>git config</code></h1>
+<h1 id="command-git-config">[command] git config</h1>
 <ul>
 <li><code>--list</code> : 查看 config 內容，也可以用另種方式看 <code>cat ~/.gitconfig</code></li>
 <li><code>--unset</code> : reset 某個 config. e.g. <code>git config --global --unset {key}</code></li>
@@ -338,27 +349,29 @@ Basically, it records the change you made and apply the fixes to next conflicts<
 git config --global difftool.prompt false   # 執行上面指令, 會問你是否執行, 很麻煩所以關掉它
 git config --global alias.d difftool        # 使用 `git d` 相當於 `git difftool`
 </code></pre>
-<h1 id="git-rm"><code>git rm</code></h1>
+<h1 id="command-git-rm">[command] git rm</h1>
 <ul>
 <li><code>--cache filename.php</code> : 將已被 git 追蹤的檔案取消追蹤, 放心! 它並不會將檔案刪除, 而將狀態變成 Untracked</li>
 <li><code>--cached filename.php</code> : 結果似乎和 <code>--cache</code> 一樣</li>
 </ul>
-<h1 id="git-push"><code>git push</code></h1>
-<h3 id="強制-push-之前的commit-紀錄會不見只會有目前這個branch的commit-紀錄">強制 push, 之前的commit 紀錄會不見,只會有目前這個branch的commit 紀錄</h3>
+<h1 id="command-git-push">[command] git push</h1>
+<p>強制 push, 之前的commit 紀錄會不見,只會有目前這個branch的commit 紀錄</p>
 <pre><code>git push origin master -f
 </code></pre>
-<h3 id="建議-強制-push-但不想覆蓋別人已經推的">(建議) 強制 push, 但不想覆蓋別人已經推的</h3>
-<p>when you do need to do a forced push but still ensure you don’t overwrite other’s work</p>
+<p>(建議) 強制 push, 但不想覆蓋別人已經推的</p>
 <pre><code>git push --force-with-lease
 </code></pre>
-<h3 id="建立遠端-branch">建立遠端 branch</h3>
+<blockquote>
+<p>when you do need to do a forced push but still ensure you don’t overwrite other’s work</p>
+</blockquote>
+<p>建立遠端 branch</p>
 <pre><code>git branch dev          // 先建立 local branch
 git push origin dev:refs/heads/dev
 </code></pre>
-<h3 id="push-to-a-private-repo">push to a private repo</h3>
+<p>push to a private repo</p>
 <pre><code>git push https://dummy@github.com/dummy/example.git
 </code></pre>
-<h1 id="git-pull"><code>git pull</code></h1>
+<h1 id="command-git-pull">[command] git pull</h1>
 <p><code>git pull --rebase</code> 等於以下兩步</p>
 <pre><code>git fetch
 git merge origin dev
@@ -367,85 +380,91 @@ git merge origin dev
 <pre><code>git fetch origin
 git rebase -p origin/develop
 </code></pre>
+<blockquote>
 <p>在目前 branch 下 <code>git pull origin {branch_name}</code>: 代表將 {branch_name} (remote branch) merge 到目前這個 branch</p>
-<h1 id="git-stash"><code>git stash</code></h1>
-<h3 id="放進暫存">放進暫存</h3>
+</blockquote>
+<h1 id="command-git-stash">[command] git stash</h1>
+<p>放進暫存</p>
 <pre><code>git stash
 </code></pre>
-<h3 id="查看暫存">查看暫存</h3>
+<p>查看暫存</p>
 <pre><code>git stash list
 </code></pre>
-<h3 id="取出暫存">取出暫存</h3>
+<p>取出暫存</p>
 <pre><code>git stash pop
 </code></pre>
-<h3 id="清空暫存">清空暫存</h3>
+<p>清空暫存</p>
 <pre><code>git stash clear
 </code></pre>
-<h3 id="如果暫存有多個可以指定要還原哪個commit-id">如果暫存有多個，可以指定要還原哪個commit ID</h3>
+<p>如果暫存有多個，可以指定要還原哪個commit ID</p>
 <pre><code>git stash [commit ID]
 </code></pre>
-<h3 id="stash-specific-files">stash specific files</h3>
+<p>stash specific files</p>
 <pre><code>git add a1.go                   // files that You don't want to stash
 git stash save --keep-index     // this command will stash the rest of files
 </code></pre>
-<h1 id="git-tag"><code>git tag</code></h1>
-<h3 id="查看目前-tag">查看目前 tag</h3>
+<h1 id="command-git-tag">[command] git tag</h1>
+<p>查看目前 tag</p>
 <pre><code>git tag
 v1.0.0
 </code></pre>
-<h3 id="新增-tag">新增 tag</h3>
+<p>新增 tag</p>
 <pre><code>git tag -a v1.4 -m &quot;my version 1.4&quot;
 git push --tags
 </code></pre>
-<h1 id="git-fetch"><code>git fetch</code></h1>
-<h3 id="更新-git-branch--r-的名單">更新 <code>git branch -r</code> 的名單</h3>
+<h1 id="command-git-fetch">[command] git fetch</h1>
+<p>更新 <code>git branch -r</code> 的名單</p>
 <pre><code>git fetch
 </code></pre>
-<h3 id="更新-remote-branch-list">更新 remote branch list</h3>
-<p>遠端已刪除的 branch, 本機 branch 不會刪除，只會更新新增的 remote branch</p>
+<h2 id="更新-remote-branch-list">更新 remote branch list</h2>
 <pre><code>git fetch --all
 </code></pre>
-<h3 id="當要-merge-遠端-branch-前先看修改了什麼再merge">當要 merge 遠端 branch 前，先看修改了什麼，再merge</h3>
+<blockquote>
+<p>遠端已刪除的 branch, 本機 branch 不會刪除，只會更新新增的 remote branch</p>
+</blockquote>
+<p>當要 merge 遠端 branch 前，先看修改了什麼，再merge</p>
 <pre><code>git fetch origin dev
 tig
 git merge origin dev
 </code></pre>
-<h3 id="clean-up-local-cache-of-remote-branch">clean up local cache of remote branch</h3>
+<p>clean up local cache of remote branch</p>
 <pre><code>git fetch —prune
 </code></pre>
-<h1 id="git-remote"><code>git remote</code></h1>
-<h3 id="建議-更新-remote-branch-list">(建議) 更新 remote branch list</h3>
-<p>遠端已刪除的 branch, 本機 branch 會幫你刪除，同時也會更新新增的 remote branch</p>
-<pre><code>git remote update origin --prune
-</code></pre>
-<p>or</p>
+<h1 id="command-git-remote">[command] git remote</h1>
+<p>(建議) 更新 remote branch list</p>
 <pre><code>git remote prune origin
 </code></pre>
-<h3 id="新增遠端-repo">新增遠端 repo</h3>
+<p>或</p>
+<pre><code>git remote update origin --prune
+</code></pre>
+<blockquote>
+<p>遠端已刪除的 branch, 本機 branch 會幫你刪除，同時也會更新新增的 remote branch</p>
+</blockquote>
+<p>新增遠端 repo</p>
 <pre><code>git remote add origin https://git.heroku.com/my-app.git
 </code></pre>
-<h3 id="查看remote有哪些branch">查看remote有哪些branch</h3>
+<p>查看remote有哪些branch</p>
 <pre><code>git branch -r
 git remote show origin
 </code></pre>
 <blockquote>
 <p>有時候用 <code>git branch -r</code>, 查看 remote branch 時, 發現明明刪掉的 branch 為何還在?  使用 <code>git remote prune origin</code> 來更新暫存檔, 就可以取得最新的 remote branch list</p>
 </blockquote>
-<h3 id="git-pull-branch-from-forked-repo">git pull branch from forked repo</h3>
+<p>git pull branch from forked repo</p>
 <pre><code>cd into/cloned/fork-repo
 git remote add upstream git://github.com/ORIGINAL-DEV-USERNAME/REPO-YOU-FORKED-FROM.git
 git fetch upstream
 git pull upstream master
 </code></pre>
-<h3 id="show-remote-origin-list">show remote origin list</h3>
+<p>show remote origin list</p>
 <pre><code>git remote -v
 </code></pre>
-<h1 id="git-rev-parse"><code>git rev-parse</code></h1>
+<h1 id="command-git-rev-parse">[command] git rev-parse</h1>
 <p>latest commit hash</p>
 <pre><code>git rev-parse HEAD
 </code></pre>
-<h1 id="git-clean"><code>git clean</code></h1>
-<h3 id="remove-untracked-file-and-directory">Remove untracked file and directory.</h3>
+<h1 id="command-git-clean">[command] git clean</h1>
+<p>Remove untracked file and directory.</p>
 <pre><code>git clean -df
 </code></pre>
 <h1 id="其他指令">其他指令</h1>
@@ -634,45 +653,17 @@ Fixed the XXX bug in YYY
 </ul>
 <p>Categories</p>
 <ul>
-<li>
-<p>[INITIAL] — for the initial commit and set up</p>
-</li>
-<li>
-<p>[ADD] — broad category for code that’s added</p>
-</li>
-<li>
-<p>[UPDATE] — for small updates</p>
-</li>
-<li>
-<p>[REFACTOR] — refactored code</p>
-</li>
-<li>
-<p>[FIX] — fixes (e.g. typos, linter rules, broken links/imports, etc.)</p>
-</li>
-<li>
-<p>[TESTS] — if you write them :)</p>
-</li>
-<li>
-<p>[STYLES] — style related commits</p>
-</li>
-<li>
-<p>[BUILD] — during the build process</p>
-</li>
-<li>
-<p>[PRODUCTION] — production related</p>
-</li>
-<li>
-<p>[WIP] — work in progress</p>
-</li>
-<li>
-<p>[REMOVE] — when removing files or old, unnecessary code</p>
-</li>
-<li>
-<p>ref: <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a></p>
-</li>
-<li>
-<p>ref: <a href="https://medium.com/@rcwestlake/write-categorized-git-commit-messages-c9f953ea6040">https://medium.com/@rcwestlake/write-categorized-git-commit-messages-c9f953ea6040</a></p>
-</li>
+<li>[INITIAL] — for the initial commit and set up</li>
+<li>[ADD] — broad category for code that’s added</li>
+<li>[UPDATE] — for small updates</li>
+<li>[REFACTOR] — refactored code</li>
+<li>[FIX] — fixes (e.g. typos, linter rules, broken links/imports, etc.)</li>
+<li>[TESTS] — if you write them :)</li>
+<li>[STYLES] — style related commits</li>
+<li>[BUILD] — during the build process</li>
+<li>[PRODUCTION] — production related</li>
+<li>[WIP] — work in progress</li>
+<li>[REMOVE] — when removing files or old, unnecessary code</li>
 </ul>
 <h1 id="tig">tig</h1>
 <p>只顯示 merge 線圖</p>
@@ -681,6 +672,13 @@ Fixed the XXX bug in YYY
 <p>use Git’s default commit order</p>
 <pre><code>tig --topo-order
 </code></pre>
+<h3 id="ref">ref:</h3>
+<ul>
+<li><a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a></li>
+<li><a href="https://medium.com/@rcwestlake/write-categorized-git-commit-messages-c9f953ea6040">https://medium.com/@rcwestlake/write-categorized-git-commit-messages-c9f953ea6040</a></li>
+<li><a href="https://github.community/t5/Support-Protips/Git-Tips-Tricks-and-Hacks/ba-p/20651">https://github.community/t5/Support-Protips/Git-Tips-Tricks-and-Hacks/ba-p/20651</a></li>
+<li><a href="https://stackoverflow.com/questions/5473/how-can-i-undo-git-reset-hard-head1">stackoverflow</a></li>
+</ul>
 
 </article>
 
