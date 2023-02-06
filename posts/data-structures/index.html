@@ -504,6 +504,32 @@ pop      3         front=3=rear=3
 3&rsquo;s parent: [3/2] = 1</p>
 </li>
 </ul>
+<h3 id="binary-search-tree">Binary search tree</h3>
+<p>rules:</p>
+<ul>
+<li>all child nodes in the tree to the right of root node must be greater than the current node</li>
+</ul>
+<p>example:</p>
+<pre><code>               101
+        33             105
+     9     37      104     144
+</code></pre>
+<p>key points</p>
+<ul>
+<li>If the BST is balanced, the average time complexity is O(log(n)). However, the worse case (unbalance BST) would be O(n)</li>
+<li>Pros
+<ul>
+<li>better than O(n)</li>
+<li>ordered</li>
+<li>Flexible size</li>
+</ul>
+</li>
+<li>Cons
+<ul>
+<li>No O(1) operation</li>
+</ul>
+</li>
+</ul>
 <h3 id="the-difference-of-implementation-between-array-and-linked-list">The difference of implementation between Array and Linked List</h3>
 <ul>
 <li>Array: Need to move several nodes when a node is added or deleted.</li>
@@ -524,6 +550,19 @@ pop      3         front=3=rear=3
 <blockquote>
 <p>Tips for memorize it: in means middle, pre means the first and post means the last</p>
 </blockquote>
+<h3 id="how-to-emove-a-node">How to emove a node?</h3>
+<p><code>insert</code> and <code>lookup</code> a node is quite easy, but removing a node is complex.</p>
+<p>3 cases</p>
+<ul>
+<li>no child: just delete</li>
+<li>1 child: replace the targetted node with its child node</li>
+<li>2 children: there are 2 options to do that
+<ul>
+<li>find the minimum value in right subtree, assign it to the node we want to delete</li>
+<li>find the maximum value in left subtree, assign it to the node we want to delete</li>
+</ul>
+</li>
+</ul>
 <h1 id="heap-min-and-max">Heap (min and max)</h1>
 <h3 id="difference-between-heap-and-binary-tree">Difference between heap and binary tree</h3>
 <ul>
@@ -579,6 +618,8 @@ pop      3         front=3=rear=3
 <h3 id="ref">ref</h3>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=_r7cfVrn28c">https://www.youtube.com/watch?v=_r7cfVrn28c</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/binary-search-tree-bst-search-insert-remove">https://www.digitalocean.com/community/tutorials/binary-search-tree-bst-search-insert-remove</a></li>
+<li>(good) BST deleting a node demostration <a href="https://www.youtube.com/watch?v=DkOswl0k7s4">https://www.youtube.com/watch?v=DkOswl0k7s4</a></li>
 </ul>
 
 </article>

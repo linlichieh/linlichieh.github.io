@@ -79,6 +79,7 @@
 <li>communicates with the master component to receive commands and work</li>
 <li>maintains the state of work and the node server</li>
 <li>manages network rules, port forwarding, etc.</li>
+<li>runs on each node</li>
 </ul>
 </li>
 <li>Kubernetes Proxy Service
@@ -95,8 +96,9 @@
 <ul>
 <li>Node
 <ul>
-<li>TODO <a href="https://www.youtube.com/watch?v=s_o8dwzRlu4">https://www.youtube.com/watch?v=s_o8dwzRlu4</a> 9:49</li>
 <li>can be physical, VM or a cloud instance</li>
+<li>have multiple pods e.g. my-app pod / DB pod</li>
+<li>in k8s you only work with the pod&rsquo;s</li>
 </ul>
 </li>
 <li>Service
@@ -104,10 +106,16 @@
 <li>can be defined as a logical set of pods</li>
 <li>an abstraction on the top of the pod which provides a single IP address and DNS name by which pods can be accessed</li>
 <li>manages load balancing configuration</li>
+<li>has a permanent IP address (not like pod)</li>
+<li>a load balancer</li>
+<li>lifecycle of pod and service not connected</li>
+<li>you specify the type of service on creation - external / internal (default)</li>
 </ul>
 </li>
 <li>Pod
 <ul>
+<li>is the smallest unit</li>
+<li>gets new IP address on creation</li>
 <li>a collection of container(s), it can be Single container pod / Multi container pod</li>
 <li>its storage inside a node</li>
 <li>is possible to create a pod with multiple containers inside it</li>
@@ -157,6 +165,17 @@
 <li>Secrets
 <ul>
 <li>sotres sensitive data such as user name and password with encryption</li>
+<li>external configuration</li>
+</ul>
+</li>
+<li>ConfigMap
+<ul>
+<li>external configuration</li>
+</ul>
+</li>
+<li>StatefulSet
+<ul>
+<li>replication</li>
 </ul>
 </li>
 <li>Network Policy
@@ -165,6 +184,16 @@
 <li>uses labels to select the pods and defines rules to allow traffic to a specific pod</li>
 </ul>
 </li>
+<li>Ingress
+<ul>
+<li>route traffic into cluster</li>
+</ul>
+</li>
+</ul>
+<h1 id="basis">Basis</h1>
+<ul>
+<li>k8s doesn&rsquo;t manage data persistance</li>
+<li>DB can&rsquo;t be replicated via deployment because DB has states (its data)</li>
 </ul>
 <h1 id="advanced">Advanced</h1>
 <p>(TODO)</p>
@@ -174,6 +203,73 @@
 <li>Install docker engine, etcd 2.0</li>
 <li>Configure kube-apiserver, controller manager, node configuration</li>
 </ul>
+<h1 id="configuration">Configuration</h1>
+<p>Each configuration file has 3 parts</p>
+<ul>
+<li>metadata
+<ul>
+<li>&ldquo;metadata&rdquo;</li>
+</ul>
+</li>
+<li>specification
+<ul>
+<li>&ldquo;apiVersion&rdquo;, &ldquo;kind&rdquo;, &ldquo;spec&rdquo;</li>
+<li>Attributes of &ldquo;spec&rdquo; are specific to the kind</li>
+</ul>
+</li>
+<li>status
+<ul>
+<li>Automatically generated and added by k8s</li>
+</ul>
+</li>
+</ul>
+<p>fields</p>
+<ul>
+<li>apiVersion</li>
+<li>kind: Deployment or Service</li>
+<li>metadata
+<ul>
+<li>name</li>
+<li>labels</li>
+</ul>
+</li>
+<li>spec
+<ul>
+<li>replicas</li>
+<li>selector</li>
+<li>template</li>
+</ul>
+</li>
+</ul>
+<p>Example</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment                    # a template for creating pods
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 2                       # create 2 replica pods called my-app
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:                   # each pod replica has a container based on my-image
+      - name: my-app
+        image: my-image
+        env:                        # environment variable
+        - name: USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-user
+        ports:                      # ports configuration of this container
+        - containerPort: 3000
+</code></pre>
 <h3 id="ref">ref:</h3>
 <ul>
 <li><a href="https://www.tutorialspoint.com/kubernetes/kubernetes_architecture.htm">https://www.tutorialspoint.com/kubernetes/kubernetes_architecture.htm</a></li>
