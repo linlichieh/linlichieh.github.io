@@ -558,11 +558,84 @@ pop      3         front=3=rear=3
 <li>1 child: replace the targetted node with its child node</li>
 <li>2 children: there are 2 options to do that (so that the tree can continue to follow the rules of BST).
 <ul>
-<li>find the minimum value in right subtree, assign it to the node we want to delete</li>
+<li>find the minimum value in right subtree, assign it to the node we want to delete (most common)</li>
 <li>find the maximum value in left subtree, assign it to the node we want to delete</li>
 </ul>
 </li>
 </ul>
+<p>no child</p>
+<pre><code>         100                                100
+        /    \                             /
+      75     125 &lt;- remove      =&gt;       75
+</code></pre>
+<p>1 child</p>
+<pre><code>                100                         100
+                /                           /
+    remove -&gt; 75              =&gt;          65
+             /                            /\
+           65                           60  70
+           /\
+         60  70
+</code></pre>
+<p>1 child</p>
+<pre><code>                3                         3
+               / \                       / \
+    remove -&gt; 1   4           =&gt;        2   4
+               \
+                2
+</code></pre>
+<p>1 child</p>
+<pre><code>       3                             3
+      / \                           / \
+     1   5 &lt;- remove     =&gt;        1   4
+        /
+       4
+</code></pre>
+<p>2 children (leftmost in right subtree is 70)</p>
+<pre><code>                    75                      75
+                   /  \                    /  \
+       remove -&gt; 65    85       =&gt;       70    85
+                 /\                     /
+               60  70                  60
+</code></pre>
+<p>2 children (leftmost in right subtree is 115)</p>
+<pre><code>           100 &lt;- remove                     115
+          /   \                             /  \
+        75     125               =&gt;       75    125
+              /   \                               \
+            115    150                            150
+</code></pre>
+<p>2 children (leftmost in right subtree is 80)</p>
+<pre><code>                     100                            100
+                     /  \                          /   \
+         remove -&gt; 75    125                     80     125
+                 /    \          =&gt;            /    \
+               65      85                    65      85
+              /  \    /  \                  /  \       \
+            60   70  80  95               60   70       95
+</code></pre>
+<p>2 children (leftmost in right subtree is 135)</p>
+<pre><code>            100                             100
+           /   \                           /   \
+         75     125 &lt;- remove            75     135
+               /   \             =&gt;            /   \
+            115     150                      115   150
+                   /   \                             \
+                 135   175                           175
+</code></pre>
+<p>2 children (leftmost in right subtree is 34)</p>
+<pre><code>            2                                   2
+          /   \                               /   \
+         0     33 &lt;- remove                 0      34
+              /  \                                /  \
+            25    40                            25    40
+                 /  \           =&gt;                   /  \
+               34    45                            36    45
+                 \                                /  \
+                  36                            35    39
+                  /\
+                35  39
+</code></pre>
 <h1 id="heap-min-and-max">Heap (min and max)</h1>
 <h3 id="difference-between-heap-and-binary-tree">Difference between heap and binary tree</h3>
 <ul>
