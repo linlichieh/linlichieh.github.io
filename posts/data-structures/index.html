@@ -61,7 +61,7 @@
 <li>String[] copy = new String[names.length]</li>
 </ul>
 </li>
-<li>O(nlogn)
+<li>O(nlogn) log linear
 <ul>
 <li>合併排序 (把大陣列一直重覆切一半成小陣列, 直到所有小陣列都只有一個元素, 再重覆將兩個小陣列合併成一個陣列, 直到所有陣列都合併成一個大陣列) <a href="https://commons.wikimedia.org/wiki/File:Merge-sort-example-300px.gif">gif demonstration</a></li>
 </ul>
@@ -75,60 +75,124 @@
 </li>
 <li>O(2^n) exponential
 <ul>
-<li>費波那契數列 (Fibonacci numbers) (是指在一串數字中每一項是前兩項的和 e.g. <code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55</code>, 當 n 不是 0 或 1 時, <code>fibo(n) = fibo(n-1) + fibo(n-2)</code>)</li>
+<li>recursive 費波那契數列 (Fibonacci numbers) (是指在一串數字中每一項是前兩項的和 e.g. <code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55</code>, 當 n 不是 0 或 1 時, <code>fibo(n) = fibo(n-1) + fibo(n-2)</code>)</li>
 </ul>
 </li>
+<li>O(n!) factorial</li>
 </ul>
-<h1 id="the-most-important-basic-data-structure">the most important basic data structure</h1>
+<h3 id="common-data-structures">Common Data Structures</h3>
 <ul>
 <li>arrays
 <ul>
-<li>can do lookup</li>
-<li>can&rsquo;t do delete, add</li>
+<li>Time
+<ul>
+<li>Access O(1)</li>
+<li>Search O(n)</li>
+<li>Insertion/Deletion O(n)
+<ul>
+<li>For example, inserting or deleting the first item requires shifting all elements one position to the right or left.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(n)
+<ul>
+<li>The total amount of memory required to store the array is n * m bits. As the number of elements in the array grows, the amount of memory required also grows linearly, making the space complexity O(n).</li>
+<li>Note that the space complexity of an array does not depend on the size of the elements, only on the number of elements.</li>
+</ul>
+</li>
 <li>unordered data</li>
 </ul>
 </li>
 <li>linked list
 <ul>
+<li>Time
+<ul>
+<li>Access/Search O(n)</li>
+<li>Insertion/Deletion O(1)</li>
+</ul>
+</li>
+<li>Space O(n)</li>
 <li>no fixed size</li>
 <li>takes up space (needs to store point and metadata)</li>
 <li>slow lookup (walk through each item)</li>
-<li>unordered data</li>
-<li>can do delete add</li>
-</ul>
-</li>
-<li>hash tables
-<ul>
-<li>constant time O(1)</li>
-<li>fast operation: lookup, add, delete</li>
 <li>unordered data</li>
 </ul>
 </li>
 <li>stacks
 <ul>
-<li>LIFO, FIFO</li>
-<li>specific order in data / reverse order</li>
-<li>can do delete, add</li>
-<li>can&rsquo;t do lookup</li>
-<li>ordered data</li>
+<li>Time
+<ul>
+<li>Access/Search O(n)</li>
+<li>Insertion/Deletion O(1)</li>
+</ul>
+</li>
+<li>Space O(n)</li>
+<li>LIFO</li>
 </ul>
 </li>
 <li>queues
 <ul>
+<li>Time
+<ul>
+<li>Access/Search O(n)</li>
+<li>Insertion/Deletion O(1)</li>
+</ul>
+</li>
+<li>Space O(n)</li>
 <li>FIFO</li>
-<li>can do delete, add</li>
-<li>can&rsquo;t do lookup</li>
-<li>ordered data</li>
+</ul>
+</li>
+<li>hash tables
+<ul>
+<li>Time
+<ul>
+<li>Access N/A</li>
+<li>(avg) Search/Insertion/Deletion O(1)</li>
+<li>(worse) Search/Insertion/Deletion O(n)
+<ul>
+<li>In the worst case scenario, when all keys collide and map to the same index, the hash table becomes a linked list, and insertion becomes an O(n) operation because you have to traverse the linked list to find the right place to insert the new element.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(n)</li>
 </ul>
 </li>
 <li>trees
 <ul>
-<li>fast: lookup, add, delete</li>
-<li>ordered data</li>
-<li>save space as nodes can be resued</li>
+<li>Binary Search Tree
+<ul>
+<li>Time
+<ul>
+<li>(avg) Access/Search/Insertion/Deletion O(log(n))</li>
+<li>(worse) Access/Search/Insertion/Deletion O(log(n))</li>
+<li>Since the height of a well-balanced BST is O(log(n)), insertion takes O(log(n)) time on average. In the worst case, when the BST is not balanced and becomes a linear chain, the time complexity is O(n)</li>
 </ul>
 </li>
+<li>Space O(n)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>tries</li>
 <li>graphs</li>
+</ul>
+<h3 id="array-sorting-algorithms">Array Sorting Algorithms</h3>
+<ul>
+<li>Elmentary
+<ul>
+<li>Bubble Sort</li>
+<li>Insertion Sort</li>
+<li>Selection Sort</li>
+</ul>
+</li>
+<li>More complex
+<ul>
+<li>Merge Sort</li>
+<li>Quick Sort</li>
+</ul>
+</li>
 </ul>
 <h3 id="補充">補充</h3>
 <p>O(1) or constant time</p>
