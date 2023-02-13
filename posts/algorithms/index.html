@@ -25,32 +25,70 @@
 <ul>
 <li>Bubble Sort
 <ul>
-<li>Time O(n^2)</li>
+<li>Time O(n^2)
+<ul>
+<li>bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array</li>
+</ul>
+</li>
 <li>Space O(1)</li>
 </ul>
 </li>
 <li>Insertion Sort
 <ul>
-<li>Time O(n^2)</li>
+<li>Time O(n^2)
+<ul>
+<li>insertion sort works by iterating over the elements in the array, and for each element, it shifts all the elements that are greater than it to the right in order to make room for it in its final position. The number of shifts required to insert each element is proportional to the number of elements that have already been processed</li>
+</ul>
+</li>
 <li>Space O(1)</li>
 </ul>
 </li>
 <li>Selection Sort
 <ul>
-<li>Time O(n^2)</li>
+<li>Time O(n^2)
+<ul>
+<li>selection sort works by repeatedly finding the minimum element in the unsorted portion of the array and swapping it with the first unsorted element. The number of swaps required to sort the array is proportional to the square of the number of elements in the array</li>
+</ul>
+</li>
 <li>Space O(1)</li>
 </ul>
 </li>
 <li>Merge Sort
 <ul>
-<li>Time O(n log(n))</li>
-<li>Space O(n)</li>
+<li>Time O(n log(n))
+<ul>
+<li>merge sort works by dividing the array into two halves, sorting each half separately, and then merging the two sorted halves back together. The merging process takes linear time proportional to the number of elements in the array, while the sorting process takes logarithmic time proportional to the number of elements in each half. The overall time complexity of merge sort is O(n log n) because the number of elements in each half is reduced by half with each iteration of the sorting process.</li>
+</ul>
+</li>
+<li>Space O(n)
+<ul>
+<li>Merge sort has a space complexity of O(n) because it uses an auxiliary array of size n to store the sorted elements during the merging step.</li>
+<li>merge sort requires an auxiliary array to store the result of each merging step. The size of this array is proportional to the number of elements in the array, which means that the space complexity of merge sort is O(n). Additionally, merge sort requires a small amount of additional memory to store the recursive call stack, but this memory usage is typically not significant compared to the size of the auxiliary array.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Quick Sort
 <ul>
-<li>Time O(n^2)</li>
-<li>Space O(log(n))</li>
+<li>Time
+<ul>
+<li>(avg) O(n log(n))
+<ul>
+<li>The pivot is then used as a pivot for recursive calls on the two partitioned subarrays. When the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average time complexity of O(n log n)</li>
+</ul>
+</li>
+<li>(worse) O(n^2)
+<ul>
+<li>if the pivot is always chosen poorly, the time complexity of quick sort can be O(n^2), which makes its time complexity heavily dependent on the choice of pivot.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(log(n))
+<ul>
+<li>The space complexity of quick sort is O(log n) in the average case, and O(n) in the worst case, where n is the number of elements in the array. This is because quick sort uses a recursive approach, where each recursive call uses a small amount of memory proportional to the size of the call stack. In the average case, when the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average space complexity of O(log n). However, in the worst case, if the pivot is always chosen poorly, the size of one partition can be much larger than the other, which results in a call stack with a height proportional to the number of elements in the array, resulting in a worst-case space complexity of O(n)</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -71,6 +109,18 @@
 </li>
 </ul>
 <h1 id="bubble-sort">Bubble sort</h1>
+<h3 id="use-case">Use case</h3>
+<p>not recommended for use in practical applications due to its poor time complexity of O(n^2)</p>
+<p>scenarios</p>
+<ul>
+<li>Educational purposes</li>
+<li>small arrays</li>
+<li>stable sorting
+<ul>
+<li>For example, consider a list of records that represent people, where each record has a name and an age. If we sort the list based on age, it is important to maintain the relative order of people with the same age, so that the order of their names is preserved in the sorted list. A stable sorting algorithm, such as merge sort, would ensure that the relative order of equal elements is preserved, while an unstable sorting algorithm, such as quick sort, would not.</li>
+</ul>
+</li>
+</ul>
 <h3 id="concept">Concept</h3>
 <p>Compare two values and move the larger value to the right in each iteration.
 This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</p>
@@ -128,6 +178,19 @@ j j
 </code></pre>
 <p>end</p>
 <h1 id="insertion-sort">Insertion sort</h1>
+<h3 id="use-case-1">Use case</h3>
+<p>suitable for small arrays and partially sorted arrays</p>
+<p>scenarios</p>
+<ul>
+<li>small arrays</li>
+<li>partially sorted array</li>
+<li>stable sorting</li>
+<li>online sorting
+<ul>
+<li>For example, consider a system that generates log events in real-time and needs to sort the events based on their timestamp. An online sorting algorithm, such as insertion sort, would be a good choice in this scenario, since it can sort the events as they are generated, rather than waiting until all the events have been generated before sorting the entire array.</li>
+</ul>
+</li>
+</ul>
 <h3 id="concept-1">Concept</h3>
 <p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
 <h3 id="how-it-works-1">How it works?</h3>
@@ -259,6 +322,14 @@ j j
 </code></pre>
 <p>end</p>
 <h1 id="selection-sort">Selection sort</h1>
+<h3 id="user-case">User case</h3>
+<p>not commonly used in practice due to its poor performance</p>
+<p>scenarios</p>
+<ul>
+<li>Educational purposes</li>
+<li>Space-constrained systems</li>
+<li>Stable sorting</li>
+</ul>
 <h3 id="concept-2">Concept</h3>
 <p>Set a starting point (i) to find the minimum after it and swap it with the minimum.
 Lock the minimum and move the start point forward in each iteration.</p>
@@ -345,6 +416,19 @@ m   i   j
 </code></pre>
 <p>end</p>
 <h1 id="merge-sort">Merge sort</h1>
+<h3 id="user-case-1">User case</h3>
+<p>widely used in practice due to its efficient time complexity and stability</p>
+<p>scenarios</p>
+<ul>
+<li>Large arrays</li>
+<li>Stable sorting</li>
+<li>External sorting
+<ul>
+<li>Merge sort is often used for external sorting, where the elements to be sorted are too large to be stored in memory all at once. In this case, the elements are divided into smaller chunks that can be sorted and merged in a two-pass process, where the first pass sorts the chunks and the second pass merges the sorted chunks into the final sorted array.</li>
+</ul>
+</li>
+<li>Parallel processing</li>
+</ul>
 <h3 id="concept-3">Concept</h3>
 <p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
 <h3 id="how-it-works-3">How it works</h3>
@@ -364,6 +448,23 @@ m   i   j
                [1 2 3 4 5 6 7 8 ]
 </code></pre>
 <h1 id="quick-sort">Quick sort</h1>
+<h3 id="use-case-2">Use case</h3>
+<p>widely used in practice</p>
+<p>scenarios</p>
+<ul>
+<li>large array</li>
+<li>random data
+<ul>
+<li>Quick sort is particularly efficient when the elements in the array are randomly ordered, as this leads to a balanced partitioning of the elements, reducing the time complexity.</li>
+</ul>
+</li>
+<li>In-place sorting
+<ul>
+<li>Quick sort is an in-place sorting algorithm, meaning that it sorts the elements in place without using additional memory. This makes it a good choice for space-constrained systems where memory is limited.</li>
+</ul>
+</li>
+<li>Parallel processing</li>
+</ul>
 <h3 id="concept-4">Concept</h3>
 <p>Choose a pivot element, partition the data set into two sub-arrays recursively based on the pivot element,
 and sort each sub-array by moving values less than the pivot to the left and values greater than the pivot to the right.

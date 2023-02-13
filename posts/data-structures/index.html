@@ -86,10 +86,19 @@
 <ul>
 <li>Time
 <ul>
-<li>Access O(1)</li>
-<li>Search O(n)</li>
+<li>Access O(1)
+<ul>
+<li>Arrays have O(1) access time because elements are stored in a contiguous block of memory and the memory location of an element can be calculated based on its index, making it possible to access an element quickly in constant time.</li>
+</ul>
+</li>
+<li>Search O(n)
+<ul>
+<li>Arrays have O(n) search time because finding a specific element typically requires checking each element one by one, and the time required to find an element is proportional to the number of elements in the array.</li>
+</ul>
+</li>
 <li>Insertion/Deletion O(n)
 <ul>
+<li>Arrays have O(n) insertion and deletion time because, in general, inserting or deleting an element in the middle of an array requires shifting all the elements after the insertion or deletion point, which takes linear time proportional to the number of elements in the array.</li>
 <li>For example, inserting or deleting the first item requires shifting all elements one position to the right or left.</li>
 </ul>
 </li>
@@ -104,12 +113,65 @@
 <li>unordered data</li>
 </ul>
 </li>
+<li>stacks
+<ul>
+<li>Time
+<ul>
+<li>Access/Search O(n)
+<ul>
+<li>Stacks take O(n) access time because, in general, accessing an element in a stack requires starting at the top of the stack and then following the chain of pointers to the desired element, which takes linear time proportional to the number of elements in the stack.</li>
+<li>Stacks take O(n) search time because finding an element in a stack typically requires starting at the top of the stack and following the chain of pointers until the desired element is found, which takes linear time proportional to the number of elements in the stack.</li>
+</ul>
+</li>
+<li>Insertion/Deletion O(1)
+<ul>
+<li>Stacks take O(1) insertion and deletion time because they follow the Last-In-First-Out (LIFO) principle, where the most recently added element is always the first to be removed. In a stack, inserting (push) or deleting (pop) an element only requires updating the top pointer, which takes constant time and does not depend on the size of the stack.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(n)
+<ul>
+<li>Stacks take O(n) space complexity because each element in a stack requires a constant amount of memory to store, and the amount of memory required by a stack is proportional to the number of elements stored in the stack.</li>
+</ul>
+</li>
+<li>LIFO</li>
+</ul>
+</li>
+<li>queues
+<ul>
+<li>Time
+<ul>
+<li>Access/Search O(n)
+<ul>
+<li>Queues take O(n) access and search time because, in general, accessing or searching for an element in a queue requires starting at one end of the queue and then following the chain of pointers until the desired element is found, which takes linear time proportional to the number of elements in the queue.</li>
+</ul>
+</li>
+<li>Insertion/Deletion O(1)
+<ul>
+<li>Queues take O(n) insertion and deletion time because they follow the First-In-First-Out (FIFO) principle, where the first element added to the queue is the first to be removed. In a queue, inserting (enqueue) an element at the end of the queue and deleting (dequeue) an element from the front of the queue both require updating the front and rear pointers, which takes linear time proportional to the number of elements in the queue.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(n)</li>
+<li>FIFO</li>
+</ul>
+</li>
 <li>linked list
 <ul>
 <li>Time
 <ul>
-<li>Access/Search O(n)</li>
-<li>Insertion/Deletion O(1)</li>
+<li>Access/Search O(n)
+<ul>
+<li>Linked lists take O(n) access and search time because, in general, accessing or searching for an element in a linked list requires following the chain of pointers from one element to the next until the desired element is found, which takes linear time proportional to the number of elements in the linked list.</li>
+</ul>
+</li>
+<li>Insertion/Deletion O(1)
+<ul>
+<li>Linked lists take O(1) insertion and deletion time because each element in a linked list is connected to its neighbors via pointers, making it possible to insert or delete an element by simply updating the pointers of the neighboring elements.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Space O(n)</li>
@@ -119,38 +181,19 @@
 <li>unordered data</li>
 </ul>
 </li>
-<li>stacks
-<ul>
-<li>Time
-<ul>
-<li>Access/Search O(n)</li>
-<li>Insertion/Deletion O(1)</li>
-</ul>
-</li>
-<li>Space O(n)</li>
-<li>LIFO</li>
-</ul>
-</li>
-<li>queues
-<ul>
-<li>Time
-<ul>
-<li>Access/Search O(n)</li>
-<li>Insertion/Deletion O(1)</li>
-</ul>
-</li>
-<li>Space O(n)</li>
-<li>FIFO</li>
-</ul>
-</li>
 <li>hash tables
 <ul>
 <li>Time
 <ul>
 <li>Access N/A</li>
-<li>(avg) Search/Insertion/Deletion O(1)</li>
+<li>(avg) Search/Insertion/Deletion O(1)
+<ul>
+<li>Hash tables can get an average time complexity of O(1) because they use a hash function to map keys to indices in an array, which allows for fast access to elements. When the hash function is well-designed and the hash table is properly balanced, each key maps to a unique index, and accessing an element in the hash table can be done in constant time.</li>
+</ul>
+</li>
 <li>(worse) Search/Insertion/Deletion O(n)
 <ul>
+<li>Hash tables use a hash function to map keys to indices in an array, which allows for fast search for elements. However, if the hash function is poorly designed or the hash table becomes too full, collisions can occur, where multiple keys map to the same index.</li>
 <li>In the worst case scenario, when all keys collide and map to the same index, the hash table becomes a linked list, and insertion becomes an O(n) operation because you have to traverse the linked list to find the right place to insert the new element.</li>
 </ul>
 </li>
@@ -165,8 +208,16 @@
 <ul>
 <li>Time
 <ul>
-<li>(avg) Access/Search/Insertion/Deletion O(log(n))</li>
-<li>(worse) Access/Search/Insertion/Deletion O(log(n))</li>
+<li>(avg) Access/Search/Insertion/Deletion O(log(n))
+<ul>
+<li>binary search trees are structured such that elements are organized in a way that allows for efficient searching, insertion, and deletion operations. When the tree is balanced, the height of the tree is logarithmic with respect to the number of elements in the tree, which results in an average time complexity of O(log n) for these operations.</li>
+</ul>
+</li>
+<li>(worse) Access/Search/Insertion/Deletion O(n)
+<ul>
+<li>if the tree becomes unbalanced, the height of the tree can be proportional to the number of elements in the tree, resulting in a worst-case time complexity of O(n)</li>
+</ul>
+</li>
 <li>Since the height of a well-balanced BST is O(log(n)), insertion takes O(log(n)) time on average. In the worst case, when the BST is not balanced and becomes a linear chain, the time complexity is O(n)</li>
 </ul>
 </li>

@@ -14,8 +14,7 @@
       
       <guid>/posts/algorithms/</guid>
       <description>Sorting algorithm Comparison
-Bubble Sort Time O(n^2) Space O(1) Insertion Sort Time O(n^2) Space O(1) Selection Sort Time O(n^2) Space O(1) Merge Sort Time O(n log(n)) Space O(n) Quick Sort Time O(n^2) Space O(log(n)) non-comparison
-Radix sort Time O(nk) Space O(n+k) used to sort integrers or strings Counting sort Time O(n+k) Space O(k) Bubble sort Concept Compare two values and move the larger value to the right in each iteration. This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</description>
+Bubble Sort Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array Space O(1) Insertion Sort Time O(n^2) insertion sort works by iterating over the elements in the array, and for each element, it shifts all the elements that are greater than it to the right in order to make room for it in its final position.</description>
     </item>
     
   </channel>
