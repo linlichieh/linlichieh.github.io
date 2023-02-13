@@ -90,9 +90,8 @@ Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 
       
       <guid>/posts/algorithms/</guid>
       <description>Sorting algorithm Comparison
-Bubble Sort Time O(n^2) Space O(1) Insertion Sort Time O(n^2) Space O(1) Selection Sort Time O(n^2) Space O(1) Merge Sort Time O(n log(n)) Space O(n) Quick Sort Time O(n^2) Space O(log(n)) Can sort an type of data
-non-comparison
-Radix sort Time O(nk) Space O(n+k) used to sort integrers or strings Counting sort Time O(n+k) Space O(k) Bubble sort Concept Compare two values and move the larger value to the right in each iteration.</description>
+Bubble Sort Time O(n^2) Space O(1) Insertion Sort Time O(n^2) Space O(1) Selection Sort Time O(n^2) Space O(1) Merge Sort Time O(n log(n)) Space O(n) Quick Sort Time O(n^2) Space O(log(n)) non-comparison
+Radix sort Time O(nk) Space O(n+k) used to sort integrers or strings Counting sort Time O(n+k) Space O(k) Bubble sort Concept Compare two values and move the larger value to the right in each iteration. This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</description>
     </item>
     
     <item>

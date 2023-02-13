@@ -80,7 +80,7 @@
 </li>
 <li>O(n!) factorial</li>
 </ul>
-<h3 id="common-data-structures">Common Data Structures</h3>
+<h1 id="common-data-structures">Common Data Structures</h1>
 <ul>
 <li>arrays
 <ul>
@@ -178,7 +178,7 @@
 <li>tries</li>
 <li>graphs</li>
 </ul>
-<h3 id="補充">補充</h3>
+<h3 id="demonstrate-time-complexity-using-code">Demonstrate time complexity using code</h3>
 <p>O(1) or constant time</p>
 <pre><code>function printFirstItem($arrayOfItems)
 {
@@ -270,7 +270,7 @@
     }
 }
 </code></pre>
-<p>補充2</p>
+<p>其他</p>
 <ul>
 <li>3n^3 + 5n^2 + 10n + 3 = O(n^3)</li>
 <li>1000 = O(1)</li>
@@ -285,34 +285,7 @@
 <li>30*2^n = O(2^n)</li>
 <li>100n = O(n)</li>
 </ul>
-<p>插入排序法</p>
-<pre><code>1. 從 1~n 依序取出當前第 i 個元素
-2. 把當前元素往前移動到正確位置
-
-e.g.  3   2   1   4
----------------------
-  1. [3]  2   1   4
-  2. [2]  3   1   4
-  3.  2  [1]  3   4
-  4. [1]  2   3   4
-  5.  1   2   3  [4]
-
-best case: 一開始就排好 O(n)
-worse case: 完全逆序, 第一個不用動, 第二個要移動1格, 第三個要移動2格 (n, n-1, ..., 1) = O(n^2)
-</code></pre>
-<p>Array</p>
-<ul>
-<li>一塊連續的記憶體</li>
-<li>搜尋/插入/刪除的時間複雜度都是 O(n)</li>
-<li>如果資料已排序則支援二分搜尋</li>
-</ul>
-<p>Dyanmic array</p>
-<ul>
-<li>根據資料量調整大小</li>
-<li>每當裝滿資料會另外建立兩位大的新 Array, 再將舊陣列搬到新陣列，再括棄原陣列</li>
-<li>搬移的時間複雜度是 O(1+2+4+8+&hellip;+n) = O(2n-1) = O(n)</li>
-</ul>
-<h3 id="空間複雜度-memory-cost">空間複雜度 (memory cost)</h3>
+<h3 id="demonstrate-space-complexity-using-code">Demonstrate space complexity using code</h3>
 <p>O(1) space</p>
 <pre><code>function sayHiNTimes($n)
 {
@@ -336,9 +309,6 @@ worse case: 完全逆序, 第一個不用動, 第二個要移動1格, 第三個�
 <li>O(logN) - logarithmic</li>
 <li>O(NlogN) - loglinear</li>
 <li>O(2^N) - exponential time</li>
-</ul>
-<p>其他 case</p>
-<ul>
 <li>O(n^2 /2+100n) = O(n^2)</li>
 <li>O(n^3+50n^2+10000) = O(n^3)</li>
 <li>O((n+30)*(n+5)) = O(n^2)</li>
@@ -552,7 +522,8 @@ pop      3         front=3=rear=3
 3&rsquo;s parent: [3/2] = 1</p>
 </li>
 </ul>
-<h3 id="binary-search-tree">Binary search tree</h3>
+<h1 id="binary-search-tree">Binary search tree</h1>
+<h3 id="concept">Concept</h3>
 <p>rules:</p>
 <ul>
 <li>all child nodes in the tree to the right of root node must be greater than the current node</li>
