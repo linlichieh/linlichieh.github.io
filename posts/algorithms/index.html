@@ -551,13 +551,49 @@ i
 <li>最差時間複雜度：O(log n)</li>
 <li>空間複雜度：O(1)</li>
 </ul>
-<h3 id="depth-first-search-dfs-on-a-binary-tree">Depth First Search (DFS) on a Binary tree</h3>
-<p>與 BFS 一樣是用來看這個點有沒有辦法到另一個點或是否某個點有存在在 graph 裡 (如果所有點都有連接)</p>
+<h3 id="bfs-breadth-first-search">BFS (Breadth First Search)</h3>
+<p>tree</p>
+<pre><code>            9
+          /   \
+        4      20
+       / \    /  \
+      1   6  15   170
+</code></pre>
+<p>traversal</p>
+<pre><code>9 4 20 1 6 15 170
+</code></pre>
+<h3 id="dfs-depth-first-search">DFS (Depth First Search)</h3>
+<p>tree</p>
+<pre><code>            9
+          /   \
+        4      20
+       / \    /  \
+      1   6  15   170
+</code></pre>
+<p>traversal</p>
+<pre><code>9 4 1 6 20 15 170
+</code></pre>
+<h3 id="inorder-vs-preorder-vs-postorder">inorder vs preorder vs postorder</h3>
+<p>tree</p>
+<pre><code>            9
+          /   \
+        4      20
+       / \    /  \
+      1   6  15   170
+</code></pre>
+<p>inorder</p>
+<pre><code>1 4 6 9 15 20 170
+</code></pre>
+<p>preorder</p>
+<pre><code>9 4 1 6 20 15 170
+</code></pre>
+<p>postorder</p>
+<pre><code>1 6 4 15 170 20 9
+</code></pre>
+<h3 id="why-does-bfs-not-have-inorder-preorder-and-postorder-implementations-while-dfs-does">Why does BFS not have inorder, preorder, and postorder implementations, while DFS does?</h3>
 <ul>
-<li>root node <code>&gt;</code> 左節點; root node <code>&lt;</code> 右節點</li>
-<li>原理是先往左再往右找, 從深找到淺</li>
-<li>深到沒有子 node 再&quot;回頭&quot;換右邊</li>
-<li>如果最後回到 root node (最上層) 就代表要找的 node 沒有存在</li>
+<li>BFS visits nodes in a level-by-level manner, which makes it difficult to visit the nodes in a specific order.</li>
+<li>DFS has inorder, preorder, and postorder implementations because it can be used to traverse the tree and visit the nodes in a specific order by visiting the children of a node before visiting the node itself.</li>
 </ul>
 <h1 id="interview">Interview</h1>
 <h3 id="top-6-coding-interview-concepts">Top 6 Coding Interview Concepts</h3>
