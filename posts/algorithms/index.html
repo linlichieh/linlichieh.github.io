@@ -551,6 +551,7 @@ i
 <li>最差時間複雜度：O(log n)</li>
 <li>空間複雜度：O(1)</li>
 </ul>
+<h1 id="traversal">Traversal</h1>
 <h3 id="bfs-breadth-first-search">BFS (Breadth First Search)</h3>
 <p>tree</p>
 <pre><code>            9
@@ -562,6 +563,26 @@ i
 <p>traversal</p>
 <pre><code>9 4 20 1 6 15 170
 </code></pre>
+<p>pros</p>
+<ul>
+<li>If Solution exists BFS will definitely find it</li>
+<li>easy to find the shortest path between two nodes because BFS visits nodes level-by-level, and it will find the destination node as soon as it is encountered</li>
+<li>Never get trapped in unwanted nodes without the solution</li>
+<li>useful for finding the maximum or minimum value in a BST</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>BFS uses more memory than DFS because it needs to keep track of all nodes at the same level before moving on to deeper levels (e.g. queue)</li>
+<li>Slower for deep trees (a higher time complexity than DFS because it visits all nodes at the same level before moving on to the next level)</li>
+</ul>
+<p>use cases</p>
+<ul>
+<li>find BT nods</li>
+<li>search engine use BFS to build index</li>
+<li>GPS navigation</li>
+<li>Network problems: BFS can be used to find the shortest path in a network. For example, it can be used to find the shortest path between two nodes in a computer network, or to find the shortest path between two nodes in a social network.</li>
+<li>Map problems: BFS can be used to find the shortest path in a map.</li>
+</ul>
 <h3 id="dfs-depth-first-search">DFS (Depth First Search)</h3>
 <p>tree</p>
 <pre><code>            9
@@ -573,6 +594,32 @@ i
 <p>traversal</p>
 <pre><code>9 4 1 6 20 15 170
 </code></pre>
+<p>pros</p>
+<ul>
+<li>Memory efficiency: DFS uses a stack to store nodes to be processed, which only requires a limited amount of memory compared to BFS, which uses a queue and requires more memory.</li>
+<li>Faster for deep trees because it can quickly reach the bottom-most level of a tree.</li>
+<li>Faster in finding a solution: DFS can backtrack and quickly eliminate branches that do not contain a solution especially if the solution is located deep in the graph. For example, consider a problem where you need to find a specific node in a large graph. With DFS, you can start from a node and follow its edges to explore deeper into the graph. If you find the solution, you can stop the search and return the result.</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>Can get stuck in an infinite loop: If there are cycles in the graph, DFS may get stuck in an infinite loop, whereas BFS is able to avoid this issue.</li>
+<li>Cannot guarantee to find a solution. For example, if we search for Starbucks from my location, it will definitely find one soon. but if we search for a museum, then it will take more time and might not guarantee to find one.</li>
+<li>Cannot find the minimal solution if two solutions are available</li>
+<li>Slower for shallow trees</li>
+</ul>
+<p>use cases</p>
+<ul>
+<li>If we perform DFS on unweighted graph, then it will create minimum spanning tree for all pair shortest path tree</li>
+<li>Using DFS we can find path between two given vertices u and v.</li>
+<li>topological sorting: Topological sorting is a linear ordering of the vertices in a directed acyclic graph (DAG) (e.g. A-&gt;B-&gt;C-&gt;D)
+<ul>
+<li>scheduling problems: can be used to schedule jobs from given dependencies among jobs</li>
+</ul>
+</li>
+<li>cycle detection in graphs</li>
+<li>solving puzzles with only one solution, such as a maze or a sudoku puzzle.</li>
+<li>analysing networks e.g. testing if a graph is bipartite (a graph where vertices can be partitioned into two disjoint sets, with no edges connecting vertices in the same set. It&rsquo;s used in matching, scheduling, and network flow problems and can be easily tested for by coloring vertices with two colors and checking if no two adjacent vertices have the same color.)</li>
+</ul>
 <h3 id="inorder-vs-preorder-vs-postorder">inorder vs preorder vs postorder</h3>
 <p>tree</p>
 <pre><code>            9
@@ -590,10 +637,42 @@ i
 <p>postorder</p>
 <pre><code>1 6 4 15 170 20 9
 </code></pre>
+<p>use cases:</p>
+<ul>
+<li>If you know you need to explore the roots before inspecting any leaves, you pick pre-order because you will encounter all the roots before all of the leaves.</li>
+<li>If you know you need to explore all the leaves before any nodes, you select post-order because you don&rsquo;t waste any time inspecting roots in search for leaves.</li>
+<li>If you know that the tree has an inherent sequence in the nodes, and you want to flatten the tree back into its original sequence, than an in-order traversal should be used.</li>
+</ul>
 <h3 id="why-does-bfs-not-have-inorder-preorder-and-postorder-implementations-while-dfs-does">Why does BFS not have inorder, preorder, and postorder implementations, while DFS does?</h3>
 <ul>
 <li>BFS visits nodes in a level-by-level manner, which makes it difficult to visit the nodes in a specific order.</li>
 <li>DFS has inorder, preorder, and postorder implementations because it can be used to traverse the tree and visit the nodes in a specific order by visiting the children of a node before visiting the node itself.</li>
+</ul>
+<h1 id="whats-the-pros-and-cons-of-recursive-solution">What&rsquo;s the pros and cons of recursive solution?</h1>
+<p>pros</p>
+<ul>
+<li>reduce time complexity (if use recursion with memorisation)</li>
+<li>cleaner code</li>
+<li>Recursion is better at tree traversal
+<ul>
+<li>One of the more efficient ways to traverse these trees when looking for a specific leaf (or node) is by recursively following a single branch until the end of that branch until you find the value you are looking for.</li>
+</ul>
+</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>use more memory (might cause stack overflow)
+<ul>
+<li>Because the function has to add to the stack with each recursive call and keep the values there until the call is finished</li>
+</ul>
+</li>
+<li>can be slow (generally, compare to iteration)
+<ul>
+<li>it requires the allocation of a new stack frame</li>
+<li>fibonacci question is a good example. Iteration is much faster than recursion, because iteration saves the value of each calculation for further use.</li>
+</ul>
+</li>
+<li>more difficult to understand and debug</li>
 </ul>
 <h1 id="interview">Interview</h1>
 <h3 id="top-6-coding-interview-concepts">Top 6 Coding Interview Concepts</h3>
@@ -654,6 +733,10 @@ i
 <ul>
 <li><a href="https://www.interviewcake.com/article/java/big-o-notation-time-and-space-complexity">Big O Notation</a></li>
 <li><a href="https://goo.gl/mKYH19">初學者學演算法｜從時間複雜度認識常見演算法（一）</a></li>
+<li><a href="https://www.quora.com/What-are-the-advantages-of-using-BFS-over-DFS-or-using-DFS-over-BFS-What-are-the-applications-and-downsides-of-each">bfs vs dfs</a></li>
+<li><a href="https://www.tutorialspoint.com/applications-of-dfs-and-bfs-in-data-structures">use cases of BFS/DFS</a></li>
+<li><a href="https://medium.com/@williambdale/recursion-the-pros-and-cons-76d32d75973a">recursive</a></li>
+<li><a href="https://stackoverflow.com/questions/9456937/when-to-use-preorder-postorder-and-inorder-binary-search-tree-traversal-strate">preorder vs inorder vs postorder</a></li>
 </ul>
 
 </article>
