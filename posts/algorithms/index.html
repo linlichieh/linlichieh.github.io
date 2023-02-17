@@ -547,6 +547,7 @@ i
 <h3 id="step-1---make-unsorted-array-a-max-heap">Step 1 - Make unsorted array a max-heap</h3>
 <p>For an array with 9 elements, sorting only the first 4 elements will result in the entire array being sorted.
 The reason that only first 4 elements are choosen is because the direction of <code>heapify</code> is downward, the process will sort the whole array.</p>
+<p>The example to explain above</p>
 <pre><code>          -&gt; 8
            /   \
       -&gt; 27     14 &lt;-
@@ -570,7 +571,7 @@ The reason that only first 4 elements are choosen is because the direction of <c
   [ 8, 27, 14, 18, 9, 36, 55, 41, 21, 8 ]
     *   *   *   *  *
 </code></pre>
-<p>input:</p>
+<p>input for the following demonstration</p>
 <pre><code>   -&gt; 7
      / \
  -&gt; 1   2
@@ -610,7 +611,7 @@ The reason that only first 4 elements are choosen is because the direction of <c
   1   4
 </code></pre>
 <p>max-heap is done</p>
-<h3 id="step-2---sort-the-max-heap-by-extracting-the-maximum">Step 2 - sort the max-heap by extracting the maximum</h3>
+<h3 id="step-2---sort-the-max-heap-by-shifting-maximum-to-the-right-in-each-iteration">Step 2 - sort the max-heap by shifting maximum to the right in each iteration</h3>
 <p>max-heap</p>
 <pre><code>      8
      / \
