@@ -542,11 +542,11 @@ i
 <h3 id="how-it-works-5">How it works</h3>
 <ol>
 <li>Build an max-heap from given unsorted array with the same idea of <code>heapify</code> of data structure <code>heap</code></li>
-<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except the elements that are shifted to the right)</li>
+<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except for the elements that are shifted to the right)</li>
 </ol>
 <h3 id="step-1---make-unsorted-array-a-max-heap">Step 1 - Make unsorted array a max-heap</h3>
-<p>For an array with 9 elements, sorting only the first 4 elements will result in the entire array being sorted.
-The reason that only first 4 elements are choosen is because the direction of <code>heapify</code> is downward, the process will sort the whole array.</p>
+<p>For an array with 9 elements, only the first 4 elements need to be heapified in order to get max-heap.
+The reason why only the first 4 elements are needed is because the direction of <code>heapify</code> is downward, so the processes will take care of the whole heap</p>
 <p>The example to explain above</p>
 <pre><code>          -&gt; 8
            /   \
@@ -558,9 +558,9 @@ The reason that only first 4 elements are choosen is because the direction of <c
 
   [ 8, 27, 14, 18, 9, 36, 55, 41, 21 ]
     *   *   *   *
-
-  If there are 10 elements in the array:
-          -&gt; 8
+</code></pre>
+<p>If there are 10 elements in the array:</p>
+<pre><code>          -&gt; 8
            /   \
       -&gt; 27     14 &lt;-
         /  \   /  \
@@ -571,7 +571,7 @@ The reason that only first 4 elements are choosen is because the direction of <c
   [ 8, 27, 14, 18, 9, 36, 55, 41, 21, 8 ]
     *   *   *   *  *
 </code></pre>
-<p>input for the following demonstration</p>
+<p>Now, start to work, the input for the following demonstration</p>
 <pre><code>   -&gt; 7
      / \
  -&gt; 1   2
@@ -582,9 +582,9 @@ The reason that only first 4 elements are choosen is because the direction of <c
  *  *
 </code></pre>
 <blockquote>
-<p>the first 2 elements will be heapified</p>
+<p>the first 2 elements will need to be heapified</p>
 </blockquote>
-<p>1st loop: swap 8 with 1</p>
+<p>1st loop: swap value 8 with value 1 (heapify value 1)</p>
 <pre><code>      7
      / \
  -&gt; 1   2
@@ -597,7 +597,10 @@ The reason that only first 4 elements are choosen is because the direction of <c
    / \
   1   4
 </code></pre>
-<p>2nd loop: swap 7 with 8</p>
+<blockquote>
+<p>the heapify is downward, so it stops here</p>
+</blockquote>
+<p>2nd loop: swap 7 with 8 (heapify value 7)</p>
 <pre><code>   -&gt; 7
      / \
     8   2
@@ -655,6 +658,8 @@ The reason that only first 4 elements are choosen is because the direction of <c
  -&gt; 4   2
    /
   1
+
+  [7, 4, 2, 1, 8]
 </code></pre>
 <p>done (4 &gt; 1, do nothing)</p>
 <h5 id="2nd-loop">2nd loop</h5>
@@ -705,7 +710,7 @@ The reason that only first 4 elements are choosen is because the direction of <c
 
   [1, 2, 4, 7, 8]
 </code></pre>
-<p>done</p>
+<p>done (no need to do heapify)</p>
 <h1 id="binary-search">binary search</h1>
 <h3 id="remove-a-node-in-bst">Remove a node in BST</h3>
 <p><code>insert</code> and <code>lookup</code> a node is quite easy, but removing a node is complex.</p>
