@@ -108,22 +108,6 @@ echo `echo Hack by Orange &amp;gt; index.php` 使用 union 污染 sql 結果 這
     </item>
     
     <item>
-      <title>PHP read and write a file</title>
-      <link>/posts/php-read-and-write/</link>
-      <pubDate>Sat, 31 Aug 2013 16:12:00 +0000</pubDate>
-      
-      <guid>/posts/php-read-and-write/</guid>
-      <description>php讀寫檔 /home/user_me/test/t.txt :
-line 1 line 2 line 3 line 4 line 5 讀:
-$test = fopen(&#39;/home/user_me/test/t.txt&#39;, &#39;r&#39;); while ( ! feof($test)) { echo fgets($test); } fclose($test); feof — Tests for end-of-file on a file pointer
-寫:
-[1] 將第一行移除
-$path = &#39;/home/user_me/test/t.txt&#39;; $contents = file_get_contents($path); $rows = explode(&amp;quot;\n&amp;quot;, $contents); array_shift($rows); file_put_contents($path , join(&amp;quot;\n&amp;quot;, $rows)); join — Alias of implode()
-[2] 新增到最後一行
-$path = &#39;/home/user_me/test/t.txt&#39;; file_put_contents($path, md5(uniqid(rand(), TRUE)), FILE_APPEND); [3] 控制整份檔案內容</description>
-    </item>
-    
-    <item>
       <title>PHP Frameworks</title>
       <link>/posts/php-frameworks/</link>
       <pubDate>Sun, 21 Jul 2013 14:58:00 +0000</pubDate>

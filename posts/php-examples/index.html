@@ -589,6 +589,61 @@ if ($httpcode == 200)
     // do something
 }
 </code></pre>
+<h2 id="php讀寫檔">php讀寫檔</h2>
+<p>/home/user_me/test/t.txt :</p>
+<pre><code>line 1
+line 2
+line 3
+line 4
+line 5
+</code></pre>
+<p>讀:</p>
+<pre><code>$test = fopen('/home/user_me/test/t.txt', 'r');
+while ( ! feof($test))
+{
+    echo fgets($test);
+}
+fclose($test);
+</code></pre>
+<blockquote>
+<p>feof — Tests for end-of-file on a file pointer</p>
+</blockquote>
+<p>寫:</p>
+<p>[1] 將第一行移除</p>
+<pre><code>$path = '/home/user_me/test/t.txt';
+$contents = file_get_contents($path);
+$rows = explode(&quot;\n&quot;, $contents);
+array_shift($rows);
+file_put_contents($path , join(&quot;\n&quot;, $rows));
+</code></pre>
+<blockquote>
+<p>join — Alias of implode()</p>
+</blockquote>
+<p>[2] 新增到最後一行</p>
+<pre><code>$path = '/home/user_me/test/t.txt';
+file_put_contents($path, md5(uniqid(rand(), TRUE)), FILE_APPEND);
+</code></pre>
+<p>[3] 控制整份檔案內容</p>
+<pre><code>$file_path = '/home/user_me/test/q.txt';
+$fp = fopen($file_path, 'w');
+$rows[] = 'line1';
+$rows[] = 'line2';
+$rows[] = 'line3';
+fwrite($fp, join(&quot;\n&quot;, $rows));
+fclose($fp);
+</code></pre>
+<blockquote>
+<p>fputs — Alias of fwrite()</p>
+</blockquote>
+<p>寫 csv 檔:</p>
+<pre><code>$file_path = '/home/user_me/test/q.txt';
+$fp = fopen($file_path, 'w');
+fputcsv($fp, array('field 1', 'field 2', 'field 3'));
+fputcsv($fp, array('1', '2', '3'));
+fputcsv($fp, array('4', '5', '6'));
+fputcsv($fp, array('7', '8', '9'));
+fclose($fp);
+</code></pre>
 
 </article>
 
