@@ -89,7 +89,55 @@ so that the packets can be sent to the right end.</p>
 <li>Reduce the timeout of connection being tracked</li>
 <li>Increase the maximum of connection tracking table</li>
 </ul>
-<h2 id="http--https">HTTP / HTTPS</h2>
+<h1 id="http--https">HTTP / HTTPS</h1>
+<h3 id="https">HTTPS</h3>
+<p>加密所有 request 及 response 資料, 包含 URL, 如果你使用 Http Proxy, 它只知道目標 server 的 domain, 不會知道 url path
+意思是如果攔截到 https 封包只會看到 IP 跟 domain</p>
+<h3 id="how-does-https-work">How does HTTPS work?</h3>
+<h4 id="prerequisites">Prerequisites</h4>
+<ul>
+<li>Any message encrypted with Bob&rsquo;s public key can only be decrypted with Bob&rsquo;s private key.</li>
+<li>Anyone who has Bob&rsquo;s public key can verify a message (signature) encrypted by Bob with its private key.</li>
+<li>SSL certificates are signed by a certificate authority (CA)</li>
+<li>CA has a &ldquo;private key&rdquo;, and a &ldquo;public key&rdquo; that everyone knows</li>
+</ul>
+<h4 id="how-it-works">How it works?</h4>
+<p>It&rsquo;s a simple way to explain how it works, and it might be a bit different from what it really is.
+For example, I oversimplify the secret part. However, it&rsquo;s still a good example to explain how it works.</p>
+<p>Create a certificate for domain</p>
+<pre><code>youtube.com -&gt; CA
+(youtube issues Certificate Signing Request)
+(both of them have their own public/private key pairs)
+
+youtube.com &lt;- CA
+(CA creates a signature containing youtube's public key using its private key)
+(anyone who has CA's public key can verify it)
+(but the public key can't be used to create a new signature)
+</code></pre>
+<p>Browser have already had a list of trusted certificates.</p>
+<p>Visit youtube.com</p>
+<pre><code>Your Browser -&gt; youtube.com
+(Visit youtube)
+
+Your Browser &lt;- youtube.com
+(youtube returns certificate containing youtube's public key signed by CA)
+
+Your Browser -&gt; youtube.com
+(verify the certificate using CA's public key and derives youtube's public key out of it)
+(browser create a secret key and encrypt duplicate one using youtube's public key)
+
+Your Browser &lt;- youtube.com
+(youtube decrypt it using its private key and derives the secret key)
+
+Your Browser &lt;-&gt; youtube.com
+(they all have the same secret key and start encrypting all of their communication using this key)
+</code></pre>
+<p>ref:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=33VYnE7Bzpk">https://www.youtube.com/watch?v=33VYnE7Bzpk</a></li>
+<li><a href="https://www.youtube.com/watch?v=T4Df5_cojAs">https://www.youtube.com/watch?v=T4Df5_cojAs</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls">https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls</a></li>
+</ul>
 <h3 id="keep-alive-1">Keep-alive</h3>
 <p>tcp 沒有 keep-alive 一個 request 就會佔用一條通道</p>
 <p>tcp 有 keep-alive 就多個 request 只需做一次三項交握, 都在同一條通道傳送</p>
@@ -186,54 +234,6 @@ Content-Disposition: form-data; name=&quot;f1&quot;
 v1
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 </code></pre>
-<h3 id="https">HTTPS</h3>
-<p>加密所有 request 及 response 資料, 包含 URL, 如果你使用 Http Proxy, 它只知道目標 server 的 domain, 不會知道 url path</p>
-<p>意思是如果攔截到 https 封包只會看到 IP 跟 domain</p>
-<h3 id="how-does-https-work">How does HTTPS work?</h3>
-<h4 id="prerequisites">Prerequisites</h4>
-<ul>
-<li>Any message encrypted with Bob&rsquo;s public key can only be decrypted with Bob&rsquo;s private key.</li>
-<li>Anyone who has Bob&rsquo;s public key can verify a message (signature) encrypted by Bob with its private key.</li>
-<li>SSL certificates are signed by a certificate authority (CA)</li>
-<li>CA has a &ldquo;private key&rdquo;, and a &ldquo;public key&rdquo; that everyone knows</li>
-</ul>
-<h4 id="how-it-works">How it works?</h4>
-<p>It&rsquo;s a simple way to explain how it works, and it might be a bit different from what it really is.
-For example, I oversimplify the secret part. However, it&rsquo;s still a good example to explain how it works.</p>
-<p>Create a certificate for domain</p>
-<pre><code>youtube.com -&gt; CA
-(youtube issues Certificate Signing Request)
-(both of them have their own public/private key pairs)
-
-youtube.com &lt;- CA
-(CA creates a signature containing youtube's public key using its private key)
-(anyone who has CA's public key can verify it)
-(but the public key can't be used to create a new signature)
-</code></pre>
-<p>Browser have already had a list of trusted certificates.</p>
-<p>Visit youtube.com</p>
-<pre><code>Your Browser -&gt; youtube.com
-(Visit youtube)
-
-Your Browser &lt;- youtube.com
-(youtube returns certificate containing youtube's public key signed by CA)
-
-Your Browser -&gt; youtube.com
-(verify the certificate using CA's public key and derives youtube's public key out of it)
-(browser create a secret key and encrypt duplicate one using youtube's public key)
-
-Your Browser &lt;- youtube.com
-(youtube decrypt it using its private key and derives the secret key)
-
-Your Browser &lt;-&gt; youtube.com
-(they all have the same secret key and start encrypting all of their communication using this key)
-</code></pre>
-<p>ref:</p>
-<ul>
-<li><a href="https://www.youtube.com/watch?v=33VYnE7Bzpk">https://www.youtube.com/watch?v=33VYnE7Bzpk</a></li>
-<li><a href="https://www.youtube.com/watch?v=T4Df5_cojAs">https://www.youtube.com/watch?v=T4Df5_cojAs</a></li>
-<li><a href="https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls">https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls</a></li>
-</ul>
 <h2 id="different-encryption-techniques">Different Encryption Techniques</h2>
 <ul>
 <li>SSH and SSL use Symmetrical encryption and Asymmetrical encryption.</li>
