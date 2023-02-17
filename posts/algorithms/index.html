@@ -122,10 +122,10 @@
 <blockquote>
 <p>not recommended for use in practical applications due to its poor time complexity of O(n^2)</p>
 </blockquote>
-<h3 id="concept">Concept</h3>
+<h3 id="how-it-works">How it works</h3>
 <p>Compare two values and move the larger value to the right in each iteration.
 This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</p>
-<h3 id="how-it-works">How it works</h3>
+<h3 id="steps">Steps</h3>
 <p>input</p>
 <pre><code>7 5 6 1 3
 </code></pre>
@@ -193,9 +193,9 @@ j j
 <blockquote>
 <p>suitable for small arrays and partially sorted arrays</p>
 </blockquote>
-<h3 id="concept-1">Concept</h3>
+<h3 id="how-it-works-1">How it works</h3>
 <p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
-<h3 id="how-it-works-1">How it works?</h3>
+<h3 id="steps-1">Steps</h3>
 <p>input</p>
 <pre><code>7 8 5 2 4 6 3
 </code></pre>
@@ -333,10 +333,10 @@ j j
 <blockquote>
 <p>not commonly used in practice due to its poor performance</p>
 </blockquote>
-<h3 id="concept-2">Concept</h3>
+<h3 id="how-it-works-2">How it works</h3>
 <p>Set a starting point (i) to find the minimum after it and swap it with the minimum.
 Lock the minimum and move the start point forward in each iteration.</p>
-<h3 id="how-it-works-2">How it works</h3>
+<h3 id="steps-2">Steps</h3>
 <p>input</p>
 <pre><code>2 8 1 3 9
 </code></pre>
@@ -433,10 +433,9 @@ m   i   j
 <blockquote>
 <p>widely used in practice due to its efficient time complexity and stability</p>
 </blockquote>
-<h3 id="concept-3">Concept</h3>
-<p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
 <h3 id="how-it-works-3">How it works</h3>
-<p>Steps</p>
+<p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
+<h3 id="steps-3">Steps</h3>
 <pre><code>                [6 5 3 1 8 7 2 4]
                   /           \
              [6 5 3 1]     [8 7 2 4]
@@ -470,12 +469,11 @@ m   i   j
 <blockquote>
 <p>widely used in practice</p>
 </blockquote>
-<h3 id="concept-4">Concept</h3>
+<h3 id="how-it-works-4">How it works</h3>
 <p>Choose a pivot element, partition the data set into two sub-arrays recursively based on the pivot element,
 and sort each sub-array by moving values less than the pivot to the left and values greater than the pivot to the right.
 When all sub-arrays contain only one element, the entire array is considered sorted.</p>
-<h3 id="how-it-works-4">How it works</h3>
-<p>The process</p>
+<h3 id="steps-4">Steps</h3>
 <pre><code>j
 6 3 7 5 1 2 [4]    6 &gt; 4
 i
@@ -541,7 +539,172 @@ i
 </code></pre>
 <p>and go on&hellip;</p>
 <h1 id="heap-sort">Heap sort</h1>
-<p>TODO</p>
+<h3 id="how-it-works-5">How it works</h3>
+<ol>
+<li>Build an max-heap from given unsorted array with the same idea of <code>heapify</code> of data structure <code>heap</code></li>
+<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except the elements that are shifted to the right)</li>
+</ol>
+<h3 id="step-1---make-unsorted-array-a-max-heap">Step 1 - Make unsorted array a max-heap</h3>
+<p>For an array with 9 elements, sorting only the first 4 elements will result in the entire array being sorted.
+The reason that only first 4 elements are choosen is because the direction of <code>heapify</code> is downward, the process will sort the whole array.</p>
+<pre><code>          -&gt; 8
+           /   \
+      -&gt; 27     14 &lt;-
+        /  \   /  \
+   -&gt; 18    9 36   55
+     / \
+   41   21
+
+  [ 8, 27, 14, 18, 9, 36, 55, 41, 21 ]
+    *   *   *   *
+
+  If there are 10 elements in the array:
+          -&gt; 8
+           /   \
+      -&gt; 27     14 &lt;-
+        /  \   /  \
+   -&gt; 18 -&gt; 9 36   55
+     / \   /
+   41  21 8
+
+  [ 8, 27, 14, 18, 9, 36, 55, 41, 21, 8 ]
+    *   *   *   *  *
+</code></pre>
+<p>input:</p>
+<pre><code>   -&gt; 7
+     / \
+ -&gt; 1   2
+   / \
+  8   4
+
+[7, 1, 2, 8, 4]
+ *  *
+</code></pre>
+<blockquote>
+<p>the first 2 elements will be heapified</p>
+</blockquote>
+<p>1st loop: swap 8 with 1</p>
+<pre><code>      7
+     / \
+ -&gt; 1   2
+   / \
+  8   4
+
+      7
+     / \
+    8   2
+   / \
+  1   4
+</code></pre>
+<p>2nd loop: swap 7 with 8</p>
+<pre><code>   -&gt; 7
+     / \
+    8   2
+   / \
+  1   4
+
+   -&gt; 8
+     / \
+    7   2
+   / \
+  1   4
+</code></pre>
+<p>max-heap is done</p>
+<h3 id="step-2---sort-the-max-heap-by-extracting-the-maximum">Step 2 - sort the max-heap by extracting the maximum</h3>
+<p>max-heap</p>
+<pre><code>      8
+     / \
+    7   2
+   / \
+  1   4
+
+  [8, 7, 2, 1, 4]
+</code></pre>
+<h5 id="1st-loop">1st loop</h5>
+<p>shift index 0 with the last one (swap value 8 with value 4)</p>
+<pre><code>      4
+     / \
+    7   2
+   / \
+  1   8
+
+  [4, 7, 2, 1, 8]
+</code></pre>
+<p>do heapify for 0, 1, 2, 3 (without value 8), start with index 0</p>
+<pre><code>   -&gt; 4
+     / \
+    7   2
+   /
+  1
+
+  [4, 7, 2, 1, 8]
+</code></pre>
+<p>swap value 4 and value 7</p>
+<pre><code>      7
+     / \
+ -&gt; 4   2
+   /
+  1
+
+  [7, 4, 2, 1, 8]
+</code></pre>
+<p>do heapify, start from value 4</p>
+<pre><code>      7
+     / \
+ -&gt; 4   2
+   /
+  1
+</code></pre>
+<p>done (4 &gt; 1, do nothing)</p>
+<h5 id="2nd-loop">2nd loop</h5>
+<p>swap value 7 with value 1</p>
+<pre><code>      1
+     / \
+    4   2
+   /
+  7
+
+  [1, 4, 2, 7, 8]
+</code></pre>
+<p>do heapify for index 0, 1, 2 (without value 7), start from value 1</p>
+<pre><code>   -&gt; 1
+     / \
+    4   2
+
+  [1, 4, 2, 7, 8]
+</code></pre>
+<p>swap value 1 and value 4</p>
+<pre><code>      4
+     / \
+ -&gt; 1   2
+
+  [4, 1, 2, 7, 8]
+</code></pre>
+<h5 id="3rd-loop">3rd loop</h5>
+<p>swap value 2 with value 4</p>
+<pre><code>      2
+     / \
+    1   4
+
+  [2, 1, 4, 7, 8]
+</code></pre>
+<p>do heapify for index 0, 1 (without value 4), start from value 2</p>
+<pre><code>   -&gt; 2
+     /
+    1
+
+  [2, 1, 4, 7, 8]
+</code></pre>
+<p>done (2 &gt; 1, do nothing)</p>
+<h5 id="4th-loop">4th loop</h5>
+<p>swap value 1 and value 2</p>
+<pre><code>      1
+     /
+    2
+
+  [1, 2, 4, 7, 8]
+</code></pre>
+<p>done</p>
 <h1 id="binary-search">binary search</h1>
 <h3 id="remove-a-node-in-bst">Remove a node in BST</h3>
 <p><code>insert</code> and <code>lookup</code> a node is quite easy, but removing a node is complex.</p>
