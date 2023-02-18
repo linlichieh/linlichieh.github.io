@@ -89,8 +89,8 @@ Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 
       <pubDate>Sat, 20 May 2017 18:56:16 +0800</pubDate>
       
       <guid>/posts/algorithms/</guid>
-      <description>Sorting algorithm Comparison
-Bubble Sort Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array Space O(1) Insertion Sort Time O(n^2) insertion sort works by iterating over the elements in the array, and for each element, it shifts all the elements that are greater than it to the right in order to make room for it in its final position.</description>
+      <description>Bubble sort Complexity Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array Space O(1) Use case pros
+Educational purposes: easy to implement memory efficiency: elements are swapped in place without using additional temporary storage stable sorting For example, consider a list of records that represent people, where each record has a name and an age.</description>
     </item>
     
     <item>
