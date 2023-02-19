@@ -253,14 +253,14 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
 <li>tries
 <ul>
 <li>Suffix Tree</li>
 </ul>
 </li>
 <li>graphs</li>
+</ul>
+</li>
 </ul>
 <h3 id="demonstrate-time-complexity-using-code">Demonstrate time complexity using code</h3>
 <p>O(1) or constant time</p>
@@ -555,6 +555,7 @@ int main() {
 <li>efficient operations such as inserting a new element, deleting the minimum (or maximum) element, and finding the minimum (or maximum) element, which can be done in O(log n) time.</li>
 </ul>
 </li>
+<li>in-place algorithm</li>
 </ul>
 </li>
 <li>cons
@@ -575,6 +576,7 @@ int main() {
 <ul>
 <li>Difficult implementation (compared to array)</li>
 <li>Bad for time complexity: finding the minimum (or maximum) element, inserting a new element, and deleting the minimum (or maximum) element all have a time complexity of O(n) in the worst case because it may require traversing the entire list to find a specific element</li>
+<li>O(n) space</li>
 </ul>
 </li>
 </ul>
@@ -582,13 +584,19 @@ int main() {
 </ul>
 <p>How do I make decision which implementation to use, arrays or linked lists?</p>
 <ul>
-<li>If the array size changes frequently?
+<li>If the array size changes frequently and array is huge
 <ul>
 <li>yes -&gt; linked list</li>
 <li>no -&gt; array</li>
 </ul>
 </li>
-<li>If the performance of operations such as insertion, deletion matters?
+<li>If the performance of operations such as insertion, deletion matters
+<ul>
+<li>yes -&gt; array</li>
+<li>no -&gt; linked list</li>
+</ul>
+</li>
+<li>If memory is significantly limited
 <ul>
 <li>yes -&gt; array</li>
 <li>no -&gt; linked list</li>
@@ -603,19 +611,46 @@ int main() {
 <li>from top to bottom</li>
 </ul>
 <h1 id="graph">Graph</h1>
-<h3 id="represent-a-graph-using-an-array">Represent a graph using an array</h3>
-<p>graph:</p>
+<h3 id="basics-2">basics</h3>
+<p>Components</p>
+<ul>
+<li>vertex (node)</li>
+<li>edge (arc)</li>
+</ul>
+<p>Types</p>
+<ul>
+<li>directed graph
+<ul>
+<li>u -&gt; v</li>
+<li>(u, v)</li>
+</ul>
+</li>
+<li>un-directed graph
+<ul>
+<li>u &ndash; v</li>
+<li>(u, v) and (v, u) are same</li>
+</ul>
+</li>
+</ul>
+<h3 id="implementation-using-edge-list">Implementation using Edge list</h3>
+<p>graph using array</p>
 <pre><code>        2 ---------- 0
       /   \
      1-----3
 </code></pre>
-<p>Edge list</p>
+<p>represent in code</p>
 <pre><code>graph = [[0,2], [2,3], [2,1], [1,3]]
 </code></pre>
 <blockquote>
 <p>Each array element represents a connection between two nodes in the graph</p>
 </blockquote>
-<p>adjacent list</p>
+<h3 id="implementation-using-adjacent-list">Implementation using Adjacent list</h3>
+<p>graph</p>
+<pre><code>        2 ---------- 0
+      /   \
+     1-----3
+</code></pre>
+<p>represent in code using array of linked list</p>
 <pre><code>graph = [[2], [2,3], [0,1,3], [1,2]]
 </code></pre>
 <blockquote>
@@ -624,7 +659,46 @@ int main() {
 <li>For instance, the index 0 <code>[2]</code> represents a connection between nodes 0 and 2, while the index 1 <code>[2,3]</code> indicates connections between nodes 1 and 2, as well as node 1 and 3.</li>
 </ul>
 </blockquote>
-<p>adjacent matrix</p>
+<p>pros</p>
+<ul>
+<li>Space Efficient
+<ul>
+<li>only store the nodes that actually exists in the graph</li>
+<li>This works nicely in all kinds of graphs, either dense or sparse, since the maximum space usage is always smaller than N^2</li>
+</ul>
+</li>
+<li>Dynamic Allocation
+<ul>
+<li>allows for dynamic allocation of memory, making it easier to add or remove vertices and edges from the graph</li>
+</ul>
+</li>
+<li>fast to iterate all edges
+<ul>
+<li>Iterating over all edges in an adjacency list representation is easier and faster compared to an adjacency matrix representation, especially for sparse graphs</li>
+</ul>
+</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>Slow to accessing a specific edge / slow to determine if 2 nodes are connected
+<ul>
+<li>need to list all the nodes that the node is connected to</li>
+<li>O(N)</li>
+</ul>
+</li>
+</ul>
+<p>use cases</p>
+<ul>
+<li>Adjacency list is much more efficient for the storage of the graph, especially sparse graphs, when there is a lot less edges than nodes.</li>
+<li>suitable for sparse graph</li>
+</ul>
+<h3 id="implementation-using-adjacent-matrix">Implementation using Adjacent matrix</h3>
+<p>graph</p>
+<pre><code>        2 ---------- 0
+      /   \
+     1-----3
+</code></pre>
+<p>represent in code using array</p>
 <pre><code>graph = {
     [0,0,1,0],
     [0,0,1,1],
@@ -639,9 +713,72 @@ int main() {
 <li>For example, the index 0 <code>[0,0,1,0]</code> represents a connection between node 0 and node 2, while the index 2 <code>[1,1,0,1]</code> indicates connections betwwen node 2 and node 0, node 2 and node 1, as well as node 2 and node 3.</li>
 </ul>
 </blockquote>
-<h1 id="tries">Tries</h1>
-<h3 id="basics-2">basics</h3>
-<p>used for search string (like search engine)</p>
+<p>pros</p>
+<ul>
+<li>easy to implement</li>
+<li>removing an edge takes O(1) time</li>
+<li>Accessing and updating information about an edge take O(1) time
+<ul>
+<li>determine if two vertices are adjacent to each other</li>
+<li>add an edge in the graph</li>
+<li>delete an edge form the graph</li>
+</ul>
+</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>consume more memory O(V^2)
+<ul>
+<li>if there is a graph with 1000 vertices and 1 edge, in order to store on edge it takes an array of size 1000^2 in memory</li>
+<li>not good for a spare graph</li>
+</ul>
+</li>
+<li>Traversing the graph using algorithms like DPS/BFS requires O(V^2) time
+<ul>
+<li>very slow for algorithms that require iterating over all edges, as the number of edges is proportional to n^2.</li>
+</ul>
+</li>
+</ul>
+<p>use cases</p>
+<ul>
+<li>If the graph contains edges in order of V2, then it is better to use adjacency matrix as compared to adjacency list. This is because the size of both adjacency list and adjacency matrix will be comparable so using adjacecny matrix doesn’t necceessary waste a lot of memeory.</li>
+<li>If we want to perform operations like add/delete or check that the vertices are adjancent or not very frequently, then it is recommended to use adjacency matrix since we can perform these operations in constant time.</li>
+<li>adjacency matrix is much more efficient when finding the relationships in a graph</li>
+<li>suitable for dense graph</li>
+</ul>
+<h1 id="trie">Trie</h1>
+<h3 id="basics-3">basics</h3>
+<ul>
+<li>a tree-like data strucutre</li>
+<li>can have more than 2 children</li>
+<li>used for search string (like search engine)</li>
+</ul>
+<h3 id="represent-a-trie-using-linked-list">Represent a trie using linked list</h3>
+<p>linked list attributes</p>
+<ul>
+<li>map[string]*node
+<ul>
+<li>string is a character</li>
+</ul>
+</li>
+<li>isWord (boolean)</li>
+</ul>
+<p>trie: (&ldquo;cat&rdquo;, &ldquo;try&rdquo;, &ldquo;trie&rdquo;)</p>
+<pre><code>        [&quot;c&quot;, &quot;t&quot;]
+          (false)
+         /      \
+      [&quot;a&quot;]    [&quot;r&quot;]
+     (false)  (false)
+       /          \
+    [&quot;t&quot;]      [&quot;i&quot;, &quot;y&quot;]
+   (false)      (false)
+     /          /       \
+   [&quot;&quot;]      [&quot;e&quot;]      [&quot;&quot;]
+  (true)    (false)    (true)
+              /
+            [&quot;&quot;]
+           (true)
+</code></pre>
 <h3 id="ref">ref</h3>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=_r7cfVrn28c">https://www.youtube.com/watch?v=_r7cfVrn28c</a></li>
@@ -649,6 +786,8 @@ int main() {
 <li>Delete a node in BST <a href="https://www.youtube.com/watch?v=DkOswl0k7s4">https://www.youtube.com/watch?v=DkOswl0k7s4</a></li>
 <li>Delete a node in BST <a href="https://www.educative.io/answers/how-to-delete-a-node-from-a-binary-search-tree">https://www.educative.io/answers/how-to-delete-a-node-from-a-binary-search-tree</a></li>
 <li>Delete a node in BST <a href="https://www.techiedelight.com/deletion-from-bst/">https://www.techiedelight.com/deletion-from-bst/</a></li>
+<li>graph <a href="https://slaystudy.com/advantages-and-disadvantages-of-adjacency-matrix-graph-representation/">https://slaystudy.com/advantages-and-disadvantages-of-adjacency-matrix-graph-representation/</a></li>
+<li>graph <a href="https://www.quora.com/What-are-the-pros-and-cons-of-representing-a-graph-in-an-adjacency-list-an-adjacency-matrix-and-objects-classes">https://www.quora.com/What-are-the-pros-and-cons-of-representing-a-graph-in-an-adjacency-list-an-adjacency-matrix-and-objects-classes</a></li>
 </ul>
 
 </article>
