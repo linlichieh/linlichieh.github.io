@@ -20,7 +20,7 @@
     <h1>Backend</h1>
     <time datetime="2014-07-30T21:06:39&#43;08:00">July 30, 2014</time>
   </header>
-  <h2 id="安全性">安全性</h2>
+  <h1 id="安全性">安全性</h1>
 <ul>
 <li>SSL 憑證及加密傳送 (HTTPS)</li>
 <li>資料再以 private key 做 AES CBC 方式加密</li>
@@ -29,13 +29,13 @@
 <li>htmlspecialchars (XSS)</li>
 <li>SQL injection</li>
 </ul>
-<h2 id="設計-restful-api-注意地方">設計 RESTful API 注意地方</h2>
+<h1 id="設計-restful-api-注意地方">設計 RESTful API 注意地方</h1>
 <p>避免使用 cookie, 因違反無狀態協議, 如果只用來記錄 client 資料不維護狀態, 那麼還是可以使用</p>
 <p>session 則完全違反 REST 的無狀態性</p>
-<h3 id="解決方式是-client-登入後產生-token-再從-url-帶-token-過來">解決方式是 client 登入後產生 token, 再從 url 帶 token 過來</h3>
+<h2 id="解決方式是-client-登入後產生-token-再從-url-帶-token-過來">解決方式是 client 登入後產生 token, 再從 url 帶 token 過來</h2>
 <p>驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名</p>
 <p>驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限</p>
-<h2 id="增加網站效能">增加網站效能</h2>
+<h1 id="增加網站效能">增加網站效能</h1>
 <h3 id="server">server</h3>
 <ul>
 <li>ELB (HA), auto-scaling</li>
@@ -60,7 +60,7 @@
 <li>Mysql set index</li>
 <li>master - slave</li>
 </ul>
-<h2 id="關於-app">關於 App</h2>
+<h1 id="關於-app">關於 App</h1>
 <ul>
 <li>手機裡的 App 會有個 UUID，不同的 App UUID 也會不一樣，即使同 App</li>
 <li>App 重新安裝 UUID 會是新的，或者 UUID 好像也有過期時間 (e.g. 180 天)</li>
@@ -68,17 +68,17 @@
 <li>app 可以自已選擇要不要濾掉 notification，也就是其實發送成功但忽略它</li>
 <li>Android 的 GCM 沒有分環境，都是用 Production; APN 有分環境有分 Sandbox 及 Production</li>
 </ul>
-<h3 id="storage">Storage</h3>
+<h1 id="storage">Storage</h1>
 <ul>
 <li>手機本身有兩個儲存的方式，一個是 sqlite，另一個是 local storage</li>
 <li>sqlite 是一個檔案，所以讀寫要開檔跟關檔</li>
 <li>local storage 是 key-value 型態，直接用就可以了</li>
 </ul>
-<h3 id="notification-title">Notification Title</h3>
+<h1 id="notification-title">Notification Title</h1>
 <ul>
 <li>如果 app 在前景 android 可以攔截, 並且指定要給的 title, 如果 app 在背景會由系統自行判斷, 如果 notification json format 有 title 的話會使用 title 的值當 notification title</li>
 </ul>
-<h3 id="app-與-server-溝通的幾種方式">app 與 server 溝通的幾種方式</h3>
+<h1 id="app-與-server-溝通的幾種方式">app 與 server 溝通的幾種方式</h1>
 <ol>
 <li>原本的 silent push notification (APN/GCM)</li>
 <li>websocket (app 也能用 websocket)</li>
@@ -86,7 +86,7 @@
 <li>mqtt, ampq, etc. messaging protocal</li>
 <li>AWS AppSync 可讓您輕鬆地建立協作式應用程式，以即時更新共享資料。您只要用簡易程式碼陳述式指定應用程式的資料，AWS AppSync 就會管理即時更新應用程式資料的所有必要作業。此外，AWS AppSync 還會在離線使用者重新連上網路時立刻更新相關資料。它只會擷取必要的資料，藉此降低訊息流量並提升應用程式效能和電池壽命。</li>
 </ol>
-<h2 id="distributed-system-subpub">Distributed System (Sub/Pub)</h2>
+<h1 id="distributed-system-subpub">Distributed System (Sub/Pub)</h1>
 <ul>
 <li>MQTT
 <ul>
@@ -116,7 +116,7 @@
 </li>
 <li>Redis pub/sub</li>
 </ul>
-<h2 id="log-系統">Log 系統</h2>
+<h1 id="log-系統">Log 系統</h1>
 <ol>
 <li>CloudWatch Log agent 丟到 cloudwatch 或是直接用 Kinesis agent 丟到 Kinesis Streams
 <ul>
@@ -135,18 +135,29 @@
 <ul>
 <li><a href="https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/">https://rickhw.github.io/2017/03/02/AWS/Study-Notes-CloudWatch/</a></li>
 </ul>
-<h2 id="dst-時間-日光節約時間">DST 時間 (日光節約時間)</h2>
+<h1 id="dst-時間-日光節約時間">DST 時間 (日光節約時間)</h1>
 <p>某些國家會調整當地時間以符合日光節約時間，當程式在處理不同國家時間時就要注意了，將時間轉成 dst 存下來，
 可以使用別人寫好的第三方來轉，下次取時再將 utc 轉成 dst 撈出來。</p>
-<h2 id="如何避免-response-header-x-content-type-options-nosniff">如何避免 response header <code>X-Content-Type-Options: nosniff</code></h2>
+<h1 id="functional-programming">Functional programming</h1>
+<p>Functional programming is a programming paradigm that emphasizes the use of functions to transform and manipulate data, rather than modifying the state of objects.
+In functional programming, functions are treated as first-class citizens, which means they can be passed as arguments to other functions,
+returned as values from other functions, and composed together to build more complex functionality.
+This approach is in contrast to imperative programming, where the state of objects is changed through commands and statements.
+The goal of functional programming is to write code that is easy to reason about, test, and maintain by eliminating side effects and promoting immutability and purity of functions.
+Common functional programming languages include Haskell, Lisp, and Erlang.</p>
+<h1 id="dynamic-programming">Dynamic programming</h1>
+<p>Dynamic programming is a method for solving problems by breaking them down into smaller sub-problems and solving each sub-problem only once to obtain solutions for larger problems.
+The solutions to the sub-problems are stored in a table, so that they can be reused instead of recomputing them, thus saving time and increasing efficiency.
+Dynamic programming is often used to solve optimization problems, such as finding the shortest path between two points or the longest common subsequence of two strings, among others.</p>
+<h1 id="如何避免-response-header-x-content-type-options-nosniff">如何避免 response header <code>X-Content-Type-Options: nosniff</code></h1>
 <p>如果 MIME 類型與 URL 的 MIME 類型不匹配，則不允許讀取該檔案</p>
 <p>我還不是很了解這個實際判斷的方式是什麼, 但我加上 cookie 後, 就可以下載 google drive 的檔案了</p>
-<h2 id="cors">CORS</h2>
+<h1 id="cors">CORS</h1>
 <p>chrome 會先發一個 method: OPTIONS 的 request 測試是否通, 但不會幫你加上 body 及 header</p>
-<h2 id="proxy-vs-reverse-proxy">Proxy vs Reverse Proxy</h2>
+<h1 id="proxy-vs-reverse-proxy">Proxy vs Reverse Proxy</h1>
 <p>Proxy 後面的 server 有直接對外</p>
 <p>Reverse Proxy 後面 server 沒有直接對外</p>
-<h2 id="編碼">編碼</h2>
+<h1 id="編碼">編碼</h1>
 <h3 id="輸出-emoji--unicode-character--表情符號">輸出 emoji / unicode character / 表情符號</h3>
 <pre><code>&quot;\xF0\x9F\x98\x81&quot;     // 用 Bytes (UTF-8 encoding) 輸出笑臉
 &quot;\uD83D\uDE01&quot;         // 用 Unicode (UTF-16 encoding) 輸出笑臉
@@ -181,7 +192,7 @@ the decoder returns this: <code>104 101 108 108 111</code></p>
 </ol>
 <p>Since the app knows this is a Unicode string, it can assume each number represents a character.
 We use the Unicode character set to translate each number to a corresponding character. The resulting string is “hello”.</p>
-<h2 id="testing">Testing</h2>
+<h1 id="testing">Testing</h1>
 <h3 id="unit-testing">Unit Testing</h3>
 <ul>
 <li>The minimum units can be method/function/class.</li>

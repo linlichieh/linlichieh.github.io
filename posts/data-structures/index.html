@@ -761,21 +761,21 @@ int main() {
 </li>
 <li>isWord (boolean)</li>
 </ul>
-<p>trie: (&ldquo;cat&rdquo;, &ldquo;try&rdquo;, &ldquo;trie&rdquo;)</p>
-<pre><code>        [&quot;c&quot;, &quot;t&quot;]
-          (false)
-         /      \
-      [&quot;a&quot;]    [&quot;r&quot;]
-     (false)  (false)
-       /          \
-    [&quot;t&quot;]      [&quot;i&quot;, &quot;y&quot;]
-   (false)      (false)
-     /          /       \
-   [&quot;&quot;]      [&quot;e&quot;]      [&quot;&quot;]
-  (true)    (false)    (true)
-              /
-            [&quot;&quot;]
-           (true)
+<p>trie: <code>[&quot;cat&quot;, &quot;tr&quot;, &quot;trid&quot;, &quot;trie&quot;, &quot;trief&quot;]</code></p>
+<pre><code>      [   &quot;c&quot;      &quot;t&quot;    ]
+        (false)   (false)
+         /            \
+      [&quot;a&quot;]          [&quot;r&quot;]
+     (false)         (true)
+      /                  \
+   [&quot;t&quot;]                [&quot;i&quot;]
+  (true)               (false)
+                            \
+                      [  &quot;d&quot;    &quot;e&quot;  ]
+                       (true)  (true)
+                                   \
+                                  [&quot;f&quot;]
+                                  (true)
 </code></pre>
 <h3 id="ref">ref</h3>
 <ul>
