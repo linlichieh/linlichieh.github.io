@@ -189,7 +189,7 @@ Dynamic programming is often used to solve optimization problems, such as findin
 <li>228 184 150 -&gt; 世 (utf-8)</li>
 <li>231 149 140 -&gt; 界 (utf-8)</li>
 </ul>
-<p>choose <code>U+4DC0 ...U+4DFF Yijing Hexagram Symbols</code>, you can <code>世</code> represented as decimal <code>228 184 150</code></p>
+<p>choose <code>U+4DC0 ...U+4DFF Yijing Hexagram Symbols</code>, you can see <code>世</code> represented as decimal <code>228 184 150</code></p>
 <h3 id="how-does-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How does program know which character one alphbet and which one is a chinese character</h3>
 <p>The first byte of a multi-byte character has a special pattern of bits that indicates the number of bytes used to represent the character.
 This allows the program to determine the length of each character, even in a string that contains a mixture of ASCII and non-ASCII characters.</p>
@@ -216,6 +216,7 @@ If the first byte starts with 110, it means that the character is represented us
 </code></pre>
 <p>And convert above to hex, now we have <code>4E16</code></p>
 <p>Finally, we know the code point of chinese character <code>世</code> is <code>U+4E16</code></p>
+<p>Apply the same steps to <code>界</code>, you will get its code point <code>U+754C</code></p>
 <h3 id="以下是-string-用-unicode-存到硬碟到取出解碼的過程">以下是 string 用 unicode 存到硬碟到取出解碼的過程</h3>
 <ol>
 <li>將文字轉成 unicode</li>
