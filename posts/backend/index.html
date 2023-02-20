@@ -190,14 +190,12 @@ Dynamic programming is often used to solve optimization problems, such as findin
 <li>231 149 140 -&gt; 界 (utf-8)</li>
 </ul>
 <p>choose <code>U+4DC0 ...U+4DFF Yijing Hexagram Symbols</code>, you can <code>世</code> represented as decimal <code>228 184 150</code></p>
-<h3 id="how-did-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How did program know which character one alphbet and which one is a chinese character</h3>
+<h3 id="how-does-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How does program know which character one alphbet and which one is a chinese character</h3>
 <p>The first byte of a multi-byte character has a special pattern of bits that indicates the number of bytes used to represent the character.
 This allows the program to determine the length of each character, even in a string that contains a mixture of ASCII and non-ASCII characters.</p>
 <h3 id="why-the-code-point-of-世-is-u4e16-instead-of-ue4b896">Why the code point of <code>世</code> is <code>U+4E16</code> instead of <code>U+E4B896</code></h3>
-<p>The <code>U+</code> follows by hex value, but how did we get <code>4E16</code> nstead of <code>E4B896</code>?</p>
-<p>This is probably the most trick part that gets me.</p>
-<p>This is a <a href="https://www.youtube.com/watch?v=tbdym9ZtepQ">good video</a> to explain this</p>
-<h3 id="how-do-i-convert-228-184-150-to-世">How do I convert <code>228 184 150</code> to <code>世</code>?</h3>
+<p>The <code>U+</code> follows by hex value, but why do I get <code>4E16</code> instead of <code>E4B896</code> (the hex of <code>228 184 150</code>)?
+How do I convert <code>228 184 150</code> to <code>世</code>?</p>
 <p>First, we need to convert the decimal to binary</p>
 <pre><code>228 = 11100100
 184 = 10111000
@@ -212,11 +210,12 @@ This allows the program to determine the length of each character, even in a str
 For example, if the first byte starts with 11110, it means that the character is represented using 4 bytes.
 If the first byte starts with 110, it means that the character is represented using 2 bytes.</p>
 </blockquote>
-<p>Now let&rsquo;s remove <code>1110</code> from the first byte and <code>10</code> from the second and third byte and concatencate them, we will get</p>
+<p>This is probably the most trick part that gets me. Here is a <a href="https://www.youtube.com/watch?v=tbdym9ZtepQ">good video</a> explaining it in detail.</p>
+<p>Now let&rsquo;s remove <code>1110</code> from the first byte and <code>10</code> from the second and third byte, and concatencate them, we will get:</p>
 <pre><code>0100 111000 010110
 </code></pre>
-<p>And convert above to hex, we will get <code>4E16</code></p>
-<p>So, the code point of chinese character <code>世</code> is <code>U+4E16</code></p>
+<p>And convert above to hex, now we have <code>4E16</code></p>
+<p>Finally, we know the code point of chinese character <code>世</code> is <code>U+4E16</code></p>
 <h3 id="以下是-string-用-unicode-存到硬碟到取出解碼的過程">以下是 string 用 unicode 存到硬碟到取出解碼的過程</h3>
 <ol>
 <li>將文字轉成 unicode</li>
