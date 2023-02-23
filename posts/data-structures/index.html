@@ -483,15 +483,14 @@ int main() {
 </li>
 </ul>
 <h1 id="binary-search-tree">Binary search tree</h1>
-<h3 id="basics">basics</h3>
-<p>All child nodes in the tree to the right of root node must be greater than the current node</p>
-<p>example:</p>
+<h3 id="demonstration">Demonstration</h3>
 <pre><code>               101
         33             105
      9     37      104     144
 </code></pre>
-<p>key points</p>
+<h3 id="basics">basics</h3>
 <ul>
+<li>All child nodes in the tree to the right of root node must be greater than the current node</li>
 <li>If the BST is balanced, the average time complexity is O(log(n)). However, the worse case (unbalance BST) would be O(n)</li>
 <li>Pros
 <ul>
@@ -512,11 +511,25 @@ int main() {
 <li>Linked List: Improve the drewback of Array.</li>
 </ul>
 <h1 id="heap">Heap</h1>
-<h3 id="basics-1">basics</h3>
+<h3 id="demonstration-1">Demonstration</h3>
+<p>max heap</p>
+<h3 id="basics-1">Basics</h3>
 <p>A Binary Heap is either Min Heap or Max Heap</p>
 <ul>
-<li>max-heap: root is the maximum number</li>
-<li>min-heap: root is the minimum number</li>
+<li>max-heap: root is the maximum number
+<ul>
+<li>Every child is less than their parent</li>
+<li>It doesn&rsquo;t matter whether the left or right child is larger</li>
+<li>heapify up: swap with the parent if the parent is smaller</li>
+<li>heapify down: swap with biggest child if parent is less than its children</li>
+</ul>
+</li>
+<li>min-heap: root is the minimum number
+<ul>
+<li>heapify up: swap with the parent if the parent is bigger</li>
+<li>heapify down: swap with the smallest child if parent is bigger than its children</li>
+</ul>
+</li>
 </ul>
 <h3 id="use-cases">Use cases</h3>
 <ul>
@@ -591,12 +604,6 @@ int main() {
 </ul>
 </li>
 <li>If the performance of operations such as insertion, deletion matters
-<ul>
-<li>yes -&gt; array</li>
-<li>no -&gt; linked list</li>
-</ul>
-</li>
-<li>If memory is significantly limited
 <ul>
 <li>yes -&gt; array</li>
 <li>no -&gt; linked list</li>

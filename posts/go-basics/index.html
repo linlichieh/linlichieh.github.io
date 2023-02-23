@@ -511,7 +511,12 @@ address: 0xc000096000, length: 10, capacity: 10, items: [0 0 0 0 0 0 1 2 3 4]
 <p>append slice</p>
 <pre><code>list = append(list, list2...)
 </code></pre>
+<blockquote>
 <p><a href="https://github.com/golang/go/wiki/SliceTricks">其他</a></p>
+</blockquote>
+<p>Remove an item with a specific index from an array</p>
+<pre><code>slice = append(slice[:index], slice[index+1:]...)
+</code></pre>
 <h3 id="重新切一個-slice-新-slice-會使用原本-slice-的底層-改成使用-copy-才會是一個新的-slice">重新切一個 slice, 新 slice 會使用原本 slice 的底層, 改成使用 <code>copy</code> 才會是一個新的 slice</h3>
 <pre><code>func main() {
     data := get()
