@@ -208,7 +208,7 @@
 <ul>
 <li>Time
 <ul>
-<li>(avg) Access/Search/Insertion/Deletion O(log(n))
+<li>(avg) Access/Search/Insertion/Deletion O(log n)
 <ul>
 <li>binary search trees are structured such that elements are organized in a way that allows for efficient searching, insertion, and deletion operations. When the tree is balanced, the height of the tree is logarithmic with respect to the number of elements in the tree, which results in an average time complexity of O(log n) for these operations.</li>
 </ul>
@@ -236,8 +236,29 @@
 </li>
 </ul>
 </li>
-<li>Binary heap
+<li>Heap (binary heap)
 <ul>
+<li>Time
+<ul>
+<li>Insertion O(log n)
+<ul>
+<li>inserting a new element into a heap requires adding the element to the end of the heap and then performing a series of swaps to maintain the heap property</li>
+</ul>
+</li>
+<li>Deletion(= extract) O(log n)
+<ul>
+<li>deleting the root element of a heap requires replacing it with the last element in the heap and then performing a series of swaps to maintain the heap property</li>
+</ul>
+</li>
+<li>Heapify O(n)
+<ul>
+<li>converting an unsorted array of elements into a heap (i.e., &ldquo;heapifying&rdquo; the array) takes O(n) time using a bottom-up approach, which involves starting at the last non-leaf node and working backwards</li>
+<li>This can be done by starting at the last non-leaf node (<code>n/2</code>) in the array (i.e., the parent of the last element) and working backwards to the first element in the array, performing a series of swaps as necessary to maintain the heap property. Specifically, for each node, we compare it with its children and swap it with the smaller (or larger) child if necessary, and then recursively apply the same process to the subtree rooted at the child.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Space O(n)</li>
 <li>pros
 <ul>
 <li>better than O(n)</li>
@@ -491,7 +512,7 @@ int main() {
 <h3 id="basics">basics</h3>
 <ul>
 <li>All child nodes in the tree to the right of root node must be greater than the current node</li>
-<li>If the BST is balanced, the average time complexity is O(log(n)). However, the worse case (unbalance BST) would be O(n)</li>
+<li>If the BST is balanced, the average time complexity of all operation is O(log(n)). However, the worse case (unbalance BST) would be O(n)</li>
 <li>Pros
 <ul>
 <li>better than O(n)</li>
@@ -505,6 +526,12 @@ int main() {
 </ul>
 </li>
 </ul>
+<h3 id="the-time-complexity-of-insertion-in-a-bst">The time complexity of insertion in a BST</h3>
+<p>The time complexity of inserting a new node into a binary search tree (BST) depends on the height of the tree,
+and can range from O(log n) to O(n), where n is the number of nodes in the tree.</p>
+<p>The time complexity of inserting a new node into a BST depends on the height of the tree.
+In the best case, when the tree is balanced, the height is O(log n), and the time complexity of insertion is also O(log n).
+This is because each comparison eliminates half of the remaining tree, and we need to perform at most log n comparisons to reach a leaf node.</p>
 <h3 id="the-implementation-difference-between-array-and-linked-list">The implementation difference between Array and Linked List</h3>
 <ul>
 <li>Array: Need to move several nodes when a node is added or deleted.</li>

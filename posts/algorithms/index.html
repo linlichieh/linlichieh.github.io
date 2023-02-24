@@ -860,6 +860,100 @@ The reason why only the first 4 elements are needed is because the direction of 
                   /\
                 35  39
 </code></pre>
+<h1 id="leetcode-23-merge-k-sorted-lists---heap-vs-bst-vs-iteration-all-vs-merge-sort">Leetcode 23. Merge k Sorted Lists - Heap vs BST vs Iteration All vs Merge Sort</h1>
+<h3 id="bst">BST</h3>
+<h5 id="time-onk-log-k">Time <code>O(nk log k)</code></h5>
+<p>Inserting an element into a binary search tree takes O(log k) time, and there are <code>nk</code> elements to insert.</p>
+<p>In the BST solution, we first insert all the <code>nk</code> elements from the <code>k</code> sorted lists into a binary search tree.
+The insertion of each element takes <code>O(log k)</code> time, since we need to search for the correct position in the tree to insert the element.
+Since there are <code>nk</code> elements to insert, the total time complexity of the insertions is <code>O(nk log k)</code>.</p>
+<p>After all the elements are inserted, we perform an inorder traversal of the binary search tree to output the merged list.
+The inorder traversal takes <code>O(nk)</code> time, since each element is visited exactly once.</p>
+<p>Therefore, the overall time complexity of the BST solution for merging <code>k</code> sorted lists of average length <code>n</code> is <code>O(nk log k + nk)</code>,
+which simplifies to <code>O(nk log k)</code>. Note that the <code>O(nk log k)</code> time complexity of insertion dominates the <code>O(nk)</code> time complexity of traversal,
+so the overall time complexity is <code>O(nk log k)</code>.</p>
+<h5 id="space-onk">Space <code>O(nk)</code></h5>
+<p>We need to insert all <code>nk</code> elements from the <code>k</code> sorted lists into the binary search tree, which takes <code>O(nk)</code> space. (not including the space for allocating merged list to return)</p>
+<h3 id="heap">Heap</h3>
+<h5 id="time-on-log-k">Time <code>O(n log k)</code></h5>
+<p>Adding or removing an element from a heap takes <code>O(log k)</code> time, and there are <code>nk</code> elements to add or remove.</p>
+<p>In the heap solution, we first add all the <code>nk</code> elements from the <code>k</code> sorted lists to a min-heap or max-heap, depending on the order of the elements.
+Adding each element to the heap takes <code>O(log k)</code> time, since we need to maintain the heap property by re-arranging the elements in the heap.
+Since there are <code>nk</code> elements to add, the total time complexity of the additions is <code>O(n log k)</code>.</p>
+<p>After all the elements are added to the heap, we extract the minimum or maximum element from the heap <code>nk</code> times to output the merged list.
+Extracting the minimum or maximum element takes <code>O(log k)</code> time, since we need to restore the heap property by re-arranging the remaining elements in the heap.
+Since there are <code>nk</code> elements to extract, the total time complexity of the extractions is also <code>O(n log k)</code>.</p>
+<p>Therefore, the overall time complexity of the heap solution for merging k sorted lists of average length <code>n</code> is <code>O(n log k + n log k)</code>, which simplifies to <code>O(n log k)</code>.
+Note that both the addition and extraction operations take <code>O(n log k)</code> time, so the overall time complexity is <code>O(n log k)</code>.</p>
+<p>The heap solution is generally more efficient than the binary search tree solution, since it has a lower time complexity.
+This is because adding and removing elements from a heap is faster than inserting and deleting elements from a binary search tree.</p>
+<h5 id="space-ok">Space O(k)</h5>
+<p>We are maintaining a heap of size <code>k</code>, and we are only storing one element from each of the <code>k</code> sorted lists in the heap in each iteration.
+Therefore, the space required by the heap solution is proportional to the size of the input list <code>k</code>. (not including the space for allocating merged list to return)</p>
+<h3 id="why-is-the-time-complexity-of-a-heap-on-log-k-instead-of-onk-log-k-when-adding-nk-elements">Why is the time complexity of a heap <code>O(n log k)</code> instead of <code>O(nk log k)</code> when adding nk elements?</h3>
+<p>It&rsquo;s because the <code>nk</code> elements are not added individually to the heap, but rather in groups of size <code>k</code>.</p>
+<p>To see why the time complexity is <code>O(n log k)</code>, we can think about the process of merging <code>k</code> sorted lists using a heap.
+In the first step, we add the first element from each of the <code>k</code> sorted lists to the heap, which takes <code>O(k log k)</code> time.
+In the second step, we extract the minimum element from the heap and add the next element from the list that the minimum element came from, which also takes <code>O(log k)</code> time.
+We repeat this process until the heap is empty, which takes a total of <code>nk</code> iterations.</p>
+<p>However, at each iteration, we only add one element to the heap and extract one element from the heap.
+Therefore, we only perform a total of <code>n</code> addition and extraction operations, which take <code>O(log k)</code> time each.
+Therefore, the total time complexity of the heap solution is <code>O(n log k)</code>, not <code>O(nk log k)</code>.</p>
+<p>Note that in the binary search tree solution, we insert each of the <code>nk</code> elements individually into the tree,
+which takes <code>O(log k)</code> time per insertion, resulting in a total time complexity of <code>O(nk log k)</code>.
+This is why the heap solution is generally more efficient than the binary search tree solution.</p>
+<h3 id="in-the-bst-solution-we-add-all-elements-from-the-sorted-arrays-at-once-rather-than-one-element-in-each-iteration-like-heap-does-which-is-why-we-get-onk-log-k-is-that-correct">In the BST solution, we add all elements from the sorted arrays at once, rather than one element in each iteration like heap does, which is why we get <code>O(nk log k)</code>, is that correct?</h3>
+<p>Yes, that&rsquo;s correct. In the binary search tree solution, we insert all <code>nk</code> elements from the <code>k</code> sorted lists into the binary search tree at once.
+Therefore, the time complexity of inserting all the elements is <code>O(nk log k)</code>. This is because inserting each element takes <code>O(log k)</code> time, and there are <code>nk</code> elements to insert.</p>
+<p>After all the elements are inserted, we perform an inorder traversal of the binary search tree to output the merged list.
+The inorder traversal takes <code>O(nk)</code> time, since each element is visited exactly once.</p>
+<p>Therefore, the overall time complexity of the binary search tree solution for merging <code>k</code> sorted lists of average length <code>n</code> is <code>O(nk log k + nk)</code>,
+which simplifies to <code>O(nk log k)</code>. Note that the <code>O(nk log k)</code> time complexity of insertion dominates the <code>O(nk)</code> time complexity of traversal, so the overall time complexity is <code>O(nk log k)</code>.</p>
+<h3 id="why-dont-we-insert-all-elements-at-once-in-a-heap-like-we-do-in-a-bst">Why don&rsquo;t we insert all elements at once in a heap like we do in a BST?</h3>
+<p>The reason we don&rsquo;t insert all the elements from the <code>k</code> sorted lists into the heap at once in the heap solution for LeetCode problem 23 is that this would take too much memory.
+Specifically, inserting all <code>nk</code> elements into the heap at once would take <code>O(nk)</code> space, which may exceed the available memory for large values of <code>n</code> and <code>k</code>.</p>
+<p>In the heap solution, we add one element from each list to the heap at a time, so that we only have <code>k</code> elements in the heap at any given time.
+This keeps the memory usage of the heap solution to <code>O(k)</code>.</p>
+<p>Note that the binary search tree solution also has a memory usage of <code>O(nk)</code>, since all <code>nk</code> elements need to be inserted into the binary search tree.
+However, the binary search tree has a higher time complexity of <code>O(nk log k)</code> for the merge operation, while the heap has a lower time complexity of <code>O(n log k)</code>.
+Therefore, the heap solution is generally more efficient than the binary search tree solution, despite having the same memory usage.</p>
+<h3 id="why-dont-we-insert-one-element-at-a-time-in-a-bst-like-we-do-in-a-heap">Why don&rsquo;t we insert one element at a time in a BST like we do in a heap?</h3>
+<p>Yes, it is possible to use a binary search tree and insert one element from each of the <code>k</code> sorted lists into the tree at a time, similar to the way the heap solution works.
+This approach would have a time complexity of <code>O(n log k)</code>, the same as the heap solution.</p>
+<p>The main difference is that, in the heap solution, we are using a specialized data structure that automatically maintains the minimum element at the top of the heap,
+and we can extract the minimum element in <code>O(log k)</code> time.</p>
+<p>In contrast, in the binary search tree solution, we need to search for the minimum element in the tree, which takes <code>O(log k)</code> time,
+and we need to delete the minimum element, which takes <code>O(log k)</code> time.
+These operations can be implemented using a binary search tree, but they are less efficient than the equivalent operations on a heap.</p>
+<p>Therefore, while it is possible to use a binary search tree and insert one element from each of the <code>k</code> sorted lists into the tree at a time,
+it is generally more efficient to use a heap, which is a specialized data structure for this type of problem.</p>
+<h3 id="iteration-all">Iteration All</h3>
+<blockquote>
+<p>iterating k sorted lists and find the minimum in each iteration</p>
+</blockquote>
+<h5 id="time-onk2">Time O(nk^2)</h5>
+<p>The time complexity of a solution that iterates over the <code>k</code> sorted lists and gets the minimum element in each iteration to construct the merged list is <code>O(nk^2)</code>,
+where <code>n</code> is the average length of the input lists.
+The worst case occurs when all the input lists have a length of <code>n</code>, and we need to iterate over all <code>k</code> lists in each iteration to find the minimum element.</p>
+<p>In each iteration, we need to compare the first element of each list to find the minimum element,
+which takes <code>O(k)</code> time. Since we need to perform this operation nk times to construct the merged list, the total time complexity is <code>O(nk^2)</code>.</p>
+<h5 id="space-ok-1">Space O(k)</h5>
+<p>In each iteration, we only need to store the first element of each of the <code>k</code> input lists.
+Since we are only storing <code>k</code> elements at any given time, the space complexity is <code>O(k)</code>. (not including the space for allocating merged list to return)</p>
+<h3 id="merge-sort-1">Merge Sort</h3>
+<h5 id="time-onk-log-n">Time O(nk log n)</h5>
+<p>The idea behind the solution is to use a divide-and-conquer approach to merge the <code>k</code> sorted lists.
+We first divide the <code>k</code> lists into two halves, recursively sort each half, and then merge the two halves.
+This process is repeated until we have a single merged list.</p>
+<p>The merge operation takes <code>O(n)</code> time, and we need to perform it log <code>k</code> times to merge all the lists.
+Therefore, the total time complexity is <code>O(nk log k)</code>.</p>
+<p>In the worst case, we need to compare and copy every element from both sublists into a new merged list.
+This takes <code>O(n)</code> time, where <code>n</code> is the total number of elements in both sublists.</p>
+<h5 id="space-on">Space O(n)</h5>
+<p>The space complexity of the merge sort solution is <code>O(n)</code>, which is used to store the intermediate merged lists during the merge operation.
+Specifically, we need to allocate an additional list of size <code>n</code> to store the merged list during the merge operation.
+We also need to allocate <code>O(log k)</code> additional lists to store the intermediate merged lists during the merge sort operation.
+Therefore, the total space complexity is <code>O(n)</code>.</p>
 <h1 id="traversal">Traversal</h1>
 <h3 id="bfs-breadth-first-search">BFS (Breadth First Search)</h3>
 <p>tree</p>
@@ -872,6 +966,9 @@ The reason why only the first 4 elements are needed is because the direction of 
 <p>traversal</p>
 <pre><code>9 4 20 1 6 15 170
 </code></pre>
+<blockquote>
+<p>time complexity is O(n)</p>
+</blockquote>
 <p>pros</p>
 <ul>
 <li>If Solution exists BFS will definitely find it</li>
@@ -909,6 +1006,9 @@ The reason why only the first 4 elements are needed is because the direction of 
 <p>traversal</p>
 <pre><code>9 4 1 6 20 15 170
 </code></pre>
+<blockquote>
+<p>The time complexity is O(n) regardless of the traversal method used</p>
+</blockquote>
 <p>pros</p>
 <ul>
 <li>Memory efficiency: DFS uses a stack to store nodes to be processed, which only requires a limited amount of memory compared to BFS, which uses a queue and requires more memory.</li>
@@ -1093,6 +1193,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <li><a href="https://www.tutorialspoint.com/applications-of-dfs-and-bfs-in-data-structures">use cases of BFS/DFS</a></li>
 <li><a href="https://medium.com/@williambdale/recursion-the-pros-and-cons-76d32d75973a">recursive</a></li>
 <li><a href="https://stackoverflow.com/questions/9456937/when-to-use-preorder-postorder-and-inorder-binary-search-tree-traversal-strate">preorder vs inorder vs postorder</a></li>
+<li>chatGPT :D</li>
 </ul>
 
 </article>
