@@ -886,8 +886,9 @@ The reason why only the first 4 elements are needed is because the direction of 
 <ul>
 <li><code>O(NlogN)</code> = <code>O(nk log nk)</code>
 <ul>
-<li>merging k sorted lists by traversing all the linked lists and collect the values of the nodes into an array. <code>O(N)</code></li>
-<li>Sort and iterate over this array to get the proper value of nodes. <code>O(NlogN)</code></li>
+<li>traversing all the linked lists and collect the values of the nodes into an array <code>O(N)</code></li>
+<li>Sorting <code>O(N log N)</code></li>
+<li>total: <code>O(N)</code> + <code>O(N log N)</code> = <code>O(N log N)</code></li>
 </ul>
 </li>
 </ul>
@@ -906,20 +907,28 @@ The reason why only the first 4 elements are needed is because the direction of 
 <ul>
 <li>Algorithm
 <ul>
-<li>Iterate k sorted lists, then compare every head of each list and get the node with the smallest value and put it into the final linked list</li>
+<li>Iterate <code>k</code> sorted lists, then compare every head of each list and get the node with the smallest value and put it into the final linked list</li>
 </ul>
 </li>
 <li>Time
 <ul>
 <li><code>O(kN)</code> = <code>O(nk^2)</code>
 <ul>
-<li>Almost every selection of node in final linked costs <code>O(k)</code> (<code>k-1</code> times comparison)</li>
+<li>Explanation 1
+<ul>
+<li>Almost every node in final linked costs <code>O(k)</code> (<code>k-1</code> times comparison)</li>
 <li>There are <code>N</code> nodes in the final linked list.</li>
+<li>Therefore, it costs <code>O(kN)</code> in total</li>
 </ul>
 </li>
-<li>The time complexity of a solution that iterates over the <code>k</code> sorted lists and gets the minimum element in each iteration to construct the merged list is <code>O(nk^2)</code>, where <code>n</code> is the average length of the input lists.</li>
+<li>Explanation 2
+<ul>
 <li>The worst case occurs when all the input lists have a length of <code>n</code>, and we need to iterate over all <code>k</code> lists in each iteration to find the minimum element.</li>
 <li>In each iteration, we need to compare the first element of each list to find the minimum element, which takes <code>O(k)</code> time. Since we need to perform this operation <code>nk</code> times to construct the merged list, the total time complexity is <code>O(nk^2)</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Space
@@ -941,6 +950,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <ul>
 <li>Algorithm
 <ul>
+<li>Add the first <code>k</code> nodes from each lists</li>
 <li>Iterate k sorted lists
 <ul>
 <li>Extract the minimum node from the queue (the node with the smallest value)</li>
@@ -956,13 +966,14 @@ The reason why only the first 4 elements are needed is because the direction of 
 <li><code>O(N log k)</code> = <code>O(nk log k)</code>
 <ul>
 <li>add the first node of each list to the heap in <code>O(k)</code> time</li>
-<li>the do loop
+<li>then do iteration
 <ul>
 <li>extract the minimum node and add the next node from the same list to the heap in <code>O(logk)</code> time</li>
 <li>repeat above for each of the <code>N</code> nodes</li>
 </ul>
 </li>
-<li>we only ever have <code>k</code> elements in the heap at any given time, because in each iteration we only add 1 element into heap</li>
+<li>total: <code>O(k)</code> + <code>N</code> * <code>O(logk)</code> = <code>O(N log k)</code></li>
+<li>Note: we only have <code>k</code> elements in the heap at any given time, because in each iteration we only add 1 element into heap</li>
 </ul>
 </li>
 </ul>
@@ -995,7 +1006,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <ul>
 <li>All lists have the same size <code>n</code>. At the first step of the algorithm we merge 2 lists with <code>O(n)</code> and get a list with size <code>2n</code>.</li>
 <li>At the second step we merge a <code>2n</code> list with a <code>n</code> list, in the worse case we have to visit <code>2n</code> nodes and get a list with size <code>3n</code>.</li>
-<li>And so on. At the end we have <code>n + 2n + ... + kn = n(1+2 + .. + k) = n * ((k + 1)*k) / 2</code> = n * (k^2 + k)/2 = nk^2/2 + nk/2 = nk^2
+<li>And so on. At the end we have <code>n + 2n + ... + kn = n(1+2 + .. + k) = n * ((k + 1)*k) / 2</code> = <code>n * (k^2 + k)/2</code> = <code>nk^2/2</code> + <code>nk/2</code> = <code>nk^2</code>
 <ul>
 <li>e.g. 1+2+3+4+5 = ((1+5) * 5) / 2</li>
 </ul>
@@ -1032,7 +1043,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <ul>
 <li><code>O(N log k)</code> = <code>O(nk log k)</code>
 <ul>
-<li>We divide the <code>k</code> lists into half at each level, we have O(logk) levels</li>
+<li>We divide the <code>k</code> lists into half at each level. Then we will have <code>O(logk)</code> levels in total.</li>
 <li>Each level takes <code>O(nk)</code> time in total</li>
 <li>Since we have <code>O(logk)</code> levels and each level take <code>O(nk)</code> time, the total time complexity is <code>O(nk logk)</code>.</li>
 </ul>
