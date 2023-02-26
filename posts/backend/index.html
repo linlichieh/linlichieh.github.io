@@ -157,13 +157,7 @@ Dynamic programming is often used to solve optimization problems, such as findin
 <h1 id="proxy-vs-reverse-proxy">Proxy vs Reverse Proxy</h1>
 <p>Proxy 後面的 server 有直接對外</p>
 <p>Reverse Proxy 後面 server 沒有直接對外</p>
-<h1 id="編碼">編碼</h1>
-<h3 id="輸出-emoji--unicode-character--表情符號">輸出 emoji / unicode character / 表情符號</h3>
-<pre><code>&quot;\xF0\x9F\x98\x81&quot;     // 用 Bytes (UTF-8 encoding) 輸出笑臉
-&quot;\uD83D\uDE01&quot;         // 用 Unicode (UTF-16 encoding) 輸出笑臉
-&quot;\U0001F601&quot;           // 用 Unicode (UTF-32 encoding) 輸出笑臉
-</code></pre>
-<h3 id="difference-between-utf-8-and-unicode">Difference between UTF-8 and unicode</h3>
+<h1 id="unicode">Unicode</h1>
 <ul>
 <li>Unicode is the standard for character encoding</li>
 <li>UTF-8 is a specific implementation of Unicode (A -&gt; 41 -&gt; binary)</li>
@@ -174,7 +168,11 @@ Dynamic programming is often used to solve optimization problems, such as findin
 <li>UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters. This means that characters in the ASCII range (0-127) can be represented using a single byte, while other characters may use up to 4 bytes.</li>
 <li>UTF-16 uses a minimum of 16 bits to represent each character, making it a fixed-width encoding scheme. This means that all characters use the same number of bytes, making it easier to process strings in this encoding, but also making it less space-efficient than UTF-8.</li>
 </ul>
-<p>For examples, store &ldquo;hello 世界&rdquo; in memory, will be represented as (decimal, for better understanding)</p>
+<h3 id="how-does-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How does program know which character one alphbet and which one is a chinese character</h3>
+<p>The first byte of a multi-byte character has a special pattern of bits that indicates the number of bytes used to represent the character.
+This allows the program to determine the length of each character, even in a string that contains a mixture of ASCII and non-ASCII characters.</p>
+<h3 id="how-are-characters-stored-in-the-server">How are characters stored in the server?</h3>
+<p>For examples, store &ldquo;hello 世界&rdquo; in memory, will be converted to the code point based on the unicode standard used before being stored into the disk in binary</p>
 <pre><code>104 101 108 108 111 32 228 184 150 231 149 140
 </code></pre>
 <p>According to <a href="https://www.utf8-chartable.de/">UTF-8 encoding table</a>, choose <code>decimal</code> from <code>display format for UTF-8 encoding</code> and now we know what each number represents</p>
@@ -190,9 +188,6 @@ Dynamic programming is often used to solve optimization problems, such as findin
 <li>231 149 140 -&gt; 界 (utf-8)</li>
 </ul>
 <p>choose <code>U+4DC0 ...U+4DFF Yijing Hexagram Symbols</code>, you can see <code>世</code> represented as decimal <code>228 184 150</code></p>
-<h3 id="how-does-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How does program know which character one alphbet and which one is a chinese character</h3>
-<p>The first byte of a multi-byte character has a special pattern of bits that indicates the number of bytes used to represent the character.
-This allows the program to determine the length of each character, even in a string that contains a mixture of ASCII and non-ASCII characters.</p>
 <h3 id="why-the-code-point-of-世-is-u4e16-instead-of-ue4b896">Why the code point of <code>世</code> is <code>U+4E16</code> instead of <code>U+E4B896</code></h3>
 <p>The <code>U+</code> follows by hex value, but why do I get <code>4E16</code> instead of <code>E4B896</code> (the hex of <code>228 184 150</code>)?
 How do I convert <code>228 184 150</code> to <code>世</code>?</p>
@@ -217,30 +212,6 @@ If the first byte starts with 110, it means that the character is represented us
 <p>And convert above to hex, now we have <code>4E16</code></p>
 <p>Finally, we know the code point of chinese character <code>世</code> is <code>U+4E16</code></p>
 <p>Apply the same steps to <code>界</code>, you will get its code point <code>U+754C</code></p>
-<h3 id="以下是-string-用-unicode-存到硬碟到取出解碼的過程">以下是 string 用 unicode 存到硬碟到取出解碼的過程</h3>
-<ol>
-<li>將文字轉成 unicode</li>
-</ol>
-<p>A character set is a list of characters with unique numbers (these numbers are sometimes referred to as &ldquo;code points&rdquo;).</p>
-<p>For example, in the Unicode character set, the number for A is 41.</p>
-<ol start="2">
-<li>將 unicode 用 utf-8 編碼成 binary</li>
-</ol>
-<p>An encoding on the other hand, is an algorithm that translates a list of numbers to binary so it can be stored on disk.</p>
-<p>For example UTF-8 would translate the number sequence 1, 2, 3, 4 like this: <code>00000001 00000010 00000011 00000100</code></p>
-<p>Our data is now translated into binary and can now be saved to disk.</p>
-<ol start="3">
-<li>將 binary 用 utf-8 解碼成 unicode</li>
-</ol>
-<p>Say an application reads the following from the disk: <code>1101000 1100101 1101100 1101100 1101111</code></p>
-<p>The app knows this data represent a Unicode string encoded with UTF-8 and must show this as text to the user. First step,
-is to convert the binary data to numbers. The app uses the UTF-8 algorithm to decode the data. In this case,
-the decoder returns this: <code>104 101 108 108 111</code></p>
-<ol start="4">
-<li>將 unicode 轉回成 string</li>
-</ol>
-<p>Since the app knows this is a Unicode string, it can assume each number represents a character.
-We use the Unicode character set to translate each number to a corresponding character. The resulting string is “hello”.</p>
 <h1 id="testing">Testing</h1>
 <h3 id="unit-testing">Unit Testing</h3>
 <ul>
