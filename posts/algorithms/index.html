@@ -23,14 +23,14 @@
   <h1 id="bubble-sort">Bubble sort</h1>
 <h3 id="complexity">Complexity</h3>
 <ul>
-<li>Time O(n^2)
+<li>Time <code>O(n^2)</code>
 <ul>
 <li>bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array</li>
 </ul>
 </li>
-<li>Space O(1)</li>
+<li>Space <code>O(1)</code></li>
 </ul>
-<h3 id="use-case">Use case</h3>
+<h3 id="pros-and-cons">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>Educational purposes: easy to implement</li>
@@ -45,7 +45,7 @@
 <ul>
 <li>bad performance: it does not deal well with a list containing a huge number of items.
 <ul>
-<li>not recommended for use in practical applications due to its poor time complexity of O(n^2)</li>
+<li>not recommended for use in practical applications due to its poor time complexity of <code>O(n^2)</code></li>
 </ul>
 </li>
 </ul>
@@ -108,19 +108,19 @@ j j
 <h1 id="insertion-sort">Insertion sort</h1>
 <h3 id="complexity-1">Complexity</h3>
 <ul>
-<li>Time O(n^2)
+<li>Time <code>O(n^2)</code>
 <ul>
 <li>insertion sort works by iterating over the elements in the array, and for each element, it shifts all the elements that are greater than it to the right in order to make room for it in its final position. The number of shifts required to insert each element is proportional to the number of elements that have already been processed</li>
 </ul>
 </li>
-<li>Space O(1)</li>
+<li>Space <code>O(1)</code></li>
 </ul>
-<h3 id="use-case-1">Use case</h3>
+<h3 id="pros-and-cons-1">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>nearly-sorted data
 <ul>
-<li>If data is almost sorted, then it can be very fast approaching O(N) and faster than Merge sort</li>
+<li>If data is almost sorted, then it can be very fast approaching <code>O(N)</code> and faster than Merge sort</li>
 <li>online sorting: For example, consider a system that generates log events in real-time and needs to sort the events based on their timestamp. An online sorting algorithm, such as insertion sort, would be a good choice in this scenario, since it can sort the events as they are generated, rather than waiting until all the events have been generated before sorting the entire array.</li>
 </ul>
 </li>
@@ -134,7 +134,7 @@ j j
 </ul>
 <p>cons</p>
 <ul>
-<li>bad performance: it does not deal well with a list containing a huge number of items. O(n^2)</li>
+<li>bad performance: it does not deal well with a list containing a huge number of items. <code>O(n^2)</code></li>
 </ul>
 <h3 id="how-it-works-1">How it works</h3>
 <p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
@@ -269,21 +269,21 @@ j j
 <h1 id="selection-sort">Selection sort</h1>
 <h3 id="complexity-2">Complexity</h3>
 <ul>
-<li>Time O(n^2)
+<li>Time <code>O(n^2)</code>
 <ul>
 <li>selection sort works by repeatedly finding the minimum element in the unsorted portion of the array and swapping it with the first unsorted element. The number of swaps required to sort the array is proportional to the square of the number of elements in the array</li>
 </ul>
 </li>
-<li>Space O(1)</li>
+<li>Space <code>O(1)</code></li>
 </ul>
-<h3 id="use-cases">Use cases</h3>
+<h3 id="pros-and-cons-2">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>memory efficiency: in-place algorithm. It does not require a lot of space for sorting</li>
 </ul>
 <p>cons</p>
 <ul>
-<li>bad performance: It performs poorly when working on huge lists. O(n^2)</li>
+<li>bad performance: It performs poorly when working on huge lists. <code>O(n^2)</code></li>
 <li>unstable algorithm</li>
 </ul>
 <h3 id="how-it-works-2">How it works</h3>
@@ -374,24 +374,24 @@ m   i   j
 <h1 id="merge-sort">Merge sort</h1>
 <h3 id="complexity-3">Complexity</h3>
 <ul>
-<li>Time O(n log(n))
+<li>Time <code>O(n log(n))</code>
 <ul>
-<li>merge sort works by dividing the array into two halves, sorting each half separately, and then merging the two sorted halves back together. The merging process takes linear time proportional to the number of elements in the array, while the sorting process takes logarithmic time proportional to the number of elements in each half. The overall time complexity of merge sort is O(n log n) because the number of elements in each half is reduced by half with each iteration of the sorting process.</li>
+<li>merge sort works by dividing the array into two halves, sorting each half separately, and then merging the two sorted halves back together. The merging process takes linear time proportional to the number of elements in the array, while the sorting process takes logarithmic time proportional to the number of elements in each half. The overall time complexity of merge sort is <code>O(n log n)</code> because the number of elements in each half is reduced by half with each iteration of the sorting process.</li>
 </ul>
 </li>
-<li>Space O(n)
+<li>Space <code>O(n)</code>
 <ul>
-<li>Merge sort has a space complexity of O(n) because it uses an auxiliary array of size n to store the sorted elements during the merging step.</li>
-<li>merge sort requires an auxiliary array to store the result of each merging step. The size of this array is proportional to the number of elements in the array, which means that the space complexity of merge sort is O(n). Additionally, merge sort requires a small amount of additional memory to store the recursive call stack, but this memory usage is typically not significant compared to the size of the auxiliary array.</li>
+<li>Merge sort has a space complexity of <code>O(n)</code> because it uses an auxiliary array of size n to store the sorted elements during the merging step.</li>
+<li>merge sort requires an auxiliary array to store the result of each merging step. The size of this array is proportional to the number of elements in the array, which means that the space complexity of merge sort is <code>O(n)</code>. Additionally, merge sort requires a small amount of additional memory to store the recursive call stack, but this memory usage is typically not significant compared to the size of the auxiliary array.</li>
 </ul>
 </li>
 </ul>
-<h3 id="use-cases-1">Use cases</h3>
+<h3 id="pros-and-cons-3">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>Good performance
 <ul>
-<li>It is efficient for both small and large data sets, with a time complexity of O(n log n) even though worst case occurs</li>
+<li>It is efficient for both small and large data sets, with a time complexity of <code>O(n log n)</code> even though worst case occurs</li>
 <li>widely used in practice due to its efficient time complexity and stability</li>
 </ul>
 </li>
@@ -436,25 +436,25 @@ m   i   j
 <ul>
 <li>Time
 <ul>
-<li>(avg) O(n log(n))
+<li>(avg) <code>O(n log(n))</code>
 <ul>
-<li>The pivot is then used as a pivot for recursive calls on the two partitioned subarrays. When the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average time complexity of O(n log n)</li>
+<li>The pivot is then used as a pivot for recursive calls on the two partitioned subarrays. When the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average time complexity of <code>O(n log n)</code></li>
 </ul>
 </li>
-<li>(worse) O(n^2)
+<li>(worse) <code>O(n^2)</code>
 <ul>
-<li>if the pivot is always chosen poorly, the time complexity of quick sort can be O(n^2), which makes its time complexity heavily dependent on the choice of pivot.</li>
+<li>if the pivot is always chosen poorly, the time complexity of quick sort can be <code>O(n^2)</code>, which makes its time complexity heavily dependent on the choice of pivot.</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>Space O(log(n))
+<li>Space <code>O(log(n))</code>
 <ul>
-<li>The space complexity of quick sort is O(log n) in the average case, and O(n) in the worst case, where n is the number of elements in the array. This is because quick sort uses a recursive approach, where each recursive call uses a small amount of memory proportional to the size of the call stack. In the average case, when the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average space complexity of O(log n). However, in the worst case, if the pivot is always chosen poorly, the size of one partition can be much larger than the other, which results in a call stack with a height proportional to the number of elements in the array, resulting in a worst-case space complexity of O(n)</li>
+<li>The space complexity of quick sort is <code>O(log n)</code> in the average case, and <code>O(n)</code> in the worst case, where n is the number of elements in the array. This is because quick sort uses a recursive approach, where each recursive call uses a small amount of memory proportional to the size of the call stack. In the average case, when the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average space complexity of <code>O(log n)</code>. However, in the worst case, if the pivot is always chosen poorly, the size of one partition can be much larger than the other, which results in a call stack with a height proportional to the number of elements in the array, resulting in a worst-case space complexity of <code>O(n)</code></li>
 </ul>
 </li>
 </ul>
-<h3 id="use-case-2">Use case</h3>
+<h3 id="pros-and-cons-4">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>Good performance
@@ -464,9 +464,9 @@ m   i   j
 <li>fast in most cases</li>
 </ul>
 </li>
-<li>memory usage: O(log(n))
+<li>memory usage: <code>O(log(n))</code>
 <ul>
-<li>It is an in-place algorithm since it just requires a modest auxiliary stack. O(log(n))</li>
+<li>It is an in-place algorithm since it just requires a modest auxiliary stack. <code>O(log(n))</code></li>
 <li>quicksort requires little space</li>
 </ul>
 </li>
@@ -483,10 +483,10 @@ m   i   j
 <li>it swaps non-adjacent elements.</li>
 </ul>
 </li>
-<li>worse case: O(N^2)
+<li>worse case: <code>O(N^2)</code>
 <ul>
 <li>if you always choose the first or last array element as the pivot, then Quicksort takes N^2 time to sort an already-sorted array</li>
-<li>slowest sort if things are already in reverse-order O(n^2)</li>
+<li>slowest sort if things are already in reverse-order <code>O(n^2)</code></li>
 <li>On sorted and nearly-sorted arrays, its performance is slower than standard InsertionSort</li>
 </ul>
 </li>
@@ -563,26 +563,26 @@ i
 <h1 id="heap-sort">Heap sort</h1>
 <h3 id="complexity-5">Complexity</h3>
 <ul>
-<li>Time O(n log(n))
+<li>Time <code>O(n log(n))</code>
 <ul>
-<li>it takes O(log n) time to maintain the min-heap property by swapping elements down the tree as necessary</li>
+<li>it takes <code>O(log n)</code> time to maintain the min-heap property by swapping elements down the tree as necessary</li>
 </ul>
 </li>
-<li>Space O(1)
+<li>Space <code>O(1)</code>
 <ul>
 <li>The algorithm swaps elements within the original array, so no extra memory is needed to store intermediate results</li>
 </ul>
 </li>
 </ul>
-<h3 id="use-cases-2">Use cases</h3>
+<h3 id="pros-and-cons-5">Pros and Cons</h3>
 <p>pros</p>
 <ul>
 <li>Efficiency &amp; Consistency
 <ul>
-<li>a better average-case time complexity of O(n log n)</li>
+<li>a better average-case time complexity of <code>O(n log n)</code></li>
 </ul>
 </li>
-<li>Memory usage is less: it doesn&rsquo;t require any extra space to sort an array O(1)</li>
+<li>Memory usage is less: it doesn&rsquo;t require any extra space to sort an array <code>O(1)</code></li>
 </ul>
 <p>cons</p>
 <ul>
@@ -591,7 +591,7 @@ i
 <ul>
 <li>In the case of Heapsort vs. Quicksort, it turns out that there are ways (median of 5, for example) to make Quicksort&rsquo;s worst cases very rare indeed</li>
 <li>Also, maintaining a heap is not free.</li>
-<li>Given an array with a normal distribution, Quicksort and Heapsort will both run in O(n log(n)). But Quicksort will execute faster because its constant factors are smaller than the constant factors for Heapsort</li>
+<li>Given an array with a normal distribution, Quicksort and Heapsort will both run in <code>O(n log(n))</code>. But Quicksort will execute faster because its constant factors are smaller than the constant factors for Heapsort</li>
 <li>partitioning is faster than maintaining the heap</li>
 </ul>
 </li>
@@ -773,6 +773,269 @@ The reason why only the first 4 elements are needed is because the direction of 
   [1, 2, 4, 7, 8]
 </code></pre>
 <p>done (no need to do heapify)</p>
+<h1 id="counting-sort">Counting sort</h1>
+<h3 id="complexity-6">Complexity</h3>
+<p>TODO</p>
+<ul>
+<li>Time <code>O(n+k)</code></li>
+<li>Space <code>O(n+k)</code></li>
+</ul>
+<blockquote>
+<p>n = number of elements in array
+k = range (e.g. max-min)</p>
+</blockquote>
+<h3 id="pros-and-cons-6">Pros and Cons</h3>
+<p>TODO</p>
+<h3 id="how-it-works-6">How it works</h3>
+<p>TODO</p>
+<h3 id="steps-5">Steps</h3>
+<p>input</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+</code></pre>
+<blockquote>
+<p>min = 18, max = 25, size of count array = 8 (25-18+1)</p>
+</blockquote>
+<p>Create a count array</p>
+<pre><code> index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  0  |  0  |  0  |  0  |  0  |  0  |  0  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+</code></pre>
+<p>Fill the count array with the number of occurrences</p>
+<pre><code> index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  1  |  0  |  0  |  2  |  0  |  0  |  0  |  1  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+</code></pre>
+<p>Sum up values with predecessor values</p>
+<pre><code> index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  1  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+</code></pre>
+<p>Create a sorted array with the same length as origin input</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  |  0  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Then, Start to fill the sorted array</p>
+<p>Start with the value <code>18</code> from the beginning of input</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+
+
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  1  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+
+
+ index     0     1     2     3
+         -----------------------
+ value  |  0  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Find the value of the count array <code>1</code> via value <code>18</code> from original array</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+           |
+           |
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  1  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+
+
+ index     0     1     2     3
+         -----------------------
+ value  |  0  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Fill the sorted array at the index <code>0</code>, which is substrated <code>1</code> from the value of count array <code>1</code>, with <code>18</code></p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+           |
+           |
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  1  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+           |
+           |
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Update value of count array <code>1</code> to <code>0</code> (minus 1)</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+           |
+           |
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+           |
+           |
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Then next value <code>21</code>, find the value of count array using the same step</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                   \________
+                            \
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+
+
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Find the index of sorted array <code>2</code> via the value of count array (<code>3</code> minus <code>1</code>)</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                   \________
+                            \
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  3  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+                         ___/
+                        /
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  |  0  |  0  |
+         -----------------------
+</code></pre>
+<p>Update the sorted array and count array</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                   \________
+                            \
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  2  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+                         ___/
+                        /
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  | 21  |  0  |
+         -----------------------
+</code></pre>
+<p>Next, the value <code>25</code></p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                        \___________________________
+                                                    \
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  2  |  3  |  3  |  3  |  4  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+
+
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  | 21  |  0  |
+         -----------------------
+</code></pre>
+<p>Update the sorted array and count array</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                        \___________________________
+                                                    \
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  2  |  3  |  3  |  3  |  3  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+                               ______________________/
+                              /
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  | 21  | 25  |
+         -----------------------
+</code></pre>
+<p>Finally, the last value <code>21</code></p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                             |
+                             |
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  2  |  3  |  3  |  3  |  3  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+
+
+ index     0     1     2     3
+         -----------------------
+ value  | 18  |  0  | 21  | 25  |
+         -----------------------
+</code></pre>
+<p>Update the sorted array and count array</p>
+<pre><code> index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 25  | 21  |
+         -----------------------
+                             |
+                             |
+ index     0     1     2     3     4     5     6     7
+         -----------------------------------------------
+ value  |  0  |  1  |  1  |  1  |  3  |  3  |  3  |  3  |
+         -----------------------------------------------
+          (18)  (19)  (20)  (21)  (22)  (23)  (24)  (25)
+                   __________/
+                  /
+ index     0     1     2     3
+         -----------------------
+ value  | 18  | 21  | 21  | 25  |
+         -----------------------
+</code></pre>
+<p>end</p>
 <h1 id="binary-search">binary search</h1>
 <h3 id="remove-a-node-in-bst">Remove a node in BST</h3>
 <p><code>insert</code> and <code>lookup</code> a node is quite easy, but removing a node is complex.</p>
@@ -873,7 +1136,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <pre><code>9 4 20 1 6 15 170
 </code></pre>
 <blockquote>
-<p>time complexity is O(n)</p>
+<p>time complexity is <code>O(n)</code></p>
 </blockquote>
 <p>pros</p>
 <ul>
@@ -913,7 +1176,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <pre><code>9 4 1 6 20 15 170
 </code></pre>
 <blockquote>
-<p>The time complexity is O(n) regardless of the traversal method used</p>
+<p>The time complexity is <code>O(n)</code> regardless of the traversal method used</p>
 </blockquote>
 <p>pros</p>
 <ul>
@@ -1010,15 +1273,15 @@ The reason why only the first 4 elements are needed is because the direction of 
 </li>
 <li>Radix sort
 <ul>
-<li>Time O(nk)</li>
-<li>Space O(n+k)</li>
+<li>Time <code>O(nk)</code></li>
+<li>Space <code>O(n+k)</code></li>
 <li>used to sort integrers or strings</li>
 </ul>
 </li>
 <li>Counting sort
 <ul>
-<li>Time O(n+k)</li>
-<li>Space O(k)</li>
+<li>Time <code>O(n+k)</code></li>
+<li>Space <code>O(k)</code></li>
 </ul>
 </li>
 </ul>
@@ -1062,7 +1325,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 </li>
 <li>DFS &amp; BFS
 <ul>
-<li>usually O(V+E), time &amp; space complexity</li>
+<li>usually <code>O(V+E)</code>, time &amp; space complexity</li>
 <li>number of islands</li>
 </ul>
 </li>
