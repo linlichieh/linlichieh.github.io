@@ -775,21 +775,53 @@ The reason why only the first 4 elements are needed is because the direction of 
 <p>done (no need to do heapify)</p>
 <h1 id="counting-sort">Counting sort</h1>
 <h3 id="complexity-6">Complexity</h3>
-<p>TODO</p>
 <ul>
 <li>Time <code>O(n+k)</code></li>
 <li>Space <code>O(n+k)</code></li>
 </ul>
 <blockquote>
-<p>n = number of elements in array
-k = range (e.g. max-min)</p>
+<p>n is the number of elements to be sorted and k is the range of values in the input array</p>
 </blockquote>
 <h3 id="pros-and-cons-6">Pros and Cons</h3>
+<p>pros</p>
 <ul>
+<li>Linear time complexity
+<ul>
+<li>This makes it very fast for data sets with a relatively small range of values.</li>
+</ul>
+</li>
+<li>No comparisons needed
+<ul>
+<li>Unlike many other sorting algorithms, counting sort does not rely on comparisons between elements, making it more efficient for certain types of data</li>
+</ul>
+</li>
 <li>Stable sorting</li>
+<li>Easy to implement</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>Memory usage
+<ul>
+<li>Counting sort requires additional memory to store the counts of each element, as well as to store the sorted output array.</li>
+</ul>
+</li>
+<li>Not an in-place sort
+<ul>
+<li>may not be suitable for use in situations where memory is limited</li>
+</ul>
+</li>
+<li>Inefficient for large range of values to be sorted
+<ul>
+<li>Counting sort is only suitable for sorting data sets with a relatively small range of values. If the range of values is too large, the memory requirements of counting sort can become wasteful.</li>
+</ul>
+</li>
+<li>It&rsquo;s designed to work with integer (not suitable for decimal)</li>
 </ul>
 <h3 id="how-it-works-6">How it works</h3>
-<p>TODO</p>
+<p>The key idea behind counting sort is to count the occurrences of each element in the input array,
+and use that information to determine the correct position of each element in the output array.
+This makes counting sort very efficient for data sets with a relatively small range of values,
+since it avoids the need for expensive comparisons between elements.</p>
 <h3 id="steps-5">Steps</h3>
 <p>input</p>
 <pre><code> index     0     1     2     3
@@ -904,7 +936,7 @@ k = range (e.g. max-min)</p>
  value  |  0  |  0  | 21  |  0  |
          -----------------------
 </code></pre>
-<p>Then next value <code>25</code>, find the value of count array using the same step</p>
+<p>Then next value is <code>25</code>. Find the value of count array using the same step</p>
 <pre><code> index     0     1     2     3
          -----------------------
  value  | 18  | 21  | 25  | 21  |
