@@ -1138,14 +1138,14 @@ The algorithm continues until the target value is found or the search interval i
 <blockquote>
 <p>time complexity is <code>O(n)</code></p>
 </blockquote>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>If Solution exists BFS will definitely find it</li>
 <li>easy to find the shortest path between two nodes because BFS visits nodes level-by-level, and it will find the destination node as soon as it is encountered</li>
 <li>Never get trapped in unwanted nodes without the solution</li>
 <li>useful for finding the maximum or minimum value in a BST</li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>BFS uses more memory than DFS because it needs to keep track of all nodes at the same level before moving on to deeper levels (e.g. queue)</li>
 <li>Slower for deep trees (a higher time complexity than DFS because it visits all nodes at the same level before moving on to the next level)</li>
@@ -1178,13 +1178,13 @@ The algorithm continues until the target value is found or the search interval i
 <blockquote>
 <p>The time complexity is <code>O(n)</code> regardless of the traversal method used</p>
 </blockquote>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Memory efficiency: DFS uses a stack to store nodes to be processed, which only requires a limited amount of memory compared to BFS, which uses a queue and requires more memory.</li>
 <li>Faster for deep trees because it can quickly reach the bottom-most level of a tree.</li>
 <li>Faster in finding a solution: DFS can backtrack and quickly eliminate branches that do not contain a solution especially if the solution is located deep in the graph. For example, consider a problem where you need to find a specific node in a large graph. With DFS, you can start from a node and follow its edges to explore deeper into the graph. If you find the solution, you can stop the search and return the result.</li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>Can get stuck in an infinite loop: If there are cycles in the graph, DFS may get stuck in an infinite loop, whereas BFS is able to avoid this issue.</li>
 <li>Cannot guarantee to find a solution. For example, if we search for Starbucks from my location, it will definitely find one soon. but if we search for a museum, then it will take more time and might not guarantee to find one.</li>
@@ -1234,7 +1234,7 @@ The algorithm continues until the target value is found or the search interval i
 <li>DFS has inorder, preorder, and postorder implementations because it can be used to traverse the tree and visit the nodes in a specific order by visiting the children of a node before visiting the node itself.</li>
 </ul>
 <h1 id="whats-the-pros-and-cons-of-recursive-solution">What&rsquo;s the pros and cons of recursive solution?</h1>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>reduce time complexity (if use recursion with memorisation)</li>
 <li>cleaner code</li>
@@ -1244,7 +1244,7 @@ The algorithm continues until the target value is found or the search interval i
 </ul>
 </li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>use more memory (might cause stack overflow)
 <ul>
