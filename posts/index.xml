@@ -13,7 +13,7 @@
       <pubDate>Sun, 26 Feb 2023 17:30:44 +0800</pubDate>
       
       <guid>/posts/leetcode/</guid>
-      <description>Leetcode 23. Merge k Sorted Lists Candidate solutions
+      <description>23. Merge k Sorted Lists Candidate solutions
 Brute Force Compare one by one Priority Queue (min-heap) Merge lists one by one Merge with Divide And Conquer Symbol explanation
 n = average size of each list k = the number of linked lists N = n * k (the total number of nodes) Solution - Brute Force Algorithm combining all the linked lists into a single list and then sorting the merged list Time O(NlogN) = O(nk log nk) traversing all the linked lists and collect the values of the nodes into an array O(N) Sorting O(N log N) total: O(N) + O(N log N) = O(N log N) Space O(N) create a new linked list to store the merged and sorted list O(N) Solution - Compare one by one Algorithm Iterate k sorted lists, then compare every head of each list and get the node with the smallest value and put it into the final linked list Time O(kN) = O(nk^2) Explanation 1 Almost every node in final linked costs O(k) (k-1 times comparison) There are N nodes in the final linked list.</description>
     </item>
@@ -100,8 +100,8 @@ Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 
       <pubDate>Sat, 20 May 2017 18:56:16 +0800</pubDate>
       
       <guid>/posts/algorithms/</guid>
-      <description>Bubble sort Complexity Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted. The number of swaps required to sort the array is proportional to the square of the number of elements in the array Space O(1) Pros and Cons pros
-Educational purposes: easy to implement memory efficiency: elements are swapped in place without using additional temporary storage stable sorting For example, consider a list of records that represent people, where each record has a name and an age.</description>
+      <description>Bubble sort How it works Compare two values and move the larger value to the right in each iteration. This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.
+Complexity Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted.</description>
     </item>
     
     <item>

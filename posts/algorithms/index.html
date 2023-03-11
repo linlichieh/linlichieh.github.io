@@ -21,6 +21,9 @@
     <time datetime="2017-05-20T18:56:16&#43;08:00">May 20, 2017</time>
   </header>
   <h1 id="bubble-sort">Bubble sort</h1>
+<h3 id="how-it-works">How it works</h3>
+<p>Compare two values and move the larger value to the right in each iteration.
+This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</p>
 <h3 id="complexity">Complexity</h3>
 <ul>
 <li>Time <code>O(n^2)</code>
@@ -31,7 +34,7 @@
 <li>Space <code>O(1)</code></li>
 </ul>
 <h3 id="pros-and-cons">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Educational purposes: easy to implement</li>
 <li>memory efficiency: elements are swapped in place without using additional temporary storage</li>
@@ -41,7 +44,7 @@
 </ul>
 </li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>bad performance: it does not deal well with a list containing a huge number of items.
 <ul>
@@ -49,10 +52,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="how-it-works">How it works</h3>
-<p>Compare two values and move the larger value to the right in each iteration.
-This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</p>
-<h3 id="steps">Steps</h3>
+<h3 id="demonstration">Demonstration</h3>
 <p>input</p>
 <pre><code>7 5 6 1 3
 </code></pre>
@@ -106,6 +106,8 @@ j j
 </code></pre>
 <p>end</p>
 <h1 id="insertion-sort">Insertion sort</h1>
+<h3 id="how-it-works-1">How it works</h3>
+<p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
 <h3 id="complexity-1">Complexity</h3>
 <ul>
 <li>Time <code>O(n^2)</code>
@@ -116,7 +118,7 @@ j j
 <li>Space <code>O(1)</code></li>
 </ul>
 <h3 id="pros-and-cons-1">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>nearly-sorted data
 <ul>
@@ -132,13 +134,11 @@ j j
 </ul>
 </li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>bad performance: it does not deal well with a list containing a huge number of items. <code>O(n^2)</code></li>
 </ul>
-<h3 id="how-it-works-1">How it works</h3>
-<p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
-<h3 id="steps-1">Steps</h3>
+<h3 id="demonstration-1">Demonstration</h3>
 <p>input</p>
 <pre><code>7 8 5 2 4 6 3
 </code></pre>
@@ -267,6 +267,9 @@ j j
 </code></pre>
 <p>end</p>
 <h1 id="selection-sort">Selection sort</h1>
+<h3 id="how-it-works-2">How it works</h3>
+<p>Set a starting point (i) to find the minimum after it and swap it with the minimum.
+Lock the minimum and move the start point forward in each iteration.</p>
 <h3 id="complexity-2">Complexity</h3>
 <ul>
 <li>Time <code>O(n^2)</code>
@@ -277,19 +280,16 @@ j j
 <li>Space <code>O(1)</code></li>
 </ul>
 <h3 id="pros-and-cons-2">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>memory efficiency: in-place algorithm. It does not require a lot of space for sorting</li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>bad performance: It performs poorly when working on huge lists. <code>O(n^2)</code></li>
 <li>unstable algorithm</li>
 </ul>
-<h3 id="how-it-works-2">How it works</h3>
-<p>Set a starting point (i) to find the minimum after it and swap it with the minimum.
-Lock the minimum and move the start point forward in each iteration.</p>
-<h3 id="steps-2">Steps</h3>
+<h3 id="demonstration-2">Demonstration</h3>
 <p>input</p>
 <pre><code>2 8 1 3 9
 </code></pre>
@@ -372,6 +372,8 @@ m   i   j
 </code></pre>
 <p>end</p>
 <h1 id="merge-sort">Merge sort</h1>
+<h3 id="how-it-works-3">How it works</h3>
+<p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
 <h3 id="complexity-3">Complexity</h3>
 <ul>
 <li>Time <code>O(n log(n))</code>
@@ -387,7 +389,7 @@ m   i   j
 </li>
 </ul>
 <h3 id="pros-and-cons-3">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Good performance
 <ul>
@@ -407,16 +409,14 @@ m   i   j
 </ul>
 </li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>use more memory: it requires more memory to store the sublists, which can be a problem with a very large list</li>
 <li>slow for small arrays</li>
 <li>the algorithm does the whole process even the array is already sorted</li>
 <li>Marginally slower than quick sort in practise</li>
 </ul>
-<h3 id="how-it-works-3">How it works</h3>
-<p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
-<h3 id="steps-3">Steps</h3>
+<h3 id="demonstration-3">Demonstration</h3>
 <pre><code>                [6 5 3 1 8 7 2 4]
                   /           \
              [6 5 3 1]     [8 7 2 4]
@@ -432,6 +432,10 @@ m   i   j
                [1 2 3 4 5 6 7 8 ]
 </code></pre>
 <h1 id="quick-sort">Quick sort</h1>
+<h3 id="how-it-works-4">How it works</h3>
+<p>Choose a pivot element, partition the data set into two sub-arrays recursively based on the pivot element,
+and sort each sub-array by moving values less than the pivot to the left and values greater than the pivot to the right.
+When all sub-arrays contain only one element, the entire array is considered sorted.</p>
 <h3 id="complexity-4">Complexity</h3>
 <ul>
 <li>Time
@@ -455,7 +459,7 @@ m   i   j
 </li>
 </ul>
 <h3 id="pros-and-cons-4">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Good performance
 <ul>
@@ -476,7 +480,7 @@ m   i   j
 </ul>
 </li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>unstable sorting
 <ul>
@@ -491,11 +495,7 @@ m   i   j
 </ul>
 </li>
 </ul>
-<h3 id="how-it-works-4">How it works</h3>
-<p>Choose a pivot element, partition the data set into two sub-arrays recursively based on the pivot element,
-and sort each sub-array by moving values less than the pivot to the left and values greater than the pivot to the right.
-When all sub-arrays contain only one element, the entire array is considered sorted.</p>
-<h3 id="steps-4">Steps</h3>
+<h3 id="demonstration-4">Demonstration</h3>
 <pre><code>j
 6 3 7 5 1 2 [4]    6 &gt; 4
 i
@@ -561,6 +561,11 @@ i
 </code></pre>
 <p>and so on&hellip;</p>
 <h1 id="heap-sort">Heap sort</h1>
+<h3 id="how-it-works-5">How it works</h3>
+<ol>
+<li>Build an max-heap from given unsorted array with the same idea of <code>heapify</code> of data structure <code>heap</code></li>
+<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except for the elements that are shifted to the right)</li>
+</ol>
 <h3 id="complexity-5">Complexity</h3>
 <ul>
 <li>Time <code>O(n log(n))</code>
@@ -575,7 +580,7 @@ i
 </li>
 </ul>
 <h3 id="pros-and-cons-5">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Efficiency &amp; Consistency
 <ul>
@@ -584,7 +589,7 @@ i
 </li>
 <li>Memory usage is less: it doesn&rsquo;t require any extra space to sort an array <code>O(1)</code></li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>unstable sort: not a stable sorting algorithm</li>
 <li>Expensive constant factors
@@ -601,12 +606,7 @@ i
 </ul>
 </li>
 </ul>
-<h3 id="how-it-works-5">How it works</h3>
-<ol>
-<li>Build an max-heap from given unsorted array with the same idea of <code>heapify</code> of data structure <code>heap</code></li>
-<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except for the elements that are shifted to the right)</li>
-</ol>
-<h3 id="step-1---make-unsorted-array-a-max-heap">Step 1 - Make unsorted array a max-heap</h3>
+<h3 id="demonstration-part-1---make-unsorted-array-a-max-heap">Demonstration Part 1 - Make unsorted array a max-heap</h3>
 <p>For an array with 9 elements, only the first 4 elements need to be heapified in order to get max-heap.
 The reason why only the first 4 elements are needed is because the direction of <code>heapify</code> is downward, so the processes will take care of the whole heap</p>
 <p>The example to explain above</p>
@@ -676,7 +676,7 @@ The reason why only the first 4 elements are needed is because the direction of 
   1   4
 </code></pre>
 <p>max-heap is done</p>
-<h3 id="step-2---sort-the-max-heap-by-shifting-maximum-to-the-right-in-each-iteration">Step 2 - Sort the max-heap by shifting maximum to the right in each iteration</h3>
+<h3 id="demonstration-part-2---sort-the-max-heap-by-shifting-maximum-to-the-right-in-each-iteration">Demonstration Part 2 - Sort the max-heap by shifting maximum to the right in each iteration</h3>
 <p>max-heap</p>
 <pre><code>      8
      / \
@@ -774,6 +774,11 @@ The reason why only the first 4 elements are needed is because the direction of 
 </code></pre>
 <p>done (no need to do heapify)</p>
 <h1 id="counting-sort">Counting sort</h1>
+<h3 id="how-it-works-6">How it works</h3>
+<p>The key idea behind counting sort is to count the occurrences of each element in the input array,
+and use that information to determine the correct position of each element in the output array.
+This makes counting sort very efficient for data sets with a relatively small range of values,
+since it avoids the need for expensive comparisons between elements.</p>
 <h3 id="complexity-6">Complexity</h3>
 <ul>
 <li>Time <code>O(n+k)</code></li>
@@ -783,7 +788,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <p>n is the number of elements to be sorted and k is the range of values in the input array</p>
 </blockquote>
 <h3 id="pros-and-cons-6">Pros and Cons</h3>
-<p>pros</p>
+<p>Pros</p>
 <ul>
 <li>Linear time complexity
 <ul>
@@ -798,7 +803,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 <li>Stable sorting</li>
 <li>Easy to implement</li>
 </ul>
-<p>cons</p>
+<p>Cons</p>
 <ul>
 <li>Memory usage
 <ul>
@@ -817,12 +822,7 @@ The reason why only the first 4 elements are needed is because the direction of 
 </li>
 <li>It&rsquo;s designed to work with integer (not suitable for decimal)</li>
 </ul>
-<h3 id="how-it-works-6">How it works</h3>
-<p>The key idea behind counting sort is to count the occurrences of each element in the input array,
-and use that information to determine the correct position of each element in the output array.
-This makes counting sort very efficient for data sets with a relatively small range of values,
-since it avoids the need for expensive comparisons between elements.</p>
-<h3 id="steps-5">Steps</h3>
+<h3 id="demonstration-5">Demonstration</h3>
 <p>input</p>
 <pre><code> index     0     1     2     3
          -----------------------
@@ -1076,93 +1076,53 @@ since it avoids the need for expensive comparisons between elements.</p>
          -----------------------
 </code></pre>
 <p>end</p>
-<h1 id="binary-search">binary search</h1>
-<h3 id="remove-a-node-in-bst">Remove a node in BST</h3>
-<p><code>insert</code> and <code>lookup</code> a node is quite easy, but removing a node is complex.</p>
-<p>3 cases</p>
+<h1 id="binary-search">Binary search</h1>
+<h3 id="how-it-works-7">How it works</h3>
+<p>Find a specific value in a sorted array by repeatedly dividing the search interval in half.
+It works by comparing the target value to the middle element of the array.
+If the target value is less than the middle element, the search continues in the lower half of the array.
+If the target value is greater than the middle element, the search continues in the upper half of the array.
+The algorithm continues until the target value is found or the search interval is empty.</p>
+<h3 id="complexity-7">Complexity</h3>
+<p>Time: <code>O(log n)</code></p>
+<h3 id="pros-and-cons-7">Pros and Cons</h3>
+<p>Pros</p>
 <ul>
-<li>no child: just delete</li>
-<li>1 child: replace the targetted node with its child node</li>
-<li>2 children: there are 2 options to do that (so that the tree can continue to follow the rules of BST).
+<li>very fast compared to linear search</li>
+<li>can be implemented both iteratively and recursively</li>
+<li>can be applied to any sorted array or list</li>
+</ul>
+<p>Cons</p>
 <ul>
-<li>find the minimum value in right subtree, assign it to the node we want to delete (most common)</li>
-<li>find the maximum value in left subtree, assign it to the node we want to delete</li>
+<li>requires the input array or list to be sorted</li>
+<li>can only be applied to one-dimensional sorted arrays or lists</li>
+<li>not suitable for dynamic arrays or lists because inserting and deleting elements will destroy the sorted order and thus make the binary search useless</li>
 </ul>
-</li>
-</ul>
-<p>no child</p>
-<pre><code>         100                                100
-        /    \                             /
-      75     125 &lt;- remove      =&gt;       75
+<h3 id="demonstration-6">Demonstration</h3>
+<p>a sorted list, try to find <code>13</code></p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
 </code></pre>
-<p>1 child</p>
-<pre><code>                100                         100
-                /                           /
-    remove -&gt; 75              =&gt;          65
-             /                            /\
-           65                           60  70
-           /\
-         60  70
+<p>find the middle <code>20</code> and compare with it</p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
+           *
 </code></pre>
-<p>1 child</p>
-<pre><code>                3                         3
-               / \                       / \
-    remove -&gt; 1   4           =&gt;        2   4
-               \
-                2
+<p>because <code>13 &lt; 20</code>, then look for the left half</p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
+|        |
 </code></pre>
-<p>1 child</p>
-<pre><code>       3                             3
-      / \                           / \
-     1   5 &lt;- remove     =&gt;        1   4
-        /
-       4
+<p>find the middle <code>4</code> on the left half, then look for the right half as <code>13 &gt; 4</code></p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
+|   *    |
 </code></pre>
-<p>2 children (leftmost in right subtree is 70)</p>
-<pre><code>                    75                      75
-                   /  \                    /  \
-       remove -&gt; 65    85       =&gt;       70    85
-                 /\                     /
-               60  70                  60
+<p>find the middle <code>5</code> on the left half, then look for the right half as <code>13 &gt; 5</code></p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
+    | *  |
 </code></pre>
-<p>2 children (leftmost in right subtree is 115)</p>
-<pre><code>           100 &lt;- remove                     115
-          /   \                             /  \
-        75     125               =&gt;       75    125
-              /   \                               \
-            115    150                            150
+<p>find the node <code>13</code></p>
+<pre><code>1 3 4 5 13 20 25 40 42 44 53
+        *
 </code></pre>
-<p>2 children (leftmost in right subtree is 80)</p>
-<pre><code>                     100                            100
-                     /  \                          /   \
-         remove -&gt; 75    125                     80     125
-                 /    \          =&gt;            /    \
-               65      85                    65      85
-              /  \    /  \                  /  \       \
-            60   70  80  95               60   70       95
-</code></pre>
-<p>2 children (leftmost in right subtree is 135)</p>
-<pre><code>            100                             100
-           /   \                           /   \
-         75     125 &lt;- remove            75     135
-               /   \             =&gt;            /   \
-            115     150                      115   150
-                   /   \                             \
-                 135   175                           175
-</code></pre>
-<p>2 children (leftmost in right subtree is 34)</p>
-<pre><code>            2                                   2
-          /   \                               /   \
-         0     33 &lt;- remove                 0      34
-              /  \                                /  \
-            25    40                            25    40
-                 /  \           =&gt;                   /  \
-               34    45                            36    45
-                 \                                /  \
-                  36                            35    39
-                  /\
-                35  39
-</code></pre>
+<p>end</p>
 <h1 id="traversal">Traversal</h1>
 <h3 id="bfs-breadth-first-search">BFS (Breadth First Search)</h3>
 <p>tree</p>
