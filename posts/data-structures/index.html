@@ -250,10 +250,21 @@
 <li>deleting the root element of a heap requires replacing it with the last element in the heap and then performing a series of swaps to maintain the heap property</li>
 </ul>
 </li>
-<li>Heapify O(n)
+<li>Heapify O(log n)</li>
+<li>Building a heapo O(n)
 <ul>
-<li>converting an unsorted array of elements into a heap (i.e., &ldquo;heapifying&rdquo; the array) takes O(n) time using a bottom-up approach, which involves starting at the last non-leaf node and working backwards</li>
-<li>This can be done by starting at the last non-leaf node (<code>n/2</code>) in the array (i.e., the parent of the last element) and working backwards to the first element in the array, performing a series of swaps as necessary to maintain the heap property. Specifically, for each node, we compare it with its children and swap it with the smaller (or larger) child if necessary, and then recursively apply the same process to the subtree rooted at the child.</li>
+<li>In general, building a heap from an arbitrary array of n elements takes O(n log n) time (performing heapify <code>n</code> times)</li>
+<li>However, there is a technique called &ldquo;heapify-down&rdquo; that can be used to build a heap in O(n) time.
+<ul>
+<li>This technique starts by building a binary tree using the input array, where each element is a node in the tree. Then, we perform a bottom-up traversal of the tree, starting at the last non-leaf node and working our way up to the root. At each node, we &ldquo;heapify&rdquo; the subtree rooted at that node to ensure that it satisfies the heap property.
+<ul>
+<li>there are at most n/2 non-leaf nodes</li>
+<li>perform a bottom-up traversal of the tree, starting at the last non-leaf node and working our way up to the root</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -637,13 +648,70 @@ This is because each comparison eliminates half of the remaining tree, and we ne
 </ul>
 </li>
 </ul>
-<h3 id="convert-to-heap-from-binary-tree">Convert to heap from binary tree</h3>
-<p>Basically, put bigger value upwards and make it follow the heap&rsquo;s rule.</p>
-<p>two ways to implement:</p>
+<h3 id="why-does-building-a-heap-take-on-siftdown">Why does building a heap take O(n)? (siftDown)</h3>
+<p>n = 31, h = log n = 5</p>
+<pre><code>                            E                               h=4
+                          /   \
+                        /       \
+                      /           \
+                    /               \
+                  /                   \
+                D                       D                   h=3
+             /     \                /      \
+           C         C             C         C              h=2
+         /   \     /   \         /   \     /   \
+        B     B    B    B       B     B   B     B           h=1
+       / \   / \  /\   / \     / \   / \  /\   / \
+      A   A A  A A  A A   A   A   A A   AA  A A   A         h=0
+</code></pre>
+<p>Explaination</p>
 <ul>
-<li>from bottom to top</li>
-<li>from top to bottom</li>
+<li>there are 16 <code>A</code> nodes at height 0 (n/2^1 = 31/2 = 16)</li>
+<li>there are 8 <code>B</code> nodes at height 1 (n/2^2 = 31/4 = 8)</li>
+<li>there are 4 <code>C</code> nodes at height 2 (n/2^3 = 31/8 = 4)</li>
+<li>there are 2 <code>D</code> nodes at height 3 (n/2^4 = 31/16 = 2)</li>
+<li>there is 1 <code>E</code> node at height 4 (n/2^5 = 31/32 = 1)</li>
 </ul>
+<p>there are n/2^(h+1) nodes at level <code>h</code>, each node will perform at most <code>h</code> times of swap</p>
+<p>For example, in the case of node <code>C</code>, it will swap at most 2 times to reach the bottom</p>
+<p>the total work of swap in worse case will be</p>
+<pre><code>        A              B             C            D             E
+    (n/2^1 * 0) + (n/2^2 * 1) + (n/2^3 * 2) + (n/2^4 * 3) + (n/2^(h+1) * h)
+=    (n/2 * 0)  +  (n/4 * 1)  +  (n/8 * 2)  +  (2/16 * 3) +   (31/32 * 4)
+=       16*0    +    8*1      +     4*2     +    2*3      +     1*4
+=    26
+</code></pre>
+<p>the time complexity is <code>O(n)</code></p>
+<p>the proof is too complicated to me, please see <a href="https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity">https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity</a> if you are interested in</p>
+<h3 id="the-difference-between-siftup-and-sift-down">The difference between siftUp and sift Down</h3>
+<p>siftUp</p>
+<ul>
+<li>O(n log n)</li>
+<li>siftUp operation is only needed to perform inserts into an existing heap</li>
+<li>be used to implement a priority queue using a binary heap</li>
+</ul>
+<p>siftDown</p>
+<ul>
+<li>O(n)</li>
+<li>buildHeap (build the heap from a binary tree) and heapSort will only use siftDown</li>
+</ul>
+<h3 id="which-is-more-efficient-siftup-or-siftdown">Which is more efficient, siftUp or siftDown?</h3>
+<p>siftDown</p>
+<pre><code>(0 * n/2) + (1 * n/4) + (2 * n/8) + ... + (h * 1)
+</code></pre>
+<blockquote>
+<p>O(n)</p>
+</blockquote>
+<p>siftUp</p>
+<pre><code>(h * n/2) + ((h-1) * n/4) + ((h-2)*n/8) + ... + (0 * 1)
+</code></pre>
+<blockquote>
+<p><code>(h * n/2)</code> = <code>log n * n/2</code> = <code>n log n</code> (the first one alone takes <code>n log n</code>)</p>
+</blockquote>
+<p>If we need to apply an operation to every node, it is preferable to use siftDown rather than siftUp.</p>
+<h3 id="why-does-heap-sort-require-on-log-n-time">Why does heap sort require O(n log n) time?</h3>
+<p>The time complexity for heap sort is the sum of the two stages:
+<code>O(n)</code> time for building the heap and <code>O(n log n)</code> to remove each node in order. Therefore, the overall time complexity is <code>O(n log n)</code>.</p>
 <h1 id="graph">Graph</h1>
 <h3 id="basics-2">basics</h3>
 <p>Components</p>
