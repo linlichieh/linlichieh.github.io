@@ -656,21 +656,24 @@ This is because each comparison eliminates half of the remaining tree, and we ne
 <p>Heapify works by processing the elements from the middle of the array to the beginning, rearranging elements to satisfy the heap property. Since the majority of elements are located in the lower part of the heap (which requires less work to rearrange), the overall time complexity is reduced to O(n)</p>
 <h3 id="why-does-building-a-heap-take-on-siftdown">Why does building a heap take O(n)? (siftDown)</h3>
 <p>n = 31, h = log n = 5</p>
-<pre><code>                            E                               h=4
-                          /   \
-                        /       \
-                      /           \
-                    /               \
-                  /                   \
-                D                       D                   h=3
-             /     \                /      \
-           C         C             C         C              h=2
-         /   \     /   \         /   \     /   \
-        B     B    B    B       B     B   B     B           h=1
-       / \   / \  /\   / \     / \   / \  /\   / \
-      A   A A  A A  A A   A   A   A A   AA  A A   A         h=0
+<pre><code>                         E                                  h=4
+                        / \
+                      /     \
+                    /         \
+                  /             \
+                /                 \
+              /                     \
+            /                         \
+           D                           D                    h=3
+         /   \                       /   \
+       /       \                   /       \
+     C           C               C           C              h=2
+   /   \       /   \           /   \       /   \
+  B     B     B     B         B     B     B     B           h=1
+ / \   / \   / \   / \       / \   / \   / \   / \
+A   A A   A A   A A   A     A   A A   A A   A A   A         h=0
 </code></pre>
-<p>Explaination</p>
+<p>Explanation</p>
 <ul>
 <li>there are 16 <code>A</code> nodes at height 0 (n/2^1 = 31/2 = 16)</li>
 <li>there are 8 <code>B</code> nodes at height 1 (n/2^2 = 31/4 = 8)</li>
