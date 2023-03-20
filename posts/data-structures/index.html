@@ -245,28 +245,14 @@
 <li>inserting a new element into a heap requires adding the element to the end of the heap and then performing a series of swaps to maintain the heap property</li>
 </ul>
 </li>
+<li>Insert all elements O(n log n)</li>
 <li>Deletion(= extract) O(log n)
 <ul>
 <li>deleting the root element of a heap requires replacing it with the last element in the heap and then performing a series of swaps to maintain the heap property</li>
 </ul>
 </li>
 <li>Heapify O(log n)</li>
-<li>Building a heapo O(n)
-<ul>
-<li>In general, building a heap from an arbitrary array of n elements takes O(n log n) time (performing heapify <code>n</code> times)</li>
-<li>However, there is a technique called &ldquo;heapify-down&rdquo; that can be used to build a heap in O(n) time.
-<ul>
-<li>This technique starts by building a binary tree using the input array, where each element is a node in the tree. Then, we perform a bottom-up traversal of the tree, starting at the last non-leaf node and working our way up to the root. At each node, we &ldquo;heapify&rdquo; the subtree rooted at that node to ensure that it satisfies the heap property.
-<ul>
-<li>there are at most n/2 non-leaf nodes</li>
-<li>perform a bottom-up traversal of the tree, starting at the last non-leaf node and working our way up to the root</li>
-<li></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li>Building a heapo O(n)</li>
 </ul>
 </li>
 <li>Space O(n)</li>
@@ -520,7 +506,7 @@ int main() {
         33             105
      9     37      104     144
 </code></pre>
-<h3 id="basics">basics</h3>
+<h3 id="basics">Basics</h3>
 <ul>
 <li>All child nodes in the tree to the right of root node must be greater than the current node</li>
 <li>If the BST is balanced, the average time complexity of all operation is O(log(n)). However, the worse case (unbalance BST) would be O(n)</li>
@@ -648,6 +634,13 @@ This is because each comparison eliminates half of the remaining tree, and we ne
 </ul>
 </li>
 </ul>
+<h3 id="why-does-heap-sort-require-on-log-n-time">Why does heap sort require O(n log n) time?</h3>
+<p>The time complexity for heap sort is the sum of the two stages:
+<code>O(n)</code> time for building the heap and <code>O(n log n)</code> to remove each node in order. Therefore, the overall time complexity is <code>O(n log n)</code>.</p>
+<h3 id="build-a-heap-by-inserting-all-elements-on-logn">Build a heap by inserting all elements O(n logn)</h3>
+<p>each insertion takes O(log n) time, and we perform this n times, resulting in O(n * log n) time complexity</p>
+<h3 id="build-a-heap-from-unsorted-binary-tree-on">Build a heap from unsorted binary tree O(n)</h3>
+<p>Heapify works by processing the elements from the middle of the array to the beginning, rearranging elements to satisfy the heap property. Since the majority of elements are located in the lower part of the heap (which requires less work to rearrange), the overall time complexity is reduced to O(n)</p>
 <h3 id="why-does-building-a-heap-take-on-siftdown">Why does building a heap take O(n)? (siftDown)</h3>
 <p>n = 31, h = log n = 5</p>
 <pre><code>                            E                               h=4
@@ -709,9 +702,6 @@ This is because each comparison eliminates half of the remaining tree, and we ne
 <p><code>(h * n/2)</code> = <code>log n * n/2</code> = <code>n log n</code> (the first one alone takes <code>n log n</code>)</p>
 </blockquote>
 <p>If we need to apply an operation to every node, it is preferable to use siftDown rather than siftUp.</p>
-<h3 id="why-does-heap-sort-require-on-log-n-time">Why does heap sort require O(n log n) time?</h3>
-<p>The time complexity for heap sort is the sum of the two stages:
-<code>O(n)</code> time for building the heap and <code>O(n log n)</code> to remove each node in order. Therefore, the overall time complexity is <code>O(n log n)</code>.</p>
 <h1 id="graph">Graph</h1>
 <h3 id="basics-2">basics</h3>
 <p>Components</p>
