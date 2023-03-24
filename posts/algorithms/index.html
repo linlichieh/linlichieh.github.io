@@ -1205,29 +1205,68 @@ The algorithm continues until the target value is found or the search interval i
 <li>analysing networks e.g. testing if a graph is bipartite (a graph where vertices can be partitioned into two disjoint sets, with no edges connecting vertices in the same set. It&rsquo;s used in matching, scheduling, and network flow problems and can be easily tested for by coloring vertices with two colors and checking if no two adjacent vertices have the same color.)</li>
 <li>on linkedin: If I have a connection someone, I can use DFS for what degree of connection with that person.</li>
 </ul>
+<h3 id="why-is-bfs-more-effective-in-finding-the-shortest-path-compared-to-dfs">Why is BFS more effective in finding the shortest path compared to DFS?</h3>
+<ul>
+<li>BFS is good at finding the shortest path in a graph or tree because it explores all the nodes at a given level before moving on to the next level.  This means that it discovers all the nodes at distance 1 from the starting node before discovering any nodes at distance 2, and so on.</li>
+<li>BFS guarantees that it explores all nodes at a given distance before moving on to the next distance, it is guaranteed to find the shortest path from the starting node to any other node in the graph or tree.</li>
+<li>DFS does not guarantee to find the shortest path, as it explores the nodes along a single path until it reaches a dead end before backtracking and exploring other paths.</li>
+</ul>
 <h3 id="inorder-vs-preorder-vs-postorder">inorder vs preorder vs postorder</h3>
-<p>tree</p>
+<p>use cases:</p>
+<ul>
+<li>preorder (root, left, right)
+<ul>
+<li>If you know you need to explore the roots before inspecting any leaves, you pick pre-order because you will encounter all the roots before all of the leaves.</li>
+</ul>
+</li>
+<li>inorder (left, root, right)
+<ul>
+<li>If you know that the tree has an inherent sequence in the nodes, and you want to flatten the tree back into its original sequence, than an in-order traversal should be used.</li>
+</ul>
+</li>
+<li>postorder (left, right, root)
+<ul>
+<li>If you know you need to explore all the leaves before any nodes, you select post-order because you don&rsquo;t waste any time inspecting roots in search for leaves.</li>
+</ul>
+</li>
+</ul>
+<p>Example 1</p>
 <pre><code>            9
           /   \
         4      20
        / \    /  \
       1   6  15   170
 </code></pre>
-<p>inorder</p>
-<pre><code>1 4 6 9 15 20 170
-</code></pre>
 <p>preorder</p>
 <pre><code>9 4 1 6 20 15 170
+</code></pre>
+<p>inorder</p>
+<pre><code>1 4 6 9 15 20 170
 </code></pre>
 <p>postorder</p>
 <pre><code>1 6 4 15 170 20 9
 </code></pre>
-<p>use cases:</p>
-<ul>
-<li>If you know you need to explore the roots before inspecting any leaves, you pick pre-order because you will encounter all the roots before all of the leaves.</li>
-<li>If you know you need to explore all the leaves before any nodes, you select post-order because you don&rsquo;t waste any time inspecting roots in search for leaves.</li>
-<li>If you know that the tree has an inherent sequence in the nodes, and you want to flatten the tree back into its original sequence, than an in-order traversal should be used.</li>
-</ul>
+<p>Example 2</p>
+<pre><code>              50
+            /    \
+          /        \
+       30           80
+      /  \        /    \
+     1    47    70      100
+         /  \     \     / \
+       40    73    78  99  126
+      /  \        /  \     /
+     38  45      75  79  118
+</code></pre>
+<p>preorder</p>
+<pre><code>50 30 1 47 40 38 45 73 80 70 78 75 79 100 99 126 118
+</code></pre>
+<p>inorder</p>
+<pre><code>1 30 38 40 45 47 73 50 70 75 78 79 80 99 100 118 126
+</code></pre>
+<p>postorder</p>
+<pre><code>1 38 45 40 73 47 30 75 79 78 70 99 118 126 100 80 50
+</code></pre>
 <h3 id="why-does-bfs-not-have-inorder-preorder-and-postorder-implementations-while-dfs-does">Why does BFS not have inorder, preorder, and postorder implementations, while DFS does?</h3>
 <ul>
 <li>BFS visits nodes in a level-by-level manner, which makes it difficult to visit the nodes in a specific order.</li>
