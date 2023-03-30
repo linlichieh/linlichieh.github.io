@@ -432,14 +432,8 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
       <pubDate>Fri, 16 Jan 2015 12:15:03 +0800</pubDate>
       
       <guid>/posts/network/</guid>
-      <description>Load Balance 分幾種, 常見的是 L3, L7
-L3 是 IP 層, 是以指派 IP 到後面的主機
-L7 是 HTTP 層, 分析 Domain 或 Header 再指派到後面的主機, 效率較 L3 快
-長連線 飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著
-habit 是 tcp 三項交握的 sync 封包
-TCP / UDP 查看系統 TCP 相關設定 MacOS:
-sysctl net.inet.tcp TCP timeout OS 預設會對 connection 設 timeout, 如果這段期間 connection 是閒置的(沒有 write, read, heartbeat), connection 就會被切斷
-keep alive 發送心跳包, 用來偵測連線是否還正常, server/client 都可以設定, 可以自已調整心跳的頻率, 它的功能只有探測而且只有在 write/read 沒有在發送的時候才會去發送心跳包</description>
+      <description>P2P connection Introduction When two servers behind their own NATs need to establish a P2P connection, they need to exchange information about their private IP and port numbers to establish a direct connection. This process is called NAT traversal.
+Techniques for NAT Traversal STUN (Session Traversal Utilities for NAT) To allow a server to know its own public IP and port TURN (Traversal Using Relays around NAT) A relay server to allows the servers to communicate even if they are behind different types of NATs ICE (Interactive Connectivity Establishment).</description>
     </item>
     
     <item>

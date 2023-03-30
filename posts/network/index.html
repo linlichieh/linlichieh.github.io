@@ -20,14 +20,69 @@
     <h1>Network</h1>
     <time datetime="2015-01-16T12:15:03&#43;08:00">January 16, 2015</time>
   </header>
-  <h2 id="load-balance">Load Balance</h2>
+  <h1 id="p2p-connection">P2P connection</h1>
+<h3 id="introduction">Introduction</h3>
+<p>When two servers behind their own NATs need to establish a P2P connection,
+they need to exchange information about their private IP and port numbers to establish a direct connection.
+This process is called NAT traversal.</p>
+<h3 id="techniques-for-nat-traversal">Techniques for NAT Traversal</h3>
+<ul>
+<li>STUN (Session Traversal Utilities for NAT)
+<ul>
+<li>To allow a server to know its own public IP and port</li>
+</ul>
+</li>
+<li>TURN (Traversal Using Relays around NAT)
+<ul>
+<li>A relay server to allows the servers to communicate even if they are behind different types of NATs</li>
+</ul>
+</li>
+<li>ICE (Interactive Connectivity Establishment).
+<ul>
+<li>A combination of STUN and TURN to support both approaches to communicate. STUN is the priority if works.</li>
+</ul>
+</li>
+</ul>
+<h3 id="the-steps-to-establish-a-p2p-connection-between-2-servers-behind-their-own-nats">The steps to establish a p2p connection between 2 servers behind their own NATs</h3>
+<p>The first server sends a connection request to the second server. The connection request includes the first server&rsquo;s private IP and port as well as the public IP and port of the NAT device that the first server is behind.
+The second server receives the connection request from the first server, but because it is behind a NAT device, the request appears to come from the public IP and port of the NAT device and not the private IP and port of the first server.</p>
+<pre><code>                                SDP offer
+First Server (FS)   ─────&gt;&gt;&gt;───[Connection Request]───────&gt;&gt;&gt;   Second Server (SS)
+                               Private IP &amp; Port (FS)
+                               Public IP &amp; Port (NAT FS)
+</code></pre>
+<p>The second server sends a response back to the first server. This response includes the second server&rsquo;s private IP and port as well as the public IP and port of the NAT device that the second server is behind.
+The first server receives the response from the second server, but because it is behind a NAT device, the response appears to come from the public IP and port of the NAT device and not the private IP and port of the second server.</p>
+<pre><code>                                    SDP answer
+First Server (FS)   &lt;&lt;&lt;─────────────[Response]──────&lt;&lt;&lt;──────   Second Server (SS)
+                                  Private IP &amp; Port (SS)
+                                  Public IP &amp; Port (NAT SS)
+</code></pre>
+<p>The first server sends a second connection request to the second server. This request includes the private IP and port of the first server and the public IP and port of the NAT device that the first server is behind, as well as the private IP and port of the second server and the public IP and port of the NAT device that the second server is behind.</p>
+<pre><code>First Server (FS)   ───&gt;&gt;&gt;───[2nd Connection Request]─────&gt;&gt;&gt;   Second Server (SS)
+                                  Private IP &amp; Port (FS)
+                                  Public IP &amp; Port (NAT FS)
+                                  Private IP &amp; Port (SS)
+                                  Public IP &amp; Port (NAT SS)
+</code></pre>
+<p>The second server receives the second connection request from the first server, and because it now has both private and public IP and port information for both servers, it is able to create a mapping in its NAT device that allows incoming traffic from the first server to be routed to the second server.</p>
+<pre><code>First Server (FS)   ───&gt; NAT ────[2nd Connection Request]───&gt; NAT ───&gt; Second Server (SS)
+                          ├─ Private IP &amp; Port (FS)            ├─ Private IP &amp; Port (FS)
+                          ├─ Public IP &amp; Port (NAT FS)         ├─ Public IP &amp; Port (NAT FS)
+                          ├─ Private IP &amp; Port (SS)            ├─ Private IP &amp; Port (SS)
+                          └─ Public IP &amp; Port (NAT SS)         └─ Public IP &amp; Port (NAT SS)
+</code></pre>
+<p>The two servers are now able to establish a P2P connection and communicate directly with each other.</p>
+<pre><code>First Server (FS)    &lt;────────────[P2P Connection]──────────&gt;   Second Server (SS)
+</code></pre>
+<h1 id="load-balance">Load Balance</h1>
 <p>分幾種, 常見的是 L3, L7</p>
 <p>L3 是 IP 層, 是以指派 IP 到後面的主機</p>
 <p>L7 是 HTTP 層, 分析 Domain 或 Header 再指派到後面的主機, 效率較 L3 快</p>
-<h2 id="長連線">長連線</h2>
+<h1 id="長連線">長連線</h1>
 <p>飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著</p>
 <p>habit 是 tcp 三項交握的 sync 封包</p>
-<h2 id="tcp--udp">TCP / UDP</h2>
+<h1 id="tcp--udp">TCP / UDP</h1>
 <h3 id="查看系統-tcp-相關設定">查看系統 TCP 相關設定</h3>
 <p>MacOS:</p>
 <pre><code>sysctl net.inet.tcp
@@ -45,7 +100,7 @@
 </ol>
 <h3 id="加速">加速</h3>
 <p>google TCP BBR</p>
-<h2 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h2>
+<h1 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h1>
 <p>ref: <a href="https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support">https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support</a></p>
 <pre><code>The theoretical maximum number of connections per client per server port is 65534.
 Assuming one network interface (i.e., 1 IP on your host),
@@ -94,14 +149,14 @@ so that the packets can be sent to the right end.</p>
 <p>加密所有 request 及 response 資料, 包含 URL, 如果你使用 Http Proxy, 它只知道目標 server 的 domain, 不會知道 url path
 意思是如果攔截到 https 封包只會看到 IP 跟 domain</p>
 <h3 id="how-does-https-work">How does HTTPS work?</h3>
-<h4 id="prerequisites">Prerequisites</h4>
+<h5 id="prerequisites">Prerequisites</h5>
 <ul>
 <li>Any message encrypted with Bob&rsquo;s public key can only be decrypted with Bob&rsquo;s private key.</li>
 <li>Anyone who has Bob&rsquo;s public key can verify a message (signature) encrypted by Bob with its private key.</li>
 <li>SSL certificates are signed by a certificate authority (CA)</li>
 <li>CA has a &ldquo;private key&rdquo;, and a &ldquo;public key&rdquo; that everyone knows</li>
 </ul>
-<h4 id="how-it-works">How it works?</h4>
+<h5 id="how-it-works">How it works?</h5>
 <p>It&rsquo;s a simple way to explain how it works, and it might be a bit different from what it really is.
 For example, I oversimplify the secret part. However, it&rsquo;s still a good example to explain how it works.</p>
 <p>Create a certificate for domain</p>
@@ -234,7 +289,7 @@ Content-Disposition: form-data; name=&quot;f1&quot;
 v1
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 </code></pre>
-<h2 id="different-encryption-techniques">Different Encryption Techniques</h2>
+<h1 id="different-encryption-techniques">Different Encryption Techniques</h1>
 <ul>
 <li>SSH and SSL use Symmetrical encryption and Asymmetrical encryption.</li>
 <li>SSH
@@ -274,7 +329,7 @@ v1
 <li><a href="https://security.stackexchange.com/questions/56389/ssl-certificate-framework-101-how-does-the-browser-actually-verify-the-validity/56393#56393">https://security.stackexchange.com/questions/56389/ssl-certificate-framework-101-how-does-the-browser-actually-verify-the-validity/56393#56393</a></li>
 <li><a href="https://www.hostinger.com/tutorials/ssh-tutorial-how-does-ssh-work">https://www.hostinger.com/tutorials/ssh-tutorial-how-does-ssh-work</a></li>
 </ul>
-<h2 id="unix-domain-socket-aka-ipc-socket">Unix Domain Socket, aka IPC socket</h2>
+<h1 id="unix-domain-socket-aka-ipc-socket">Unix Domain Socket, aka IPC socket</h1>
 <p>Unix Domain Socket is a data communications endpoint for exchanging data between processes executing on the same host operating system.
 It supports transmission of a reliable stream of bytes, ordered and reliable transmission of datagrams.
 The API for Unix domain sockets is similar to that of an Internet socket, but rather than using an underlying network protocol, all communication occurs entirely within the operating system kernel.
@@ -309,7 +364,7 @@ Instead of identifying a server by an IP address and port, a Unix domain socket 
 <li><a href="https://openforums.wordpress.com/2016/08/07/open-file-descriptor-passing-over-unix-domain-sockets/">PASSING OPEN FILE DESCRIPTORS OVER UNIX DOMAIN SOCKETS</a></li>
 <li><a href="https://stackoverflow.com/questions/2161674/is-there-a-difference-between-rpc-and-ipc">Is there a difference between RPC and IPC?</a></li>
 </ul>
-<h2 id="ip">IP</h2>
+<h1 id="ip">IP</h1>
 <p>5 個 CLASS</p>
 <pre><code>Class A :   0.xx.xx.xx ~ 127.xx.xx.xx       # 0xxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 0
 Class B : 128.xx.xx.xx ~ 191.xx.xx.xx       # 10xxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 10
@@ -322,7 +377,7 @@ Class E : 240.xx.xx.xx ~ 255.xx.xx.xx       # 1111xxxx.xxxxxxxx.xxxxxxxx.xxxxxxx
 Class B：172.16.0.0  - 172.31.255.255
 Class C：192.168.0.0 - 192.168.255.255
 </code></pre>
-<h2 id="port">Port</h2>
+<h1 id="port">Port</h1>
 <h3 id="web-app-開-80-port-遇到-permission-denied">Web app 開 80 port 遇到 permission denied</h3>
 <p>只有 root 才可以開小於 1024 的 port，最簡單的解決方法就是先開一個高一點的 port (e.g. 8080)，再用 iptable 去 forward 80 -&gt; 8080</p>
 <pre><code>iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK --set-mark 1
@@ -332,13 +387,13 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8181
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -m mark --mark 1 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark 1 -j ACCEPT
 </code></pre>
-<h2 id="vpn">VPN</h2>
+<h1 id="vpn">VPN</h1>
 <p>讓 Private 可以被特定的連線操作</p>
 <ul>
 <li>OpenVPN (SSL VPN) or IPsec</li>
 <li>OpenVPN 安全性會比 IPsec 好</li>
 </ul>
-<h2 id="常用的-http-status">常用的 Http status</h2>
+<h1 id="常用的-http-status">常用的 Http status</h1>
 <ul>
 <li>301 (Permanent) — Redirects to the site you specified in the Forward To field using a &ldquo;301 Moved Permanently&rdquo; HTTP response. The HTTP 301 response code tells user-agents (including search engines) that the location has permanently moved.</li>
 <li>302 (Temporary) — Redirects to the site you specified in the Forward To field using a &ldquo;302 Found&rdquo; HTTP response. The HTTP 302 response code tells user-agents (including search engines) that the location has temporarily moved.</li>
@@ -356,7 +411,7 @@ iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark
 <li>401 : 認證錯誤，例如 AccessToken 錯誤</li>
 <li>500 : Server 內部發生錯誤，例如 DB 連線錯誤</li>
 </ul>
-<h2 id="traceroute-觀察-host-經過的節點狀態">traceroute 觀察 host 經過的節點狀態</h2>
+<h1 id="traceroute-觀察-host-經過的節點狀態">traceroute 觀察 host 經過的節點狀態</h1>
 <pre><code>$ traceroute google.com
 traceroute to google.com (172.217.31.142), 30 hops max, 60 byte packets
  1  ec2-175-41-192-150.ap-northeast-1.compute.amazonaws.com (175.41.192.150)  16.685 ms ec2-175-41-192-144.ap-northeast-1.compute.amazonaws.com (175.41.192.144)  19.225 ms ec2-175-41-192-146.ap-northeast-1.compute.amazonaws.com (175.41.192.146)  16.309 ms
