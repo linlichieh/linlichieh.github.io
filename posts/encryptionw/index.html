@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Encryption | Software</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/encryptionw/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software">
+
+<header>
+  
+    <a href="/" class="title">Software</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Encryption</h1>
+    <time datetime="2014-12-05T11:52:58&#43;08:00">December 05, 2014</time>
+  </header>
+  <h1 id="asymmetric-cryptography-public-key-cryptography">Asymmetric cryptography (public-key cryptography)</h1>
+<p>It contains a pair of Public key and Private key.</p>
+<p>Public key</p>
+<ul>
+<li>The public key is openly shared and accessible to anyone.</li>
+<li>It can be used by anyone to encrypt data intended for the recipient who holds the corresponding private key.</li>
+<li>The public key can also be used to verify digital signatures created by the corresponding private key holder.</li>
+</ul>
+<p>Private key</p>
+<ul>
+<li>The private key is kept secret by its owner and should never be shared with anyone.</li>
+<li>It is used to decrypt data that has been encrypted with the corresponding public key.</li>
+<li>The private key can be used to create digital signatures that can be verified by anyone with the corresponding public key.</li>
+</ul>
+<p>In short, the data that is encrypted by public key can only be decrypted by private key. The signature that is encrypted by private key can be verified by public key.</p>
+<h1 id="symmetric-key-cryptography-secret-key-or-private-key-cryptography">Symmetric-key cryptography (secret-key or private-key cryptography)</h1>
+<p>The same key is used for encryption and decryption.</p>
+<ul>
+<li>Encryption
+<ul>
+<li>Plaintext (the original data) is transformed into ciphertext (the encrypted data) using an encryption algorithm and a secret key.</li>
+<li>There are two main types of symmetric encryption algorithms
+<ul>
+<li>Block ciphers: These algorithms encrypt data in fixed-size blocks (e.g., 128 bits). Examples of block ciphers include AES (Advanced Encryption Standard), DES (Data Encryption Standard), and 3DES (Triple DES).</li>
+<li>Stream ciphers: These algorithms encrypt data one bit or byte at a time, in a continuous stream. Examples of stream ciphers include RC4 (Rivest Cipher 4) and ChaCha20.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Decryption
+<ul>
+<li>To decrypt the ciphertext and retrieve the original plaintext, the recipient uses the same secret key and the corresponding decryption algorithm.</li>
+</ul>
+</li>
+</ul>
+<h1 id="comparison-between-asymmetric-and-symmetric-encryption">Comparison between Asymmetric and Symmetric encryption</h1>
+<ul>
+<li>Asymmetric encryption is typically used for key exchange. ( It allows secure communication between parties who have never met or shared keys before.)</li>
+<li>Asymmetric encryption is computationally more expensive and slower than symmetric encryption due to the complex mathematical operations involved.</li>
+<li>Asymmetric encryption offers a higher level of security because the private key is never shared or transmitted.</li>
+<li>Symmetric encryption is faster and more efficient than asymmetric encryption.</li>
+<li>Symmetric encryption is often used for bulk data encryption.</li>
+</ul>
+<h3 id="aes">AES</h3>
+<p>AES replaced the older Data Encryption Standard (DES) as a more secure and efficient option.</p>
+<ul>
+<li>A block cipher: meaning it encrypts data in fixed-size blocks (128 bits).</li>
+<li>Use a secret key for both encryption and decryption, and it supports key lengths of 128, 192, or 256 bits.</li>
+<li>The decryption process in AES is essentially the reverse of the encryption process.</li>
+</ul>
+<p>Electronic Codebook mode (ECB)</p>
+<ul>
+<li>Simple and straightforward</li>
+<li>Less secure</li>
+<li>The plaintext is divided into fixed-size blocks, and each block is encrypted independently using the same key</li>
+<li>Identical plaintext will produce identical ciphertext blocks</li>
+<li>ECB mode doesn&rsquo;t use an initialization vector (IV)</li>
+<li>Not recommended for use in most cryptographic applications</li>
+</ul>
+<p>Cipher Block Chaining mode (CBC)</p>
+<ul>
+<li>Each ciphertext block depends on all previous plaintext blocks, identical plaintext blocks will generally produce different ciphertext blocks</li>
+<li>Ensure that the same plaintext encrypted with the same key will result in different ciphertexts</li>
+<li>To hide patterns in the plaintext</li>
+</ul>
+<p>What&rsquo;s Initialization Vector (IV)?</p>
+<ul>
+<li>IV is used as an additional input to the encryption process. Such as:
+<ul>
+<li>Cipher Block Chaining (CBC)</li>
+<li>Cipher Feedback (CFB)</li>
+<li>Counter (CTR)</li>
+</ul>
+</li>
+<li>The IV should be random, unique, and unpredictable for each encryption</li>
+<li>To ensure that the ciphertext generated is different, even if the same plaintext is encrypted multiple times with the same key.</li>
+<li>IV doesn&rsquo;t need to be kept secret like the encryption key. It can be transmitted along with the ciphertext (usually as a prefix)</li>
+</ul>
+
+</article>
+
+
+
+</html>

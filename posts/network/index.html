@@ -144,55 +144,154 @@ so that the packets can be sent to the right end.</p>
 <li>Reduce the timeout of connection being tracked</li>
 <li>Increase the maximum of connection tracking table</li>
 </ul>
-<h1 id="http--https">HTTP / HTTPS</h1>
-<h3 id="https">HTTPS</h3>
-<p>加密所有 request 及 response 資料, 包含 URL, 如果你使用 Http Proxy, 它只知道目標 server 的 domain, 不會知道 url path
-意思是如果攔截到 https 封包只會看到 IP 跟 domain</p>
-<h3 id="how-does-https-work">How does HTTPS work?</h3>
-<h5 id="prerequisites">Prerequisites</h5>
+<h1 id="tls-https">TLS (HTTPS)</h1>
+<h3 id="tls">TLS</h3>
 <ul>
-<li>Any message encrypted with Bob&rsquo;s public key can only be decrypted with Bob&rsquo;s private key.</li>
-<li>Anyone who has Bob&rsquo;s public key can verify a message (signature) encrypted by Bob with its private key.</li>
-<li>SSL certificates are signed by a certificate authority (CA)</li>
-<li>CA has a &ldquo;private key&rdquo;, and a &ldquo;public key&rdquo; that everyone knows</li>
+<li>All transitted  data is encrypted with SSL/TLS protocols</li>
+<li>Ensures that the client is not communicating with a fake or malicious server.</li>
 </ul>
-<h5 id="how-it-works">How it works?</h5>
-<p>It&rsquo;s a simple way to explain how it works, and it might be a bit different from what it really is.
-For example, I oversimplify the secret part. However, it&rsquo;s still a good example to explain how it works.</p>
-<p>Create a certificate for domain</p>
-<pre><code>youtube.com -&gt; CA
-(youtube issues Certificate Signing Request)
-(both of them have their own public/private key pairs)
-
-youtube.com &lt;- CA
-(CA creates a signature containing youtube's public key using its private key)
-(anyone who has CA's public key can verify it)
-(but the public key can't be used to create a new signature)
-</code></pre>
-<p>Browser have already had a list of trusted certificates.</p>
-<p>Visit youtube.com</p>
-<pre><code>Your Browser -&gt; youtube.com
-(Visit youtube)
-
-Your Browser &lt;- youtube.com
-(youtube returns certificate containing youtube's public key signed by CA)
-
-Your Browser -&gt; youtube.com
-(verify the certificate using CA's public key and derives youtube's public key out of it)
-(browser create a secret key and encrypt duplicate one using youtube's public key)
-
-Your Browser &lt;- youtube.com
-(youtube decrypt it using its private key and derives the secret key)
-
-Your Browser &lt;-&gt; youtube.com
-(they all have the same secret key and start encrypting all of their communication using this key)
-</code></pre>
-<p>ref:</p>
+<h3 id="what-are-the-steps-to-apply-tls-for-your-domain">What are the steps to apply TLS for your domain?</h3>
+<ol>
+<li>Generate a private-public key pair
 <ul>
-<li><a href="https://www.youtube.com/watch?v=33VYnE7Bzpk">https://www.youtube.com/watch?v=33VYnE7Bzpk</a></li>
-<li><a href="https://www.youtube.com/watch?v=T4Df5_cojAs">https://www.youtube.com/watch?v=T4Df5_cojAs</a></li>
-<li><a href="https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls">https://docs.microsoft.com/en-us/windows/win32/secauthn/tls-handshake-protocol?redirectedfrom=MSDN#establishing-a-secure-session-by-using-tls</a></li>
+<li>The public key will be shared as part of the digital certificate</li>
 </ul>
+</li>
+<li>Create a Certificate Signing Request (CSR).
+<ul>
+<li>CSR content
+<ul>
+<li>include public key, domain, and other details</li>
+<li>they aren&rsquo;t encrypted by private key</li>
+</ul>
+</li>
+<li>Generate a unique signature
+<ul>
+<li>Generate a hash of the CSR content using a cryptographic hash function</li>
+<li>Sign the hash using the private key</li>
+</ul>
+</li>
+<li>Create the CSR file
+<ul>
+<li>Encode the CSR content and signature using base64</li>
+<li>Create a CSR file by wrapping Base64-encoded text with header and footer lines.</li>
+<li>CSR is typically in Privacy-Enhanced Mail (PEM) format.</li>
+<li>Command to generate CSR file <code>openssl req -new -key private_key.pem -out my_csr.pem</code></li>
+</ul>
+</li>
+<li>Signature is the only data to be encrypted by private key. Public key and domain aren&rsquo;t.</li>
+</ul>
+</li>
+<li>Submit CSR to a Certificate Authority (CA)</li>
+<li>CA verifies your CSR file for Domain and organization validation
+<ul>
+<li>The CA extracts the Base64-encoded content of the CSR (between header and footer)</li>
+<li>Convert it back into binary data that contains the actual CSR information in a standardized format, such as PKCS#10 or X.509.</li>
+<li>The CA parses the binary data to extract the public key, domain, signature and other information.</li>
+<li>The CA can just read public key and domain without needing your private key.</li>
+<li>The CA uses the included public key to verify the signature of the CSR.</li>
+<li>This step ensures that the CSR was indeed created using the corresponding private key and that the data within the CSR has not been tampered with.</li>
+<li>Since public-private key pairs are mathematically linked, the CA can perform this verification without access to your private key.</li>
+</ul>
+</li>
+<li>Get a digital certificate from CA
+<ul>
+<li>Once CA successfully verifies your CSR, it will issue you a digital certificate.</li>
+<li>the certificate file(s) in a format like PEM or PFX/PKCS#12 includes:
+<ul>
+<li>Your server certificate: for your domain, containing the public key and other verified information</li>
+<li>Intermediate certificates: to maintain security and limit the risk associated with the compromise of a root certificate</li>
+<li>Root certificate (optional): Some CAs might provide their root certificate, but it&rsquo;s often unnecessary, as most web servers and clients already have trusted root certificates pre-installed</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Install the digital certificate
+<ul>
+<li>Install the server certificate
+<ul>
+<li>Save the server certificate, private key, and (if provided) intermediate certificate(s) to a secure location on your server.</li>
+</ul>
+</li>
+<li>Install intermediate certificates (if provided)
+<ul>
+<li>Concatenate the intermediate certificate(s) to the end of your server certificate file. <code>cat server.crt intermediate.crt &gt; combined.crt</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure the web server
+<ul>
+<li>Taking Nginx as an example
+<ul>
+<li><code>listen 443 ssl;</code></li>
+<li><code>ssl_certificate_key /path/to/private.key</code></li>
+<li><code>ssl_certificate /path/to/combined.crt</code></li>
+<li><code>ssl_protocols TLSv1.2 TLSv1.3;</code></li>
+<li><code>ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305';</code></li>
+<li><code>ssl_prefer_server_ciphers on;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>CSR file looks like below</p>
+<pre><code>-----BEGIN CERTIFICATE REQUEST-----
+MIIC2jCCAcICAQAwgZExCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJDQTESMBAGA1UE
+BwwJU2FuIEpvc2UxEDAOBgNVBAoMB0FDTUUgSW5jMRQwEgYDVQQLDAtFbmdpbmVl
+cmluZzEUMBIGA1UEAwwLZXhhbXBsZS5jb20xHDAaBgkqhkiG9w0BCQEWDXN1cHBv
+cnRAZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDU
+...
+I+9M5Q5cej5qY7lJlgvKx6kLca6fDDU6B5CJGOyTeX9gToh1JUX8W+RJvRZlQ2Fw
+-----END CERTIFICATE REQUEST-----
+</code></pre>
+<h3 id="how-https-works">How HTTPS works?</h3>
+<ol>
+<li>DNS resolution: the browser first performs a DNS lookup to find the IP address associated with the domain name.</li>
+<li>TCP handshake: The browser establishes a TCP connection with the web server at the IP address obtained during DNS resolution.</li>
+<li>SSL/TLS handshake: Once the TCP connection is established, the browser initiates the SSL/TLS handshake to securely exchange cryptographic parameters and establish a secure connection.
+<ol>
+<li>ClientHello: The client initiates the handshake by sending a ClientHello message, which includes the supported TLS protocol versions, a list of cipher suites, a ClientRandom number, and any additional extensions (such as SNI).</li>
+<li>ServerHello: The server responds with a ServerHello message containing the selected TLS protocol version, the chosen cipher suite, and a ServerRandom number.</li>
+<li>Server Certificate: The server sends its digital certificate containing its public key and identity information to the client. This allows the client to authenticate the server and encrypt the data exchanged during the handshake.</li>
+<li>ServerHelloDone: The server sends a ServerHelloDone message to signal the end of its part of the handshake negotiation.</li>
+<li>ClientKeyExchange: The client generates a PreMasterSecret, encrypts it with the server&rsquo;s public key (from the server&rsquo;s certificate), and sends the encrypted PreMasterSecret in a ClientKeyExchange message.
+<ul>
+<li>PreMasterSecret, which is a random value that both the client and server will use to compute a shared secret called the Master Secret.</li>
+<li>This ensures that only the server can decrypt the PreMasterSecret, as it possesses the corresponding private key.</li>
+<li>The server receives the ClientKeyExchange message and decrypts the PreMasterSecret using its private key.</li>
+</ul>
+</li>
+<li>ChangeCipherSpec: Both the client and server send a ChangeCipherSpec message to indicate that subsequent messages will be encrypted using the negotiated cipher suite and keys derived from the PreMasterSecret, ClientRandom, and ServerRandom.</li>
+<li>Finished: Both the client and server send an encrypted Finished message containing a hash of the complete handshake process to verify its integrity.</li>
+</ol>
+</li>
+<li>Secure data exchange: After the SSL/TLS handshake is complete, the client and server can exchange application data over the encrypted SSL/TLS connection. All messages are encrypted and decrypted using symmetric encryption keys derived from the PreMasterSecret and the ClientRandom and ServerRandom values.
+<ul>
+<li>Both the client and server now have the same PreMasterSecret.</li>
+<li>The Master Secret is then used to derive symmetric encryption keys, also known as session keys, for data encryption and integrity checks.</li>
+</ul>
+</li>
+<li>Connection closure: When the client and server have finished exchanging data, they send close_notify alerts to each other to signal the end of the secure connection. The underlying TCP connection is then closed through the standard TCP connection termination process.</li>
+</ol>
+<p>The SSL/TLS handshake process:</p>
+<pre><code>Client                                                                                    Server
+  |                                                                                         |
+  | ----------- ClientHello (Supported versions, cipher suites, ClientRandom) ------------&gt; |
+  |                                                                                         |
+  | &lt;---------- ServerHello (Selected version, cipher suite, ServerRandom) ---------------- |
+  | &lt;---------- Server Certificate (Server's public key, identity information) ------------ |
+  | &lt;---------- ServerHelloDone ----------------------------------------------------------- |
+  |                                                                                         |
+  | ----------- ClientKeyExchange (Encrypted PreMasterSecret with server's public key) ---&gt; |
+  | ----------- ChangeCipherSpec (Switch to negotiated cipher) ---------------------------&gt; |
+  | ----------- Finished (Encrypted handshake hash) --------------------------------------&gt; |
+  |                                                                                         |
+  | &lt;---------- ChangeCipherSpec (Switch to negotiated cipher) ---------------------------- |
+  | &lt;---------- Finished (Encrypted handshake hash) --------------------------------------- |
+  |                                                                                         |
+  | &lt;---------- (Encrypted data exchange using negotiated cipher suite) ------------------&gt; |
+</code></pre>
 <h3 id="keep-alive-1">Keep-alive</h3>
 <p>tcp 沒有 keep-alive 一個 request 就會佔用一條通道</p>
 <p>tcp 有 keep-alive 就多個 request 只需做一次三項交握, 都在同一條通道傳送</p>
