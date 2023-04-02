@@ -6,16 +6,7 @@
     <description>Recent content in Posts on Software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 02 Apr 2023 14:12:42 +0800</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>AI concept</title>
-      <link>/posts/ai/</link>
-      <pubDate>Sun, 02 Apr 2023 14:12:42 +0800</pubDate>
-      
-      <guid>/posts/ai/</guid>
-      <description>Large Language Model (LLM) Features is a general term is a model trained on vast amount of text data to understand and generate human-like language is designed to perform tasks like text generation, question answering, translation, summarisation, etc. GPT-4 and ChatGPT both are LLM ChatGPT Features is a specific instance of an LLM based on the GPT architecture is designed to generate human-like text, respond to user queries, and engage in conversation, etc.</description>
-    </item>
-    
+    <lastBuildDate>Sun, 26 Feb 2023 17:30:44 +0800</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Leetcode</title>
       <link>/posts/leetcode/</link>
