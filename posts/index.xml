@@ -432,8 +432,9 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
       <pubDate>Fri, 16 Jan 2015 12:15:03 +0800</pubDate>
       
       <guid>/posts/network/</guid>
-      <description>P2P connection Introduction When two servers behind their own NATs need to establish a P2P connection, they need to exchange information about their private IP and port numbers to establish a direct connection. This process is called NAT traversal.
-Techniques for NAT Traversal STUN (Session Traversal Utilities for NAT) To allow a server to know its own public IP and port TURN (Traversal Using Relays around NAT) A relay server to allows the servers to communicate even if they are behind different types of NATs ICE (Interactive Connectivity Establishment).</description>
+      <description>Proxy server vs Reverse proxy server regular proxy server
+When a client sends a request to access a server, the request is first intercepted by the proxy server. The proxy server then forwards the request to the destination server on behalf of the client, and the server responds to the proxy server. The proxy server then forwards the response back to the client. flow
+client -&amp;gt; proxy server -&amp;gt; server reverse proxy server</description>
     </item>
     
     <item>
