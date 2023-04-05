@@ -110,7 +110,20 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 <h1 id="長連線">長連線</h1>
 <p>飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著</p>
 <p>habit 是 tcp 三項交握的 sync 封包</p>
-<h1 id="tcp--udp">TCP / UDP</h1>
+<h1 id="tcp">TCP</h1>
+<h3 id="tcp-states">TCP states</h3>
+<p>TODO</p>
+<h3 id="tcp-3-way-handshake">TCP 3-way handshake</h3>
+<p>TODO tcp-three-way-handshake.markdown</p>
+<h3 id="tcp-time_wait">TCP TIME_WAIT</h3>
+<p>When a connection is closed, it will be turned into the state TIME_WAIT. Network in real world can be unpredicable.
+There is no gurantee for packet to be delivered in order. When lost packet was delayed to ask to close the connection,
+which was already disconnected, server might be confused by it and close the new established connection if it doesn&rsquo;t
+have TIME_WAIT state. TIME_WAIT keeps the info of source address, source port, destination address and destination port.
+When server recevied delayed packet to ask for closing connection, server can use TIME_WAIT to verify whether it has
+been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from messing up the new connection from the same address.</p>
+<p>When you close the socket&rsquo;s file descriptor, the file descriptor itself is closed, but the socket in TIME_WAIT will still consume file descriptors.
+Therefore, a socket in TIME_WAIT consumes file descriptors</p>
 <h3 id="查看系統-tcp-相關設定">查看系統 TCP 相關設定</h3>
 <p>MacOS:</p>
 <pre><code>sysctl net.inet.tcp
@@ -128,7 +141,7 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 </ol>
 <h3 id="加速">加速</h3>
 <p>google TCP BBR</p>
-<h1 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h1>
+<h3 id="simultaneously-maximum-connection-for-a-server">simultaneously maximum connection for a server</h3>
 <p>ref: <a href="https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support">https://www.quora.com/What-is-the-maximum-number-of-concurrent-tcp-connections-system-can-support</a></p>
 <pre><code>The theoretical maximum number of connections per client per server port is 65534.
 Assuming one network interface (i.e., 1 IP on your host),
@@ -153,18 +166,11 @@ So the real limit is file descriptors. Each individual socket connection is give
 so the limit is really the number of file descriptors that the system has been configured to allow and resources to handle.
 The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
 </code></pre>
-<h3 id="tcp-time_wait">TCP TIME_WAIT</h3>
-<p>When a connection is closed, it will be turned into the state TIME_WAIT. Network in real world can be unpredicable.
-There is no gurantee for packet to be delivered in order. When lost packet was delayed to ask to close the connection,
-which was already disconnected, server might be confused by it and close the new established connection if it doesn&rsquo;t
-have TIME_WAIT state. TIME_WAIT keeps the info of source address, source port, destination address and destination port.
-When server recevied delayed packet to ask for closing connection, server can use TIME_WAIT to verify whether it has
-been closed or not. TIME_WAIT&rsquo;s purpose is for preventing server from messing up the new connection from the same address.</p>
-<p>TIME_WAIT might not hold a FD, it only consumes a local port.</p>
 <h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
 <p>It is a feature to allow kernel to keep track of connections.
 It might be only used in haproxy server.
 When NAT or firewall works, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
+including the mapping between public IPs (external IPs) and private IPs (internal IPs) for NAT,
 so that the packets can be sent to the right end.</p>
 <p>Note: If it is full, it won&rsquo;t accept new connection. There are 3 ways to fix it:</p>
 <ul>

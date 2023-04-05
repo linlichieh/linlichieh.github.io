@@ -20,7 +20,17 @@
     <h1>OS</h1>
     <time datetime="2015-02-13T10:55:43&#43;08:00">February 13, 2015</time>
   </header>
-  <h2 id="動態庫與靜態庫">動態庫與靜態庫</h2>
+  <h1 id="file-descriptor-fd">File descriptor (FD)</h1>
+<ul>
+<li>open a file by calling system call <code>open()</code> that specifies access mode (read, write, or both), then the kernel returns FD number to the program</li>
+<li>Use the FD by performing I/O operations on the file such as <code>read()</code> or <code>write()</code></li>
+<li>Close the FD by calling system call <code>close()</code>
+<ul>
+<li>When the program terminates, either normally or due to an error, all open file descriptors are automatically closed by the kernel</li>
+</ul>
+</li>
+</ul>
+<h1 id="動態庫與靜態庫">動態庫與靜態庫</h1>
 <p>linux 下有動態庫和靜態庫. 動態庫以 <code>.so</code> 為副檔名, 靜態庫以 <code>.a</code> 為副檔名</p>
 <p><code>ldd</code> 指令可以查詢此程序用到哪些動態庫</p>
 <pre><code>$ ldd dch_worker
@@ -29,7 +39,7 @@ libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f6d583b2000)
 libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6d57fec000)
 /lib64/ld-linux-x86-64.so.2 (0x00007f6d585dc000)
 </code></pre>
-<h2 id="檢查主機狀態">檢查主機狀態</h2>
+<h1 id="檢查主機狀態">檢查主機狀態</h1>
 <ul>
 <li>pid : process id</li>
 <li>ppid : parent process id</li>
@@ -157,7 +167,7 @@ q               F10             Quit htop
 <li><code>M</code> : Sorted by <code>Mem%</code></li>
 <li><code>u</code> : Display only processes of a single user</li>
 </ul>
-<h2 id="pmap">pmap</h2>
+<h1 id="pmap">pmap</h1>
 <p>查看 process 使用記憶體的狀況</p>
 <pre><code>pmap -x 11047
 
@@ -173,12 +183,12 @@ total kB          153776    7156    2172
 <li>-x: show details</li>
 <li>-d: show the device format</li>
 </ul>
-<h2 id="strace">strace</h2>
+<h1 id="strace">strace</h1>
 <p>查看 process 或 command 執行時從頭到尾的狀況</p>
 <pre><code>strace -p 11047
 strace echo &quot;ff&quot;
 </code></pre>
-<h2 id="process-vs-thread">Process vs Thread</h2>
+<h1 id="process-vs-thread">Process vs Thread</h1>
 <ul>
 <li>一個程序會產生一個 process, 但一個 process 裡面可以有很多 thread</li>
 <li>不同的 process 之間的記憶體不是共用的</li>
@@ -190,7 +200,8 @@ strace echo &quot;ff&quot;
 <p>如果按 <code>t</code>, 就會可以清楚的看到是一個主行程跟三個子行程, 但那三個子行程都是 thread, 有可能是在</p>
 <p>不同 CPU 跑的, thread 的記憶體是跨 cpu 可以共用的, 但 process 不行</p>
 <p>為什麼 thread 也會有 pid? 因為 linux 把 thread 也看成一個 process</p>
-<h2 id="difference-between-heap-and-stack">Difference between heap and stack</h2>
+<h1 id="stack--heap">stack / heap</h1>
+<h3 id="difference-between-heap-and-stack">Difference between heap and stack</h3>
 <p>In java:</p>
 <p>The main difference between heap and stack is that stack memory is used to store local variables and function call
 while heap memory is used to store objects in Java.  No matter, where the object is created in code e.g. as a member variable,
@@ -198,7 +209,7 @@ local variable or class variable, they are always created inside heap space in J
 if the compiler cannot prove that the variable is not referenced after the function returns,
 then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors.
 You don&rsquo;t always know if your variable is allocated on the stack or heap.</p>
-<h2 id="out-of-memory">Out of memory</h2>
+<h1 id="out-of-memory">Out of memory</h1>
 <p>當記憶體不夠用時, 系統 OOM Killer 會開始 kill 最耗記憶體的 process</p>
 <h3 id="先看-log-狀態">先看 log 狀態</h3>
 <p><code>/var/log/messages</code> (amz-linux)</p>
@@ -248,15 +259,15 @@ You don&rsquo;t always know if your variable is allocated on the stack or heap.<
 </code></pre>
 <p>例如 5716 這個 process, total_vm: 143000, rss: 41756, 上面一行得出來的數字也這裡的 x4, 也就是 5716 這個 process 實體記憶體+swap 用了 167MB</p>
 <p>ref: <a href="https://stackoverflow.com/questions/9199731/understanding-the-linux-oom-killers-logs">https://stackoverflow.com/questions/9199731/understanding-the-linux-oom-killers-logs</a></p>
-<h2 id="系統-log">系統 log</h2>
+<h1 id="系統-log">系統 log</h1>
 <p>Ubuntu: <code>/var/log/kern.log</code>, <code>/var/log/syslog</code></p>
 <p>amz-linux: <code>/var/log/messages</code></p>
-<h2 id="檢查-memory-leak-工具">檢查 memory leak 工具</h2>
+<h1 id="檢查-memory-leak-工具">檢查 memory leak 工具</h1>
 <ul>
 <li>pidstat</li>
 <li>Valgrind</li>
 </ul>
-<h2 id="what-is-procself">What is <code>/proc/self</code>?</h2>
+<h1 id="what-is-procself">What is <code>/proc/self</code>?</h1>
 <p>It is a symlink to the path of current running process.</p>
 <pre><code>$ ls -al /proc/self
 lrwxrwxrwx 1 root root 0 Dec 12 06:34 /proc/self -&gt; 11845
