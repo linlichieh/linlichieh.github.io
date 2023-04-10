@@ -167,16 +167,31 @@ so the limit is really the number of file descriptors that the system has been c
 The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
 </code></pre>
 <h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
-<p>It is a feature to allow kernel to keep track of connections.
-It might be only used in haproxy server.
+<h5 id="whats-nf_conntract">What&rsquo;s nf_conntract?</h5>
+<p>It is a feature to allow kernel to keep track of connections. It might be only used in haproxy server.
 When NAT or firewall works, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
 including the mapping between public IPs (external IPs) and private IPs (internal IPs) for NAT,
 so that the packets can be sent to the right end.</p>
+<h5 id="what-are-common-causes">What are common causes?</h5>
+<ul>
+<li>High volume of connections: If your system is handling a high volume of concurrent connections, the nf_conntrack table might become full. This can happen in cases where your system is serving as a heavily utilized NAT device, firewall, or high-traffic web server.</li>
+<li>Many short-lived connections: A large number of short-lived connections (e.g., connections that are opened and closed quickly) can cause the nf_conntrack table to fill up, especially if the connection tracking entries are not being cleared quickly enough.</li>
+<li>Inadequate connection timeouts: The nf_conntrack subsystem relies on connection timeouts to determine when to remove connection entries from the table. If the connection timeouts are set too high, the entries will remain in the table longer, which can cause the table to become full.</li>
+<li>Connection tracking table size: The maximum size of the nf_conntrack table is determined by the nf_conntrack_max parameter. If this parameter is set too low for your system&rsquo;s requirements, the table may fill up quickly.</li>
+<li>DDoS or flood attacks: Your system might be experiencing a Distributed Denial of Service (DDoS) attack or a SYN flood attack, causing a massive influx of connections that fill up the nf_conntrack table.</li>
+</ul>
+<h5 id="how-to-solve-this">How to solve this?</h5>
 <p>Note: If it is full, it won&rsquo;t accept new connection. There are 3 ways to fix it:</p>
 <ul>
 <li>Disable connection track (recommend)</li>
 <li>Reduce the timeout of connection being tracked</li>
 <li>Increase the maximum of connection tracking table</li>
+</ul>
+<h5 id="if-nf_conntrack-is-disabled-what-would-be-the-impact">If nf_conntrack is disabled, what would be the impact?</h5>
+<ul>
+<li>NAT functionality impairment: Connection tracking plays a crucial role in NAT, which is responsible for translating between private IP addresses and public IP addresses. Disabling nf_conntrack would impair NAT functionality, causing issues with IP address translations and breaking communication between internal and external networks.</li>
+<li>Firewall rule impact: If your firewall rules (iptables) are based on connection state (e.g., NEW, ESTABLISHED, RELATED), disabling nf_conntrack would cause those rules to fail. This could result in unexpected behavior in your firewall, potentially making it more permissive or more restrictive.</li>
+<li>Performance impact: In some cases, disabling connection tracking might improve system performance if your device is dealing with a very high number of connections and connection tracking is causing resource exhaustion. However, it could also lead to performance issues if your system relies on connection tracking for stateful packet filtering, NAT, or other functions that require maintaining state information.</li>
 </ul>
 <h1 id="tls-https">TLS (HTTPS)</h1>
 <h3 id="tls">TLS</h3>
