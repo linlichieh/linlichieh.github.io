@@ -21,7 +21,7 @@
     <time datetime="2015-01-16T12:15:03&#43;08:00">January 16, 2015</time>
   </header>
   <h1 id="proxy-server-vs-reverse-proxy-server">Proxy server vs Reverse proxy server</h1>
-<p>regular proxy server</p>
+<h3 id="regular-proxy-server">regular proxy server</h3>
 <ul>
 <li>When a client sends a request to access a server, the request is first intercepted by the proxy server.</li>
 <li>The proxy server then forwards the request to the destination server on behalf of the client, and the server responds to the proxy server.</li>
@@ -30,7 +30,12 @@
 <p>flow</p>
 <pre><code>client -&gt; proxy server -&gt; server
 </code></pre>
-<p>reverse proxy server</p>
+<p>For example</p>
+<ul>
+<li>CDN</li>
+<li>Nginx</li>
+</ul>
+<h3 id="reverse-proxy-server">reverse proxy server</h3>
 <ul>
 <li>When a client sends a request to access a server, the request is first intercepted by the reverse proxy server.</li>
 <li>The reverse proxy server then forwards the request to one of the servers in the group on behalf of the client, and that server responds to the reverse proxy server.</li>
@@ -42,12 +47,13 @@
                     |--------------&gt; server B
                     |--------------&gt; server C
 </code></pre>
-<p>The main difference between regular proxy server and reverse proxy server is that
-reverse proxy server needs a set of rules for forwarding requests to the destination server
+<p>For example</p>
+<ul>
+<li>Load balancer</li>
+</ul>
+<h3 id="the-difference-between-regular-proxy-server-and-reverse-proxy-server">The difference between regular proxy server and reverse proxy server</h3>
+<p>reverse proxy server needs a set of rules for forwarding requests to the destination server
 while regular proxy server simply forwards the request without any specific rules</p>
-<blockquote>
-<p>Nginx can be both proxy server and reverse proxy server</p>
-</blockquote>
 <h1 id="p2p-connection">P2P connection</h1>
 <h3 id="introduction">Introduction</h3>
 <p>When two servers behind their own NATs need to establish a P2P connection,
