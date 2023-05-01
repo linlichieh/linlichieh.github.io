@@ -5,12 +5,21 @@
     <link>/categories/cache/</link>
     <description>Recent content in cache on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 03 Sep 2014 12:36:07 +0800</lastBuildDate><atom:link href="/categories/cache/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/cache/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>memcached</title>
+      <link>/posts/memcached/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/memcached/</guid>
+      <description>connect to memcached server $ telnet localhost 11211 Trying ::1... Trying 127.0.0.1... Connected to localhost. Escape character is &#39;^]&#39;. get key get flag123 set key 設 key &amp;ldquo;flag123&amp;rdquo; 值為 1
+set flag123 0 86400 1 &amp;lt;= enter 1 &amp;lt;= enter STORED set flag123 0 86400 5 hello STORED set delete key delete flag123 DELETED ref : http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary</description>
+    </item>
+    
     <item>
       <title>Redis</title>
       <link>/posts/redis/</link>
-      <pubDate>Wed, 03 Sep 2014 12:36:07 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/redis/</guid>
       <description>介紹 Open source Key-Value 儲存型態 Value 可以是 strings, hashes, lists, sets, ordered sets 運作在 memory, 可用 snapshot 儲存在硬碟 不支援 2 層以上的 hash Install server
@@ -20,16 +29,6 @@ sudo apt-get install redis-tools Command keys 全部的 key
 keys * Key 的數量
 info keyspace &amp;gt; db0:keys=74415,expires=63940,avg_ttl=306997004 Find prefix string key : &amp;lsquo;queue:&amp;rsquo;
 keys queue:* 刪除 prefix key</description>
-    </item>
-    
-    <item>
-      <title>memcached</title>
-      <link>/posts/memcached/</link>
-      <pubDate>Thu, 12 Jun 2014 10:15:07 +0800</pubDate>
-      
-      <guid>/posts/memcached/</guid>
-      <description>connect to memcached server $ telnet localhost 11211 Trying ::1... Trying 127.0.0.1... Connected to localhost. Escape character is &#39;^]&#39;. get key get flag123 set key 設 key &amp;ldquo;flag123&amp;rdquo; 值為 1
-set flag123 0 86400 1 &amp;lt;= enter 1 &amp;lt;= enter STORED set flag123 0 86400 5 hello STORED set delete key delete flag123 DELETED ref : http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary</description>
     </item>
     
   </channel>

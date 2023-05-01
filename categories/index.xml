@@ -5,75 +5,29 @@
     <link>/categories/</link>
     <description>Recent content in Categories on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 28 Jan 2023 15:10:34 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>docker</title>
-      <link>/categories/docker/</link>
-      <pubDate>Sat, 28 Jan 2023 15:10:34 +0800</pubDate>
-      
-      <guid>/categories/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>/categories/linux/</link>
-      <pubDate>Fri, 25 Jan 2019 11:02:08 +0800</pubDate>
-      
-      <guid>/categories/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go</title>
-      <link>/categories/go/</link>
-      <pubDate>Sat, 22 Dec 2018 15:50:19 +0800</pubDate>
-      
-      <guid>/categories/go/</guid>
-      <description></description>
-    </item>
-    
+    <language>en-us</language><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>algorithms</title>
       <link>/categories/algorithms/</link>
-      <pubDate>Sat, 20 May 2017 18:56:16 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/categories/algorithms/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>data-structures</title>
-      <link>/categories/data-structures/</link>
-      <pubDate>Sat, 20 May 2017 18:53:13 +0800</pubDate>
+      <title>apache</title>
+      <link>/categories/apache/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/categories/data-structures/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>golang</title>
-      <link>/categories/golang/</link>
-      <pubDate>Sun, 06 Nov 2016 00:12:00 +0800</pubDate>
-      
-      <guid>/categories/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mqtt</title>
-      <link>/categories/mqtt/</link>
-      <pubDate>Thu, 20 Oct 2016 14:38:29 +0800</pubDate>
-      
-      <guid>/categories/mqtt/</guid>
+      <guid>/categories/apache/</guid>
       <description></description>
     </item>
     
     <item>
       <title>aws</title>
       <link>/categories/aws/</link>
-      <pubDate>Mon, 12 Sep 2016 12:54:44 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/categories/aws/</guid>
       <description></description>
@@ -82,252 +36,9 @@
     <item>
       <title>backend</title>
       <link>/categories/backend/</link>
-      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/categories/backend/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>rails</title>
-      <link>/categories/rails/</link>
-      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
-      
-      <guid>/categories/rails/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>server</title>
-      <link>/categories/server/</link>
-      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
-      
-      <guid>/categories/server/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>db</title>
-      <link>/categories/db/</link>
-      <pubDate>Sun, 01 May 2016 13:45:44 +0800</pubDate>
-      
-      <guid>/categories/db/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>postgres</title>
-      <link>/categories/postgres/</link>
-      <pubDate>Sun, 01 May 2016 13:45:44 +0800</pubDate>
-      
-      <guid>/categories/postgres/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ruby</title>
-      <link>/categories/ruby/</link>
-      <pubDate>Sun, 02 Aug 2015 16:11:01 +0800</pubDate>
-      
-      <guid>/categories/ruby/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>octopress</title>
-      <link>/categories/octopress/</link>
-      <pubDate>Tue, 24 Mar 2015 10:27:48 +0000</pubDate>
-      
-      <guid>/categories/octopress/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>os</title>
-      <link>/categories/os/</link>
-      <pubDate>Fri, 13 Feb 2015 10:55:43 +0800</pubDate>
-      
-      <guid>/categories/os/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>php</title>
-      <link>/categories/php/</link>
-      <pubDate>Fri, 06 Feb 2015 10:40:57 +0800</pubDate>
-      
-      <guid>/categories/php/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>network</title>
-      <link>/categories/network/</link>
-      <pubDate>Thu, 29 Jan 2015 23:14:14 +0800</pubDate>
-      
-      <guid>/categories/network/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>raspberryPi</title>
-      <link>/categories/raspberrypi/</link>
-      <pubDate>Tue, 16 Dec 2014 13:02:45 +0800</pubDate>
-      
-      <guid>/categories/raspberrypi/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>security</title>
-      <link>/categories/security/</link>
-      <pubDate>Fri, 05 Dec 2014 11:52:58 +0800</pubDate>
-      
-      <guid>/categories/security/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>node.js</title>
-      <link>/categories/node.js/</link>
-      <pubDate>Tue, 28 Oct 2014 23:03:59 +0800</pubDate>
-      
-      <guid>/categories/node.js/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>sass</title>
-      <link>/categories/sass/</link>
-      <pubDate>Thu, 02 Oct 2014 00:28:58 +0800</pubDate>
-      
-      <guid>/categories/sass/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>cache</title>
-      <link>/categories/cache/</link>
-      <pubDate>Wed, 03 Sep 2014 12:36:07 +0800</pubDate>
-      
-      <guid>/categories/cache/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>redis</title>
-      <link>/categories/redis/</link>
-      <pubDate>Wed, 03 Sep 2014 12:36:07 +0800</pubDate>
-      
-      <guid>/categories/redis/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>nginx</title>
-      <link>/categories/nginx/</link>
-      <pubDate>Fri, 23 May 2014 10:59:34 +0800</pubDate>
-      
-      <guid>/categories/nginx/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>windows</title>
-      <link>/categories/windows/</link>
-      <pubDate>Tue, 17 Dec 2013 23:16:00 +0000</pubDate>
-      
-      <guid>/categories/windows/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>oauth</title>
-      <link>/categories/oauth/</link>
-      <pubDate>Tue, 26 Nov 2013 22:43:00 +0000</pubDate>
-      
-      <guid>/categories/oauth/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mysql</title>
-      <link>/categories/mysql/</link>
-      <pubDate>Wed, 23 Oct 2013 23:03:00 +0000</pubDate>
-      
-      <guid>/categories/mysql/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>frontend</title>
-      <link>/categories/frontend/</link>
-      <pubDate>Tue, 01 Oct 2013 22:21:00 +0000</pubDate>
-      
-      <guid>/categories/frontend/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>mac</title>
-      <link>/categories/mac/</link>
-      <pubDate>Fri, 20 Sep 2013 21:34:00 +0000</pubDate>
-      
-      <guid>/categories/mac/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>git</title>
-      <link>/categories/git/</link>
-      <pubDate>Sat, 24 Aug 2013 15:41:00 +0000</pubDate>
-      
-      <guid>/categories/git/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ubuntu</title>
-      <link>/categories/ubuntu/</link>
-      <pubDate>Tue, 06 Aug 2013 15:40:00 +0000</pubDate>
-      
-      <guid>/categories/ubuntu/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ssh</title>
-      <link>/categories/ssh/</link>
-      <pubDate>Sun, 21 Jul 2013 16:03:00 +0000</pubDate>
-      
-      <guid>/categories/ssh/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>apache</title>
-      <link>/categories/apache/</link>
-      <pubDate>Sun, 21 Jul 2013 15:29:00 +0000</pubDate>
-      
-      <guid>/categories/apache/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>javascript</title>
-      <link>/categories/javascript/</link>
-      <pubDate>Tue, 19 Feb 2013 17:40:00 +0000</pubDate>
-      
-      <guid>/categories/javascript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>regex</title>
-      <link>/categories/regex/</link>
-      <pubDate>Wed, 16 Jan 2013 18:10:00 +0000</pubDate>
-      
-      <guid>/categories/regex/</guid>
       <description></description>
     </item>
     
@@ -337,6 +48,294 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/categories/c/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cache</title>
+      <link>/categories/cache/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/cache/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>data-structures</title>
+      <link>/categories/data-structures/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/data-structures/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>db</title>
+      <link>/categories/db/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/db/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>/categories/docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>frontend</title>
+      <link>/categories/frontend/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/frontend/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git</title>
+      <link>/categories/git/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go</title>
+      <link>/categories/go/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>/categories/golang/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>/categories/javascript/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>/categories/linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mac</title>
+      <link>/categories/mac/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/mac/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mqtt</title>
+      <link>/categories/mqtt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/mqtt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mysql</title>
+      <link>/categories/mysql/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/mysql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>network</title>
+      <link>/categories/network/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nginx</title>
+      <link>/categories/nginx/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>node.js</title>
+      <link>/categories/node.js/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/node.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>oauth</title>
+      <link>/categories/oauth/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/oauth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>octopress</title>
+      <link>/categories/octopress/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/octopress/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>os</title>
+      <link>/categories/os/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/os/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>php</title>
+      <link>/categories/php/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/php/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>postgres</title>
+      <link>/categories/postgres/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/postgres/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rails</title>
+      <link>/categories/rails/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/rails/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raspberryPi</title>
+      <link>/categories/raspberrypi/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/raspberrypi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>redis</title>
+      <link>/categories/redis/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/redis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regex</title>
+      <link>/categories/regex/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/regex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ruby</title>
+      <link>/categories/ruby/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/ruby/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sass</title>
+      <link>/categories/sass/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/sass/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>security</title>
+      <link>/categories/security/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>server</title>
+      <link>/categories/server/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/server/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ssh</title>
+      <link>/categories/ssh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/ssh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ubuntu</title>
+      <link>/categories/ubuntu/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>windows</title>
+      <link>/categories/windows/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/windows/</guid>
       <description></description>
     </item>
     

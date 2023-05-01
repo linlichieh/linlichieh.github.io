@@ -5,25 +5,11 @@
     <link>/categories/mysql/</link>
     <description>Recent content in mysql on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 23 Oct 2013 23:03:00 +0000</lastBuildDate><atom:link href="/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>phpmyadmin</title>
-      <link>/posts/phpmyadmin/</link>
-      <pubDate>Wed, 23 Oct 2013 23:03:00 +0000</pubDate>
-      
-      <guid>/posts/phpmyadmin/</guid>
-      <description>安裝 phpmyadmin sudo apt-get install phpmyadmin 啟動 phpmyadmin Apache /etc/apache2/apache2.conf 加入 :
-Include /etc/phpmyadmin/apache.conf sudo service apache2 restart nginx 將 phpmyadmin 的 code 放到 /var/www 下
-ln -s /usr/share/phpmyadmin /var/www/phpmyadmin 建立 /etc/nginx/sites-available/phpmyadmin :
-server { listen 80; root /var/www/phpmyadmin; index index.php index.html index.htm index.nginx-debian.html; server_name db.ivy-way.com; location / { try_files $uri $uri/ =404; } location ~ \.php$ { include snippets/fastcgi-php.conf; fastcgi_pass unix:/var/run/php5-fpm.sock; } } 建立 phpmyadmin 的 site config
-ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin 如果沒有設定密碼會連不進去 修改 /etc/phpmyadmin/config.</description>
-    </item>
-    
+    <language>en-us</language><atom:link href="/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MySQL</title>
       <link>/posts/mysql/</link>
-      <pubDate>Tue, 06 Aug 2013 15:24:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/mysql/</guid>
       <description>(最後更新: 2016-04-14)
@@ -40,13 +26,26 @@ mysql -u root FLUSH PRIVILEGES; 修改密碼</description>
     <item>
       <title>MySQL Command and Syntax</title>
       <link>/posts/mysql-command-and-syntax/</link>
-      <pubDate>Mon, 03 Jun 2013 04:53:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/mysql-command-and-syntax/</guid>
       <description>登入 mysql (使用 -p 密碼登入) root@test:/# mysql -u webadmin -p root@test:/# mysql -u webadmin --password=00000000 db_name 連入遠端 mysql
 mysql -h devHostName -u test -p mysql&amp;gt; #按ENTER是換第二行輸入， #不是送出而是繼續輸入， #如果不要再輸入了加上分號(;)表示結束 #quit 或 ctrl + d : 中斷 進入 local mysql server (in docker)
 mysql -h localhost -P 3306 --protocol=tcp -u root Console 看目前連到 MySQL 的 process
 SHOW PROCESSLIST; .. or ... SHOW FULL PROCESSLIST; +--------+----------+-------------------+-------+---------+------+----------+-----------------------+ | Id | User | Host | db | Command | Time | State | Info | +--------+----------+-------------------+-------+---------+------+----------+-----------------------+ | 530566 | api | 10.</description>
+    </item>
+    
+    <item>
+      <title>phpmyadmin</title>
+      <link>/posts/phpmyadmin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/phpmyadmin/</guid>
+      <description>安裝 phpmyadmin sudo apt-get install phpmyadmin 啟動 phpmyadmin Apache /etc/apache2/apache2.conf 加入 :
+Include /etc/phpmyadmin/apache.conf sudo service apache2 restart nginx 將 phpmyadmin 的 code 放到 /var/www 下
+ln -s /usr/share/phpmyadmin /var/www/phpmyadmin 建立 /etc/nginx/sites-available/phpmyadmin :
+server { listen 80; root /var/www/phpmyadmin; index index.php index.html index.htm index.nginx-debian.html; server_name db.ivy-way.com; location / { try_files $uri $uri/ =404; } location ~ \.php$ { include snippets/fastcgi-php.conf; fastcgi_pass unix:/var/run/php5-fpm.sock; } } 建立 phpmyadmin 的 site config
+ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin 如果沒有設定密碼會連不進去 修改 /etc/phpmyadmin/config.</description>
     </item>
     
   </channel>

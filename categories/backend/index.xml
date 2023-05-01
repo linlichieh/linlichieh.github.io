@@ -5,12 +5,24 @@
     <link>/categories/backend/</link>
     <description>Recent content in backend on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 13 May 2016 08:29:59 +0800</lastBuildDate><atom:link href="/categories/backend/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/backend/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Backend</title>
+      <link>/posts/backend/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/backend/</guid>
+      <description>安全性 SSL 憑證及加密傳送 (HTTPS) 資料再以 private key 做 AES CBC 方式加密 對某些重要的值使用 private key 以 sha1 產生 signature 參數做驗證 token &amp;amp; Access-Control-Allow-Origin (CSRF) htmlspecialchars (XSS) SQL injection 設計 RESTful API 注意地方 避免使用 cookie, 因違反無狀態協議, 如果只用來記錄 client 資料不維護狀態, 那麼還是可以使用
+session 則完全違反 REST 的無狀態性
+解決方式是 client 登入後產生 token, 再從 url 帶 token 過來 驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名
+驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限
+增加網站效能 server ELB (HA), auto-scaling nginx 取代 apache 後端 background job cache 靜態頁面 memcache / redis 前端 js/css minify &amp;amp; combine 圖片用另一個 domain 避免 browser 一次只能發幾個 request 的限制, 也避免帶到不必要的 cookie 一開始先載 lazy_image, 放真正圖片連結在 data-original= 最後再用 js 將 load 正確圖片 mysql 使用 in 代替 or slow query Mysql set index master - slave 關於 App 手機裡的 App 會有個 UUID，不同的 App UUID 也會不一樣，即使同 App App 重新安裝 UUID 會是新的，或者 UUID 好像也有過期時間 (e.</description>
+    </item>
+    
     <item>
       <title>Deploy on Heroku</title>
       <link>/posts/deploy-on-heroku/</link>
-      <pubDate>Fri, 13 May 2016 08:29:59 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/deploy-on-heroku/</guid>
       <description>介紹 Heroku 是雲端主機供應商，它有提供免費方案，提供 DB 及 mailgun etc.，如果只是一個小型不複雜的專案使用它還蠻合適的
@@ -21,7 +33,7 @@ gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :pr
     <item>
       <title>Payment Integration</title>
       <link>/posts/payments/</link>
-      <pubDate>Thu, 07 Apr 2016 16:42:53 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/payments/</guid>
       <description>(最後更新 : 2016-04-28)
@@ -32,19 +44,6 @@ gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :pr
 Controller :
 # 智付寶文件規定的5個欄位必須按照字母順序 chain = &amp;quot;Amt=#{@order.total}&amp;amp;MerchantID=#{智付寶MerchantID}&amp;amp;MerchantOrderNo=#{@order.id}&amp;amp;TimeStamp=#{@order.created_at.to_i}&amp;amp;Version=#{智付寶Version}&amp;quot; # 頭先加上 HashKey，尾再加上 HashIV ，最後以 SHA-256 加密後再轉大寫 @check_value = Digest::SHA256.hexdigest(&amp;quot;HashKey=#{智付寶HashKey}&amp;amp;#{chain}&amp;amp;HashIV=#{智付寶HashIV}&amp;quot;).upcase 智付寶Merchant ID : 在支付寶後台的商店清單會顯示商店代號，不要點到你的商店裡，裡面沒有顯示 智付寶Version : 要看 API 文件的那個欄位，它會跟你說。i.e. 請帶 1.2。 智付寶HashKey : 後台的商店基本資料的API串接金鑰 智付寶HashIV : 後台的商店基本資料的API串接金鑰 HTML :
 &amp;lt;form method=&amp;quot;post&amp;quot; action=&amp;quot;https://capi.pay2go.com/MPG/mpg_gateway&amp;quot;&amp;gt; &amp;lt;!-- 此為測試的 url, 正式為 : https://api.pay2go.com/MPG/mpg_gateway --&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;MerchantID&amp;quot; value=&amp;quot;&amp;lt;%= 智付寶MerchantID %&amp;gt;&amp;quot;/&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;RespondType&amp;quot; value=&amp;quot;JSON&amp;quot;/&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;CheckValue&amp;quot; value=&amp;quot;&amp;lt;%= @check_value %&amp;gt;&amp;quot;/&amp;gt; &amp;lt;input type=&amp;quot;hidden&amp;quot; name=&amp;quot;TimeStamp&amp;quot; value=&amp;quot;&amp;lt;%= @order.</description>
-    </item>
-    
-    <item>
-      <title>Backend</title>
-      <link>/posts/backend/</link>
-      <pubDate>Wed, 30 Jul 2014 21:06:39 +0800</pubDate>
-      
-      <guid>/posts/backend/</guid>
-      <description>安全性 SSL 憑證及加密傳送 (HTTPS) 資料再以 private key 做 AES CBC 方式加密 對某些重要的值使用 private key 以 sha1 產生 signature 參數做驗證 token &amp;amp; Access-Control-Allow-Origin (CSRF) htmlspecialchars (XSS) SQL injection 設計 RESTful API 注意地方 避免使用 cookie, 因違反無狀態協議, 如果只用來記錄 client 資料不維護狀態, 那麼還是可以使用
-session 則完全違反 REST 的無狀態性
-解決方式是 client 登入後產生 token, 再從 url 帶 token 過來 驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名
-驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限
-增加網站效能 server ELB (HA), auto-scaling nginx 取代 apache 後端 background job cache 靜態頁面 memcache / redis 前端 js/css minify &amp;amp; combine 圖片用另一個 domain 避免 browser 一次只能發幾個 request 的限制, 也避免帶到不必要的 cookie 一開始先載 lazy_image, 放真正圖片連結在 data-original= 最後再用 js 將 load 正確圖片 mysql 使用 in 代替 or slow query Mysql set index master - slave 關於 App 手機裡的 App 會有個 UUID，不同的 App UUID 也會不一樣，即使同 App App 重新安裝 UUID 會是新的，或者 UUID 好像也有過期時間 (e.</description>
     </item>
     
   </channel>

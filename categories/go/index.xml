@@ -5,23 +5,11 @@
     <link>/categories/go/</link>
     <description>Recent content in go on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 22 Dec 2018 15:50:19 +0800</lastBuildDate><atom:link href="/categories/go/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Go Scheduler</title>
-      <link>/posts/go-scheduler/</link>
-      <pubDate>Sat, 22 Dec 2018 15:50:19 +0800</pubDate>
-      
-      <guid>/posts/go-scheduler/</guid>
-      <description>What is the Go Scheduler? Go scheduler’s purpose is to efficiently distribute goroutines over multiple OS threads.
-Kernel thread is expensive; therefore, reducing and reusing kernel threads are keys.
-initial goroutine stack comsumes 2 KB memory default thread stack comsumes 1 MB memory Scheduling Basics P (Processor) It is given a Logical Processor (P) for every virtual core. Runtime keeps track of each G and maps them onto Logical Processors. OS threads run on at most GOMAXPROCS number of processors.</description>
-    </item>
-    
+    <language>en-us</language><atom:link href="/categories/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go AWS</title>
       <link>/posts/go-aws/</link>
-      <pubDate>Mon, 12 Sep 2016 12:54:44 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-aws/</guid>
       <description>如何使用 AWS API 在使用它的任何一個 service 前要先準備好 credential 然候再建立 session，然候再跟 AWS services 互動，
@@ -35,9 +23,31 @@ func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config :=
     </item>
     
     <item>
+      <title>Go Basics</title>
+      <link>/posts/go-basics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/go-basics/</guid>
+      <description>Declare var t *T = new(T) // t := new(T) var a uint64 = 22 // a := uint64(22) a := 0x12 // 18 Multiple variables
+ff, xx := 3, &amp;quot;cc&amp;quot; []interface{}
+hMap := make(map[string]interface{}) hMap[&amp;quot;ID&amp;quot;] = &amp;quot;06&amp;quot; hMap[&amp;quot;Info&amp;quot;] = map[string]string{ &amp;quot;Name&amp;quot;: &amp;quot;Jack&amp;quot; } resque2 := map[string]interface{}{ &amp;quot;class&amp;quot;: &amp;quot;hnap&amp;quot;, &amp;quot;args&amp;quot;: []interface{}{hMap}, } map[string]interface{}
+x := map[string]interface{}{ &amp;quot;foo&amp;quot;: []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}, &amp;quot;bar&amp;quot;: &amp;quot;foo&amp;quot;, &amp;quot;baz&amp;quot;: 10.4, } map[string]interface{}
+t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&amp;quot;] = &amp;quot;realtime&amp;quot; t[&amp;quot;data&amp;quot;] = []map[string]string{ { &amp;quot;did&amp;quot;: &amp;quot;did1&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action1&amp;quot;, }, { &amp;quot;did&amp;quot;: &amp;quot;did2&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action2&amp;quot;, }, } 但不可以, 無法這樣給值 var t map[string]interface{} t[&amp;quot;xxx&amp;quot;] = &amp;quot;xxx&amp;quot; map[string]map[string]string</description>
+    </item>
+    
+    <item>
+      <title>Go Built-in Packages</title>
+      <link>/posts/go-built-in-packages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/go-built-in-packages/</guid>
+      <description>fmt 輸出固定長度 fmt.Printf(&amp;quot;ID : %-10s&amp;quot;, id) // 十個字元的長度, 向左對齊 fmt.Printf(&amp;quot;ID : %10s&amp;quot;, id) // 十個字元的長度, 向右對齊 fmt.Printf(&amp;quot;ID : %.10s&amp;quot;, id) // 印出頭十個字元 fmt.Printf(&amp;quot;%q&amp;quot;, []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}) // 印 slice `[&amp;quot;a&amp;quot; &amp;quot;b&amp;quot;]` 前面補 0 fmt.Sprintf(&amp;quot;%02d:%02d&amp;quot;, 5, 3) // 05:03 接收 command 輸入的值 fmt.Print(&amp;quot;Enter a number: &amp;quot;) var input float64 fmt.Scanf(&amp;quot;%f&amp;quot;, &amp;amp;input) 印出顏色 fmt.Println(&amp;quot;\x1b[31;1mHello, World!\x1b[0m&amp;quot;) 最簡單的方法, 不過有個缺點是它會是 string fmt.Sprintf(&amp;quot;%.7f&amp;quot;, 123.123456789) // 123.1234568 不改變本身的型態 val := 123.123456789 pow10_n := math.Pow10(7) // 1e7 = 10000000 d := math.</description>
+    </item>
+    
+    <item>
       <title>Go Frameworks</title>
       <link>/posts/go-frameworks/</link>
-      <pubDate>Sun, 04 Sep 2016 10:21:39 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-frameworks/</guid>
       <description>Beego 上手資源 官網文件 作者中文影片教學 安裝 按照官網指令即可
@@ -46,9 +56,53 @@ beego.Router(&amp;quot;/api/:id&amp;quot;, &amp;amp;controllers.RController{}) b
     </item>
     
     <item>
+      <title>Go GUI</title>
+      <link>/posts/go-gui/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/go-gui/</guid>
+      <description>QT, OpenGL Qt is an application framework, where you can build (almost) everything within Qt.
+OpenGL is a graphic library. The difference between library and framework is simple: Library is used for one specific thing, i.e. drawing, or doing data stuff, framework on the other hand is a set of libraries.
+ref: https://www.quora.com/What-are-the-difference-between-QT-OpenGL-Unity
+therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本
+如果都安裝成功後跑 basic example 就可以看到 GUI 介面了</description>
+    </item>
+    
+    <item>
+      <title>Go Installation</title>
+      <link>/posts/go-installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/go-installation/</guid>
+      <description>Linux ／ Mac (最後更新: 2016-03-28)
+[1] download golang source Linux : https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
+Mac : https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz
+[2] Install Linux : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
+Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
+如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
+[3] Create essential folders 在家目錄下建立 go, 將外部套件與原始程式分離
+.bashrc(linux) / .bash_profile(mac) :
+export GOROOT=/usr/local/go export PATH=$PATH:$GOROOT/bin:$GOPATH/bin Linux exec : source ~/.bashrc
+Mac exec : source ~/.bash_profile
+解壓縮完且 .bashrc 設定好以上就算安裝完成了, 可用 go version 測試是否安裝成功
+Upgrade go version 移除 /usr/local/go 將官網載下來的 go 解壓縮到 /usr/local Done!</description>
+    </item>
+    
+    <item>
+      <title>Go Scheduler</title>
+      <link>/posts/go-scheduler/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/go-scheduler/</guid>
+      <description>What is the Go Scheduler? Go scheduler’s purpose is to efficiently distribute goroutines over multiple OS threads.
+Kernel thread is expensive; therefore, reducing and reusing kernel threads are keys.
+initial goroutine stack comsumes 2 KB memory default thread stack comsumes 1 MB memory Scheduling Basics P (Processor) It is given a Logical Processor (P) for every virtual core. Runtime keeps track of each G and maps them onto Logical Processors. OS threads run on at most GOMAXPROCS number of processors.</description>
+    </item>
+    
+    <item>
       <title>Go Testing</title>
       <link>/posts/go-testing/</link>
-      <pubDate>Thu, 05 Feb 2015 18:01:23 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-testing/</guid>
       <description>Commands Test all file
@@ -67,67 +121,12 @@ go test -cover PASS coverage: 37.</description>
     <item>
       <title>Go Third-party Packages</title>
       <link>/posts/go-third-party-packages/</link>
-      <pubDate>Tue, 06 Jan 2015 16:11:25 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-third-party-packages/</guid>
       <description>redigo github.com/garyburd/redigo/redis Connect to redis server One connection
 conn, err := redis.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;:6379&amp;quot;) if err != nil { panic(err) } defer conn.Close() Connection pool
 pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections in the pool. MaxActive: 5, // Maximum number of connections allocated by the pool at a given time. IdleTimeout: 20 * time.Second, // Close connections after remaining idle for this duration. Applications should set the timeout to a value less than the server&#39;s timeout.</description>
-    </item>
-    
-    <item>
-      <title>Go GUI</title>
-      <link>/posts/go-gui/</link>
-      <pubDate>Mon, 27 Jan 2014 23:19:00 +0000</pubDate>
-      
-      <guid>/posts/go-gui/</guid>
-      <description>QT, OpenGL Qt is an application framework, where you can build (almost) everything within Qt.
-OpenGL is a graphic library. The difference between library and framework is simple: Library is used for one specific thing, i.e. drawing, or doing data stuff, framework on the other hand is a set of libraries.
-ref: https://www.quora.com/What-are-the-difference-between-QT-OpenGL-Unity
-therecipe/qt Install on mac 按照它建議 mac 安裝的順序, 其中 qt 我是下載 without Android or iOS support 這個版本
-如果都安裝成功後跑 basic example 就可以看到 GUI 介面了</description>
-    </item>
-    
-    <item>
-      <title>Go Basics</title>
-      <link>/posts/go-basics/</link>
-      <pubDate>Mon, 20 Jan 2014 22:25:00 +0000</pubDate>
-      
-      <guid>/posts/go-basics/</guid>
-      <description>Declare var t *T = new(T) // t := new(T) var a uint64 = 22 // a := uint64(22) a := 0x12 // 18 Multiple variables
-ff, xx := 3, &amp;quot;cc&amp;quot; []interface{}
-hMap := make(map[string]interface{}) hMap[&amp;quot;ID&amp;quot;] = &amp;quot;06&amp;quot; hMap[&amp;quot;Info&amp;quot;] = map[string]string{ &amp;quot;Name&amp;quot;: &amp;quot;Jack&amp;quot; } resque2 := map[string]interface{}{ &amp;quot;class&amp;quot;: &amp;quot;hnap&amp;quot;, &amp;quot;args&amp;quot;: []interface{}{hMap}, } map[string]interface{}
-x := map[string]interface{}{ &amp;quot;foo&amp;quot;: []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}, &amp;quot;bar&amp;quot;: &amp;quot;foo&amp;quot;, &amp;quot;baz&amp;quot;: 10.4, } map[string]interface{}
-t := map[string]interface{}{} t[&amp;quot;id&amp;quot;] = 312 t[&amp;quot;type&amp;quot;] = &amp;quot;realtime&amp;quot; t[&amp;quot;data&amp;quot;] = []map[string]string{ { &amp;quot;did&amp;quot;: &amp;quot;did1&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action1&amp;quot;, }, { &amp;quot;did&amp;quot;: &amp;quot;did2&amp;quot;, &amp;quot;action&amp;quot;: &amp;quot;action2&amp;quot;, }, } 但不可以, 無法這樣給值 var t map[string]interface{} t[&amp;quot;xxx&amp;quot;] = &amp;quot;xxx&amp;quot; map[string]map[string]string</description>
-    </item>
-    
-    <item>
-      <title>Go Installation</title>
-      <link>/posts/go-installation/</link>
-      <pubDate>Mon, 20 Jan 2014 22:23:00 +0000</pubDate>
-      
-      <guid>/posts/go-installation/</guid>
-      <description>Linux ／ Mac (最後更新: 2016-03-28)
-[1] download golang source Linux : https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz
-Mac : https://storage.googleapis.com/golang/go1.6.darwin-amd64.tar.gz
-[2] Install Linux : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
-Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
-如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
-[3] Create essential folders 在家目錄下建立 go, 將外部套件與原始程式分離
-.bashrc(linux) / .bash_profile(mac) :
-export GOROOT=/usr/local/go export PATH=$PATH:$GOROOT/bin:$GOPATH/bin Linux exec : source ~/.bashrc
-Mac exec : source ~/.bash_profile
-解壓縮完且 .bashrc 設定好以上就算安裝完成了, 可用 go version 測試是否安裝成功
-Upgrade go version 移除 /usr/local/go 將官網載下來的 go 解壓縮到 /usr/local Done!</description>
-    </item>
-    
-    <item>
-      <title>Go Built-in Packages</title>
-      <link>/posts/go-built-in-packages/</link>
-      <pubDate>Mon, 20 Jan 2014 13:05:03 +0800</pubDate>
-      
-      <guid>/posts/go-built-in-packages/</guid>
-      <description>fmt 輸出固定長度 fmt.Printf(&amp;quot;ID : %-10s&amp;quot;, id) // 十個字元的長度, 向左對齊 fmt.Printf(&amp;quot;ID : %10s&amp;quot;, id) // 十個字元的長度, 向右對齊 fmt.Printf(&amp;quot;ID : %.10s&amp;quot;, id) // 印出頭十個字元 fmt.Printf(&amp;quot;%q&amp;quot;, []string{&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;}) // 印 slice `[&amp;quot;a&amp;quot; &amp;quot;b&amp;quot;]` 前面補 0 fmt.Sprintf(&amp;quot;%02d:%02d&amp;quot;, 5, 3) // 05:03 接收 command 輸入的值 fmt.Print(&amp;quot;Enter a number: &amp;quot;) var input float64 fmt.Scanf(&amp;quot;%f&amp;quot;, &amp;amp;input) 印出顏色 fmt.Println(&amp;quot;\x1b[31;1mHello, World!\x1b[0m&amp;quot;) 最簡單的方法, 不過有個缺點是它會是 string fmt.Sprintf(&amp;quot;%.7f&amp;quot;, 123.123456789) // 123.1234568 不改變本身的型態 val := 123.123456789 pow10_n := math.Pow10(7) // 1e7 = 10000000 d := math.</description>
     </item>
     
   </channel>

@@ -5,24 +5,11 @@
     <link>/categories/linux/</link>
     <description>Recent content in linux on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 25 Jan 2019 11:02:08 +0800</lastBuildDate><atom:link href="/categories/linux/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Linux TTY/PTY</title>
-      <link>/posts/linux-tty-pty/</link>
-      <pubDate>Fri, 25 Jan 2019 11:02:08 +0800</pubDate>
-      
-      <guid>/posts/linux-tty-pty/</guid>
-      <description>What is TTY/PTY? TTY (teletype) is a terminal used to transfer the input and output from devices.
-PTY (pseudo-teletype) is a pseudoterminal that provides a terminal emulator like tty does.
-How does TTY work? Diagram:
-┏━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┃ monitor ┣━━┫ VGA driver ┣━━┫ ┃ ┃ ┃ ┃ ┣━━┫ User process ┃ ┗━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━┛ ┃ Terminal ┣━━┫ Line ┣━━┫ TTY ┃ ┗━━━━━━━━━━━━━━━┛ ┏━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━┓ ┃ emulator ┃ ┃ Discipline ┃ ┃ driver ┃ ┏━━━━━━━━━━━━━━━┓ ┃ keyboard ┣━━┫ Keyboard driver ┣━━┫ ┃ ┃ ┃ ┃ ┣━━┫ User process ┃ ┗━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ 0,1,2 fds are allocated to shell</description>
-    </item>
-    
+    <language>en-us</language><atom:link href="/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Debugging Tools</title>
       <link>/posts/debugging-tools/</link>
-      <pubDate>Tue, 17 Jul 2018 09:12:14 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/debugging-tools/</guid>
       <description>strace Installation $ sudo apt install strace #Debian/Ubuntu # yum install strace #RHEL/CentOS # dnf install strace #Fedora 22+ Trace linux command Simply run a command with strace, tracing of all system calls, e.g. df -h.
@@ -31,75 +18,9 @@ sudo strace -c -p 5206 % time seconds usecs/call calls errors syscall ------ ---
     </item>
     
     <item>
-      <title>Linux systemd</title>
-      <link>/posts/linux-systemd/</link>
-      <pubDate>Wed, 31 Jan 2018 21:20:29 +0800</pubDate>
-      
-      <guid>/posts/linux-systemd/</guid>
-      <description>設定檔 /etc/systemd/system/test.service:
-[Unit] Description=test [Service] User=ec2-user ExecStart=/bin/sh -c &amp;quot;/home/ec2-user/my_app/test &amp;gt;&amp;gt; /tmp/test.log 2&amp;gt;&amp;amp;1&amp;quot; Restart=always [Install] WantedBy=multi-user.target 其他 [Service] 參數
-WorkingDirectory=/home/ec2-user/my_app config 權限 root 644 測試沒問題 WantedBy: directive is the most common way to specify how a unit should be enabled. 其他參數 主機啟動時在 network 後才啟動
-[Unit] After=syslog.target network.target remote-fs.target nss-lookup.target 指令 重讀設定檔(修改後都要執行)
-sudo systemctl daemon-reload 查看 systemd 執行 log
-sudo systemctl status test Enable it to run at boot:
-sudo systemctl enable test Start it</description>
-    </item>
-    
-    <item>
-      <title>Linux upstart</title>
-      <link>/posts/linux-upstart/</link>
-      <pubDate>Tue, 08 Aug 2017 17:48:19 +0800</pubDate>
-      
-      <guid>/posts/linux-upstart/</guid>
-      <description>介紹 upstart 用來管理你的服務, 在機器啟動後自動幫你啟動你的服務, 並且可以選擇在服務死掉後自動重新啟動它
-ubuntu 16.04 不支援 upstart 改用 systemd
-First Example 這是個簡單的範例只有執行 echo, 執行完也不會有任何背景的 process 在執行
-建立 /etc/init/testjob.conf:
-description &amp;quot;First example&amp;quot; author &amp;quot;test&amp;quot; start on runlevel [2345] exec echo `date` &amp;gt;&amp;gt; /tmp/testjob.log 測試 conf 語法是否正確
-$ init-checkconf /etc/init/testjob.conf File /etc/init/testjob.conf: syntax ok 開始啟動
-$ sudo service testjob start testjob stop/waiting 顯示結果 /tmp/testjob.log:
-Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 process 在背景執行
-首先我們要先有一個不會停止的程式供測試, /tmp/test.sh:
-#!/bin/sh while true do echo `date` &amp;gt;&amp;gt; /tmp/testjob.</description>
-    </item>
-    
-    <item>
-      <title>FTP server</title>
-      <link>/posts/ftp/</link>
-      <pubDate>Wed, 20 May 2015 11:48:47 +0800</pubDate>
-      
-      <guid>/posts/ftp/</guid>
-      <description>使用 vsftpd 安裝 sudo apt-get update sudo apt-get install vsftpd 設定 /etc/vsftpd.conf write_enable=YES local_umask=022 chroot_local_user=YES allow_writeable_chroot=YES 開放 root 帳號登入 /etc/ftpusers : 把 root 註解
-啟動 sudo service vsftpd restart 記得開放 21 port 現在 user 都可以登入到自己家目錄了
-指令 連線
-ftp example.com sftp example.com 操作
-ls 查看 Server 端的目錄或檔案 pwd 查看 Server 端目前所在的目錄 cd 變更 Server 端目前的目錄 cdup 變更 Server 端目前的目錄到上一目錄 lls 查看 Local 端的目錄或檔案 lcd 變更 Local 端目前的目錄 asc 設定傳輸模式為文字檔方式 bin 設定傳輸模式為二進位檔方式 get 將 Server 端的檔案拷貝至 Local 端現在目錄下 mget 拷貝多個 Server 端的檔案至 Local 端現在目錄下 put 將 Local 端的檔案拷貝至 Server 端現在目錄下 mput 拷貝多個 Local 端的檔案至 Server 端現在目錄下 delete 刪除 Server 端的檔案 mkdir 在 Server 端建立目錄 rmdir 刪除 Server 端的目錄 !</description>
-    </item>
-    
-    <item>
-      <title>Linux curl</title>
-      <link>/posts/curl/</link>
-      <pubDate>Sat, 21 Feb 2015 23:54:06 +0800</pubDate>
-      
-      <guid>/posts/curl/</guid>
-      <description>-i -I 顯示 response 的 detail 只顯示 header
-curl -I http://wwww.example.com 顯示 header + body
-curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization:Bearer NDQzYmM1ZD&amp;quot; http://www.example.com -D 將 response 的 header 輸出成檔案 curl www.google.com -D /tmp/google-cookie.txt v 顯示 request/reqsponse 的 request detail curl -v http://wwww.example.com -L support 302 redirect $ curl -L www.google.com -x 指定 proxy curl -x proxy.example2.com:8080 http://www.example.com -b 使用指定的 cookie curl -b cookie.txt http://www.example.com -e Referrer (若該網站限制需先訪問網站首頁才能訪問下載頁) curl -e &amp;quot;www.</description>
-    </item>
-    
-    <item>
-      <title>OS</title>
-      <link>/posts/os/</link>
-      <pubDate>Fri, 13 Feb 2015 10:55:43 +0800</pubDate>
-      
-      <guid>/posts/os/</guid>
-      <description>File descriptor (FD) open a file by calling system call open() that specifies access mode (read, write, or both), then the kernel returns FD number to the program Use the FD by performing I/O operations on the file such as read() or write() Close the FD by calling system call close() When the program terminates, either normally or due to an error, all open file descriptors are automatically closed by the kernel 動態庫與靜態庫 linux 下有動態庫和靜態庫.</description>
-    </item>
-    
-    <item>
       <title>DNS server</title>
       <link>/posts/dns/</link>
-      <pubDate>Thu, 29 Jan 2015 23:14:14 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/dns/</guid>
       <description>Bind9 Bind9 是一個可以架設 dns server 的套件
@@ -112,39 +33,115 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>
-      <title>Process Manager</title>
-      <link>/posts/process-manager/</link>
-      <pubDate>Wed, 29 Oct 2014 00:27:20 +0800</pubDate>
+      <title>FTP server</title>
+      <link>/posts/ftp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/process-manager/</guid>
-      <description>Introduction If you want a program or application to run in background, process managers like supervisord, pm2, etc. can get this done for you.
-Supervisor 安裝參考這裡 ubuntu 安裝指令
-sudo apt-get install supervisor 唯一要注意的是 command=/usr/local/bin/long.sh command 要寫完整的指令路徑
-/etc/supervisor/conf.d/aws-sqs.conf :
-[program:aws-sqs] command=/home/ubuntu/mygo/bin/aws-sqs autostart=true autorestart=true stderr_logfile=/var/log/golang.err.log stdout_logfile=/var/log/golang.out.log stderr_logfile_maxbytes=10MB user=ubuntu environment=USER=&#39;test&#39;,BRAND=&#39;Company_name&#39;,HOME=/home/my_user directory=/var/www 將 supervisor 跑起來
-sudo service supervisor start 對 program conf 的指令
-sudo supervisorctl &amp;gt; restart worker &amp;gt; reread &amp;gt; status &amp;gt; start resque &amp;gt; tail resque // error log or sudo supervisorctl reread goworker 有時候不管怎麼 restart 及 reread 都沒有用時用 reload Error CRIT Server &#39;unix_http_server&#39; running without any HTTP authentication checking 設定 unix_http_server 帳密</description>
+      <guid>/posts/ftp/</guid>
+      <description>使用 vsftpd 安裝 sudo apt-get update sudo apt-get install vsftpd 設定 /etc/vsftpd.conf write_enable=YES local_umask=022 chroot_local_user=YES allow_writeable_chroot=YES 開放 root 帳號登入 /etc/ftpusers : 把 root 註解
+啟動 sudo service vsftpd restart 記得開放 21 port 現在 user 都可以登入到自己家目錄了
+指令 連線
+ftp example.com sftp example.com 操作
+ls 查看 Server 端的目錄或檔案 pwd 查看 Server 端目前所在的目錄 cd 變更 Server 端目前的目錄 cdup 變更 Server 端目前的目錄到上一目錄 lls 查看 Local 端的目錄或檔案 lcd 變更 Local 端目前的目錄 asc 設定傳輸模式為文字檔方式 bin 設定傳輸模式為二進位檔方式 get 將 Server 端的檔案拷貝至 Local 端現在目錄下 mget 拷貝多個 Server 端的檔案至 Local 端現在目錄下 put 將 Local 端的檔案拷貝至 Server 端現在目錄下 mput 拷貝多個 Local 端的檔案至 Server 端現在目錄下 delete 刪除 Server 端的檔案 mkdir 在 Server 端建立目錄 rmdir 刪除 Server 端的目錄 !</description>
     </item>
     
     <item>
-      <title>Linux sendmail</title>
-      <link>/posts/email/</link>
-      <pubDate>Tue, 29 Jul 2014 14:48:05 +0800</pubDate>
+      <title>How To Recover Deleted Files?</title>
+      <link>/posts/recover-files/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/email/</guid>
-      <description>sendmail 使用本機寄信的套件
-安裝 sudo apt-get install sendmail 測試 sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . Troubleshootings 如果網站 hostname 有改過, 會發現寄信很慢, 甚至要一分鐘以上 在 /etc/hosts 的 127.0.1.1 加上以下兩個 hostname :
-127.0.1.1 ubuntu 106-185-47-26 106-185-47-26.localhost 如果 example.com 當作 gmail 的信箱, 主機 hostname 又設定成 example.com 的話 如果寄到
-sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . 就會得到寄不出信的錯誤
-/home/jxxx/dead.letter... Saved message in /home/jxxx/dead.letter
-/var/log/mail.log 也會報錯
-sm-mta[17354]: s6T7p65B017354: Milter (opendkim): error connecting to filter: Connection refused by localhost 會有這樣的訊息, 是因為主機認為是寄到 localhost 的, 所以就不會寄出</description>
+      <guid>/posts/recover-files/</guid>
+      <description>第一件事最重要 - 不要執行任何會覆寫硬碟的事情 也就是事情發生當下，停止一切複製，移動，安裝等等會讀寫硬碟的事情 如果硬碟在自架的主機，最保險的作法是馬上拆下來，接到其他電腦 如果是誤刪了遠端租用的主機資料，那也能靠遠端連線還原去救 使用R-Studio還原，他的特色： 要錢 （免費版只能還原64K以下的資料，而且不能還原RAID） 可以選擇要用本機還原或是遠端還原 線上付費後授權碼馬上就寄到你的E-Mail了 評價不錯，有興趣可以google看看 必看： 要還原硬碟要先掃描, 可能因為共有400～500G, 所以掃描很容易crash, 我掃了幾次才成功, 建議本機還原掃描時不要做其他事, 掃描後要進入硬碟前會有個讀取結構的動作, 我的會固定到55﹪就會當掉, 這軟體似乎並不是那麼靠譜的.. 所以要確定能還原成功再買授權，反正它的授權付完錢就寄給你了 註 ： 如果是還原 ext 2, 3, 4 版可以使用R-Linux這個方案，它免費最重要的是還原可以不受64K限制 我是使用win8去還原外接的ext4硬碟所以我買的是R-Studio NTFS的方案 它的設計是你可以先用免費的版本，開啟時都會問你要不要輸入授權，如果選擇試用，那版號就是試用，如果輸入授權碼（例如我輸入R-Studio NTFS授權碼），那啟動後就是R-Studio NTFS版 </description>
+    </item>
+    
+    <item>
+      <title>I/O</title>
+      <link>/posts/io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/io/</guid>
+      <description>測試 filesystem 讀寫速度 dd 只能測試寫入速度
+$ dd if=/dev/zero of=/tmp/output conv=fdatasync bs=384k count=1k; rm -f /tmp/output 1024+0 records in 1024+0 records out 402653184 bytes (403 MB, 384 MiB) copied, 2.07614 s, 194 MB/s or
+$ sync ; time sh -c &amp;quot;dd if=/dev/zero of=/tmp/output bs=100k count=1k &amp;amp;&amp;amp; sync&amp;quot; ; rm /tmp/output 1024+0 records in 1024+0 records out 104857600 bytes (105 MB, 100 MiB) copied, 0.0646765 s, 1.6 GB/s real 0m0.296s user 0m0.005s sys 0m0.</description>
+    </item>
+    
+    <item>
+      <title>Linux Account</title>
+      <link>/posts/linux-account/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-account/</guid>
+      <description>顯示 account 權限 show grants for test@&#39;%&#39;; 查詢所屬群組 $ id test uid=1000(test) gid=1000(test) groups=1000(test),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),108(sambashare),115(lpadmin) useradd adduser差別 useradd 只會建立帳號，沒有Home, password, 系統shell
+新增 account sudo adduser newuser 或 RUN useradd --create-home -s /bin/bash test 將帳號加上 sudo 權限 方法1 加入: 將帳號加入 sudo group
+sudo usermod -a -G sudo test 或 sudo adduser test sudo -a, &amp;ndash;add USER add USER to GROUP -d, &amp;ndash;delete USER remove USER from GROUP 移除: 將帳號移除 sudo group
+sudo gpasswd -d test sudo 方法2 加入: 手動新增帳號到 /etc/sudoers :</description>
+    </item>
+    
+    <item>
+      <title>Linux Commands</title>
+      <link>/posts/linux-commands/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-commands/</guid>
+      <description>Console 快捷鍵 畫面 Ctrl + l : 清畫面, 等於指令 clear Ctrl + z : 暫時停止程式(將該工作放到背景) (fg 1, fg 2 拿回) Ctrl + c : 終止正在執行的程式 Ctrl + s : 停止輸出到畫面上(類似 Scroll Lock, ex: cat xxx 需暫停時使用) Ctrl + q : 回復輸出到畫面上(恢復Ctrl+S的輸出) Ctrl + d : 結束輸入(如果您在 shell 下，就會跳出該 shell) 刪除 Ctrl + w : 刪除游標前一段指令，依空白為段落 Ctrl + u : 刪除游標前的字 Ctrl + k : 刪除游標後的字 Ctrl + h : Backspace 鍵功能 Ctrl + d : Del 鍵功能 移動 Ctrl + a : 游標移到最前面 Ctrl + e : 游標移到最後面 Ctrl + f : 往右移一個字元, 等同於右鍵 Ctrl + b : 往左移一個字元, 等同於左鍵 指令 Ctrl + x 接著按 Ctrl + e : 可以使用 vim 寫入 script 讓他一次執行 Ctrl + r : 尋找之前輸入過的指令 Ctrl + p : 上一個指令, 相當上鍵 Ctrl + n : 下一個指令, 相當下鍵 Ctrl + i : 同 Tab Ctrl + v + Tab : 輸入 Tab (空白) Ctrl + j : 同 Enter Ctrl + t : 相近兩個字元互換位置 Ctrl + - : undo Ctrl + v : 再加上要輸入特殊字元, ex: 先按 Ctrl-V 再按 Ctrl-C 會出現 ^C 而不是中斷 其他 Alt + f : 到此行的後一個字 Alt + b : 到此行的前一個字 Alt + d : 刪除游標之後的一個單字 ESC + t : 最後 兩個 &amp;ldquo;單字&amp;rdquo; 互換位置 set -o : 可以列出所有 Mode set -o vi : 可以用 vi 操作法來操作 Bash Shell(用此 Mode 上述的快速鍵即無作用) set -o emacs : Bash 預設就是此 Mode.</description>
+    </item>
+    
+    <item>
+      <title>Linux Compression</title>
+      <link>/posts/linux-compressed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-compressed/</guid>
+      <description>gzip Usage: gzip [OPTION]... [FILE]... Compress or uncompress FILEs (by default, compress FILES in-place). Mandatory arguments to long options are mandatory for short options too. -c, --stdout write on standard output, keep original files unchanged -d, --decompress decompress -f, --force force overwrite of output file and compress links -h, --help give this help -l, --list list compressed file contents -L, --license display software license -n, --no-name do not save or restore the original name and time stamp -N, --name save or restore the original name and time stamp -q, --quiet suppress all warnings -r, --recursive operate recursively on directories -S, --suffix=SUF use suffix SUF on compressed files -t, --test test compressed file integrity -v, --verbose verbose mode -V, --version display version number -1, --fast compress faster -9, --best compress better --rsyncable Make rsync-friendly archive With no FILE, or when FILE is -, read standard input.</description>
+    </item>
+    
+    <item>
+      <title>Linux Crontab</title>
+      <link>/posts/linux-crontab/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-crontab/</guid>
+      <description>[1] 建立/var/www/test/hello.sh 檔: #!/bin/bash echo &amp;quot;Hello World&amp;quot; [2] 假使要每一分鐘執行一次hello.sh 執行:
+$ crontab -e 會進入編輯器，輸入:
+# 每分鐘執行一次 */1 * * * * echo &amp;quot;job every minute&amp;quot; &amp;gt;&amp;gt; /tmp/tz # 每 0:15, 12:15 分執行一次 15 0,12 * * * /bin/bash -l -c &#39;cd /var/www/web_app &amp;amp;&amp;amp; RAILS_ENV=development bundle exec rake schedule:check_something --silent&#39; # 星期一～五 9am~18pm 00 09-18 * * 1-5 /home/ramesh/bin/check-db-status 格式 : 分(0-59), 時(0-23) ,日(1-31) ,月(1-12) ,週(0-6), Command
+[3] 其他指令 : 執行排程並不會影響到你目前工作視窗，因為它是背景執行的，所以每隔一分鐘, 並不會看到 &amp;ldquo;Hello World&amp;rdquo; 字串出現在畫面上，但它會在每一次執行時紀錄在log裡</description>
+    </item>
+    
+    <item>
+      <title>Linux curl</title>
+      <link>/posts/curl/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/curl/</guid>
+      <description>-i -I 顯示 response 的 detail 只顯示 header
+curl -I http://wwww.example.com 顯示 header + body
+curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization:Bearer NDQzYmM1ZD&amp;quot; http://www.example.com -D 將 response 的 header 輸出成檔案 curl www.google.com -D /tmp/google-cookie.txt v 顯示 request/reqsponse 的 request detail curl -v http://wwww.example.com -L support 302 redirect $ curl -L www.google.com -x 指定 proxy curl -x proxy.example2.com:8080 http://www.example.com -b 使用指定的 cookie curl -b cookie.txt http://www.example.com -e Referrer (若該網站限制需先訪問網站首頁才能訪問下載頁) curl -e &amp;quot;www.</description>
+    </item>
+    
+    <item>
+      <title>Linux File System</title>
+      <link>/posts/linux-file-system/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-file-system/</guid>
+      <description>inode 在linux下，一個檔案產生後，會有一個inode，可以用來當作這個檔案的編號。 假設有一個檔案叫做cc.txt，它的inode編號為135， 當我用mv移動到不管哪個資料夾下，它的inode編號依然會是135， 但當使用cp複製它時，它的inode編號就會重新指派了。
+查看inode ls -i 7042739 README.md 6954370 bashrc 2287673 bin 用 inode 找 file / folder find ~/conf -inum 2287673 /Users/test/conf/bin FAT32 支援 windows, mac 單檔最大 4GB 最大容量 2TB 較容易 disk errosr 效率稍差 exFAT 支援 windows, mac, linux 單檔最大 4GB 最大容量 2TB NTFS (windows only) windows 原生支援 在 mac 上只能讀 最大單檔 16TB 最大容量 256TB HFS+ mac 原生支援 Required for Time Machine 最大單檔 8EiB 最大容量 8EiB XFS xfs 是一種 file system 的 format, 像 ext4 一樣, 不過它特別的地方在於它可以方便的對目錄做 quota 限制 Ubuntu 安裝 : sudo apt-get install xfsprogs xfsdump Set quota : Make the filesystem and mount it:</description>
+    </item>
+    
+    <item>
+      <title>Linux grep</title>
+      <link>/posts/grep/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/grep/</guid>
+      <description>一般用法 grep -R &#39;時間&#39; * -r, &amp;ndash;recursive like &amp;ndash;directories=recurse -R, &amp;ndash;dereference-recursive likewise, but follow all symlinks &amp;ndash;include=FILE_PATTERN search only files that match FILE_PATTERN &amp;ndash;exclude=FILE_PATTERN skip files and directories matching FILE_PATTERN &amp;ndash;exclude-from=FILE skip files matching any file pattern from FILE &amp;ndash;exclude-dir=PATTERN directories that match PATTERN will be skipped. &amp;ndash;exclude-dir={dir1,dir2,dir3} directories that match PATTERN will be skipped. -i, &amp;ndash;ignore-case ignore case distinctions -P, &amp;ndash;perl-regexp -o, &amp;ndash;only-matching grep ^d：過濾出資料夾
+OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
     </item>
     
     <item>
       <title>Linux iptable</title>
       <link>/posts/firewall/</link>
-      <pubDate>Mon, 20 Jan 2014 23:24:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/firewall/</guid>
       <description>基本設定 /etc/iptables.firewall.rules:
@@ -152,9 +149,20 @@ sm-mta[17354]: s6T7p65B017354: Milter (opendkim): error connecting to filter: Co
     </item>
     
     <item>
+      <title>Linux Locale</title>
+      <link>/posts/linux-locale/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-locale/</guid>
+      <description>指令 查詢目前的語系設定：
+$ locale locale: Cannot set LC_CTYPE to default locale: No such file or directory locale: Cannot set LC_MESSAGES to default locale: No such file or directory locale: Cannot set LC_ALL to default locale: No such file or directory LANG=zh_TW.UTF-8 LANGUAGE= LC_CTYPE=&amp;quot;zh_TW.UTF-8&amp;quot; (...略...) LC_MEASUREMENT=&amp;quot;zh_TW.UTF-8&amp;quot; LC_IDENTIFICATION=&amp;quot;zh_TW.UTF-8&amp;quot; LC_ALL= 查詢已安裝的語系：
+$ locale -a locale: Cannot set LC_CTYPE to default locale: No such file or directory locale: Cannot set LC_MESSAGES to default locale: No such file or directory locale: Cannot set LC_COLLATE to default locale: No such file or directory C C.</description>
+    </item>
+    
+    <item>
       <title>Linux mkfifo</title>
       <link>/posts/mkfifo/</link>
-      <pubDate>Sun, 19 Jan 2014 16:23:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/mkfifo/</guid>
       <description>介紹 用在兩個不同執行的程式溝通, 他就像是一條水管(pipeline file)將兩個程式連接起來
@@ -172,7 +180,7 @@ O_NONBLOCK enable : 立刻返回失敗, error code 為 ENXIO O_NONBLOCK dieable 
     <item>
       <title>Linux nc (netcat)</title>
       <link>/posts/netcat/</link>
-      <pubDate>Sun, 19 Jan 2014 15:54:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/netcat/</guid>
       <description>介紹 用來連接特定 port, 或啟動一個 port 來監聽, 可以執行簡單的訊息或檔案傳送
@@ -189,7 +197,7 @@ $ cat backup.iso | pv -b | nc 54.</description>
     <item>
       <title>Linux netstat</title>
       <link>/posts/netstat/</link>
-      <pubDate>Sun, 19 Jan 2014 14:47:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/netstat/</guid>
       <description>常用 -t: tcp -u: udp -n: don&amp;rsquo;t resolve names -l: listening -p: show pid or program name -i: Display a table of all network interfaces. -a: Show both listening and non-listening sockets. 如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行 列出在監聽的網路服務:
@@ -201,28 +209,150 @@ $ netstat -antop tcp 0 0 0.</description>
     </item>
     
     <item>
-      <title>Wireless Network</title>
-      <link>/posts/wireless-network-setting/</link>
-      <pubDate>Sun, 15 Dec 2013 20:57:00 +0000</pubDate>
-      
-      <guid>/posts/wireless-network-setting/</guid>
-      <description>安裝 wpa client sudo apt-get install wireless-tools wpasupplicant 掃描無線網路 sudo iwlist wlan0 scan | grep SSID ESSID:&amp;quot;hinet-net4690695&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0-1&amp;quot; ESSID:&amp;quot;kking22&amp;quot; ESSID:&amp;quot;TP-LINK_5499B2&amp;quot; ESSID:&amp;quot;HTC ONE X - test&amp;quot; ESSID:&amp;quot;P880&amp;quot; 等等要將 SSID 填入 /etc/network/interfaces wpa-ssid 的值
-新增 /etc/network/interfaces : auto lo iface lo inet loopback auto eth0 iface eth0 inet dhcp auto wlan0 allow-hotplug wlan0 iface wlan0 inet dhcp wpa-ssid My-Hone-Wireless wpa-psk My-Password SSID 就是無線網路的名稱 WPA-PSK金鑰 就是無線網路的密碼 重新啟動無線網路介面 sudo ifdown wlan0 sudo ifup wlan0 成功連線的結果 :</description>
-    </item>
-    
-    <item>
       <title>Linux Network Sniffer Tools</title>
       <link>/posts/listen-packet/</link>
-      <pubDate>Sun, 15 Dec 2013 20:39:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/listen-packet/</guid>
       <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
     </item>
     
     <item>
+      <title>Linux nmap</title>
+      <link>/posts/nmap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/nmap/</guid>
+      <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
+安裝 ubuntu :
+sudo apt-get install nmap 使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010 或
+$ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 port [tcp/mysql] succeeded! -z: Specifies that nc should just scan for listening daemons, without sending any data to them. It is an error to use this option in conjunction with the -l option. -v: Have nc give more verbose output.</description>
+    </item>
+    
+    <item>
+      <title>Linux rsync</title>
+      <link>/posts/linux-rsync/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-rsync/</guid>
+      <description>本機同步資料夾 以 /tmp/destination/ 為主要, 將 /tmp/source/ 同步
+rsync -avr --delete /tmp/destination/ /tmp/source/ -a, &amp;ndash;archive archive mode; equals -rlptgoD (no -H,-A,-X) -v, &amp;ndash;verbose increase verbosity -r, &amp;ndash;recursive recurse into directories &amp;ndash;delete delete extraneous files from destination dirs -e, &amp;ndash;rsh=COMMAND specify the remote shell to use 將本機資料夾複製到遠端 projects/ 下 rsync -ae &amp;quot;ssh -p 9022&amp;quot; test test@106.185.77.26:/home/test/note/projects/ 將遠端的 test 資料夾 sync 到 /tmp rsync -av -e ssh test@example.com:~/test/ /tmp 注意!! test 資料夾後面一定要加/ 以上指令不會將 tmp 有但 test 沒有的檔案做刪除, 如果要與 test 完全一樣, 加上 --delete 參數即可 將本地的資料夾 sync 到遠端 rsync -av -e ssh /tmp/test test@example.</description>
+    </item>
+    
+    <item>
+      <title>Linux S.M.A.R.T.</title>
+      <link>/posts/linux-smart/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-smart/</guid>
+      <description>S.M.A.R.T. 檢測你的硬碟健康狀態
+Installation sudo apt-get install smartmontools 當硬碟不支援時顯示 Unavailable : test_user@test-VirtualBox [stp:1] { /var/www }$ sudo smartctl -i /dev/sda1 smartctl 5.43 2012-06-30 r3573 [x86_64-linux-3.8.0-19-generic] (local build) Copyright (C) 2002-12 by Bruce Allen, http://smartmontools.sourceforge.net === START OF INFORMATION SECTION === Device Model: VBOX HARDDISK Serial Number: VB47e46d42-bbe471de Firmware Version: 1.0 User Capacity: 8,589,934,592 bytes [8.58 GB] Sector Size: 512 bytes logical/physical Device is: Not in smartctl database [for details use: -P showall] ATA Version is: 6 ATA Standard is: ATA/ATAPI-6 published, ANSI INCITS 361-2002 Local Time is: Fri May 17 10:08:11 2013 CST SMART support is: Unavailable - device lacks SMART capability.</description>
+    </item>
+    
+    <item>
+      <title>Linux sendmail</title>
+      <link>/posts/email/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/email/</guid>
+      <description>sendmail 使用本機寄信的套件
+安裝 sudo apt-get install sendmail 測試 sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . Troubleshootings 如果網站 hostname 有改過, 會發現寄信很慢, 甚至要一分鐘以上 在 /etc/hosts 的 127.0.1.1 加上以下兩個 hostname :
+127.0.1.1 ubuntu 106-185-47-26 106-185-47-26.localhost 如果 example.com 當作 gmail 的信箱, 主機 hostname 又設定成 example.com 的話 如果寄到
+sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . 就會得到寄不出信的錯誤
+/home/jxxx/dead.letter... Saved message in /home/jxxx/dead.letter
+/var/log/mail.log 也會報錯
+sm-mta[17354]: s6T7p65B017354: Milter (opendkim): error connecting to filter: Connection refused by localhost 會有這樣的訊息, 是因為主機認為是寄到 localhost 的, 所以就不會寄出</description>
+    </item>
+    
+    <item>
+      <title>Linux Shell Script</title>
+      <link>/posts/linux-shell-script/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-shell-script/</guid>
+      <description>Basics 接收傳入參數 建立test.sh內容:
+#!/bin/bash echo $0 echo $1 echo $2 執行你的shell檔案，並將要傳入的參數加在後面
+$ sh test.sh hello 11 22 test.sh # 檔名 hello # 第一個參數 11 # 第二個參數 讀寫檔案內容 建立test.sh內容:
+cat &amp;gt; qq.php &amp;lt;&amp;lt; EOF this is line 1 this is line 1 EOF 執行後就會產生qq.php檔案了，檔案內容為EOF框起來的內容
+寫檔換行 :
+echo -e &amp;quot;line1\nline2&amp;quot; | tee -a /tmp/q.txt append到檔案最後面
+tee -a /tmp/t.txt &amp;lt;&amp;lt; EOF line 1 line 2 EOF 讀取檔案，將每行放入陣列
+file=1.txt seq=1 while read line do lines[$seq]=$line ((seq++)) done &amp;lt; $file for ((i=1;i&amp;lt;=${#lines[@]};i++)) do echo ${lines[$i]} done 使用sh執行會有錯誤，但bash執行沒問題</description>
+    </item>
+    
+    <item>
+      <title>Linux Swap</title>
+      <link>/posts/linux-swap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-swap/</guid>
+      <description>swap 指令 通常安裝主機都會設定 swap 但如果沒有 swap 或要增加 swap 可自行設定 開
+sudo swapon -a 關
+sudo swapoff -a 釋放 swap
+sudo swapoff -a sudo swapon -a 查看 swap 狀態
+swapon -s 另種方式看 Swap 的狀態
+$ free -m total used free shared buffers cached Mem: 992 711 281 0 83 418 -/+ buffers/cache: 209 782 Swap: 0 0 0 建立/增加 swap 建立 1G swap
+sudo dd if=/dev/zero of=/swapfile bs=1M count=1024 掛載這個 Swap</description>
+    </item>
+    
+    <item>
+      <title>Linux systemd</title>
+      <link>/posts/linux-systemd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-systemd/</guid>
+      <description>設定檔 /etc/systemd/system/test.service:
+[Unit] Description=test [Service] User=ec2-user ExecStart=/bin/sh -c &amp;quot;/home/ec2-user/my_app/test &amp;gt;&amp;gt; /tmp/test.log 2&amp;gt;&amp;amp;1&amp;quot; Restart=always [Install] WantedBy=multi-user.target 其他 [Service] 參數
+WorkingDirectory=/home/ec2-user/my_app config 權限 root 644 測試沒問題 WantedBy: directive is the most common way to specify how a unit should be enabled. 其他參數 主機啟動時在 network 後才啟動
+[Unit] After=syslog.target network.target remote-fs.target nss-lookup.target 指令 重讀設定檔(修改後都要執行)
+sudo systemctl daemon-reload 查看 systemd 執行 log
+sudo systemctl status test Enable it to run at boot:
+sudo systemctl enable test Start it</description>
+    </item>
+    
+    <item>
+      <title>Linux TTY/PTY</title>
+      <link>/posts/linux-tty-pty/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-tty-pty/</guid>
+      <description>What is TTY/PTY? TTY (teletype) is a terminal used to transfer the input and output from devices.
+PTY (pseudo-teletype) is a pseudoterminal that provides a terminal emulator like tty does.
+How does TTY work? Diagram:
+┏━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┃ monitor ┣━━┫ VGA driver ┣━━┫ ┃ ┃ ┃ ┃ ┣━━┫ User process ┃ ┗━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━┛ ┃ Terminal ┣━━┫ Line ┣━━┫ TTY ┃ ┗━━━━━━━━━━━━━━━┛ ┏━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━━━━━┓ ┃ emulator ┃ ┃ Discipline ┃ ┃ driver ┃ ┏━━━━━━━━━━━━━━━┓ ┃ keyboard ┣━━┫ Keyboard driver ┣━━┫ ┃ ┃ ┃ ┃ ┣━━┫ User process ┃ ┗━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ 0,1,2 fds are allocated to shell</description>
+    </item>
+    
+    <item>
+      <title>Linux upstart</title>
+      <link>/posts/linux-upstart/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-upstart/</guid>
+      <description>介紹 upstart 用來管理你的服務, 在機器啟動後自動幫你啟動你的服務, 並且可以選擇在服務死掉後自動重新啟動它
+ubuntu 16.04 不支援 upstart 改用 systemd
+First Example 這是個簡單的範例只有執行 echo, 執行完也不會有任何背景的 process 在執行
+建立 /etc/init/testjob.conf:
+description &amp;quot;First example&amp;quot; author &amp;quot;test&amp;quot; start on runlevel [2345] exec echo `date` &amp;gt;&amp;gt; /tmp/testjob.log 測試 conf 語法是否正確
+$ init-checkconf /etc/init/testjob.conf File /etc/init/testjob.conf: syntax ok 開始啟動
+$ sudo service testjob start testjob stop/waiting 顯示結果 /tmp/testjob.log:
+Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 process 在背景執行
+首先我們要先有一個不會停止的程式供測試, /tmp/test.sh:
+#!/bin/sh while true do echo `date` &amp;gt;&amp;gt; /tmp/testjob.</description>
+    </item>
+    
+    <item>
+      <title>Linux Vim</title>
+      <link>/posts/linux-vim/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-vim/</guid>
+      <description>Command Line vim http://www.google.com : 開啟google原始碼 vim -p qq.php cc.php : 用tabe顯示，用gt切換下一個tabe vim -O qq.php cc.php : 垂直分割顯示 vim -o qq.php cc.php : 水平分割顯示 vim -u NONE cc.php : 不要進行初始化直接開啟檔案 (對開大檔會快很多) 新增、刪除、插入 O : 在游標那行的上一行插入新的一行 o : 在游標那行的下一行插入新的一行 I : 在該行的第一個字元進入插入模式 i : 在游標前進入插入模式 A ( = $ + a) : 在該行的最後一個字元進入插入模式 a : 在游標後進入插入模式 C : 刪除游標後的字串並進入到insert模式 cc : 刪除該行並進入到insert模式(保留縮排) 1cj : 刪除游標該行及下一行共2行並進入插入模式 D : 刪除游標後的字串 dd : 刪除整行 2dd : 刪除下列2行 10dh : 向左刪除10個字元 d0 : 刪除游標位置前的字元 d^ : 刪除游標位置前的字元(保留縮排) d$ : 刪除游標位置到最後一個字元 de : 刪除游標位置到區塊的最後一個字元 db : 向前刪除區塊單字 dw : 向後刪除區塊單字 x : 刪除游標所在的字元 X : 向前刪除字元 s : 刪除游標那個字元並進入 insert 模式 S : 同 cc 10x : 刪除游標後的5個字元 J : 將游標所在列與下一列的資料結合成同一列 3J : 將下兩行包含游標該行共3行合併成一行 d0 : 游標所在處向前刪除到第0格 d^ : 游標所在處向前刪除到縮排處停止 diw : 刪除游標上的單字 ciw : 刪除游標上的單字並進入insert模式 cw : 刪除在單字上游標以後字串 ci&#39; : 刪除單引號內的字串並進入insert模式 ci&amp;quot; : 刪除雙引號內的字串並進入insert模式 ci( : 刪除括號內的內容並進入insert模式 ci[ : 刪除中括號內的內容並進入insert模式 ci{ : 刪除大括號內的內容並進入insert模式 ci&amp;lt; : 刪除&amp;lt;(內容)&amp;gt;並進入insert模式 ca&#39; : 刪除單引號內的字串及單引號並進入 insert 模式 di&#39; : 刪除單引號內的字串 dst : 刪除 html 標籤, 但內容會保留 dit : 刪除 html 標籤內容, 但標籤會保留 cit : 刪除 html 標籤內容, 並進入 insert 模式 6i 或 6a + 任意字串 : 6 次 * 任意字串 d/a : 刪到 a 為止 guu : 整行變小寫 gUU : 整行變大寫 g~~ : 整行大小寫交換 複製、剪下、貼上 shift + Insert : (insert模式下)將系統剪貼簿貼上游標位置。 ctrl + v : 對區塊共同做編輯 ctrl + v 選取後按c : 把選取的字刪掉並進入insert模式 V(select whole line) + y : 相當於 ctrl + c v(select area) + y : 相當於 ctrl + c P : 貼上於目前游標的上一行 p : 貼上於目前游標的下一行，相對於 ctrl + v y1G : 複製游標所在列到第一列的所有資料 y0 : 複製游標所在的那個字元到該行行首的所有資料 y$ : 複製游標所在的那個字元到該行行尾的所有資料 yy : 複製游標所在的那一行 20yy : 複製 20 行 Y : 複製游標所在的那一行 :m+ : 把目前這一行往下移動一行 :m-2 : 把目前這一行往上移動一行 shift + insert : 在insert模式貼上滑鼠複製的東西 [p : 貼到游標前 ]p : 貼到游標後 dip : 刪除最外層的tag及裡面的所有內容 yiw : 複製單字 yi&#39; : 複製單引號內的字串 vi&#39; : 選取單引號內的字串並進入visual模式 &amp;quot; + a + y + i + &#39; : 將單引號的內容(不包含單引號)存進暫存a &amp;quot; + a + y + a + &#39; : 將單引號的內容(包含單引號)存進暫存a v + ^ + y : 複製從游標到最前面的字串 vitp : 貼在 HTML Tag 裡 :2y : copy 第 2 行 :2,7y : copy 第 2 ~ 7 行 Visual模式 ~ : 在visual模式已選取下，切換大 / 小寫 U : 在visual模式已選取下，轉成大寫 u : 在visual模式已選取下，轉成小寫 viw : 選取游標上的單字並進入visual模式。(v = visual, i = inside, w = word) vit : 選取&amp;lt;tag&amp;gt;裡面的內容並進入visual模式。例: &amp;lt;a href=&#39;#&#39;&amp;gt;(選取這一塊)&amp;lt;/a&amp;gt; vat : 選取&amp;lt;tab&amp;gt;全部內容包含&amp;lt;tag&amp;gt;本身，並進入visual模式(a = around)。選取&amp;lt;a .</description>
+    </item>
+    
+    <item>
       <title>Linux xargs</title>
       <link>/posts/xargs/</link>
-      <pubDate>Sun, 15 Dec 2013 20:28:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/xargs/</guid>
       <description>介紹 build and execute command lines from standard input
@@ -233,63 +363,33 @@ $ find test -name &amp;quot;*.del&amp;quot; test/c3/ff.del test/c3/c3-1/qq.del t
     </item>
     
     <item>
-      <title>Linux nmap</title>
-      <link>/posts/nmap/</link>
-      <pubDate>Sun, 15 Dec 2013 18:00:00 +0000</pubDate>
+      <title>OS</title>
+      <link>/posts/os/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/nmap/</guid>
-      <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
-安裝 ubuntu :
-sudo apt-get install nmap 使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010 或
-$ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 port [tcp/mysql] succeeded! -z: Specifies that nc should just scan for listening daemons, without sending any data to them. It is an error to use this option in conjunction with the -l option. -v: Have nc give more verbose output.</description>
+      <guid>/posts/os/</guid>
+      <description>File descriptor (FD) open a file by calling system call open() that specifies access mode (read, write, or both), then the kernel returns FD number to the program Use the FD by performing I/O operations on the file such as read() or write() Close the FD by calling system call close() When the program terminates, either normally or due to an error, all open file descriptors are automatically closed by the kernel 動態庫與靜態庫 linux 下有動態庫和靜態庫.</description>
     </item>
     
     <item>
-      <title>Linux grep</title>
-      <link>/posts/grep/</link>
-      <pubDate>Tue, 26 Nov 2013 21:39:00 +0000</pubDate>
+      <title>Process Manager</title>
+      <link>/posts/process-manager/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/grep/</guid>
-      <description>一般用法 grep -R &#39;時間&#39; * -r, &amp;ndash;recursive like &amp;ndash;directories=recurse -R, &amp;ndash;dereference-recursive likewise, but follow all symlinks &amp;ndash;include=FILE_PATTERN search only files that match FILE_PATTERN &amp;ndash;exclude=FILE_PATTERN skip files and directories matching FILE_PATTERN &amp;ndash;exclude-from=FILE skip files matching any file pattern from FILE &amp;ndash;exclude-dir=PATTERN directories that match PATTERN will be skipped. &amp;ndash;exclude-dir={dir1,dir2,dir3} directories that match PATTERN will be skipped. -i, &amp;ndash;ignore-case ignore case distinctions -P, &amp;ndash;perl-regexp -o, &amp;ndash;only-matching grep ^d：過濾出資料夾
-OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
-    </item>
-    
-    <item>
-      <title>I/O</title>
-      <link>/posts/io/</link>
-      <pubDate>Fri, 01 Nov 2013 22:22:00 +0000</pubDate>
-      
-      <guid>/posts/io/</guid>
-      <description>測試 filesystem 讀寫速度 dd 只能測試寫入速度
-$ dd if=/dev/zero of=/tmp/output conv=fdatasync bs=384k count=1k; rm -f /tmp/output 1024+0 records in 1024+0 records out 402653184 bytes (403 MB, 384 MiB) copied, 2.07614 s, 194 MB/s or
-$ sync ; time sh -c &amp;quot;dd if=/dev/zero of=/tmp/output bs=100k count=1k &amp;amp;&amp;amp; sync&amp;quot; ; rm /tmp/output 1024+0 records in 1024+0 records out 104857600 bytes (105 MB, 100 MiB) copied, 0.0646765 s, 1.6 GB/s real 0m0.296s user 0m0.005s sys 0m0.</description>
-    </item>
-    
-    <item>
-      <title>Linux Account</title>
-      <link>/posts/linux-account/</link>
-      <pubDate>Sat, 07 Sep 2013 15:49:00 +0000</pubDate>
-      
-      <guid>/posts/linux-account/</guid>
-      <description>顯示 account 權限 show grants for test@&#39;%&#39;; 查詢所屬群組 $ id test uid=1000(test) gid=1000(test) groups=1000(test),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),108(sambashare),115(lpadmin) useradd adduser差別 useradd 只會建立帳號，沒有Home, password, 系統shell
-新增 account sudo adduser newuser 或 RUN useradd --create-home -s /bin/bash test 將帳號加上 sudo 權限 方法1 加入: 將帳號加入 sudo group
-sudo usermod -a -G sudo test 或 sudo adduser test sudo -a, &amp;ndash;add USER add USER to GROUP -d, &amp;ndash;delete USER remove USER from GROUP 移除: 將帳號移除 sudo group
-sudo gpasswd -d test sudo 方法2 加入: 手動新增帳號到 /etc/sudoers :</description>
-    </item>
-    
-    <item>
-      <title>Linux Compression</title>
-      <link>/posts/linux-compressed/</link>
-      <pubDate>Sat, 07 Sep 2013 15:15:00 +0000</pubDate>
-      
-      <guid>/posts/linux-compressed/</guid>
-      <description>gzip Usage: gzip [OPTION]... [FILE]... Compress or uncompress FILEs (by default, compress FILES in-place). Mandatory arguments to long options are mandatory for short options too. -c, --stdout write on standard output, keep original files unchanged -d, --decompress decompress -f, --force force overwrite of output file and compress links -h, --help give this help -l, --list list compressed file contents -L, --license display software license -n, --no-name do not save or restore the original name and time stamp -N, --name save or restore the original name and time stamp -q, --quiet suppress all warnings -r, --recursive operate recursively on directories -S, --suffix=SUF use suffix SUF on compressed files -t, --test test compressed file integrity -v, --verbose verbose mode -V, --version display version number -1, --fast compress faster -9, --best compress better --rsyncable Make rsync-friendly archive With no FILE, or when FILE is -, read standard input.</description>
+      <guid>/posts/process-manager/</guid>
+      <description>Introduction If you want a program or application to run in background, process managers like supervisord, pm2, etc. can get this done for you.
+Supervisor 安裝參考這裡 ubuntu 安裝指令
+sudo apt-get install supervisor 唯一要注意的是 command=/usr/local/bin/long.sh command 要寫完整的指令路徑
+/etc/supervisor/conf.d/aws-sqs.conf :
+[program:aws-sqs] command=/home/ubuntu/mygo/bin/aws-sqs autostart=true autorestart=true stderr_logfile=/var/log/golang.err.log stdout_logfile=/var/log/golang.out.log stderr_logfile_maxbytes=10MB user=ubuntu environment=USER=&#39;test&#39;,BRAND=&#39;Company_name&#39;,HOME=/home/my_user directory=/var/www 將 supervisor 跑起來
+sudo service supervisor start 對 program conf 的指令
+sudo supervisorctl &amp;gt; restart worker &amp;gt; reread &amp;gt; status &amp;gt; start resque &amp;gt; tail resque // error log or sudo supervisorctl reread goworker 有時候不管怎麼 restart 及 reread 都沒有用時用 reload Error CRIT Server &#39;unix_http_server&#39; running without any HTTP authentication checking 設定 unix_http_server 帳密</description>
     </item>
     
     <item>
       <title>sed and awk</title>
       <link>/posts/sed-awk/</link>
-      <pubDate>Sat, 24 Aug 2013 15:27:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/sed-awk/</guid>
       <description>sed -i : is used to affect the file. ^ : is a beginning of line $ : is a end of line d : delete if there is a empty line ((.|\n)*) : multiple line 刪除含有FOO及BAR這兩個字串的行 sed &amp;quot;s/^.*FOO.*BAR.*$//g&amp;quot; fstab 這作法該行被刪除，但是會是空的一行
@@ -300,18 +400,9 @@ $a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 
     </item>
     
     <item>
-      <title>How To Recover Deleted Files?</title>
-      <link>/posts/recover-files/</link>
-      <pubDate>Fri, 16 Aug 2013 20:20:00 +0000</pubDate>
-      
-      <guid>/posts/recover-files/</guid>
-      <description>第一件事最重要 - 不要執行任何會覆寫硬碟的事情 也就是事情發生當下，停止一切複製，移動，安裝等等會讀寫硬碟的事情 如果硬碟在自架的主機，最保險的作法是馬上拆下來，接到其他電腦 如果是誤刪了遠端租用的主機資料，那也能靠遠端連線還原去救 使用R-Studio還原，他的特色： 要錢 （免費版只能還原64K以下的資料，而且不能還原RAID） 可以選擇要用本機還原或是遠端還原 線上付費後授權碼馬上就寄到你的E-Mail了 評價不錯，有興趣可以google看看 必看： 要還原硬碟要先掃描, 可能因為共有400～500G, 所以掃描很容易crash, 我掃了幾次才成功, 建議本機還原掃描時不要做其他事, 掃描後要進入硬碟前會有個讀取結構的動作, 我的會固定到55﹪就會當掉, 這軟體似乎並不是那麼靠譜的.. 所以要確定能還原成功再買授權，反正它的授權付完錢就寄給你了 註 ： 如果是還原 ext 2, 3, 4 版可以使用R-Linux這個方案，它免費最重要的是還原可以不受64K限制 我是使用win8去還原外接的ext4硬碟所以我買的是R-Studio NTFS的方案 它的設計是你可以先用免費的版本，開啟時都會問你要不要輸入授權，如果選擇試用，那版號就是試用，如果輸入授權碼（例如我輸入R-Studio NTFS授權碼），那啟動後就是R-Studio NTFS版 </description>
-    </item>
-    
-    <item>
       <title>SSH</title>
       <link>/posts/ssh/</link>
-      <pubDate>Sun, 21 Jul 2013 16:03:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/ssh/</guid>
       <description>產生 ssh key 並且設定免密碼直接連入遠端主機 本機:
@@ -324,7 +415,7 @@ ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設
     <item>
       <title>swftools</title>
       <link>/posts/swftools/</link>
-      <pubDate>Sun, 21 Jul 2013 05:52:18 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/swftools/</guid>
       <description>Installation libfreetype6
@@ -341,105 +432,13 @@ cd /tmp wget http://downloads.sourceforge.net/project/wqy/wqy-microhei/0.2.0-bet
     </item>
     
     <item>
-      <title>Linux Locale</title>
-      <link>/posts/linux-locale/</link>
-      <pubDate>Sat, 08 Jun 2013 09:53:00 +0000</pubDate>
+      <title>Wireless Network</title>
+      <link>/posts/wireless-network-setting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/linux-locale/</guid>
-      <description>指令 查詢目前的語系設定：
-$ locale locale: Cannot set LC_CTYPE to default locale: No such file or directory locale: Cannot set LC_MESSAGES to default locale: No such file or directory locale: Cannot set LC_ALL to default locale: No such file or directory LANG=zh_TW.UTF-8 LANGUAGE= LC_CTYPE=&amp;quot;zh_TW.UTF-8&amp;quot; (...略...) LC_MEASUREMENT=&amp;quot;zh_TW.UTF-8&amp;quot; LC_IDENTIFICATION=&amp;quot;zh_TW.UTF-8&amp;quot; LC_ALL= 查詢已安裝的語系：
-$ locale -a locale: Cannot set LC_CTYPE to default locale: No such file or directory locale: Cannot set LC_MESSAGES to default locale: No such file or directory locale: Cannot set LC_COLLATE to default locale: No such file or directory C C.</description>
-    </item>
-    
-    <item>
-      <title>Linux Shell Script</title>
-      <link>/posts/linux-shell-script/</link>
-      <pubDate>Sat, 08 Jun 2013 09:44:00 +0000</pubDate>
-      
-      <guid>/posts/linux-shell-script/</guid>
-      <description>Basics 接收傳入參數 建立test.sh內容:
-#!/bin/bash echo $0 echo $1 echo $2 執行你的shell檔案，並將要傳入的參數加在後面
-$ sh test.sh hello 11 22 test.sh # 檔名 hello # 第一個參數 11 # 第二個參數 讀寫檔案內容 建立test.sh內容:
-cat &amp;gt; qq.php &amp;lt;&amp;lt; EOF this is line 1 this is line 1 EOF 執行後就會產生qq.php檔案了，檔案內容為EOF框起來的內容
-寫檔換行 :
-echo -e &amp;quot;line1\nline2&amp;quot; | tee -a /tmp/q.txt append到檔案最後面
-tee -a /tmp/t.txt &amp;lt;&amp;lt; EOF line 1 line 2 EOF 讀取檔案，將每行放入陣列
-file=1.txt seq=1 while read line do lines[$seq]=$line ((seq++)) done &amp;lt; $file for ((i=1;i&amp;lt;=${#lines[@]};i++)) do echo ${lines[$i]} done 使用sh執行會有錯誤，但bash執行沒問題</description>
-    </item>
-    
-    <item>
-      <title>Linux rsync</title>
-      <link>/posts/linux-rsync/</link>
-      <pubDate>Fri, 24 May 2013 18:25:50 +0000</pubDate>
-      
-      <guid>/posts/linux-rsync/</guid>
-      <description>本機同步資料夾 以 /tmp/destination/ 為主要, 將 /tmp/source/ 同步
-rsync -avr --delete /tmp/destination/ /tmp/source/ -a, &amp;ndash;archive archive mode; equals -rlptgoD (no -H,-A,-X) -v, &amp;ndash;verbose increase verbosity -r, &amp;ndash;recursive recurse into directories &amp;ndash;delete delete extraneous files from destination dirs -e, &amp;ndash;rsh=COMMAND specify the remote shell to use 將本機資料夾複製到遠端 projects/ 下 rsync -ae &amp;quot;ssh -p 9022&amp;quot; test test@106.185.77.26:/home/test/note/projects/ 將遠端的 test 資料夾 sync 到 /tmp rsync -av -e ssh test@example.com:~/test/ /tmp 注意!! test 資料夾後面一定要加/ 以上指令不會將 tmp 有但 test 沒有的檔案做刪除, 如果要與 test 完全一樣, 加上 --delete 參數即可 將本地的資料夾 sync 到遠端 rsync -av -e ssh /tmp/test test@example.</description>
-    </item>
-    
-    <item>
-      <title>Linux Commands</title>
-      <link>/posts/linux-commands/</link>
-      <pubDate>Fri, 24 May 2013 08:34:00 +0000</pubDate>
-      
-      <guid>/posts/linux-commands/</guid>
-      <description>Console 快捷鍵 畫面 Ctrl + l : 清畫面, 等於指令 clear Ctrl + z : 暫時停止程式(將該工作放到背景) (fg 1, fg 2 拿回) Ctrl + c : 終止正在執行的程式 Ctrl + s : 停止輸出到畫面上(類似 Scroll Lock, ex: cat xxx 需暫停時使用) Ctrl + q : 回復輸出到畫面上(恢復Ctrl+S的輸出) Ctrl + d : 結束輸入(如果您在 shell 下，就會跳出該 shell) 刪除 Ctrl + w : 刪除游標前一段指令，依空白為段落 Ctrl + u : 刪除游標前的字 Ctrl + k : 刪除游標後的字 Ctrl + h : Backspace 鍵功能 Ctrl + d : Del 鍵功能 移動 Ctrl + a : 游標移到最前面 Ctrl + e : 游標移到最後面 Ctrl + f : 往右移一個字元, 等同於右鍵 Ctrl + b : 往左移一個字元, 等同於左鍵 指令 Ctrl + x 接著按 Ctrl + e : 可以使用 vim 寫入 script 讓他一次執行 Ctrl + r : 尋找之前輸入過的指令 Ctrl + p : 上一個指令, 相當上鍵 Ctrl + n : 下一個指令, 相當下鍵 Ctrl + i : 同 Tab Ctrl + v + Tab : 輸入 Tab (空白) Ctrl + j : 同 Enter Ctrl + t : 相近兩個字元互換位置 Ctrl + - : undo Ctrl + v : 再加上要輸入特殊字元, ex: 先按 Ctrl-V 再按 Ctrl-C 會出現 ^C 而不是中斷 其他 Alt + f : 到此行的後一個字 Alt + b : 到此行的前一個字 Alt + d : 刪除游標之後的一個單字 ESC + t : 最後 兩個 &amp;ldquo;單字&amp;rdquo; 互換位置 set -o : 可以列出所有 Mode set -o vi : 可以用 vi 操作法來操作 Bash Shell(用此 Mode 上述的快速鍵即無作用) set -o emacs : Bash 預設就是此 Mode.</description>
-    </item>
-    
-    <item>
-      <title>Linux Swap</title>
-      <link>/posts/linux-swap/</link>
-      <pubDate>Fri, 17 May 2013 08:22:00 +0000</pubDate>
-      
-      <guid>/posts/linux-swap/</guid>
-      <description>swap 指令 通常安裝主機都會設定 swap 但如果沒有 swap 或要增加 swap 可自行設定 開
-sudo swapon -a 關
-sudo swapoff -a 釋放 swap
-sudo swapoff -a sudo swapon -a 查看 swap 狀態
-swapon -s 另種方式看 Swap 的狀態
-$ free -m total used free shared buffers cached Mem: 992 711 281 0 83 418 -/+ buffers/cache: 209 782 Swap: 0 0 0 建立/增加 swap 建立 1G swap
-sudo dd if=/dev/zero of=/swapfile bs=1M count=1024 掛載這個 Swap</description>
-    </item>
-    
-    <item>
-      <title>Linux S.M.A.R.T.</title>
-      <link>/posts/linux-smart/</link>
-      <pubDate>Fri, 17 May 2013 06:04:35 +0000</pubDate>
-      
-      <guid>/posts/linux-smart/</guid>
-      <description>S.M.A.R.T. 檢測你的硬碟健康狀態
-Installation sudo apt-get install smartmontools 當硬碟不支援時顯示 Unavailable : test_user@test-VirtualBox [stp:1] { /var/www }$ sudo smartctl -i /dev/sda1 smartctl 5.43 2012-06-30 r3573 [x86_64-linux-3.8.0-19-generic] (local build) Copyright (C) 2002-12 by Bruce Allen, http://smartmontools.sourceforge.net === START OF INFORMATION SECTION === Device Model: VBOX HARDDISK Serial Number: VB47e46d42-bbe471de Firmware Version: 1.0 User Capacity: 8,589,934,592 bytes [8.58 GB] Sector Size: 512 bytes logical/physical Device is: Not in smartctl database [for details use: -P showall] ATA Version is: 6 ATA Standard is: ATA/ATAPI-6 published, ANSI INCITS 361-2002 Local Time is: Fri May 17 10:08:11 2013 CST SMART support is: Unavailable - device lacks SMART capability.</description>
-    </item>
-    
-    <item>
-      <title>Linux Vim</title>
-      <link>/posts/linux-vim/</link>
-      <pubDate>Wed, 15 May 2013 07:47:00 +0000</pubDate>
-      
-      <guid>/posts/linux-vim/</guid>
-      <description>Command Line vim http://www.google.com : 開啟google原始碼 vim -p qq.php cc.php : 用tabe顯示，用gt切換下一個tabe vim -O qq.php cc.php : 垂直分割顯示 vim -o qq.php cc.php : 水平分割顯示 vim -u NONE cc.php : 不要進行初始化直接開啟檔案 (對開大檔會快很多) 新增、刪除、插入 O : 在游標那行的上一行插入新的一行 o : 在游標那行的下一行插入新的一行 I : 在該行的第一個字元進入插入模式 i : 在游標前進入插入模式 A ( = $ + a) : 在該行的最後一個字元進入插入模式 a : 在游標後進入插入模式 C : 刪除游標後的字串並進入到insert模式 cc : 刪除該行並進入到insert模式(保留縮排) 1cj : 刪除游標該行及下一行共2行並進入插入模式 D : 刪除游標後的字串 dd : 刪除整行 2dd : 刪除下列2行 10dh : 向左刪除10個字元 d0 : 刪除游標位置前的字元 d^ : 刪除游標位置前的字元(保留縮排) d$ : 刪除游標位置到最後一個字元 de : 刪除游標位置到區塊的最後一個字元 db : 向前刪除區塊單字 dw : 向後刪除區塊單字 x : 刪除游標所在的字元 X : 向前刪除字元 s : 刪除游標那個字元並進入 insert 模式 S : 同 cc 10x : 刪除游標後的5個字元 J : 將游標所在列與下一列的資料結合成同一列 3J : 將下兩行包含游標該行共3行合併成一行 d0 : 游標所在處向前刪除到第0格 d^ : 游標所在處向前刪除到縮排處停止 diw : 刪除游標上的單字 ciw : 刪除游標上的單字並進入insert模式 cw : 刪除在單字上游標以後字串 ci&#39; : 刪除單引號內的字串並進入insert模式 ci&amp;quot; : 刪除雙引號內的字串並進入insert模式 ci( : 刪除括號內的內容並進入insert模式 ci[ : 刪除中括號內的內容並進入insert模式 ci{ : 刪除大括號內的內容並進入insert模式 ci&amp;lt; : 刪除&amp;lt;(內容)&amp;gt;並進入insert模式 ca&#39; : 刪除單引號內的字串及單引號並進入 insert 模式 di&#39; : 刪除單引號內的字串 dst : 刪除 html 標籤, 但內容會保留 dit : 刪除 html 標籤內容, 但標籤會保留 cit : 刪除 html 標籤內容, 並進入 insert 模式 6i 或 6a + 任意字串 : 6 次 * 任意字串 d/a : 刪到 a 為止 guu : 整行變小寫 gUU : 整行變大寫 g~~ : 整行大小寫交換 複製、剪下、貼上 shift + Insert : (insert模式下)將系統剪貼簿貼上游標位置。 ctrl + v : 對區塊共同做編輯 ctrl + v 選取後按c : 把選取的字刪掉並進入insert模式 V(select whole line) + y : 相當於 ctrl + c v(select area) + y : 相當於 ctrl + c P : 貼上於目前游標的上一行 p : 貼上於目前游標的下一行，相對於 ctrl + v y1G : 複製游標所在列到第一列的所有資料 y0 : 複製游標所在的那個字元到該行行首的所有資料 y$ : 複製游標所在的那個字元到該行行尾的所有資料 yy : 複製游標所在的那一行 20yy : 複製 20 行 Y : 複製游標所在的那一行 :m+ : 把目前這一行往下移動一行 :m-2 : 把目前這一行往上移動一行 shift + insert : 在insert模式貼上滑鼠複製的東西 [p : 貼到游標前 ]p : 貼到游標後 dip : 刪除最外層的tag及裡面的所有內容 yiw : 複製單字 yi&#39; : 複製單引號內的字串 vi&#39; : 選取單引號內的字串並進入visual模式 &amp;quot; + a + y + i + &#39; : 將單引號的內容(不包含單引號)存進暫存a &amp;quot; + a + y + a + &#39; : 將單引號的內容(包含單引號)存進暫存a v + ^ + y : 複製從游標到最前面的字串 vitp : 貼在 HTML Tag 裡 :2y : copy 第 2 行 :2,7y : copy 第 2 ~ 7 行 Visual模式 ~ : 在visual模式已選取下，切換大 / 小寫 U : 在visual模式已選取下，轉成大寫 u : 在visual模式已選取下，轉成小寫 viw : 選取游標上的單字並進入visual模式。(v = visual, i = inside, w = word) vit : 選取&amp;lt;tag&amp;gt;裡面的內容並進入visual模式。例: &amp;lt;a href=&#39;#&#39;&amp;gt;(選取這一塊)&amp;lt;/a&amp;gt; vat : 選取&amp;lt;tab&amp;gt;全部內容包含&amp;lt;tag&amp;gt;本身，並進入visual模式(a = around)。選取&amp;lt;a .</description>
-    </item>
-    
-    <item>
-      <title>Linux File System</title>
-      <link>/posts/linux-file-system/</link>
-      <pubDate>Mon, 13 May 2013 06:09:04 +0000</pubDate>
-      
-      <guid>/posts/linux-file-system/</guid>
-      <description>inode 在linux下，一個檔案產生後，會有一個inode，可以用來當作這個檔案的編號。 假設有一個檔案叫做cc.txt，它的inode編號為135， 當我用mv移動到不管哪個資料夾下，它的inode編號依然會是135， 但當使用cp複製它時，它的inode編號就會重新指派了。
-查看inode ls -i 7042739 README.md 6954370 bashrc 2287673 bin 用 inode 找 file / folder find ~/conf -inum 2287673 /Users/test/conf/bin FAT32 支援 windows, mac 單檔最大 4GB 最大容量 2TB 較容易 disk errosr 效率稍差 exFAT 支援 windows, mac, linux 單檔最大 4GB 最大容量 2TB NTFS (windows only) windows 原生支援 在 mac 上只能讀 最大單檔 16TB 最大容量 256TB HFS+ mac 原生支援 Required for Time Machine 最大單檔 8EiB 最大容量 8EiB XFS xfs 是一種 file system 的 format, 像 ext4 一樣, 不過它特別的地方在於它可以方便的對目錄做 quota 限制 Ubuntu 安裝 : sudo apt-get install xfsprogs xfsdump Set quota : Make the filesystem and mount it:</description>
-    </item>
-    
-    <item>
-      <title>Linux Crontab</title>
-      <link>/posts/linux-crontab/</link>
-      <pubDate>Thu, 02 May 2013 01:06:00 +0000</pubDate>
-      
-      <guid>/posts/linux-crontab/</guid>
-      <description>[1] 建立/var/www/test/hello.sh 檔: #!/bin/bash echo &amp;quot;Hello World&amp;quot; [2] 假使要每一分鐘執行一次hello.sh 執行:
-$ crontab -e 會進入編輯器，輸入:
-# 每分鐘執行一次 */1 * * * * echo &amp;quot;job every minute&amp;quot; &amp;gt;&amp;gt; /tmp/tz # 每 0:15, 12:15 分執行一次 15 0,12 * * * /bin/bash -l -c &#39;cd /var/www/web_app &amp;amp;&amp;amp; RAILS_ENV=development bundle exec rake schedule:check_something --silent&#39; # 星期一～五 9am~18pm 00 09-18 * * 1-5 /home/ramesh/bin/check-db-status 格式 : 分(0-59), 時(0-23) ,日(1-31) ,月(1-12) ,週(0-6), Command
-[3] 其他指令 : 執行排程並不會影響到你目前工作視窗，因為它是背景執行的，所以每隔一分鐘, 並不會看到 &amp;ldquo;Hello World&amp;rdquo; 字串出現在畫面上，但它會在每一次執行時紀錄在log裡</description>
+      <guid>/posts/wireless-network-setting/</guid>
+      <description>安裝 wpa client sudo apt-get install wireless-tools wpasupplicant 掃描無線網路 sudo iwlist wlan0 scan | grep SSID ESSID:&amp;quot;hinet-net4690695&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0&amp;quot; ESSID:&amp;quot;BUFFALO-E05EE0-1&amp;quot; ESSID:&amp;quot;kking22&amp;quot; ESSID:&amp;quot;TP-LINK_5499B2&amp;quot; ESSID:&amp;quot;HTC ONE X - test&amp;quot; ESSID:&amp;quot;P880&amp;quot; 等等要將 SSID 填入 /etc/network/interfaces wpa-ssid 的值
+新增 /etc/network/interfaces : auto lo iface lo inet loopback auto eth0 iface eth0 inet dhcp auto wlan0 allow-hotplug wlan0 iface wlan0 inet dhcp wpa-ssid My-Hone-Wireless wpa-psk My-Password SSID 就是無線網路的名稱 WPA-PSK金鑰 就是無線網路的密碼 重新啟動無線網路介面 sudo ifdown wlan0 sudo ifup wlan0 成功連線的結果 :</description>
     </item>
     
   </channel>

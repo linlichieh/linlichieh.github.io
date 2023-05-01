@@ -5,12 +5,26 @@
     <link>/categories/aws/</link>
     <description>Recent content in aws on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 12 Sep 2016 12:54:44 +0800</lastBuildDate><atom:link href="/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS</title>
+      <link>/posts/aws/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/aws/</guid>
+      <description>(最後更新: 2016-04-27)
+介紹 AWS (Amazon Web Services) 是針對主機或 App 提供整套 solution 的雲端服務
+Install/Upgrade AWS CLI 安裝
+sudo pip install --upgrade awscli 如果安裝出問題, 強制重新安裝可以解決
+sudo pip install awscli --force-reinstall --upgrade Ubuntu (建議不要使用 apt-get 安裝, 版本很舊) 有些安裝完會有設定檔 /var/awslogs/etc/awslogs.conf Stop the agent
+sudo service awslogs stop // Works on Ubuntu sudo service awslogsd stop // Amazon Linux 2 stop|restart|start
+Region &amp;amp; AZ region 是 Data Center 的集合 AZ 與 AZ 至少隔70公里以上 AZ 與 AZ 是用光纖連接 AZ 裡有很多 DC 每個 DC 是 25Tbps 同一 region 我的帳號的 eu-west-1a 跟你的帳號的 eu-west-1a 不一定是同一個 AZ, 避免太多人選擇同一 AZ IAM 如果有很多開發者要共用一個 AWS 帳號, 這算是必用的服務 可以針對不同開發者給與不同權限 一般來說程式透過 Access key &amp;amp; Secret Key 調用 AWS API 是要寫在程式裡的, 但會遇到 Credentials embedded in code問題, 如果 push 到 public 的 github 就有資安風險, 也可以改成在 ec2 裡(環境)設定 secret key 較安全 (aws command) 角色可分 3 種 : user : 可以讓多個開發者共用同一個 AWS, 每個人可以有不同的登入帳密及權限 group : 可以設定權限, 再把要執行這些權限的 user 圈到這個 group 裡 role : 這是給 ec2 執行的權限, 開 ec2 時 IAM role 選這個, 而此 ec2 就有權限執行開放的服務 [操作] 增加一個登入帳號給團隊的成員 Users -&amp;gt; Create Users -&amp;gt; 輸入 user name -&amp;gt; copy Access Key ID 及 Secret Access Key (目前還不會用到) -&amp;gt; 回到 Users 列表就會看到剛剛新加的 user</description>
+    </item>
+    
     <item>
       <title>Go AWS</title>
       <link>/posts/go-aws/</link>
-      <pubDate>Mon, 12 Sep 2016 12:54:44 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-aws/</guid>
       <description>如何使用 AWS API 在使用它的任何一個 service 前要先準備好 credential 然候再建立 session，然候再跟 AWS services 互動，
@@ -26,7 +40,7 @@ func GetAWSCredentialChain() (*credentials.Credentials, *aws.Config) { config :=
     <item>
       <title>PHP Codeigniter S3</title>
       <link>/posts/aws-s3-php/</link>
-      <pubDate>Fri, 06 Feb 2015 10:40:57 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/aws-s3-php/</guid>
       <description>(最後更新: 2016-04-27)
@@ -37,21 +51,6 @@ mobile 上傳到 s3 server 上傳到 s3 command 上傳到 s3, 請參考此篇 AW
 $ composer install Codeigniter (application/config/config.php) 打開 : $config[&#39;composer_autoload&#39;] = TRUE;
 mobile 上傳到 s3 有兩種方法
 直接給手機一個 S3 的 IAM User 讓手機以 SDK 上傳圖片 S3 server 產生有 expire time 的 pre-signed URL (由 server 取得授權的 url) 給 mobile 上傳圖片 直接給手機一個 S3 的 IAM User 讓手機以 SDK 上傳圖片 原本的 Resource 的值是 *, 將它改成以下</description>
-    </item>
-    
-    <item>
-      <title>AWS</title>
-      <link>/posts/aws/</link>
-      <pubDate>Wed, 29 Oct 2014 13:13:53 +0800</pubDate>
-      
-      <guid>/posts/aws/</guid>
-      <description>(最後更新: 2016-04-27)
-介紹 AWS (Amazon Web Services) 是針對主機或 App 提供整套 solution 的雲端服務
-Install/Upgrade AWS CLI 安裝
-sudo pip install --upgrade awscli 如果安裝出問題, 強制重新安裝可以解決
-sudo pip install awscli --force-reinstall --upgrade Ubuntu (建議不要使用 apt-get 安裝, 版本很舊) 有些安裝完會有設定檔 /var/awslogs/etc/awslogs.conf Stop the agent
-sudo service awslogs stop // Works on Ubuntu sudo service awslogsd stop // Amazon Linux 2 stop|restart|start
-Region &amp;amp; AZ region 是 Data Center 的集合 AZ 與 AZ 至少隔70公里以上 AZ 與 AZ 是用光纖連接 AZ 裡有很多 DC 每個 DC 是 25Tbps 同一 region 我的帳號的 eu-west-1a 跟你的帳號的 eu-west-1a 不一定是同一個 AZ, 避免太多人選擇同一 AZ IAM 如果有很多開發者要共用一個 AWS 帳號, 這算是必用的服務 可以針對不同開發者給與不同權限 一般來說程式透過 Access key &amp;amp; Secret Key 調用 AWS API 是要寫在程式裡的, 但會遇到 Credentials embedded in code問題, 如果 push 到 public 的 github 就有資安風險, 也可以改成在 ec2 裡(環境)設定 secret key 較安全 (aws command) 角色可分 3 種 : user : 可以讓多個開發者共用同一個 AWS, 每個人可以有不同的登入帳密及權限 group : 可以設定權限, 再把要執行這些權限的 user 圈到這個 group 裡 role : 這是給 ec2 執行的權限, 開 ec2 時 IAM role 選這個, 而此 ec2 就有權限執行開放的服務 [操作] 增加一個登入帳號給團隊的成員 Users -&amp;gt; Create Users -&amp;gt; 輸入 user name -&amp;gt; copy Access Key ID 及 Secret Access Key (目前還不會用到) -&amp;gt; 回到 Users 列表就會看到剛剛新加的 user</description>
     </item>
     
   </channel>

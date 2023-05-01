@@ -5,12 +5,11 @@
     <link>/categories/mqtt/</link>
     <description>Recent content in mqtt on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 20 Oct 2016 14:38:29 +0800</lastBuildDate><atom:link href="/categories/mqtt/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/mqtt/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MQTT</title>
       <link>/posts/mqtt/</link>
-      <pubDate>Thu, 20 Oct 2016 14:38:29 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/mqtt/</guid>
       <description>Introduction MQTT 是設計給 IOT 的 messaging protocal (pub/sub), 因為它很輕量且效率好, 在 client 實作上它比 AMQP 需要更少的資源, 另外 mqtt 本身沒有支援 authorization (這段需要在 server 端自已實作)

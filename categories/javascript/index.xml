@@ -5,12 +5,11 @@
     <link>/categories/javascript/</link>
     <description>Recent content in javascript on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 19 Feb 2013 17:40:00 +0000</lastBuildDate><atom:link href="/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/javascript/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Javascript Basics</title>
       <link>/posts/javascript-basics/</link>
-      <pubDate>Tue, 19 Feb 2013 17:40:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/javascript-basics/</guid>
       <description>Ajax jQuery
@@ -22,7 +21,7 @@ str = &#39;aabbddeeffggiiCC&#39;; reFee=/cc/i; //補上i(忽略大小寫) 才會
     <item>
       <title>JSON and JSONP</title>
       <link>/posts/json-and-jsonp/</link>
-      <pubDate>Tue, 19 Feb 2013 17:25:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/json-and-jsonp/</guid>
       <description>JSON 中文被編碼問題 如果 ajax 設定值沒有 dataType 的話, 就代表是以預設方式接收, 此時接收到 php 回傳的 json 格式時, 中文會被編碼, 長得像 :

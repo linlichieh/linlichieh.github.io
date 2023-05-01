@@ -9,7 +9,7 @@
     <item>
       <title>C/C&#43;&#43; Basics</title>
       <link>/posts/c/</link>
-      <pubDate>Sun, 09 Mar 2014 23:06:12 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/c/</guid>
       <description>Basic int = 4 bytes double = 8 bytes char = 1 byte 1 char 存的是 ASCII 數字 一般說來，我們編譯安裝一個由GNU Autoconf 配置的程序是採用如下的步驟： ./configure &amp;amp;&amp;amp; make &amp;amp;&amp;amp; make install 這個configure 腳本文件是用來“猜”出一系列系統相關的變量，這些變量是在後面的編譯過程要用到的。它將檢查系統變量值是否滿足編譯要求，然後使用這些變量在程序包內每個文件夾下生 成Makefile。此外，configure 腳本還會生成其它文件： 每個文件夾／子文件夾下的一個或多個Makefile(s) 一個名叫config.status 的腳本 一個文本文件config.log Configure 腳本文件成功運行之後, 你會輸入make 來編譯程序，得到你需要的可執行文件。如果make 成功的完成，你可以使用make install 來安裝這個程序。
@@ -22,7 +22,7 @@ gcc -I /usr/local/include/qq .</description>
     <item>
       <title>Windows - Install the gcc compiler MinGW</title>
       <link>/posts/windows-install-gcc-compiler-mingw/</link>
-      <pubDate>Tue, 17 Dec 2013 23:16:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/windows-install-gcc-compiler-mingw/</guid>
       <description>MinGW 介紹 MinGW 全稱 Minimalist GNU For Windows，是個精簡的Windows平台C/C++、ADA及Fortran編譯器，相比Cygwin而言，體積要小很多，使用較為方便。MinGW提供了一套完整的開源編譯工具集，以適合Windows平台應用開發，且不依賴任何第三方C運行時庫。

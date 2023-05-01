@@ -5,27 +5,11 @@
     <link>/categories/oauth/</link>
     <description>Recent content in oauth on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 26 Nov 2013 22:43:00 +0000</lastBuildDate><atom:link href="/categories/oauth/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>PHP yahoo oauth</title>
-      <link>/posts/php-yahoo-oauth/</link>
-      <pubDate>Tue, 26 Nov 2013 22:43:00 +0000</pubDate>
-      
-      <guid>/posts/php-yahoo-oauth/</guid>
-      <description>申請 [1] 到Yahoo! Developer Network登入後 -&amp;gt; 右上角 My Projects -&amp;gt; Create a Project
-[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret
-[3] 填入 domain 後記得驗證它, 才能用於線上
-登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter) Oauth 原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子
-YQL 原以為做登入 Oauth 取得的 GUID 再透過 YQL Console 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK
-例如我想取得使用者資料 YQL Console 執行
-select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot; 完成後頁面下面有 url : http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;amp;format=json&amp;amp;diagnostics=true&amp;amp;callback=</description>
-    </item>
-    
+    <language>en-us</language><atom:link href="/categories/oauth/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>PHP Weibo Oauth</title>
       <link>/posts/php-weibo-oauth/</link>
-      <pubDate>Tue, 26 Nov 2013 16:23:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/php-weibo-oauth/</guid>
       <description>申請 微博申請非常的麻煩, 需要負責人的身份證件等等, 過關後才可以申請網站服務
@@ -35,6 +19,21 @@ select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot; 完�
 [3] 網站信息 -&amp;gt; 測試賬號, 設置一個管理賬號
 [4] 將域名綁定到 127.0.0.1
 因為在做 Oauth 回來後會導向你自己設定的 callback_url, 而這個 callback_url 的域名也是你在步驟 [1] 所申請的, 如果你沒有將這個域名在本機導向 127.0.0.1 的話, 就沒辦法完成剩下的步驟</description>
+    </item>
+    
+    <item>
+      <title>PHP yahoo oauth</title>
+      <link>/posts/php-yahoo-oauth/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/php-yahoo-oauth/</guid>
+      <description>申請 [1] 到Yahoo! Developer Network登入後 -&amp;gt; 右上角 My Projects -&amp;gt; Create a Project
+[2] 申請好會有一組 Application ID, Consumer Key, Consumer Secret
+[3] 填入 domain 後記得驗證它, 才能用於線上
+登入 Oauth, 並透過 yql 取得使用者資料 (使用 Codeigniter) Oauth 原先 Oauth 那邊打算使用官方的 SDK, 但是怎麼試都會有 ERROR, 於是參考網路的資源重刻了一個輪子
+YQL 原以為做登入 Oauth 取得的 GUID 再透過 YQL Console 的結果網址就可以取得使用者資料, 而不透過 YQL 的 SDK
+例如我想取得使用者資料 YQL Console 執行
+select * from social.profile where guid = &amp;quot;{我的GUID}&amp;quot; 完成後頁面下面有 url : http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20social.profile%20where%20guid%20%3D%20%22{我的GUID}%22&amp;amp;format=json&amp;amp;diagnostics=true&amp;amp;callback=</description>
     </item>
     
   </channel>

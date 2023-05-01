@@ -5,12 +5,11 @@
     <link>/categories/algorithms/</link>
     <description>Recent content in algorithms on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 20 May 2017 18:56:16 +0800</lastBuildDate><atom:link href="/categories/algorithms/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/algorithms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Algorithms</title>
       <link>/posts/algorithms/</link>
-      <pubDate>Sat, 20 May 2017 18:56:16 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/algorithms/</guid>
       <description>Bubble sort How it works Compare two values and move the larger value to the right in each iteration. This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.

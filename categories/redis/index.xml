@@ -5,12 +5,11 @@
     <link>/categories/redis/</link>
     <description>Recent content in redis on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 03 Sep 2014 12:36:07 +0800</lastBuildDate><atom:link href="/categories/redis/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/redis/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Redis</title>
       <link>/posts/redis/</link>
-      <pubDate>Wed, 03 Sep 2014 12:36:07 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/redis/</guid>
       <description>介紹 Open source Key-Value 儲存型態 Value 可以是 strings, hashes, lists, sets, ordered sets 運作在 memory, 可用 snapshot 儲存在硬碟 不支援 2 層以上的 hash Install server

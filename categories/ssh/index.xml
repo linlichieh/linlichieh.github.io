@@ -5,12 +5,11 @@
     <link>/categories/ssh/</link>
     <description>Recent content in ssh on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 21 Jul 2013 16:03:00 +0000</lastBuildDate><atom:link href="/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SSH</title>
       <link>/posts/ssh/</link>
-      <pubDate>Sun, 21 Jul 2013 16:03:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/ssh/</guid>
       <description>產生 ssh key 並且設定免密碼直接連入遠端主機 本機:
@@ -23,7 +22,7 @@ ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設
     <item>
       <title>VirtualBox</title>
       <link>/posts/virtualbox/</link>
-      <pubDate>Mon, 20 May 2013 05:28:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/virtualbox/</guid>
       <description>讓本機的 putty 可以用 ssh 連進 VirtualBox 的主機裡 開啟你的 windows 命令列輸入 ipconfig ，乙太網路卡 VirtualBox Host-Only Network: 的 IPv4 位址 那欄，假設是192.168.0.100，先記下來

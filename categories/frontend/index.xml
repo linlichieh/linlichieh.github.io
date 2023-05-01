@@ -5,12 +5,11 @@
     <link>/categories/frontend/</link>
     <description>Recent content in frontend on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 01 Oct 2013 22:21:00 +0000</lastBuildDate><atom:link href="/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bootstrap</title>
       <link>/posts/bootstrap/</link>
-      <pubDate>Tue, 01 Oct 2013 22:21:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/bootstrap/</guid>
       <description>版面 本身左右會留一些空間
@@ -23,7 +22,7 @@
     <item>
       <title>Frontend Basics HTML / CSS / JS</title>
       <link>/posts/frontend/</link>
-      <pubDate>Tue, 01 Oct 2013 22:21:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/frontend/</guid>
       <description>How Javascript works (This example is from udemy)

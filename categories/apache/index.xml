@@ -5,12 +5,22 @@
     <link>/categories/apache/</link>
     <description>Recent content in apache on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 21 Jul 2013 15:29:00 +0000</lastBuildDate><atom:link href="/categories/apache/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/apache/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Apache</title>
+      <link>/posts/apache/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/apache/</guid>
+      <description>基本設定 /etc/apache2/sites-available/test.conf :
+&amp;lt;VirtualHost *:80&amp;gt; ServerName example.com ServerAdmin admin@example.com DocumentRoot /var/www/test &amp;lt;Directory /var/www/test&amp;gt; RewriteEngine on RewriteCond $1 !^(index\.php|static|crossdomain\.xml|robots\.txt|favicon\.ico) RewriteRule ^(.*)$ /index.php/$1 [L] Options Indexes FollowSymLinks MultiViews AllowOverride All Order allow,deny allow from all ExpiresActive On ExpiresByType image/jpg &amp;quot;access plus 10 years&amp;quot; ExpiresByType image/jpeg &amp;quot;access plus 10 years&amp;quot; &amp;lt;/Directory&amp;gt; ErrorLog ${APACHE_LOG_DIR}/error.log CustomLog ${APACHE_LOG_DIR}/access.log combined LogLevel warn &amp;lt;/VirtualHost&amp;gt; 啟動 conf
+sudo a2ensite test Options All: 以下諸功能皆有 None: 以下諸功能皆無 Indexes: 自動產生目錄的索引, 將Indexes拿掉, 點選連結目錄就不會秀出目錄來, 會改成403 forbidden的訊息頁面, 如果網站下的 public 下有放 symbolic link 就要將此開啟, 才可以被 access Includes: 提供 SSI (Server-Side Inclues) 功能, 即使用Apache的指令在html檔中寫程式, 須先載入 includes_module FollowSymLinks: 遵循符號鏈接, 即能夠連到其它的目錄去執行, 會壓過 SymLinksIfOwnerMatch。 SymLinksIfOwnerMatch: 對符號鏈接及其每一層父資料夾, 都進行權限檢查, 當連結檔本身的owner跟連結目的地的owner不同時拒絕存取, 比 FollowSymLinks 更安全 ExecCGI: 可以執行CGI程式。 MultiViews: 送出多國語言支援的頁面.</description>
+    </item>
+    
     <item>
       <title>Apache - Reduce Requests From Browser</title>
       <link>/posts/apache-reduce-requests-from-browser/</link>
-      <pubDate>Sun, 21 Jul 2013 15:29:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/apache-reduce-requests-from-browser/</guid>
       <description>當瀏覽器第一次讀取圖檔 status : 200 OK
@@ -20,17 +30,6 @@ Accept-Ranges:bytes Connection:Keep-Alive Content-Length:45860 Content-Type:imag
 第二次讀取讀檔會跟cache要所以 status : 304 Not Modified
 request header:
 Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Cache-Control:max-age=0 Connection:keep-alive Host:test.com If-Modified-Since:Thu, 11 Jul 2013 07:00:57 GMT If-None-Match:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; User-Agent:Mozilla/5.0 (Windows NT 6.</description>
-    </item>
-    
-    <item>
-      <title>Apache</title>
-      <link>/posts/apache/</link>
-      <pubDate>Sun, 21 Jul 2013 05:56:38 +0000</pubDate>
-      
-      <guid>/posts/apache/</guid>
-      <description>基本設定 /etc/apache2/sites-available/test.conf :
-&amp;lt;VirtualHost *:80&amp;gt; ServerName example.com ServerAdmin admin@example.com DocumentRoot /var/www/test &amp;lt;Directory /var/www/test&amp;gt; RewriteEngine on RewriteCond $1 !^(index\.php|static|crossdomain\.xml|robots\.txt|favicon\.ico) RewriteRule ^(.*)$ /index.php/$1 [L] Options Indexes FollowSymLinks MultiViews AllowOverride All Order allow,deny allow from all ExpiresActive On ExpiresByType image/jpg &amp;quot;access plus 10 years&amp;quot; ExpiresByType image/jpeg &amp;quot;access plus 10 years&amp;quot; &amp;lt;/Directory&amp;gt; ErrorLog ${APACHE_LOG_DIR}/error.log CustomLog ${APACHE_LOG_DIR}/access.log combined LogLevel warn &amp;lt;/VirtualHost&amp;gt; 啟動 conf
-sudo a2ensite test Options All: 以下諸功能皆有 None: 以下諸功能皆無 Indexes: 自動產生目錄的索引, 將Indexes拿掉, 點選連結目錄就不會秀出目錄來, 會改成403 forbidden的訊息頁面, 如果網站下的 public 下有放 symbolic link 就要將此開啟, 才可以被 access Includes: 提供 SSI (Server-Side Inclues) 功能, 即使用Apache的指令在html檔中寫程式, 須先載入 includes_module FollowSymLinks: 遵循符號鏈接, 即能夠連到其它的目錄去執行, 會壓過 SymLinksIfOwnerMatch。 SymLinksIfOwnerMatch: 對符號鏈接及其每一層父資料夾, 都進行權限檢查, 當連結檔本身的owner跟連結目的地的owner不同時拒絕存取, 比 FollowSymLinks 更安全 ExecCGI: 可以執行CGI程式。 MultiViews: 送出多國語言支援的頁面.</description>
     </item>
     
   </channel>

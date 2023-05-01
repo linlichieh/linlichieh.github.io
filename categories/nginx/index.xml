@@ -5,12 +5,11 @@
     <link>/categories/nginx/</link>
     <description>Recent content in nginx on Software</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 23 May 2014 10:59:34 +0800</lastBuildDate><atom:link href="/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Nginx</title>
       <link>/posts/nginx/</link>
-      <pubDate>Fri, 23 May 2014 10:59:34 +0800</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/nginx/</guid>
       <description>Install sudo apt-get update sudo apt-get install nginx 啟動
