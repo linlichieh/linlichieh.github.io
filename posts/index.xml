@@ -6,18 +6,7 @@
     <description>Recent content in Posts on Software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 26 Feb 2023 17:30:44 +0800</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Leetcode</title>
-      <link>/posts/leetcode/</link>
-      <pubDate>Sun, 26 Feb 2023 17:30:44 +0800</pubDate>
-      
-      <guid>/posts/leetcode/</guid>
-      <description>23. Merge k Sorted Lists Candidate solutions
-Brute Force Compare one by one Priority Queue (min-heap) Merge lists one by one Merge with Divide And Conquer Symbol explanation
-n = average size of each list k = the number of linked lists N = n * k (the total number of nodes) Solution - Brute Force Algorithm combining all the linked lists into a single list and then sorting the merged list Time O(NlogN) = O(nk log nk) traversing all the linked lists and collect the values of the nodes into an array O(N) Sorting O(N log N) total: O(N) + O(N log N) = O(N log N) Space O(N) create a new linked list to store the merged and sorted list O(N) Solution - Compare one by one Algorithm Iterate k sorted lists, then compare every head of each list and get the node with the smallest value and put it into the final linked list Time O(kN) = O(nk^2) Explanation 1 Almost every node in final linked costs O(k) (k-1 times comparison) There are N nodes in the final linked list.</description>
-    </item>
-    
+    <lastBuildDate>Sat, 28 Jan 2023 15:10:34 +0800</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kubernetes</title>
       <link>/posts/kubernetes/</link>
