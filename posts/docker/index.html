@@ -54,7 +54,10 @@
 <pre><code>docker run --rm -it -p 4040:4040 ngrok/ngrok http host.docker.internal:8080
 </code></pre>
 <blockquote>
-<p>it&rsquo;s not necessary and it also blocks the port you want to listen on your local machine</p>
+<ul>
+<li>it&rsquo;s not necessary and it also blocks the port you want to listen on your local machine</li>
+<li><code>localhost:4040</code> is the dashboard of ngrok</li>
+</ul>
 </blockquote>
 <p>Run the local daemon listening port 8080</p>
 <p>Then open the domain that ngrok generates for you on browser, the request should be forwarded to local daemon</p>
