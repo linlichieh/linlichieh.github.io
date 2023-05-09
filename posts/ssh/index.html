@@ -122,7 +122,12 @@ ssh -p 2222 test@localhost
 <p>sshd config (<code>/etc/ssh/sshd_config</code>)</p>
 <pre><code>GatewayPorts yes
 </code></pre>
+<blockquote>
+<p>it must be enabled, otherwise the port forwarding will fail</p>
+</blockquote>
 <p>then restart sshd daemon</p>
+<pre><code>sudo systemctl restart sshd
+</code></pre>
 <h3 id="forward-agent---本機登錄到-basion-後再登入到其他主機時不需要把-private-key-放到-basion">forward agent - 本機登錄到 basion 後再登入到其他主機時不需要把 private key 放到 basion</h3>
 <ol>
 <li>
