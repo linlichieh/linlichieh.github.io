@@ -176,7 +176,7 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
       <description>介紹 有點像 VM 但又不全然是 VM, 最主要它跟一般 VM 的差別在於 VM 所需的 OS 及 bins/libs 是安裝在 VM 本身裡面的
 但 docker 的 container 概念會共用 OS 及 bins/libs, 但他們仍是獨立的, 由 Docker Engine 管理
 最大好處可以快速啟動環境並且設定好, 很適合用在自動化測試或開發上
-基本觀念 名詞解釋 image : 用來建立 container 的東西, 每一個 image 都只能讀且不能被改變 container : 是由一個 image 建立的一個的正在執行中的環境, 可以把它想成一台主機 官方 registry : 就是 Docker Hub Image 一個完整 image 的名稱是 : username/image_name:tag 一個 image 可以跑多個 container 可以 commit 這個 container 的變動製作新的 image image 想當於是 AWS EC2 的 AMI Container 把它想像 AWS EC2 的 Instances 清單 (相當於 docker ps -a) 每一個主機都是一個 container，有些是 stopped 有些是 running (相當於 docker ps, 只列出 running container) 只要被 Stop 的主機 (相當於 docker stop) 都是關機的狀態但還在列表上 (相當於還存在在 list 上 docker ps -a) 被 Stop 的主機你可以再對它執行 Start (相當於 docker start) 你可以對主機打成 image (相當於 docker commit) 而被 Terminate 的主機就會被刪除，你無法在 Instances 上看到 (相當於 docker rm 後你無法在 docker ps -a 上再看到它) 比較不一樣的是，執行中的 container 可以是直接進入(就像執行 ssh 到主機一樣)也可以是背景執行 停止 container 不只是關機這麼簡單，連修改過的資料都會不見 (但可使用 mount 外部的檔案或資料夾來解決) 安裝 mac 可從官網下載</description>
+基本觀念 名詞解釋 image : 用來建立 container 的東西, 每一個 image 都只能讀且不能被改變 container : 是由一個 image 建立的一個的正在執行中的環境, 可以把它想成一台主機 官方 registry : 就是 Docker Hub Image 一個完整 image 的名稱是 : username/image_name:tag 一個 image 可以跑多個 container 可以 commit 這個 container 的變動製作新的 image image 想當於是 AWS EC2 的 AMI Container 把它想像 AWS EC2 的 Instances 清單 (相當於 docker ps -a) 每一個主機都是一個 container，有些是 stopped 有些是 running (相當於 docker ps, 只列出 running container) 只要被 Stop 的主機 (相當於 docker stop) 都是關機的狀態但還在列表上 (相當於還存在在 list 上 docker ps -a) 被 Stop 的主機你可以再對它執行 Start (相當於 docker start) 你可以對主機打成 image (相當於 docker commit) 而被 Terminate 的主機就會被刪除，你無法在 Instances 上看到 (相當於 docker rm 後你無法在 docker ps -a 上再看到它) 比較不一樣的是，執行中的 container 可以是直接進入(就像執行 ssh 到主機一樣)也可以是背景執行 停止 container 不只是關機這麼簡單，連修改過的資料都會不見 (但可使用 mount 外部的檔案或資料夾來解決) Quick start based on particular scenarios ngrok: forward port 8080 from inside the Docker container to your local machine docker run --rm -it -p 4040:4040 ngrok/ngrok http host.</description>
     </item>
     
     <item>
@@ -1400,7 +1400,7 @@ $a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 
       <description>產生 ssh key 並且設定免密碼直接連入遠端主機 本機:
 cd ~ ssh-keygen -t rsa (enter到底) cd .ssh scp id_rsa.pub 遠端主機網址:~/.ssh/qq (把本機的公鑰複製到遠端主機) 登入遠端主機:
 ssh 遠端主機網址 (會要你輸入密碼) cd .ssh cat qq &amp;gt;&amp;gt; authorized_keys (將主機的公鑰加入到遠端的驗證key裡) rm qq (加入到authorized_keys後就沒有用了, 刪除它) exit (大功告成, 離開遠端主機) 回本機:
-ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設定 Open /etc/ssh/sshd_config (注意!! 不要改錯檔案, 是 sshd_config 不是 ssh_config) :
+ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設定 Open /etc/ssh/sshd_config (Please note, it&amp;rsquo;s sshd_config as opposed to ssh_config) :
 允許密碼驗證 PasswordAuthentication yes 改 SSH default port Port 2222 Protocol 2 PermitRootLogin no 1025~65536 的 port 都可以使用 PermitRootLogin 設為 no 的話, root 登入還是會要求你輸入密碼, 只是即使輸入的是對的密碼, 也會告訴你是錯的, 即不讓你登入就對了 只允許某個 User UseDNS no AllowUsers test Reload 新設定 別急著登出, 先測試修改是否成功</description>
     </item>
     

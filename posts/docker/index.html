@@ -20,11 +20,11 @@
     <h1>Docker</h1>
     
   </header>
-  <h2 id="介紹">介紹</h2>
+  <h1 id="介紹">介紹</h1>
 <p>有點像 VM 但又不全然是 VM, 最主要它跟一般 VM 的差別在於 VM 所需的 OS 及 bins/libs 是安裝在 VM 本身裡面的</p>
 <p>但 docker 的 container 概念會共用 OS 及 bins/libs, 但他們仍是獨立的, 由 Docker Engine 管理</p>
 <p>最大好處可以快速啟動環境並且設定好, 很適合用在自動化測試或開發上</p>
-<h2 id="基本觀念">基本觀念</h2>
+<h1 id="基本觀念">基本觀念</h1>
 <h3 id="名詞解釋">名詞解釋</h3>
 <ul>
 <li>image : 用來建立 container 的東西, 每一個 image 都只能讀且不能被改變</li>
@@ -49,7 +49,16 @@
 <li>比較不一樣的是，執行中的 container 可以是直接進入(就像執行 ssh 到主機一樣)也可以是背景執行</li>
 <li>停止 container 不只是關機這麼簡單，連修改過的資料都會不見 (但可使用 mount 外部的檔案或資料夾來解決)</li>
 </ul>
-<h2 id="安裝">安裝</h2>
+<h1 id="quick-start-based-on-particular-scenarios">Quick start based on particular scenarios</h1>
+<h3 id="ngrok-forward-port-8080-from-inside-the-docker-container-to-your-local-machine">ngrok: forward port 8080 from inside the Docker container to your local machine</h3>
+<pre><code>docker run --rm -it -p 4040:4040 ngrok/ngrok http host.docker.internal:8080
+</code></pre>
+<blockquote>
+<p>it&rsquo;s not necessary and it also blocks the port you want to listen on your local machine</p>
+</blockquote>
+<p>Run the local daemon listening port 8080</p>
+<p>Then open the domain that ngrok generates for you on browser, the request should be forwarded to local daemon</p>
+<h1 id="安裝">安裝</h1>
 <h3 id="mac">mac</h3>
 <p><a href="https://www.docker.com/products/docker#/mac">可從官網下載</a></p>
 <h3 id="ubuntu">ubuntu</h3>
@@ -75,7 +84,7 @@ sudo service docker start
 <h3 id="測試是否安裝成功">測試是否安裝成功</h3>
 <pre><code>docker run hello-world
 </code></pre>
-<h2 id="開始試玩">開始試玩</h2>
+<h1 id="開始試玩">開始試玩</h1>
 <h3 id="將-mysql-跑起來">將 mysql 跑起來</h3>
 <p>Pull image <code>mysql</code> from docker hub</p>
 <pre><code>docker pull mysql
@@ -129,7 +138,7 @@ docker exec -it a1b6a80b0bb8 bash
 or
 docker run -it -v /var/run/docker.sock:/var/run/docker.sock ubuntu:latest sh -c &quot;apt-get update ; apt-get install docker.io -y ; bash&quot;
 </code></pre>
-<h2 id="常用指令">常用指令</h2>
+<h1 id="常用指令">常用指令</h1>
 <h3 id="build--建立寫好的-dockerfile">build : 建立寫好的 Dockerfile</h3>
 <pre><code>docker build -t jxxx/golang-env .
 </code></pre>
@@ -253,7 +262,7 @@ docker rm $(docker ps -a -q)
 <li><code>pause/unpause</code></li>
 <li><code>link between containers</code></li>
 </ul>
-<h2 id="docker-machine-command">Docker machine command</h2>
+<h1 id="docker-machine-command">Docker machine command</h1>
 <blockquote>
 <p>docker-machine is used to connect to VirtualBox and create virtual machine</p>
 </blockquote>
@@ -284,7 +293,7 @@ docker rm $(docker ps -a -q)
 <p>Show machine status</p>
 <pre><code>docker-machine status {name}
 </code></pre>
-<h2 id="dockerfile-怎麼寫">Dockerfile 怎麼寫</h2>
+<h1 id="dockerfile-怎麼寫">Dockerfile 怎麼寫</h1>
 <p>FROM : 使用每個 image 為基礎</p>
 <pre><code>FROM ubuntu
 FROM ubuntu:14.04
@@ -338,7 +347,7 @@ COPY test /absoluteDir/  # adds &quot;test&quot; to /absoluteDir/
 SHELL [&quot;cmd&quot;, &quot;/S&quot;&quot;, &quot;/C&quot;]
 RUN echo hello
 </code></pre>
-<h2 id="docker-compose">docker-compose</h2>
+<h1 id="docker-compose">docker-compose</h1>
 <p>啟動</p>
 <pre><code>docker-compose up -d
 </code></pre>
@@ -477,7 +486,7 @@ docker service create --name nginx --network {network name} -p 1080:80 nvbeta/sw
 <li>TCP and UDP port 7946 for communication among nodes (worker &lt;-&gt; worker, any node participates in the swarm)</li>
 <li>UDP port 4789 for overlay network traffic (worker &lt;-&gt; worker, nodes under the same overlay network)</li>
 </ul>
-<h2 id="troubleshootings">Troubleshootings</h2>
+<h1 id="troubleshootings">Troubleshootings</h1>
 <h3 id="dial-unix-varrundockersock-permission-denied"><code>dial unix /var/run/docker.sock: permission denied</code></h3>
 <p><code>2014/12/23 14:14:33 Get http:///var/run/docker.sock/v1.12/images/json: dial unix /var/run/docker.sock: permission denied</code></p>
 <pre><code>sudo adduser &lt;username&gt; docker

@@ -20,7 +20,7 @@
     <h1>SSH</h1>
     
   </header>
-  <h2 id="產生-ssh-key-並且設定免密碼直接連入遠端主機">產生 ssh key 並且設定免密碼直接連入遠端主機</h2>
+  <h1 id="產生-ssh-key-並且設定免密碼直接連入遠端主機">產生 ssh key 並且設定免密碼直接連入遠端主機</h1>
 <p>本機:</p>
 <pre><code>cd ~
 ssh-keygen -t rsa
@@ -40,8 +40,8 @@ exit                        (大功告成, 離開遠端主機)
 <pre><code>ssh 遠端主機網址
 (不會要求你輸入密碼而直接進入)
 </code></pre>
-<h2 id="安全性設定">安全性設定</h2>
-<p>Open <code>/etc/ssh/sshd_config</code> (<strong>注意!! 不要改錯檔案</strong>, 是 <code>sshd_config</code> 不是 <code>ssh_config</code>) :</p>
+<h1 id="安全性設定">安全性設定</h1>
+<p>Open <code>/etc/ssh/sshd_config</code> (Please note, it&rsquo;s <code>sshd_config</code> as opposed to <code>ssh_config</code>) :</p>
 <h3 id="允許密碼驗證">允許密碼驗證</h3>
 <pre><code>PasswordAuthentication yes
 </code></pre>
@@ -68,40 +68,16 @@ ssh -p 2222 test@localhost
 <blockquote>
 <p>如果有設定防火牆記得把 2222 port 打開</p>
 </blockquote>
-<h2 id="當我的主機重灌後-我要-ssh-進去時發生這樣的錯誤-">當我的主機重灌後, 我要 ssh 進去時發生這樣的錯誤 :</h2>
-<pre><code>device-f33d32:~ apple$ ssh test@test.com
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that a host key has just been changed.
-The fingerprint for the RSA key sent by the remote host is
-e2:c8:73:6b:01:ad:29:cf:7c:1c:54:68:93:4c:a8:7e.
-Please contact your system administrator.
-Add correct host key in /Users/apple/.ssh/known_hosts to get rid of this message.
-Offending RSA key in /Users/apple/.ssh/known_hosts:1
-RSA host key for test.com has changed and you have requested strict checking.
-Host key verification failed.
-</code></pre>
-<p>意思是 .ssh/known_hosts 原本記著這樣的紀錄</p>
-<pre><code>test.com,142.4.51.133 ssh-rsa AAAAB3NzaC1yc2EAAA(..略..)
-</code></pre>
-<p>但是重灌後的 rsa 不一樣了, 所以為了安全性的考量而無法登入, 解決方法很簡單</p>
-<p>只要把 .ssh/known_hosts 裡主機那行紀錄刪除, 再 ssh 進去重新產生紀錄就行了</p>
-<h2 id="設定-push-或-pull-github-不用再輸入帳密">設定 push 或 pull github 不用再輸入帳密</h2>
+<h3 id="設定-push-或-pull-github-不用再輸入帳密">設定 push 或 pull github 不用再輸入帳密</h3>
 <p>將你的 repository 的 ssh URL 加到你的 origin, 不要用 https URL</p>
 <p>然候將你的 ssh public key 加到 github 後台的 ssh 管理</p>
-<h2 id="設定-alias---每一次連線不用輸入過多參數">設定 alias - 每一次連線不用輸入過多參數</h2>
+<h3 id="設定-alias---每一次連線不用輸入過多參數">設定 alias - 每一次連線不用輸入過多參數</h3>
 <p>~/.ssh/config 加上要 alias 對應的欄位</p>
 <pre><code>HOST test
     HostName 192.168.79.21
     User test
-    Port 2229
-    ...
+    Port 22
     IdentityFile aws.pem
-    LocalForward 35729 192.168.79.21:35729      (將主機的 35729 導到本機的 35729)
-    ...
 </code></pre>
 <p>之後輸入 <code>ssh test</code> 即可</p>
 <blockquote>
@@ -113,37 +89,40 @@ Host key verification failed.
 <blockquote>
 <p>AWS Ubuntu 主機預設 User 叫 ubuntu</p>
 </blockquote>
-<h2 id="在同一台主機避免跟同事用到同一個-session-方法">在同一台主機避免跟同事用到同一個 session 方法</h2>
+<h3 id="在同一台主機避免跟同事用到同一個-session-方法">在同一台主機避免跟同事用到同一個 session 方法</h3>
 <p>可在 .bashrc 設定 :</p>
 <pre><code>sssh (){ ssh -t &quot;$1&quot; 'tmux attach -t test || tmux new -s test || screen -DR'; }
 </code></pre>
 <p>之後執行 sssh 就好了!</p>
-<h2 id="port-forwarding">Port Forwarding</h2>
-<ul>
-<li>Mac :</li>
-</ul>
-<p>本機執行 <code>ssh -L 127.0.0.1:35729:54.199.219.49:35729 ubuntu@54.199.219.49</code></p>
-<p>或者在 <code>~/.ssh/config</code> 設定 :</p>
+<h3 id="local-port-forwarding">Local Port Forwarding</h3>
+<p>While opening <code>http://127.0.0.1:8080/</code> on local browser, it will be forward to remote server on port <code>8080</code></p>
+<h5 id="mac">Mac</h5>
+<p>Command</p>
+<pre><code>ssh ubuntu@54.199.219.49 -L 8080:54.199.219.49:8080
+</code></pre>
+<p>Config</p>
 <pre><code>Host ec2
     HostName 54.199.219.49
     User ubuntu
     Port 22
-    LocalForward 35729 54.199.219.49:35729
+    LocalForward 8080 54.199.219.49:8080
 </code></pre>
-<blockquote>
-<ul>
-<li>LocalForward 是將遠端主機 54.199.219.49 的 35729 導到本機的 35729</li>
-<li>如果要連到其他 ssh port 的寫法 <code>ssh jx@54.164.251.31 -p 4223 -L 35729:54.164.251.31:35729</code></li>
-</ul>
-</blockquote>
-<ul>
-<li>Windows :</li>
-</ul>
-<p>如果使用 putty 要多設定 Conection-&gt;SSH-&gt;Tunels</p>
-<pre><code>Source port : 35729
-Destination : 54.199.219.49:35729
-(下面選項維持預設 Local 及 Auto)
+<h3 id="remote-port-forwarding">Remote Port Forwarding</h3>
+<p>When remote server on port <code>8080</code> receives request, it will be forward to localhost on port <code>8080</code></p>
+<p>Command</p>
+<pre><code>ssh -R 8080:localhost:8080 ubuntu@54.199.219.49
 </code></pre>
+<p>Config</p>
+<pre><code>Host ec2
+    HostName 54.199.219.49
+    User ubuntu
+    Port 22
+    RemoteForward 8080 localhost:8080
+</code></pre>
+<p>sshd config (<code>/etc/ssh/sshd_config</code>)</p>
+<pre><code>GatewayPorts yes
+</code></pre>
+<p>then restart sshd daemon</p>
 <h3 id="forward-agent---本機登錄到-basion-後再登入到其他主機時不需要把-private-key-放到-basion">forward agent - 本機登錄到 basion 後再登入到其他主機時不需要把 private key 放到 basion</h3>
 <ol>
 <li>
@@ -168,19 +147,21 @@ Destination : 54.199.219.49:35729
 <pre><code>ssh -tt basion ssh -tt server
 </code></pre>
 <p>但這樣雖然縮短時間，不需要等到進去 basion 再 ssh 到主機，但 command 還是有點太長，可以用 proxycommand 做到，它的原理是用 nc 指令建立 TCP 連線連接 basion 與 server</p>
-<p>(TODO)</p>
-<h2 id="putty免密碼以ssh登入主機">PuTTY免密碼以SSH登入主機</h2>
-<p>[1] 主機要先產生完 SSH Key (ssh請選擇rsa)</p>
-<p>[2] 下載 WinSCP，並使用它登入主機把私鑰的 SSH Key 下載下來(id_rsa)</p>
-<p>[3] 將私鑰名稱(id_rsa)加上副檔名(.ppk) =&gt; id_rsa.ppk</p>
-<p>[4] 到 <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY 官網頁</a>下載 puttygen.exe</p>
-<p>[5] 打開PuTTYgen</p>
+<h1 id="putty-windows">PuTTY (Windows)</h1>
+<h3 id="免密碼以ssh登入主機">免密碼以SSH登入主機</h3>
+<ol>
+<li>主機要先產生完 SSH Key (ssh請選擇rsa)</li>
+<li>下載 WinSCP，並使用它登入主機把私鑰的 SSH Key 下載下來(id_rsa)</li>
+<li>將私鑰名稱(id_rsa)加上副檔名(.ppk) =&gt; id_rsa.ppk</li>
+<li>到 <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY 官網頁</a>下載 puttygen.exe</li>
+<li>打開PuTTYgen
 <ol>
 <li>點選 &ldquo;Load&rdquo; 讀取 id_rsa.ppk</li>
 <li>選擇 SSH-1 (RSA)</li>
 <li>點選 Save private key</li>
 </ol>
-<p>[6] 打開PuTTY</p>
+</li>
+<li>打開PuTTY
 <ul>
 <li>左邊 Connection→Data 輸入 Auto-login username</li>
 <li>左邊 Connection→SSH→Auth</li>
@@ -190,10 +171,42 @@ Destination : 54.199.219.49:35729
 <li>打勾 Attempt TIS or CrptoCard auth(SSH-1)        <strong>(其他不要打勾)</strong></li>
 <li>下面瀏覽框要將 PuTTYgen 儲存的私鑰讀進來</li>
 </ol>
-<p>[7] 完成，記得回到 Session 點 save 儲存這些設定，這樣下次就不用又從頭設定一次喔!</p>
+</li>
+<li>完成，記得回到 Session 點 save 儲存這些設定，這樣下次就不用又從頭設定一次喔!</li>
+</ol>
 <h3 id="將-amazonec2microinstancepem-轉成-ppk">將 AmazonEC2MicroInstance.pem 轉成 ppk</h3>
 <p>開啟 puttygen.ext -&gt; Load (選擇 AmazonEC2MicroInstance.pem) -&gt; Save private key (存成 amazon-ec2.ppk)</p>
 <p>左邊 SSH -&gt; Auth 的 Private key file for authentication 選擇剛剛生出來的 amazon-ec2.ppk</p>
+<h3 id="windows">Windows</h3>
+<p>如果使用 putty 要多設定 Conection-&gt;SSH-&gt;Tunels</p>
+<pre><code>Source port : 35729
+Destination : 54.199.219.49:35729
+</code></pre>
+<blockquote>
+<p>下面選項維持預設 Local 及 Auto</p>
+</blockquote>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h3 id="someone-could-be-eavesdropping-on-you-right-now-man-in-the-middle-attack"><code>Someone could be eavesdropping on you right now (man-in-the-middle attack)!</code></h3>
+<pre><code>device-f33d32:~ apple$ ssh test@test.com
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+e2:c8:73:6b:01:ad:29:cf:7c:1c:54:68:93:4c:a8:7e.
+Please contact your system administrator.
+Add correct host key in /Users/apple/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /Users/apple/.ssh/known_hosts:1
+RSA host key for test.com has changed and you have requested strict checking.
+Host key verification failed.
+</code></pre>
+<p>意思是 .ssh/known_hosts 原本記著這樣的紀錄</p>
+<pre><code>test.com,142.4.51.133 ssh-rsa AAAAB3NzaC1yc2EAAA(..略..)
+</code></pre>
+<p>但是重灌後的 rsa 不一樣了, 所以為了安全性的考量而無法登入, 解決方法很簡單</p>
+<p>只要把 <code>.ssh/known_hosts</code> 裡主機那行紀錄刪除, 再 ssh 進去重新產生紀錄就行了</p>
 
 </article>
 

@@ -408,7 +408,7 @@ $a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 
       <description>產生 ssh key 並且設定免密碼直接連入遠端主機 本機:
 cd ~ ssh-keygen -t rsa (enter到底) cd .ssh scp id_rsa.pub 遠端主機網址:~/.ssh/qq (把本機的公鑰複製到遠端主機) 登入遠端主機:
 ssh 遠端主機網址 (會要你輸入密碼) cd .ssh cat qq &amp;gt;&amp;gt; authorized_keys (將主機的公鑰加入到遠端的驗證key裡) rm qq (加入到authorized_keys後就沒有用了, 刪除它) exit (大功告成, 離開遠端主機) 回本機:
-ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設定 Open /etc/ssh/sshd_config (注意!! 不要改錯檔案, 是 sshd_config 不是 ssh_config) :
+ssh 遠端主機網址 (不會要求你輸入密碼而直接進入) 安全性設定 Open /etc/ssh/sshd_config (Please note, it&amp;rsquo;s sshd_config as opposed to ssh_config) :
 允許密碼驗證 PasswordAuthentication yes 改 SSH default port Port 2222 Protocol 2 PermitRootLogin no 1025~65536 的 port 都可以使用 PermitRootLogin 設為 no 的話, root 登入還是會要求你輸入密碼, 只是即使輸入的是對的密碼, 也會告訴你是錯的, 即不讓你登入就對了 只允許某個 User UseDNS no AllowUsers test Reload 新設定 別急著登出, 先測試修改是否成功</description>
     </item>
     
