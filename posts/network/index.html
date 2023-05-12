@@ -316,11 +316,37 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 <p>飽活封包底層就會做掉了, 建 socket 就會傳心跳 (habit) 給 server 確認它活著</p>
 <p>habit 是 tcp 三項交握的 sync 封包</p>
 <h1 id="tcp">TCP</h1>
+<h3 id="3-way-handshake">3-way handshake</h3>
+<ul>
+<li>SYN: The client sends a packet with the SYN (synchronize) flag set to the server.</li>
+<li>SYN-ACK: The server acknowledges the client&rsquo;s SYN packet by sending a packet with both the SYN and ACK (acknowledge) flags set.</li>
+<li>ACK: The client acknowledges the server&rsquo;s SYN-ACK packet by sending a packet with the ACK flag set.</li>
+</ul>
+<p>diagram</p>
+<pre><code>Client                                                                Server
+  |                                                                     |
+  |----- SYN (Sequence Number: X) -------------------------------------&gt;|
+  |                                                                     |
+  |&lt;---- SYN-ACK (Sequence Number: Y, Acknowledgment Number: X + 1) ----|
+  |                                                                     |
+  |----- ACK (Acknowledgment Number: Y + 1) ---------------------------&gt;|
+  |                                                                     |
+</code></pre>
 <h3 id="tcp-states">TCP states</h3>
-<p>TODO</p>
-<h3 id="tcp-3-way-handshake">TCP 3-way handshake</h3>
-<p>TODO tcp-three-way-handshake.markdown</p>
-<h3 id="tcp-time_wait">TCP TIME_WAIT</h3>
+<ul>
+<li>CLOSED: No connection is active or pending.</li>
+<li>LISTEN: The server is waiting for an incoming call. This state signifies that a socket is ready to accept incoming connections.</li>
+<li>SYN-SENT: The application has started to open a connection and the system has sent a SYN message to start the three-way handshake. This state signifies that the client has sent a connection request and is waiting for the SYN-ACK reply.</li>
+<li>SYN-RECEIVED: The server just received a SYN request from a client and has responded with SYN-ACK. It is now waiting for an ACK from the client.</li>
+<li>ESTABLISHED: The connection is active, and both devices can send and receive data. The system has received an acknowledgment of the connection.</li>
+<li>FIN-WAIT-1: The application has said it is finished with the connection. This state indicates that the system is waiting for the remote side of the connection to send its own FIN signal.</li>
+<li>FIN-WAIT-2: The system is waiting for the other side to terminate its half of the connection. This follows the receipt of the first FIN signal.</li>
+<li>CLOSE-WAIT: The remote side has shut down, and the system is waiting for the application to close its own side of the connection.</li>
+<li>CLOSING: Both sides have sent but not yet acknowledged the FIN signals.</li>
+<li>LAST-ACK: The system is in the process of terminating the connection and is waiting for a final acknowledgment.</li>
+<li>TIME-WAIT: The connection has been closed, and the system is waiting to be sure that the remote system received the last acknowledgment.</li>
+</ul>
+<h3 id="time_wait">TIME_WAIT</h3>
 <p>When a connection is closed, it will be turned into the state TIME_WAIT. Network in real world can be unpredicable.
 There is no gurantee for packet to be delivered in order. When lost packet was delayed to ask to close the connection,
 which was already disconnected, server might be confused by it and close the new established connection if it doesn&rsquo;t

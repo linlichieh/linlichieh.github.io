@@ -1433,18 +1433,6 @@ cd /tmp wget http://downloads.sourceforge.net/project/wqy/wqy-microhei/0.2.0-bet
     </item>
     
     <item>
-      <title>TCP Three-way handshake</title>
-      <link>/posts/tcp-three-way-handshake/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/tcp-three-way-handshake/</guid>
-      <description>瀏覽器向 server 發送請求 : 瀏覽器發送 : 指定 seq
-22:39:13.832224 IP 42.79.253.189.29729 &amp;gt; 172.31.23.23.8080: Flags [S], seq 3605791234, win 65535, options [mss 1394,nop,wscale 4,nop,nop,TS val 401990828 ecr 0,sackOK,eol], length 0 server 回應 : 將 seq+1 放到 ack, 並且指定 seq
-22:39:13.832271 IP 172.31.23.23.8080 &amp;gt; 42.79.253.189.29729: Flags [S.], seq 4067821211, ack 3605791235, win 28960, options [mss 1460,sackOK,TS val 333436167 ecr 401990828,nop,wscale 7], length 0 瀏覽器發送 : ack = 1 用來回應上一個封包並且確認封包正確
-22:39:13.943021 IP 42.79.253.189.29729 &amp;gt; 172.</description>
-    </item>
-    
-    <item>
       <title>Ubuntu</title>
       <link>/posts/ubuntu/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
