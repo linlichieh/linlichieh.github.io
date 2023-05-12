@@ -30,11 +30,7 @@
 <p>flow</p>
 <pre><code>client -&gt; proxy server -&gt; server
 </code></pre>
-<p>For example</p>
-<ul>
-<li>CDN</li>
-<li>Nginx</li>
-</ul>
+<p>For example: CDN and Nginx</p>
 <h3 id="reverse-proxy-server">reverse proxy server</h3>
 <ul>
 <li>When a client sends a request to access a server, the request is first intercepted by the reverse proxy server.</li>
@@ -47,10 +43,7 @@
                     |--------------&gt; server B
                     |--------------&gt; server C
 </code></pre>
-<p>For example</p>
-<ul>
-<li>Load balancer</li>
-</ul>
+<p>For example:  Load balancer</p>
 <h3 id="the-difference-between-regular-proxy-server-and-reverse-proxy-server">The difference between regular proxy server and reverse proxy server</h3>
 <p>reverse proxy server needs a set of rules for forwarding requests to the destination server
 while regular proxy server simply forwards the request without any specific rules</p>
@@ -109,6 +102,212 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 <p>The two servers are now able to establish a P2P connection and communicate directly with each other.</p>
 <pre><code>First Server (FS)    &lt;────────────[P2P Connection]──────────&gt;   Second Server (SS)
 </code></pre>
+<h1 id="osi-model">OSI Model</h1>
+<h3 id="standard-osi-model">Standard OSI model</h3>
+<ol>
+<li>Physical
+<ul>
+<li>electric signals / driver</li>
+</ul>
+</li>
+<li>Data Link
+<ul>
+<li>frames / mac address / ethernet</li>
+</ul>
+</li>
+<li>Network
+<ul>
+<li>IP / ARP / ICMP</li>
+<li>destination and source IP</li>
+</ul>
+</li>
+<li>Transport
+<ul>
+<li>TCP / UDP</li>
+<li>destination and source Port to identify services or applications</li>
+</ul>
+</li>
+<li>Session
+<ul>
+<li>connection establishment / TLS</li>
+<li>state / stateful / cookie session</li>
+</ul>
+</li>
+<li>Presentation
+<ul>
+<li>encoding / serialisation</li>
+<li>JSON object / UTF-8</li>
+</ul>
+</li>
+<li>Application
+<ul>
+<li>HTTP / FTP / gRPC</li>
+</ul>
+</li>
+</ol>
+<p>it can be simplified like this</p>
+<ol>
+<li>Physical
+<ul>
+<li>Bits -&gt; Signal</li>
+</ul>
+</li>
+<li>Data Link
+<ul>
+<li>Frame</li>
+</ul>
+</li>
+<li>Network
+<ul>
+<li>Packet (OS makes the segment into packet using IP protocal)</li>
+</ul>
+</li>
+<li>Transport
+<ul>
+<li>Segment (break the data into small pieces)</li>
+</ul>
+</li>
+<li>Application (Session + Presentation + Application)
+<ul>
+<li>Protocol Data Unit / Data <code>100110100110...</code></li>
+</ul>
+</li>
+</ol>
+<p>TCP/IP model</p>
+<ol>
+<li>Network Access (Data Link + Pyhsical)</li>
+<li>Internetwork (Network)</li>
+<li>Transport (Transport)</li>
+<li>Application (Session + Presentation + Application)</li>
+</ol>
+<h3 id="an-example-to-explain-how-osi-model-deal-with-sending-a-post-request-to-https-endpoint">An example to explain how OSI model deal with sending a POST request to HTTPs endpoint</h3>
+<ul>
+<li>Application
+<ul>
+<li>This is where the HTTP protocol lives.</li>
+<li>A POST request is formed here with all necessary elements including the request method (POST), headers, and the message body.</li>
+</ul>
+</li>
+<li>Presentation
+<ul>
+<li>This layer is responsible for data representation and encryption.</li>
+<li>In the case of HTTPS, the data is encrypted for security. This is also where data compression could occur if needed.</li>
+</ul>
+</li>
+<li>Session
+<ul>
+<li>This layer establishes, manages, and terminates connections between applications.</li>
+<li>In this context, it would be maintaining the connection for the HTTPS session.</li>
+</ul>
+</li>
+<li>Transport
+<ul>
+<li>This layer is responsible for end-to-end communication services for applications.</li>
+<li>In the case of HTTPS, it typically uses TCP (Transmission Control Protocol) to ensure that packets are sent and received in the correct order.</li>
+<li>This is also where services like error checking and data recovery occur.</li>
+</ul>
+</li>
+<li>Network
+<ul>
+<li>This layer is responsible for packet forwarding, including routing through different networks.</li>
+<li>The IP (Internet Protocol) address of the HTTPS endpoint would be used here to route the request to the correct location.</li>
+</ul>
+</li>
+<li>Data Link
+<ul>
+<li>This layer provides reliable transit of data across a physical or logical link.</li>
+<li>It&rsquo;s involved in error detection and correction, as well as defining the protocol for the next layer to use.</li>
+</ul>
+</li>
+<li>Physical
+<ul>
+<li>This is the lowest layer of the OSI model, and it&rsquo;s responsible for the actual physical connection between the devices.</li>
+<li>It defines the characteristics of the hardware to be used for the transmission like the cables, connectors, and the binary transmission of data.</li>
+</ul>
+</li>
+</ul>
+<p>Ref: gpt-4</p>
+<h1 id="ip">IP</h1>
+<h3 id="basics">Basics</h3>
+<ul>
+<li><code>192.168.1.14</code>
+<ul>
+<li><code>192.168.1</code>: class of network</li>
+<li><code>.14</code>: assigned to each host; an unique identified machine</li>
+</ul>
+</li>
+<li>broadcast address: host ID is filled with 1</li>
+</ul>
+<h3 id="subnet-mask">Subnet mask</h3>
+<ul>
+<li>IP <code>192.168.123.132</code> / <code>255.255.255.0/24</code>
+<ul>
+<li>ip address: <code>192.168.123.132</code></li>
+<li>subnet mask: <code>255.255.255.0</code></li>
+<li>network address: <code>192.168.123.0</code></li>
+<li>Usable Host IP Range: <code>1.163.70.205</code> - <code>1.163.70.206</code></li>
+</ul>
+</li>
+<li>IP <code>1.163.70.205</code> /  <code>255.255.255.252/30</code>
+<ul>
+<li>ip address: <code>1.163.70.205</code></li>
+<li>subnet mask: <code>255.255.255.252</code></li>
+<li>network address: <code>192.168.123.204</code></li>
+<li>Broadcast Address: <code>192.168.123.207</code></li>
+<li>Usable Host IP Range: <code>1.163.70.205</code> - <code>1.163.70.206</code></li>
+<li>last part of address
+<ul>
+<li>11001100 204</li>
+<li>11001101 205</li>
+<li>11001110 206</li>
+<li>11001111 207</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="classes">Classes</h3>
+<ul>
+<li>Class A
+<ul>
+<li>0</li>
+<li><code>0.0.0.0</code> - <code>127.255.255.255</code></li>
+<li>private ip (<code>10.0.0.0/8</code>): <code>10.0.0.0</code> - <code>10.255.255.255</code></li>
+</ul>
+</li>
+<li>Class B
+<ul>
+<li>10</li>
+<li><code>128.0.0.0</code> - <code>191.255.255.255</code></li>
+<li>private ip (<code>172.16.0.0/12</code>): <code>172.16.0.0</code> – <code>172.31.255.255</code></li>
+</ul>
+</li>
+<li>Class C
+<ul>
+<li>110</li>
+<li><code>192.0.0.0</code> - <code>223.255.255.255</code></li>
+<li>private ip (<code>192.168.0.0/16</code>): <code>192.168.0.0</code> – <code>192.168.255.255</code></li>
+</ul>
+</li>
+<li>Class D
+<ul>
+<li>1110</li>
+<li><code>224.0.0.0</code> - <code>239.255.255.255</code></li>
+</ul>
+</li>
+<li>Class E
+<ul>
+<li>11110</li>
+<li><code>240.0.0.0</code> - <code>247.255.255.255</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="special-ip-address-ranges-that-are-used-for-special-purposes-are">Special IP address ranges that are used for special purposes are:</h3>
+<ul>
+<li><code>0.0.0.0</code>: addresses used to communicate with the local network</li>
+<li><code>127.0.0.0</code>: loopback addresses</li>
+<li><code>255.255.255.255</code>: a limited broadcast address, which is used to send a network broadcast packet to all devices on the local network</li>
+</ul>
 <h1 id="load-balance">Load Balance</h1>
 <p>分幾種, 常見的是 L3, L7</p>
 <p>L3 是 IP 層, 是以指派 IP 到後面的主機</p>
@@ -518,7 +717,7 @@ Instead of identifying a server by an IP address and port, a Unix domain socket 
 <li><a href="https://openforums.wordpress.com/2016/08/07/open-file-descriptor-passing-over-unix-domain-sockets/">PASSING OPEN FILE DESCRIPTORS OVER UNIX DOMAIN SOCKETS</a></li>
 <li><a href="https://stackoverflow.com/questions/2161674/is-there-a-difference-between-rpc-and-ipc">Is there a difference between RPC and IPC?</a></li>
 </ul>
-<h1 id="ip">IP</h1>
+<h1 id="ip-1">IP</h1>
 <p>5 個 CLASS</p>
 <pre><code>Class A :   0.xx.xx.xx ~ 127.xx.xx.xx       # 0xxxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 0
 Class B : 128.xx.xx.xx ~ 191.xx.xx.xx       # 10xxxxxx.xxxxxxxx.xxxxxxxx.xxxxxxxx   開頭是 10

@@ -139,6 +139,15 @@ gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :pr
     </item>
     
     <item>
+      <title>Design Patterns</title>
+      <link>/posts/design-patterns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/design-patterns/</guid>
+      <description>SOLID Principles Single Responsibility Principle Each class should have only one responsibility or reason to change. narrow down the behaviour a class can have Open-Closed Principle Software entities should be open for extension but closed for modification. to add new functionality to a class without changing the existing code by extending a class and adding new functions into subclass Liskov Substitution Principle Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.</description>
+    </item>
+    
+    <item>
       <title>DHCP</title>
       <link>/posts/dhcp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -849,7 +858,7 @@ SHOW PROCESSLIST; .. or ... SHOW FULL PROCESSLIST; +--------+----------+--------
       
       <guid>/posts/network/</guid>
       <description>Proxy server vs Reverse proxy server regular proxy server When a client sends a request to access a server, the request is first intercepted by the proxy server. The proxy server then forwards the request to the destination server on behalf of the client, and the server responds to the proxy server. The proxy server then forwards the response back to the client. flow
-client -&amp;gt; proxy server -&amp;gt; server For example</description>
+client -&amp;gt; proxy server -&amp;gt; server For example: CDN and Nginx</description>
     </item>
     
     <item>

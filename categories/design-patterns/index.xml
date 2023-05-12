@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>design-patterns on Software engineering notes</title>
+    <link>/categories/design-patterns/</link>
+    <description>Recent content in design-patterns on Software engineering notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/categories/design-patterns/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Design Patterns</title>
+      <link>/posts/design-patterns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/design-patterns/</guid>
+      <description>SOLID Principles Single Responsibility Principle Each class should have only one responsibility or reason to change. narrow down the behaviour a class can have Open-Closed Principle Software entities should be open for extension but closed for modification. to add new functionality to a class without changing the existing code by extending a class and adding new functions into subclass Liskov Substitution Principle Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.</description>
+    </item>
+    
+  </channel>
+</rss>

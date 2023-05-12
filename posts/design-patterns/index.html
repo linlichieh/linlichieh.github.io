@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Design Patterns | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/design-patterns/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Design Patterns</h1>
+    
+  </header>
+  <h1 id="solid-principles">SOLID Principles</h1>
+<ul>
+<li>Single Responsibility Principle
+<ul>
+<li>Each class should have only one responsibility or reason to change.</li>
+<li>narrow down the behaviour a class can have</li>
+</ul>
+</li>
+<li>Open-Closed Principle
+<ul>
+<li>Software entities should be open for extension but closed for modification.</li>
+<li>to add new functionality to a class without changing the existing code by extending a class and adding new functions into subclass</li>
+</ul>
+</li>
+<li>Liskov Substitution Principle
+<ul>
+<li>Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.</li>
+<li>a subclass should behave like its superclass, and any methods that the superclass has should also be valid for the subclass</li>
+<li>if 2 classes implement the same interface, these 2 classes should be interchangable without breaking anything</li>
+</ul>
+</li>
+<li>Interface Segregation Principle
+<ul>
+<li>Clients should not be forced to depend on interfaces they do not use.</li>
+<li>If there is an interface that defines 5 functions and we only need 2 functions to implement, don&rsquo;t implement this interface.</li>
+<li>Instead, seperate the interface for their own purpose.</li>
+</ul>
+</li>
+<li>Dependency Inversion Principle
+<ul>
+<li>High-level modules should not depend on low-level modules. Both should depend on abstractions.</li>
+<li>don&rsquo;t define the parameter as a class; instead, define an interface</li>
+<li>it would be easy to be tested by passing a test class that implements the interface</li>
+</ul>
+</li>
+</ul>
+
+</article>
+
+
+
+</html>

@@ -87,7 +87,7 @@ $ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to te
       
       <guid>/posts/network/</guid>
       <description>Proxy server vs Reverse proxy server regular proxy server When a client sends a request to access a server, the request is first intercepted by the proxy server. The proxy server then forwards the request to the destination server on behalf of the client, and the server responds to the proxy server. The proxy server then forwards the response back to the client. flow
-client -&amp;gt; proxy server -&amp;gt; server For example</description>
+client -&amp;gt; proxy server -&amp;gt; server For example: CDN and Nginx</description>
     </item>
     
     <item>
