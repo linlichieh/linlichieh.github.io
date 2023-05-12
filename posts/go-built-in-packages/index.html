@@ -20,7 +20,7 @@
     <h1>Go Built-in Packages</h1>
     
   </header>
-  <h2 id="fmt">fmt</h2>
+  <h1 id="fmt">fmt</h1>
 <h3 id="輸出固定長度">輸出固定長度</h3>
 <pre><code>fmt.Printf(&quot;ID : %-10s&quot;, id)    // 十個字元的長度, 向左對齊
 fmt.Printf(&quot;ID : %10s&quot;, id)     // 十個字元的長度, 向右對齊
@@ -54,7 +54,7 @@ d := math.Trunc(val*pow10_n) / pow10_n                          // 123.1234567
 pow10_n := math.Pow10(7)
 d := math.Trunc((val+0.5/pow10_n)*pow10_n) / pow10_n            // 123.1234568
 </code></pre>
-<h2 id="log">log</h2>
+<h1 id="log">log</h1>
 <h3 id="儲存成-file">儲存成 file</h3>
 <pre><code>// open a file
 f, err := os.OpenFile(&quot;dev.log&quot;, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
@@ -112,7 +112,7 @@ log.Print(&quot;Hello Logs!&quot;)
 <p><code>/var/log/system.log</code> :</p>
 <pre><code>Nov  4 08:19:33 testde-MacBook-Pro myprog[90449]: 2016/11/04 08:19:33 Hello Logs!
 </code></pre>
-<h2 id="net">net</h2>
+<h1 id="net">net</h1>
 <h3 id="取得本機上的-mac">取得本機上的 Mac</h3>
 <pre><code>interfaces, err := net.Interfaces()
 if err != nil {
@@ -615,7 +615,7 @@ func inc(ip net.IP) {
 Contains 123.45.67.69 :  false
 Contains 123.45.67.69 :  true
 </code></pre>
-<h2 id="io">io</h2>
+<h1 id="io">io</h1>
 <p>pipe</p>
 <pre><code>pr, pw := io.Pipe()
 go func() {
@@ -634,7 +634,7 @@ if err != nil {
     panic(err)
 }
 </code></pre>
-<h2 id="ioioutilbufio">io/ioutil/bufio</h2>
+<h1 id="ioioutilbufio">io/ioutil/bufio</h1>
 <h3 id="將下載的資料轉成-ioreader-型態">將下載的資料轉成 io.Reader 型態</h3>
 <pre><code>var source io.Reader
 source = resp.Body
@@ -794,7 +794,7 @@ func readLastLine(file *os.File, prev int64, curr int64) (last_line string, err 
         return string(buf[:n]), nil
 }
 </code></pre>
-<h2 id="io---read-into-byte-from-another-byte">io - Read into []byte from another []byte</h2>
+<h1 id="io---read-into-byte-from-another-byte">io - Read into []byte from another []byte</h1>
 <p>io.Copy (900MB, 1s)</p>
 <pre><code>b2 := bytes.NewBuffer(nil)
 _, err = io.Copy(b2, bytes.NewReader(b))
@@ -859,7 +859,7 @@ if err != nil {
     panic(err)
 }
 </code></pre>
-<h2 id="string">string</h2>
+<h1 id="string">string</h1>
 <h3 id="基本處理">基本處理</h3>
 <p>String to Array</p>
 <pre><code>strings.Split(&quot;a/b/c&quot;,  &quot;/&quot;)
@@ -868,7 +868,7 @@ if err != nil {
 <pre><code>s := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
 fmt.Println(strings.Join(s, &quot;/&quot;))
 </code></pre>
-<h2 id="os">os</h2>
+<h1 id="os">os</h1>
 <h3 id="外部參數">外部參數</h3>
 <ul>
 <li>command : <code>go run t.go dd</code></li>
@@ -1053,7 +1053,7 @@ fmt.Println(string(output))
 <blockquote>
 <p>output 最後會含一個 ascii: <code>10</code> (hex: <code>0A</code>) 的換行字元, 它並不是 <code>\n</code> 字元</p>
 </blockquote>
-<h2 id="signal">signal</h2>
+<h1 id="signal">signal</h1>
 <h3 id="接收中止訊號kill-signal">接收中止訊號(kill signal)</h3>
 <p>當程式執行後會停在 <code>&lt;-sigc</code>，如果收到 kill 指令則會繼續往下走</p>
 <pre><code>sigc := make(chan os.Signal, 1)
@@ -1070,7 +1070,7 @@ log.Println(&quot;Abort!&quot;)
 </code></pre>
 <h3 id="what-would-it-be-if-both-of-main-program-and-sub-program-try-to-capture-the-signals-at-the-same-time">What would it be if both of main program and sub-program try to capture the signals at the same time?</h3>
 <p>Both of them will capture that signal at the same time.</p>
-<h2 id="time">time</h2>
+<h1 id="time">time</h1>
 <p>Datetime</p>
 <pre><code>time.Now()                  // 2016-12-29 17:33:23.784617257 +0800 CST
 </code></pre>
@@ -1244,7 +1244,7 @@ func makeTimestampMilli() int64 {
 <p>Timestamp with three decimal places</p>
 <pre><code>fmt.Sprintf(&quot;%f&quot;, float64(time.Now().UnixNano())/1000000000) // 1483004003.785
 </code></pre>
-<h2 id="mathrand">math/rand</h2>
+<h1 id="mathrand">math/rand</h1>
 <h3 id="產生-07--每一次產生不一樣的變數">產生 0~7  (每一次產生不一樣的變數)</h3>
 <pre><code>rand.Seed(time.Now().UnixNano())
 r := rand.Intn(8)
@@ -1302,7 +1302,7 @@ func main() {
     fmt.Println(token)
 }
 </code></pre>
-<h2 id="sync">sync</h2>
+<h1 id="sync">sync</h1>
 <h3 id="pool-特性">pool 特性</h3>
 <ul>
 <li>臨時暫存的 pool (有點像 cache 的感覺)</li>
@@ -1571,7 +1571,7 @@ func main() {
 }
 </code></pre><p>result:</p>
 <pre tabindex="0"><code>Only once
-</code></pre><h2 id="encoding">encoding</h2>
+</code></pre><h1 id="encoding">encoding</h1>
 <h3 id="組出-soap">組出 SOAP</h3>
 <pre><code>package main
 
@@ -1816,7 +1816,7 @@ b = bytes.Replace(b, []byte(&quot;\\u003c&quot;), []byte(&quot;&lt;&quot;), -1)
 b = bytes.Replace(b, []byte(&quot;\\u003e&quot;), []byte(&quot;&gt;&quot;), -1)
 b = bytes.Replace(b, []byte(&quot;\\u0026&quot;), []byte(&quot;&amp;&quot;), -1)
 </code></pre>
-<h2 id="crypto">crypto</h2>
+<h1 id="cryptography">Cryptography</h1>
 <h3 id="md5">md5</h3>
 <pre><code>h := md5.New()
 io.WriteString(h, &quot;Hello World!&quot;)
@@ -1840,8 +1840,79 @@ fmt.Println(hex.EncodeToString(b[:]))
 <pre><code>b := sha256.Sum256([]byte(&quot;test&quot;))
 fmt.Println(hex.EncodeToString(b[:]))
 </code></pre>
-<h3 id="aes-cbc-encrypt">AES CBC encrypt</h3>
-<p>plaintext 必須為 aes.Blocksize (16) 的倍數</p>
+<h3 id="rsa-asymmetric-encryption">RSA (Asymmetric Encryption)</h3>
+<p>encrypt plaintext with public key and decrypt ciphertext with private key</p>
+<pre><code>// Generate a new private key.
+privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+if err != nil {
+    panic(err)
+}
+
+publicKey := &amp;privateKey.PublicKey
+
+plaintext := []byte(&quot;Hello, World!&quot;)
+
+// Encrypt the plaintext with pulbic key
+ciphertext, err := rsa.EncryptOAEP(
+    sha256.New(),
+    rand.Reader,
+    publicKey,
+    plaintext,
+    nil)
+if err != nil {
+    panic(err)
+}
+fmt.Printf(&quot;plaintext: %s\n\n&quot;, string(plaintext))
+fmt.Printf(&quot;encrypt plaintext with public key:\n%x\n\n&quot;, ciphertext)
+
+// Decrypt the ciphertext with private key
+decryptedPlaintext, err := rsa.DecryptOAEP(
+    sha256.New(),
+    rand.Reader,
+    privateKey,
+    ciphertext,
+    nil)
+if err != nil {
+    panic(err)
+}
+fmt.Printf(&quot;decrypt ciphertext with private key: %s\n\n&quot;, string(decryptedPlaintext))
+</code></pre>
+<p>generate a signature for plaintext with private key and verify signature with public key</p>
+<pre><code>// Sign the message using the private key.
+hash := sha256.New()
+hash.Write(plaintext)
+digest := hash.Sum(nil)
+
+signature, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, digest)
+if err != nil {
+    panic(err)
+}
+
+fmt.Printf(&quot;generate a signature for plaintext with private key:\n%x\n\n&quot;, signature)
+
+// Verify the signature using the public key.
+err = rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, digest, signature)
+if err != nil {
+    fmt.Println(&quot;Verification failed (with public key)&quot;)
+} else {
+    fmt.Println(&quot;Verification successful (with public key)&quot;)
+}
+</code></pre>
+<p>output:</p>
+<pre><code>plaintext: Hello, World!
+
+encrypt plaintext with public key:
+5175a5a4f0a560d816000baf8872e7935d00cb45f9d092ca86f741c0315dc56090c01e7baf5ab840c14f06107161a32417253126fadc336e24b2d7ff1af85d3f4ee9a15dc466e6e6dcac996903ed471ed9eccca5a82ffe9d81540c6701d0b161175eb0a9efc5bcdfbcf244ad1a3bfc922fc00298c0beb3883767094abe9924afafdd13d7fcc1a0ad4bee3244a099d7f9fd30544024a2f4349ed5e6b0450e307df35d0c11a57189020d877b0a273492b9bc47d72d11a38e27a53c41f5c7c2b7882f2b77a52151afffecb85d0d6c95758f1cfa77153b8c96ee2a63e92754aa720cebc69be9b071bd085be1697b8e6770905d2202eefd38fa33a2eb2293ffd6722f
+
+decode ciphertext with private key: Hello, World!
+
+generate a signature for plaintext with private key:
+7a1bc8da55f0e9dd6ddc73a9480c68914f30bd67af515698c2c0be75b2d5e11655073e95f776be4418ec1782a322cec99f005766c54d94b9d19b70202b8de7b2a20bb435f4a4da6e7a5309d97aa16fa09e86c0e8cb7f51717d0ec398a651134708d770bafd7dc21c69d4f6b3f9efb3e985c5905cb23fcc6fc5f2227c770e5d330fbe175a5cbcf0dd7e599c79ec0d49adbeb5fbb3bc1ad329db40cba5bb03b392640840b4484f8e52b45ad202c1991d997789bbd0a1b95d916e7653faf685ee349e5a80faf4af02fbe18daa971363d2c3c22a11eca52c9205336c5378299d44dea94fb3b948f65cde52d88319cbc6ad45c688e7db97af738a5017ca703e06fbfb
+
+Verification successful (with public key)
+</code></pre>
+<h3 id="aes-cbc-symmetric-encryption">AES CBC (Symmetric Encryption)</h3>
+<p>encrypt</p>
 <pre><code>import (
     &quot;crypto/aes&quot;
     &quot;crypto/cipher&quot;
@@ -1918,7 +1989,7 @@ func pad(src []byte, blocksize int) []byte {
 <blockquote>
 <p>The IV can be saved (or can even be &ldquo;exposed&rdquo;/transmitted publicly); it is no &lsquo;secret&rsquo;. The key should be kept private. So you could save/transmit your data like &lt;iv_here&gt;;&lt;encrypted_data_here&gt;.</p>
 </blockquote>
-<h3 id="aes-cbc-decrypt">AES CBC decrypt</h3>
+<p>decrypt</p>
 <pre><code>import (
     &quot;crypto/aes&quot;
     &quot;crypto/cipher&quot;
@@ -1943,7 +2014,7 @@ func main() {
     fmt.Printf(&quot;%s\n&quot;, ciphertext)
 }
 </code></pre>
-<h3 id="aes-decrypt---string-相同-同長度及-byte-不同-invalid-character-x00-after-top-level-value">AES Decrypt - String 相同, 同長度及 byte 不同 <code>invalid character '\x00' after top-level value</code></h3>
+<h5 id="string-相同-同長度及-byte-不同-invalid-character-x00-after-top-level-value">String 相同, 同長度及 byte 不同 <code>invalid character '\x00' after top-level value</code></h5>
 <p>可能是 AES 加解密後發生的情況，可能在過程中被塞入 padding, 導致解出來後的 byte 數量不一樣</p>
 <p>加密前 :</p>
 <pre><code>2561953d9ec389715498d44b0c150fec
@@ -1977,7 +2048,7 @@ import uuid &quot;github.com/satori/go.uuid&quot;
 uuid.NewV4()
 </code></pre>
 <h1 id="generate">generate</h1>
-<h2 id="defer">defer</h2>
+<h1 id="defer">defer</h1>
 <h3 id="關於-defer-如何運作">關於 defer 如何運作</h3>
 <pre><code>package main
 
@@ -2013,7 +2084,7 @@ Function 2
 Function 3
 </code></pre>
 <p>ref : <a href="http://ithelp.ithome.com.tw/question/10153473">http://ithelp.ithome.com.tw/question/10153473</a></p>
-<h2 id="error">error</h2>
+<h1 id="error">error</h1>
 <h3 id="擲出自定義錯誤訊息">擲出自定義錯誤訊息</h3>
 <pre><code>err = errors.New(&quot;fail&quot;)
 </code></pre>
@@ -2030,7 +2101,7 @@ if err == fruits.NoMorePumpkins {
      ...
 }
 </code></pre>
-<h2 id="runtime">runtime</h2>
+<h1 id="runtime">runtime</h1>
 <h3 id="detect-os">detect OS</h3>
 <pre><code>switch runtime.GOOS {
     case &quot;windows&quot;:
@@ -2044,7 +2115,7 @@ if err == fruits.NoMorePumpkins {
 runtime.ReadMemStats(&amp;m0)
 fmt.Printf(&quot;Memory: %.2f mb&quot;, float64(m0.Sys)/1024/1024)
 </code></pre>
-<h2 id="cpu-usage-沒用到-runtime-package">Cpu Usage (沒用到 runtime package)</h2>
+<h1 id="cpu-usage-沒用到-runtime-package">Cpu Usage (沒用到 runtime package)</h1>
 <pre><code>func getCPUSample() (idle, total uint64) {
     contents, err := ioutil.ReadFile(&quot;/proc/stat&quot;)
     if err != nil {
@@ -2083,7 +2154,7 @@ func main() {
     fmt.Printf(&quot;CPU usage is %f%% [busy: %f, total: %f]\n&quot;, cpuUsage, totalTicks-idleTicks, totalTicks)
 }
 </code></pre>
-<h2 id="channel">channel</h2>
+<h1 id="channel">channel</h1>
 <h3 id="把-channel-當成-queue-使用">把 Channel 當成 Queue 使用</h3>
 <p>它是先進先出，如果要做一個 worker 很好用，直接宣告它的大小是多少，但塞值不需要管它的 index，一直丟就對了</p>
 <pre><code>var worker_ch = make(chan string, 10000)
@@ -2133,7 +2204,7 @@ func (p *Pool) Return(c *Client) {
     }
 }
 </code></pre>
-<h2 id="reflect">reflect</h2>
+<h1 id="reflect">reflect</h1>
 <h3 id="call-dynamic-func-by-name">Call dynamic func by name</h3>
 <pre><code>func Call(m map[string]interface{}, name string, params ...interface{}) (result []reflect.Value, err error) {
     f := reflect.ValueOf(m[name])
@@ -2262,7 +2333,7 @@ start2another
 start2another
 </code></pre>
 <p>ref: <a href="https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type">https://stackoverflow.com/questions/14116840/dynamically-call-method-on-interface-regardless-of-receiver-type</a></p>
-<h2 id="flag">flag</h2>
+<h1 id="flag">flag</h1>
 <h3 id="auto-flag">auto flag</h3>
 <pre><code>config := struct {
     Name    string        `flag:&quot;queue,queue name&quot;`
@@ -2272,7 +2343,7 @@ start2another
 autoflags.Define(&amp;config)
 flag.Parse()
 </code></pre>
-<h2 id="image">image</h2>
+<h1 id="image">image</h1>
 <h3 id="get-images-width-and-height">Get image&rsquo;s width and height</h3>
 <pre><code>import (
     &quot;fmt&quot;
@@ -2450,7 +2521,7 @@ func main() {
     jpeg.Encode(file, jpg, &amp;jpeg.Options{Quality: 100})
 }
 </code></pre>
-<h2 id="unsafe">unsafe</h2>
+<h1 id="unsafe">unsafe</h1>
 <h3 id="看變數佔多數記憶體-bytes">看變數佔多數記憶體 (bytes)</h3>
 <pre><code>a1 := &quot;xxxdflasjdfl;daskjfdsalfkjasdlfjas&quot;
 a2 := int64(66666)
@@ -2461,11 +2532,11 @@ fmt.Println(unsafe.Sizeof(a2))  // 8
 fmt.Println(unsafe.Sizeof(a3))  // 4
 fmt.Println(unsafe.Sizeof(a4))  // 4
 </code></pre>
-<h2 id="utf8">utf8</h2>
+<h1 id="utf8">utf8</h1>
 <h3 id="count-size-of-utf8-string">Count size of UTF8 string</h3>
 <pre><code>utf8.RuneCountInString(&quot;世界&quot;)
 </code></pre>
-<h2 id="reflect-1">reflect</h2>
+<h1 id="reflect-1">reflect</h1>
 <h3 id="implementation-of-generics">Implementation of generics</h3>
 <pre><code>type Animal interface{}
 
@@ -2518,7 +2589,7 @@ func setFeetCount(a Animal, c int64) {
 Cat
 {Cat {4}}
 </code></pre>
-<h2 id="sql">SQL</h2>
+<h1 id="sql">SQL</h1>
 <p>(last updated at 2016-12-21)</p>
 <h3 id="connect">Connect</h3>
 <pre><code>conn, err = sql.Open(&quot;mysql&quot;, &quot;root:password@tcp(127.0.0.1:3306)/db_name&quot;)
@@ -2612,7 +2683,7 @@ affect, err := res.RowsAffected()
 res, err = stmt.Exec(id)
 affect, err = res.RowsAffected()
 </code></pre>
-<h2 id="unix">unix</h2>
+<h1 id="unix">unix</h1>
 <h3 id="調整系統設定最大讀寫檔案數量-for-currency">調整系統設定最大讀寫檔案數量 (for currency)</h3>
 <p>unix 預設一個 process 最多可開 1024 個檔案，也就是能出去的 network currency 數量是 1024</p>
 <pre><code>import &quot;golang.org/x/sys/unix&quot;
@@ -2683,7 +2754,7 @@ time.Sleep(10 * time.Second)
 2019/08/28 22:05:01 ctx  done, spent 3.003625s
 2019/08/28 22:05:05 ctx3 done, spent 7.005422s (its own context)
 </code></pre>
-<h2 id="template">template</h2>
+<h1 id="template">template</h1>
 <p>template 來源可以是字串也可以是一個檔案(html or text) 透過 html/template 或 text/template 將內容取代</p>
 <h3 id="取代的-html-template-為字串">取代的 HTML template 為字串</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>

@@ -35,6 +35,9 @@
 <li>The private key can be used to create digital signatures that can be verified by anyone with the corresponding public key.</li>
 </ul>
 <p>In short, the data that is encrypted by public key can only be decrypted by private key. The signature that is encrypted by private key can be verified by public key.</p>
+<blockquote>
+<p>RSA</p>
+</blockquote>
 <h1 id="symmetric-key-cryptography-secret-key-or-private-key-cryptography">Symmetric-key cryptography (secret-key or private-key cryptography)</h1>
 <p>The same key is used for encryption and decryption.</p>
 <ul>
@@ -55,6 +58,9 @@
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>AES</p>
+</blockquote>
 <h1 id="comparison-between-asymmetric-and-symmetric-encryption">Comparison between Asymmetric and Symmetric encryption</h1>
 <ul>
 <li>Asymmetric encryption is typically used for key exchange. ( It allows secure communication between parties who have never met or shared keys before.)</li>
@@ -63,14 +69,14 @@
 <li>Symmetric encryption is faster and more efficient than asymmetric encryption.</li>
 <li>Symmetric encryption is often used for bulk data encryption.</li>
 </ul>
-<h3 id="aes">AES</h3>
+<h1 id="aes">AES</h1>
 <p>AES replaced the older Data Encryption Standard (DES) as a more secure and efficient option.</p>
 <ul>
 <li>A block cipher: meaning it encrypts data in fixed-size blocks (128 bits).</li>
 <li>Use a secret key for both encryption and decryption, and it supports key lengths of 128, 192, or 256 bits.</li>
 <li>The decryption process in AES is essentially the reverse of the encryption process.</li>
 </ul>
-<p>Electronic Codebook mode (ECB)</p>
+<h3 id="electronic-codebook-mode-ecb">Electronic Codebook mode (ECB)</h3>
 <ul>
 <li>Simple and straightforward</li>
 <li>Less secure</li>
@@ -79,13 +85,25 @@
 <li>ECB mode doesn&rsquo;t use an initialization vector (IV)</li>
 <li>Not recommended for use in most cryptographic applications</li>
 </ul>
+<h3 id="cipher-feedback-cfb">Cipher Feedback (CFB)</h3>
+<ul>
+<li>A mode of operation for block cipher.</li>
+<li>In contrast to the ECB (Electronic Codebook) mode, which encrypts each block of data independently, CFB mode uses feedback to make each block of ciphertext dependent on all the plaintext blocks before it, which makes it more secure.</li>
+</ul>
 <p>Cipher Block Chaining mode (CBC)</p>
 <ul>
 <li>Each ciphertext block depends on all previous plaintext blocks, identical plaintext blocks will generally produce different ciphertext blocks</li>
 <li>Ensure that the same plaintext encrypted with the same key will result in different ciphertexts</li>
 <li>To hide patterns in the plaintext</li>
 </ul>
-<p>What&rsquo;s Initialization Vector (IV)?</p>
+<h3 id="galoiscounter-mode-gcm">Galois/Counter Mode (GCM)</h3>
+<ul>
+<li>more modern mode</li>
+<li>provides both confidentiality (through encryption similar to CTR mode) and data integrity (through an authentication tag)</li>
+<li>GCM also provides authentication, which means it can verify that the data has not been tampered with</li>
+<li>more secure than the other modes</li>
+</ul>
+<h3 id="whats-initialization-vector-iv">What&rsquo;s Initialization Vector (IV)?</h3>
 <ul>
 <li>IV is used as an additional input to the encryption process. Such as:
 <ul>
@@ -97,6 +115,15 @@
 <li>The IV should be random, unique, and unpredictable for each encryption</li>
 <li>To ensure that the ciphertext generated is different, even if the same plaintext is encrypted multiple times with the same key.</li>
 <li>IV doesn&rsquo;t need to be kept secret like the encryption key. It can be transmitted along with the ciphertext (usually as a prefix)</li>
+</ul>
+<h3 id="whats-counter-ctr">What&rsquo;s Counter (CTR)</h3>
+<p>CTR mode is that it turns a block cipher into a stream cipher, which means that it encrypts plaintext by combining it with a keystream.</p>
+<h3 id="ecb-vs-cfb-vs-cbc-vs-gcm-in-terms-of-security">ECB vs CFB vs CBC vs GCM (in terms of security)</h3>
+<ul>
+<li>ECB is the least secure</li>
+<li>CFB and CBC are equally secure</li>
+<li>CBC is widely adopted and scrutinised, and used in many protocols such as SSL and TLS</li>
+<li>GCM is the most secure and the best choice because it provides both confidentiality and authentication.</li>
 </ul>
 
 </article>
