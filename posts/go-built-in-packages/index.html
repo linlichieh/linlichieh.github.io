@@ -1454,10 +1454,10 @@ func main() {
 </ul>
 <p>RWMutex</p>
 <ul>
-<li>The lock can be held by an arbitrary number of readers or a single writer. The zero value for a RWMutex is an unlocked mutex.</li>
+<li>The lock can be held by an arbitrary number of readers or a single writer or a single writer.</li>
 <li>Readers don&rsquo;t have to wait for each other. They only have to wait for writers holding the lock.</li>
 <li>Preferable for data that is mostly read.</li>
-<li>There is no <code>WLock()</code>; instead, use <code>Lock()</code>, but it does have <code>RLock()</code></li>
+<li>There is no <code>WLock()</code>; instead, use <code>Lock()</code></li>
 <li><code>RLock()</code> will only be blocked by <code>Lock()</code></li>
 </ul>
 <h3 id="mutex">Mutex</h3>
