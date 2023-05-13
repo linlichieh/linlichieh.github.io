@@ -347,7 +347,12 @@ Lock the minimum and move the start point forward in each iteration.</p>
 </ul>
 <p>Cons</p>
 <ul>
-<li>bad performance: It performs poorly when working on huge lists. <code>O(n^2)</code></li>
+<li>bad performance
+<ul>
+<li>It performs poorly when working on huge lists. <code>O(n^2)</code></li>
+<li>Among bubble, insertion and selection, selection is the least efficient. It takes <code>O(n^2)</code> even if the numbers have been sorted already</li>
+</ul>
+</li>
 <li>unstable algorithm</li>
 </ul>
 <h3 id="demonstration">Demonstration</h3>
