@@ -20,67 +20,126 @@
     <h1>Data Structures</h1>
     
   </header>
-  <h1 id="時間複雜度-on-big-o-notation">時間複雜度 O(n), Big O notation</h1>
-<p>用來比較不同演算法花多少時間的方法</p>
-<h3 id="變因">變因</h3>
+  <h1 id="big-o">Big O</h1>
+<p>A mathematical notation used in computer science to describe the performance or complexity of an algorithm</p>
+<h3 id="complexity">Complexity</h3>
+<blockquote>
+<p>O(1) &lt; O(logn) &lt; O(n) &lt; O(nlogn) &lt; O(n^2) &lt; O(2^n) &lt; O(n!)</p>
+</blockquote>
 <ul>
-<li>除法比加法慢一點</li>
-<li>記憶體存取區塊不同也有差異</li>
-<li>測試規模大的時候能測的比較準確</li>
-<li>操作次數的量級重要於精確的值</li>
-</ul>
-<h3 id="計算">計算</h3>
-<ul>
-<li>假設所有操作都是一樣的時間 (加減乘除/取餘數/存取記憶體/判斷運算子)</li>
-<li>假設演算法 3n^2 + 2n + 7, 電腦每秒執行 100萬次, n=2000, 需要 12,004,007 次的加法操作才能解決此問題, 此電腦需要 12 秒才能跑完</li>
-<li>一般電腦是 2,000~8,000萬次/秒</li>
-<li>Big-O : O(f(n))</li>
-<li>Little-o : o(f(n))</li>
-<li>n 是輸入的規模</li>
-</ul>
-<h3 id="常見的幾種時間複雜度與演算法">常見的幾種時間複雜度與演算法</h3>
-<p>O(n!) &gt; O(2^n) &gt; O(n^2) &gt; O(nlogn) &gt; O(n) &gt; O(logn) &gt; O(1)</p>
-<ul>
-<li>O(1) constant
-<ul>
-<li>陣列讀取 (已經知道要從陣列取出哪一個 index)</li>
-</ul>
-</li>
+<li>O(1) constant</li>
 <li>O(logn) logarithmic
 <ul>
 <li>base is 2</li>
 <li>an array storing 1M items, will do 19 comparison with binary search</li>
-<li>二分搜尋 (從小到大的排列裡面每次搜尋都取中間值)</li>
+<li>binary search</li>
 </ul>
 </li>
 <li>O(n) linear
 <ul>
-<li>簡易搜尋 (搜尋時從頭跑到尾)</li>
 <li>for loop</li>
 <li>an array storing 1 to 10, linear search</li>
-<li>String[] copy = new String[names.length]</li>
 </ul>
 </li>
 <li>O(nlogn) log linear
 <ul>
-<li>合併排序 (把大陣列一直重覆切一半成小陣列, 直到所有小陣列都只有一個元素, 再重覆將兩個小陣列合併成一個陣列, 直到所有陣列都合併成一個大陣列) <a href="https://commons.wikimedia.org/wiki/File:Merge-sort-example-300px.gif">gif demonstration</a></li>
+<li>merge sort,</li>
 </ul>
 </li>
 <li>O(n^2) quadratic
 <ul>
 <li>double for loop</li>
-<li>選擇排序 (從未排序的數字中找出最小值, 再丟到最左邊)</li>
-<li>插入排序 (從未排序的數字讀出一個數, 根據大小把它往前插入到適當的位置) <a href="https://commons.wikimedia.org/wiki/File:Insertion-sort-example.gif">gif demonstration</a></li>
+<li>bubble, <a href="https://commons.wikimedia.org/wiki/File:Insertion-sort-example.gif">insertion</a>, selection sort</li>
 </ul>
 </li>
 <li>O(2^n) exponential
 <ul>
-<li>recursive 費波那契數列 (Fibonacci numbers) (是指在一串數字中每一項是前兩項的和 e.g. <code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55</code>, 當 n 不是 0 或 1 時, <code>fibo(n) = fibo(n-1) + fibo(n-2)</code>)</li>
+<li>recursive Fibonacci numbers</li>
 </ul>
 </li>
 <li>O(n!) factorial</li>
 </ul>
-<h3 id="common-data-structures">Common Data Structures</h3>
+<h3 id="demonstrate-time-complexity-using-code">Demonstrate time complexity using code</h3>
+<p>O(1)</p>
+<pre><code>func constant_complexity(n int) int {
+    return n * n
+}
+</code></pre>
+<p>O(log n)</p>
+<pre><code>func logarithmic_complexity(n int) {
+    i := 1
+    for i &lt; n {
+        i *= 2
+    }
+}
+</code></pre>
+<p>O(n)</p>
+<pre><code>func linear_complexity(arr []int) {
+    for _, v := range arr {
+        fmt.Println(v)
+    }
+}
+</code></pre>
+<p>O(n log n): like quicksort, mergesort</p>
+<pre><code>func log_linear_complexity(arr []int) {
+    sort.Ints(arr)
+}
+</code></pre>
+<p>O(n^2)</p>
+<pre><code>func quadratic_complexity(arr []int) {
+    for _, i := range arr {
+        for _, j := range arr {
+            fmt.Println(i, j)
+        }
+    }
+}
+</code></pre>
+<p>O(2^n)</p>
+<pre><code>func exponential_complexity(n int) int {
+    if n &lt;= 1 {
+        return n
+    } else {
+        return exponential_complexity(n-1) + exponential_complexity(n-2)
+    }
+}
+</code></pre>
+<p>O(n!)</p>
+<pre><code>func factorial_complexity(n int) int {
+    if n == 1 {
+        return 1
+    } else {
+        return n * factorial_complexity(n-1)
+    }
+}
+</code></pre>
+<h3 id="demonstrate-space-complexity-using-code">Demonstrate space complexity using code</h3>
+<p>O(1)</p>
+<pre><code>func constant_space(n int) int {
+    return n * n
+}
+</code></pre>
+<p>O(n)</p>
+<pre><code>func linear_space(n int) []int {
+    arr := make([]int, n)
+    for i := 0; i &lt; n; i++ {
+        arr[i] = i
+    }
+    return arr
+}
+</code></pre>
+<p>O(n^2)</p>
+<pre><code>func quadratic_space(n int) [][]int {
+    arr := make([][]int, n)
+    for i := 0; i &lt; n; i++ {
+        arr[i] = make([]int, n)
+        for j := 0; j &lt; n; j++ {
+            arr[i][j] = i*j
+        }
+    }
+    return arr
+}
+</code></pre>
+<h1 id="common-data-structures">Common Data Structures</h1>
 <ul>
 <li>arrays
 <ul>
@@ -252,7 +311,7 @@
 </ul>
 </li>
 <li>Heapify O(log n)</li>
-<li>Building a heapo O(n)</li>
+<li>Building a heap O(n)</li>
 </ul>
 </li>
 <li>Space O(n)</li>
@@ -277,226 +336,6 @@
 </ul>
 </li>
 <li>graphs</li>
-</ul>
-</li>
-</ul>
-<h3 id="demonstrate-time-complexity-using-code">Demonstrate time complexity using code</h3>
-<p>O(1) or constant time</p>
-<pre><code>function printFirstItem($arrayOfItems)
-{
-    print $arrayOfItems[0] . &quot;\n&quot;;
-}
-</code></pre>
-<blockquote>
-<p>不論 array 數量是 1 還是 1000, 這個 function 都只需要一步就完成</p>
-</blockquote>
-<p>O(n) or linear time</p>
-<pre><code>function printAllItems($arrayOfItems)
-{
-    foreach ($arrayOfItems as $item) {
-        print $item . &quot;\n&quot;;
-    }
-}
-</code></pre>
-<blockquote>
-<p>n 指的是 array 的數量, 有幾個就會有幾個動作</p>
-</blockquote>
-<p>log(n)</p>
-<pre><code>function sayHiNTimes($n)
-{
-    for ($i = 0; $i &lt; $n; $i++) {
-        print &quot;hi\n&quot;;
-    }
-}
-</code></pre>
-<p>log(2n) = log(n)</p>
-<pre><code>function printAllItemsTwice($theArray)
-{
-    foreach ($theArray as $item) {
-        print $item . &quot;\n&quot;;
-    }
-
-    // once more, with feeling
-    foreach ($theArray as $item) {
-        print $item . &quot;\n&quot;;
-    }
-}
-</code></pre>
-<p>log(1+n/2+1000) = log(n)</p>
-<pre><code>function printFirstItemThenFirstHalfThenSayHi100Times($theArray)
-{
-    print $theArray[0] . &quot;\n&quot;;
-
-    $middleIndex = floor(count($theArray) / 2);
-    $index = 0;
-
-    while ($index &lt; $middleIndex) {
-        print $theArray[$index] . &quot;\n&quot;;
-        $index++;
-    }
-
-    for ($i = 0; $i &lt; 100; $i++) {
-        print &quot;hi\n&quot;;
-    }
-}
-</code></pre>
-<blockquote>
-<p>如果 n 是很大的數, <code>+1000</code> 或 <code>除2</code> 會造成的影響沒有這麼大, 我們可以直接忽略</p>
-</blockquote>
-<p>O(n^2) or quadratic time</p>
-<pre><code>function printAllPossibleOrderedPairs($arrayOfItems)
-{
-    foreach ($arrayOfItems as $firstItem) {
-        foreach ($arrayOfItems as $secondItem) {
-            print &quot;$firstItem, $secondItem\n&quot;;
-        }
-    }
-}
-</code></pre>
-<blockquote>
-<p>n 指的是 array 的數量, 此 function 會做 n^2 個動作</p>
-</blockquote>
-<p>O(n+n2) = O(n^2)</p>
-<pre><code>function printAllNumbersThenAllPairSums($arrayOfNumbers)
-{
-    print &quot;these are the numbers\n&quot;;
-    foreach ($arrayOfNumbers as $number) {
-        print $number . &quot;\n&quot;;
-    }
-
-    print &quot;and these are their sums:\n&quot;;
-    foreach ($arrayOfNumbers as $firstNumber) {
-        foreach ($arrayOfNumbers as $secondNumber) {
-            print $firstNumber + $secondNumber . &quot;\n&quot;;
-        }
-    }
-}
-</code></pre>
-<p>其他</p>
-<ul>
-<li>3n^3 + 5n^2 + 10n + 3 = O(n^3)</li>
-<li>1000 = O(1)</li>
-<li>3n^2+n+20 = O(n^2)</li>
-<li>100n = O(n)</li>
-<li>n^100 = O(n^100)</li>
-<li>2^n = O(2^n)</li>
-<li>n^2 = O(n^2)</li>
-<li>10nlog n = O(nlog n)</li>
-<li>100^n = O(100^n)</li>
-<li>n! = O(n!)</li>
-<li>30*2^n = O(2^n)</li>
-<li>100n = O(n)</li>
-</ul>
-<h3 id="demonstrate-space-complexity-using-code">Demonstrate space complexity using code</h3>
-<p>O(1) space</p>
-<pre><code>function sayHiNTimes($n)
-{
-    for ($i = 0; $i &lt; $n; $i++) {
-        print &quot;hi\n&quot;;
-    }
-}
-</code></pre>
-<p>O(n) space</p>
-<pre><code>function arrayOfHiNTimes($n)
-{
-    $hiArray = [];
-    for ($i = 0; $i &lt; $n; $i++) {
-        $hiArray[$i] = 'hi';
-    }
-    return $hiArray;
-}
-</code></pre>
-<p>其他</p>
-<ul>
-<li>O(logN) - logarithmic</li>
-<li>O(NlogN) - loglinear</li>
-<li>O(2^N) - exponential time</li>
-<li>O(n^2 /2+100n) = O(n^2)</li>
-<li>O(n^3+50n^2+10000) = O(n^3)</li>
-<li>O((n+30)*(n+5)) = O(n^2)</li>
-<li>O(f(n)) + O(g(n)) is O( f(n) + g(n) ) is O( max(f(n),g(n)) )</li>
-<li>O(N) + O(Log N)  =  O(N + Log N)  =  O(max(N,Log N)) = O(N)</li>
-<li>O(N) + O(N)  =  O(2N)  =  O(N)</li>
-</ul>
-<h1 id="list-鏈結串列-或串列">List 鏈結串列 (或串列)</h1>
-<ul>
-<li>基本單元是 Node (data + pointer)</li>
-<li>每個 node 只記錄下一個 node 的位置</li>
-<li>起點 (head) 指標指向第一個 node, 最後一個 node 的指標指向 NULL</li>
-<li>分類: 單向 / 雙向 / 環狀</li>
-<li>操作: insert / delete</li>
-<li>優點
-<ul>
-<li>動態宣告記憶體, 避免記憶體浪費(但 dynamic array 也可以)</li>
-<li>快速插入和刪除節點, 只需要更改 pointer 的值, O(1) (array 沒辦法除非要搬元素)</li>
-<li>A linked list provides a data structure similar to an array, but with the big advantage that inserting an element in the middle of the list is very cheap, compared to doing so in an array, where we need to shift all elements after the current position.</li>
-</ul>
-</li>
-<li>缺點
-<ul>
-<li>不能隨機存取 (random access), 不像陣列可以指定取第100個元素</li>
-</ul>
-</li>
-<li>搜尋的時間複雜度是 O(n)</li>
-<li>insert / delete 知道位置的話, 時間複雜度是 O(1), 否則必須先搜尋</li>
-<li>無 index, 不支援二分搜尋法</li>
-<li>串列其實是用陣列實作, 散列在記憶體裡</li>
-</ul>
-<h3 id="單向">單向</h3>
-<ul>
-<li>insert: O(1)</li>
-<li>delete: O(1)</li>
-</ul>
-<p>Code:</p>
-<pre><code>struct Node{
-    int     _data;
-    Node*   _next;   // 指標
-}
-
-int main() {
-    Node* head;     // 紀錄起點
-}
-</code></pre>
-<h3 id="雙向-doubly-linked-list">雙向 (doubly linked list)</h3>
-<ul>
-<li>每個 node 紀錄上一個跟下一個的位置</li>
-<li>跟單向比的好處是它可以 start from the end and go backward</li>
-</ul>
-<h3 id="環狀">環狀</h3>
-<ul>
-<li>head 指向第一個</li>
-<li>end 指向第一個</li>
-</ul>
-<h3 id="時間複雜度">時間複雜度</h3>
-<ul>
-<li>random access
-<ul>
-<li>Array: Yes</li>
-<li>Linked List: No</li>
-</ul>
-</li>
-<li>push front
-<ul>
-<li>Array: <strong>先把其他的元素往後退一格</strong>, 再插入要的元素到第一格, O(n)</li>
-<li>Linked List: 只需要修改 pointer, O(1)</li>
-</ul>
-</li>
-<li>push back
-<ul>
-<li>Array: 只需要把元素放到最尾端, O(1)</li>
-<li>Linked List: 只需要修改 pointer, O(1)</li>
-</ul>
-</li>
-<li>pop front
-<ul>
-<li>Array: O(n)</li>
-<li>Linked List: O(1)</li>
-</ul>
-</li>
-<li>pop back
-<ul>
-<li>Array: O(1)</li>
-<li>Linked List: O(1)</li>
 </ul>
 </li>
 </ul>
