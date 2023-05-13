@@ -377,17 +377,17 @@ This is because each comparison eliminates half of the remaining tree, and we ne
 <h3 id="demonstration-1">Demonstration</h3>
 <p>max heap</p>
 <pre><code>     90
-    /  \
-  60    50
- / \   / \
-40 30 20 10
+    /   \
+  60     50
+ /  \   /  \
+40  30 20  10
 </code></pre>
 <p>min heap</p>
 <pre><code>     10
-    /  \
-  20    30
- / \   / \
-40 60 50 70
+    /   \
+  20     30
+ /  \   /  \
+40  60 50  70
 </code></pre>
 <h3 id="basics-1">Basics</h3>
 <p>A Binary Heap is either Min Heap or Max Heap</p>
@@ -591,6 +591,23 @@ A   A A   A A   A A   A     A   A A   A A   A A   A         h=0
 <blockquote>
 <p>Each array element represents a connection between two nodes in the graph</p>
 </blockquote>
+<p>pros</p>
+<ul>
+<li>Simple Representation: each pair in the list represents an edge</li>
+<li>Space Efficiency for Sparse Graphs: the number of edges is much less than the square of the number of vertices</li>
+<li>Easy Addition of Edges: just append a new pair to the list, which takes O(1), assuming you don&rsquo;t have to check for duplicates</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>Inefficient for Dense Graphs: For dense graphs (where the number of edges is close to the square of the number of vertices)</li>
+<li>Slow Lookup: Checking whether an edge exists between two vertices can be slow, as it may require scanning the entire list, which take O(Edge)</li>
+<li>No Quick Adjacency Information: Unlike adjacency lists or matrices, edge lists don&rsquo;t provide a fast way to find all vertices adjacent to a given vertex. You would need to traverse the entire list and pick out the edges for the given vertex</li>
+<li>Duplicate and Loop Checking: If you need to ensure that there are no duplicate edges or loops in your graph, you&rsquo;ll need to do extra work every time you add an edge. In the worst case, this could involve scanning the entire list.</li>
+</ul>
+<p>use cases</p>
+<ul>
+<li>suitable for sparse graph</li>
+</ul>
 <h3 id="implementation-using-adjacent-list">Implementation using Adjacent list</h3>
 <p>graph</p>
 <pre><code>        2 ---------- 0
@@ -676,7 +693,7 @@ A   A A   A A   A A   A     A   A A   A A   A A   A         h=0
 <li>consume more memory O(V^2)
 <ul>
 <li>if there is a graph with 1000 vertices and 1 edge, in order to store on edge it takes an array of size 1000^2 in memory</li>
-<li>not good for a spare graph</li>
+<li>not good for a sparse graph</li>
 </ul>
 </li>
 <li>Traversing the graph using algorithms like DPS/BFS requires O(V^2) time
