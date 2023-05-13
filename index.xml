@@ -13,6 +13,7 @@
       
       <guid>/posts/algorithms/</guid>
       <description>Bubble sort How it works Compare two values and move the larger value to the right in each iteration. This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.
+animated demonstration: https://commons.wikimedia.org/wiki/File:Bubble-sort-example-300px.gif
 Complexity Time O(n^2) bubble sort works by repeatedly swapping adjacent elements if they are in the wrong order, and it continues this process until the array is sorted.</description>
     </item>
     

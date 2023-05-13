@@ -24,6 +24,7 @@
 <h3 id="how-it-works">How it works</h3>
 <p>Compare two values and move the larger value to the right in each iteration.
 This way, the greatest value will end up on the right side in each iteration and will be locked and excluded from subsequent iterations.</p>
+<p>animated demonstration: <a href="https://commons.wikimedia.org/wiki/File:Bubble-sort-example-300px.gif">https://commons.wikimedia.org/wiki/File:Bubble-sort-example-300px.gif</a></p>
 <h3 id="complexity">Complexity</h3>
 <ul>
 <li>Time <code>O(n^2)</code>
@@ -43,6 +44,12 @@ This way, the greatest value will end up on the right side in each iteration and
 <li>For example, consider a list of records that represent people, where each record has a name and an age. If we sort the list based on age, it is important to maintain the relative order of people with the same age, so that the order of their names is preserved in the sorted list. A stable sorting algorithm, such as merge sort, would ensure that the relative order of equal elements is preserved, while an unstable sorting algorithm, such as quick sort, would not.</li>
 </ul>
 </li>
+<li>efficient for nearly-sorted data
+<ul>
+<li>It takes linear time, <code>O(n)</code></li>
+<li>fewer swaps, allowing the algorithm to complete more quickly.</li>
+</ul>
+</li>
 </ul>
 <p>Cons</p>
 <ul>
@@ -52,7 +59,7 @@ This way, the greatest value will end up on the right side in each iteration and
 </ul>
 </li>
 </ul>
-<h3 id="demonstration">Demonstration</h3>
+<h3 id="demonstration-for-unsorted-numbers">Demonstration for unsorted numbers</h3>
 <p>input</p>
 <pre><code>7 5 6 1 3
 </code></pre>
@@ -105,9 +112,35 @@ j j
 j j
 </code></pre>
 <p>end</p>
+<h3 id="demonstration-for-sorted-numbers">Demonstration for sorted numbers</h3>
+<p>input</p>
+<pre><code>1 3 5 6 7
+</code></pre>
+<p>i=4, j=0, j&amp;j+1, (<code>1&lt;3</code>, swapped = false)</p>
+<pre><code>1 3 5 6 7
+j j
+</code></pre>
+<p>i=4, j=1, j&amp;j+1, (<code>3&lt;5</code>, swapped = false)</p>
+<pre><code>1 3 5 6 7
+  j j
+</code></pre>
+<p>i=4, j=2, j&amp;j+1, (<code>5&lt;6</code>, swapped = false)</p>
+<pre><code>1 3 5 6 7
+    j j
+</code></pre>
+<p>i=4, j=3, j&amp;j+1, (<code>6&lt;7</code>, swapped = false)</p>
+<pre><code>1 3 5 6 7
+      j j
+</code></pre>
+<p>swapped is false, then break the loop</p>
+<p>end</p>
+<blockquote>
+<p>for sorted numbers, it only takes <code>O(n)</code></p>
+</blockquote>
 <h1 id="insertion-sort">Insertion sort</h1>
 <h3 id="how-it-works-1">How it works</h3>
 <p>Set a starting point (i) that moves forward in each iteration after comparing all the numbers prior to it and move the smaller number to the left.</p>
+<p>animated demonstration: <a href="https://commons.wikimedia.org/wiki/File:Insertion-sort-example.gif">https://commons.wikimedia.org/wiki/File:Insertion-sort-example.gif</a></p>
 <h3 id="complexity-1">Complexity</h3>
 <ul>
 <li>Time <code>O(n^2)</code>
@@ -120,9 +153,10 @@ j j
 <h3 id="pros-and-cons-1">Pros and Cons</h3>
 <p>Pros</p>
 <ul>
-<li>nearly-sorted data
+<li>efficient for nearly-sorted data
 <ul>
-<li>If data is almost sorted, then it can be very fast approaching <code>O(N)</code> and faster than Merge sort</li>
+<li>It can sort in linear time <code>O(n)</code> when the input is already sorted or nearly sorted</li>
+<li>This is because the inner loop of the insertion sort algorithm, which is responsible for most of the computation, will have fewer iterations if the data is already close to being in order.</li>
 <li>online sorting: For example, consider a system that generates log events in real-time and needs to sort the events based on their timestamp. An online sorting algorithm, such as insertion sort, would be a good choice in this scenario, since it can sort the events as they are generated, rather than waiting until all the events have been generated before sorting the entire array.</li>
 </ul>
 </li>
@@ -138,11 +172,11 @@ j j
 <ul>
 <li>bad performance: it does not deal well with a list containing a huge number of items. <code>O(n^2)</code></li>
 </ul>
-<h3 id="demonstration-1">Demonstration</h3>
+<h3 id="demonstration-for-unsorted-numbers-1">Demonstration for unsorted numbers</h3>
 <p>input</p>
 <pre><code>7 8 5 2 4 6 3
 </code></pre>
-<p>i=1, j=1, j&amp;j-1 (<code>7&lt;8</code>, do nothing)</p>
+<p>i=1, j=1, j&amp;j-1 (<code>7&lt;8</code>, break loop)</p>
 <pre><code>7 8 5 2 4 6 3
 i
 j j
@@ -198,7 +232,7 @@ j j
       i
   j j
 </code></pre>
-<p>i=4, j=1, j&amp;j-1  (<code>2&lt;4</code>, do nothing)</p>
+<p>i=4, j=1, j&amp;j-1  (<code>2&lt;4</code>, break loop)</p>
 <pre><code>2 4 5 7 8 6 3
       i
 j j
@@ -215,20 +249,10 @@ j j
         i
       j j
 </code></pre>
-<p>i=5, j=3, j&amp;j-1  (<code>5&lt;6</code>, do nothing)</p>
+<p>i=5, j=3, j&amp;j-1  (<code>5&lt;6</code>, break loop)</p>
 <pre><code>2 4 5 6 7 8 3
         i
     j j
-</code></pre>
-<p>i=5, j=2, j&amp;j-1  (<code>4&lt;5</code>, do nothing)</p>
-<pre><code>2 4 5 6 7 8 3
-        i
-  j j
-</code></pre>
-<p>i=5, j=1, j&amp;j-1  (<code>2&lt;4</code>, do nothing)</p>
-<pre><code>2 4 5 6 7 8 3
-        i
-j j
 </code></pre>
 <p>i=6, j=6, j&amp;j-1  (<code>8&gt;3</code>, swap)</p>
 <pre><code>2 4 5 6 7 8 3
@@ -260,12 +284,49 @@ j j
           i
   j j
 </code></pre>
-<p>i=6, j=1, j&amp;j-1  (<code>2&gt;3</code>, do nothing)</p>
+<p>i=6, j=1, j&amp;j-1  (<code>2&lt;3</code>, break loop)</p>
 <pre><code>2 3 4 5 6 7 8
           i
 j j
 </code></pre>
 <p>end</p>
+<h3 id="demonstration-for-sorted-numbers-1">Demonstration for sorted numbers</h3>
+<p>input</p>
+<pre><code>2 3 4 5 6 7 8
+</code></pre>
+<p>i=1, j=1, j&amp;j-1 (<code>2&lt;3</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+i
+j j
+</code></pre>
+<p>i=2, j=2, j&amp;j-1  (<code>3&lt;4</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+  i
+  j j
+</code></pre>
+<p>i=3, j=3, j&amp;j-1  (<code>4&lt;5</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+    i
+    j j
+</code></pre>
+<p>i=4, j=4, j&amp;j-1  (<code>5&lt;6</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+      i
+      j j
+</code></pre>
+<p>i=5, j=5, j&amp;j-1  (<code>6&lt;7</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+        i
+        j j
+</code></pre>
+<p>i=6, j=6, j&amp;j-1  (<code>7&lt;8</code>, break loop)</p>
+<pre><code>2 3 4 5 6 7 8
+          i
+          j j
+</code></pre>
+<blockquote>
+<p>for sorted numbers, it only takes <code>O(n)</code></p>
+</blockquote>
 <h1 id="selection-sort">Selection sort</h1>
 <h3 id="how-it-works-2">How it works</h3>
 <p>Set a starting point (i) to find the minimum after it and swap it with the minimum.
@@ -289,7 +350,7 @@ Lock the minimum and move the start point forward in each iteration.</p>
 <li>bad performance: It performs poorly when working on huge lists. <code>O(n^2)</code></li>
 <li>unstable algorithm</li>
 </ul>
-<h3 id="demonstration-2">Demonstration</h3>
+<h3 id="demonstration">Demonstration</h3>
 <p>input</p>
 <pre><code>2 8 1 3 9
 </code></pre>
@@ -416,7 +477,7 @@ m   i   j
 <li>the algorithm does the whole process even the array is already sorted</li>
 <li>Marginally slower than quick sort in practise</li>
 </ul>
-<h3 id="demonstration-3">Demonstration</h3>
+<h3 id="demonstration-1">Demonstration</h3>
 <pre><code>                [6 5 3 1 8 7 2 4]
                   /           \
              [6 5 3 1]     [8 7 2 4]
@@ -495,7 +556,7 @@ When all sub-arrays contain only one element, the entire array is considered sor
 </ul>
 </li>
 </ul>
-<h3 id="demonstration-4">Demonstration</h3>
+<h3 id="demonstration-2">Demonstration</h3>
 <pre><code>j
 6 3 7 5 1 2 [4]    6 &gt; 4
 i
@@ -822,7 +883,7 @@ since it avoids the need for expensive comparisons between elements.</p>
 </li>
 <li>It&rsquo;s designed to work with integer (not suitable for decimal)</li>
 </ul>
-<h3 id="demonstration-5">Demonstration</h3>
+<h3 id="demonstration-3">Demonstration</h3>
 <p>input</p>
 <pre><code> index     0     1     2     3
          -----------------------
@@ -1098,7 +1159,7 @@ The algorithm continues until the target value is found or the search interval i
 <li>can only be applied to one-dimensional sorted arrays or lists</li>
 <li>not suitable for dynamic arrays or lists because inserting and deleting elements will destroy the sorted order and thus make the binary search useless</li>
 </ul>
-<h3 id="demonstration-6">Demonstration</h3>
+<h3 id="demonstration-4">Demonstration</h3>
 <p>a sorted list, try to find <code>13</code></p>
 <pre><code>1 3 4 5 13 20 25 40 42 44 53
 </code></pre>
