@@ -542,6 +542,11 @@ I+9M5Q5cej5qY7lJlgvKx6kLca6fDDU6B5CJGOyTeX9gToh1JUX8W+RJvRZlQ2Fw
 <li>The server receives the ClientKeyExchange message and decrypts the PreMasterSecret using its private key.</li>
 </ul>
 </li>
+<li>(Both client and server now can generate the master secret by pre-master secret, client random and server random
+<ul>
+<li>master secret = PRF(PreMasterSecret, ClientRandom + ServerRandom)</li>
+</ul>
+</li>
 <li>ChangeCipherSpec: Both the client and server send a ChangeCipherSpec message to indicate that subsequent messages will be encrypted using the negotiated cipher suite and keys derived from the PreMasterSecret, ClientRandom, and ServerRandom.</li>
 <li>Finished: Both the client and server send an encrypted Finished message containing a hash of the complete handshake process to verify its integrity.</li>
 </ol>
