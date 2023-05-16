@@ -442,7 +442,7 @@ m   i   j
 <p>Divide the array into two equal-sized sub-arrays until each sub-array contains only one element. Then, merge each sub-array back into one, in order of value, until complete.</p>
 <h3 id="complexity-3">Complexity</h3>
 <ul>
-<li>Time <code>O(n log(n))</code>
+<li>Time <code>O(n log n)</code>
 <ul>
 <li>merge sort works by dividing the array into two halves, sorting each half separately, and then merging the two sorted halves back together. The merging process takes linear time proportional to the number of elements in the array, while the sorting process takes logarithmic time proportional to the number of elements in each half. The overall time complexity of merge sort is <code>O(n log n)</code> because the number of elements in each half is reduced by half with each iteration of the sorting process.</li>
 </ul>
@@ -451,6 +451,11 @@ m   i   j
 <ul>
 <li>Merge sort has a space complexity of <code>O(n)</code> because it uses an auxiliary array of size n to store the sorted elements during the merging step.</li>
 <li>merge sort requires an auxiliary array to store the result of each merging step. The size of this array is proportional to the number of elements in the array, which means that the space complexity of merge sort is <code>O(n)</code>. Additionally, merge sort requires a small amount of additional memory to store the recursive call stack, but this memory usage is typically not significant compared to the size of the auxiliary array.</li>
+<li>It&rsquo;s worth noting that the total space complexity is <code>O(log n) + O(n)</code>
+<ul>
+<li>the space complexity of the call stack for the recursive calls is <code>O(log n)</code> because the array is being divided in half with each recursive call</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -478,7 +483,11 @@ m   i   j
 <p>Cons</p>
 <ul>
 <li>use more memory: it requires more memory to store the sublists, which can be a problem with a very large list</li>
-<li>slow for small arrays</li>
+<li>slow for small arrays
+<ul>
+<li>For small arrays, simpler sorting algorithms like Insertion Sort can actually be faster in practice even though they have worse time complexity <code>O(n^2)</code> than Merge Sort</li>
+</ul>
+</li>
 <li>the algorithm does the whole process even the array is already sorted</li>
 <li>Marginally slower than quick sort in practise</li>
 </ul>
@@ -506,7 +515,7 @@ When all sub-arrays contain only one element, the entire array is considered sor
 <ul>
 <li>Time
 <ul>
-<li>(avg) <code>O(n log(n))</code>
+<li>(avg) <code>O(n log n)</code>
 <ul>
 <li>The pivot is then used as a pivot for recursive calls on the two partitioned subarrays. When the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average time complexity of <code>O(n log n)</code></li>
 </ul>
@@ -518,9 +527,23 @@ When all sub-arrays contain only one element, the entire array is considered sor
 </li>
 </ul>
 </li>
-<li>Space <code>O(log(n))</code>
+<li>Space
 <ul>
-<li>The space complexity of quick sort is <code>O(log n)</code> in the average case, and <code>O(n)</code> in the worst case, where n is the number of elements in the array. This is because quick sort uses a recursive approach, where each recursive call uses a small amount of memory proportional to the size of the call stack. In the average case, when the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average space complexity of <code>O(log n)</code>. However, in the worst case, if the pivot is always chosen poorly, the size of one partition can be much larger than the other, which results in a call stack with a height proportional to the number of elements in the array, resulting in a worst-case space complexity of <code>O(n)</code></li>
+<li>it&rsquo;s tied to the maximum height of the recursion tree</li>
+<li>(avg) <code>O(log n)</code>
+<ul>
+<li>In the average case, when the pivot is chosen optimally and the array is randomly shuffled, the size of each partition is roughly equal, which results in a good average space complexity of <code>O(log n)</code>.</li>
+<li>This is because quick sort uses a recursive approach, where each recursive call uses a small amount of memory proportional to the size of the call stack.</li>
+<li><code>O(1)</code> space for each recursive call and the height of the recursion tree is proportional to <code>O(log n)</code></li>
+<li>It is due to the additional memory needed to store the intermediate state of the recursion (for function call stack).</li>
+</ul>
+</li>
+<li>(worse) <code>O(n)</code>
+<ul>
+<li>where <code>n</code> is the number of elements in the array (height of tree)</li>
+<li>if the pivot is always chosen poorly, the size of one partition can be much larger than the other, which results in a call stack with a height proportional to the number of elements in the array, resulting in a worst-case space complexity of <code>O(n)</code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -534,15 +557,18 @@ When all sub-arrays contain only one element, the entire array is considered sor
 <li>fast in most cases</li>
 </ul>
 </li>
-<li>memory usage: <code>O(log(n))</code>
+<li>memory usage: <code>O(log n)</code>
 <ul>
-<li>It is an in-place algorithm since it just requires a modest auxiliary stack. <code>O(log(n))</code></li>
+<li>It is an in-place algorithm since it just requires a modest auxiliary stack. <code>O(log n)</code></li>
 <li>quicksort requires little space</li>
 </ul>
 </li>
 <li>Parallel processing
 <ul>
-<li>during each call of QUICKSORT, the array is partitioned into two parts and each part is solved recursively. Sorting the smaller arrays represents two completely independent subproblems that can be solved in parallel. Therefore, one way to parallelize quicksort is to execute it initially on a single process; then, when the algorithm performs its recursive calls (lines 14 and 15), assign one of the subproblems to another process. Now each of these processes sorts its array by using quicksort and assigns one of its subproblems to other processes</li>
+<li>during each call of QUICKSORT, the array is partitioned into two parts and each part is solved recursively.</li>
+<li>Sorting the smaller arrays represents two completely independent subproblems that can be solved in parallel.</li>
+<li>Therefore, one way to parallelize quicksort is to execute it initially on a single process; then, when the algorithm performs its recursive calls, assign one of the subproblems to another process.</li>
+<li>Now each of these processes sorts its array by using quicksort and assigns one of its subproblems to other processes</li>
 </ul>
 </li>
 </ul>
@@ -553,7 +579,7 @@ When all sub-arrays contain only one element, the entire array is considered sor
 <li>it swaps non-adjacent elements.</li>
 </ul>
 </li>
-<li>worse case: <code>O(N^2)</code>
+<li>worse case: <code>O(n^2)</code>
 <ul>
 <li>if you always choose the first or last array element as the pivot, then Quicksort takes N^2 time to sort an already-sorted array</li>
 <li>slowest sort if things are already in reverse-order <code>O(n^2)</code></li>
@@ -626,15 +652,26 @@ i
 <pre><code>[3 1 2]  4  [6 7 5]
 </code></pre>
 <p>and so on&hellip;</p>
+<h3 id="its-in-place-algorithm-why-does-it-require-extra-space">It&rsquo;s in-place algorithm, why does it require extra space?</h3>
+<p>It doesn&rsquo;t require an additional array to perform the sorting operation</p>
+<p>However, QuickSort is a recursive algorithm, and each recursive call requires a small amount of memory that is allocated on the call stack, a system-provided data structure that tracks function calls.</p>
+<p>Each recursive call to QuickSort is a new &ldquo;layer&rdquo; on the call stack, and the maximum depth of these layers is what gives rise to the space complexity of QuickSort.</p>
+<p>The amount of memory used does not depend on the size of the input to the function (which is why we say it&rsquo;s a constant amount), but on the number of recursive calls</p>
+<p>So each recursive call to the QuickSort function requires a constant amount of space for its stack frame</p>
 <h1 id="heap-sort">Heap sort</h1>
 <h3 id="how-it-works-5">How it works</h3>
 <ol>
-<li>Build an max-heap from given unsorted array with the same idea of <code>heapify</code> of data structure <code>heap</code></li>
-<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (except for the elements that are shifted to the right)</li>
+<li>Build an max-heap/min-heap first from given unsorted array using the same idea of <code>heapify</code></li>
+<li>In each iteration, swap the maximum with the last element, then run <code>heapify</code> to sort unsorted elements (exclude the elements that are shifted to the right)
+<ul>
+<li>pop the maximum, then heapify the rest of the elements</li>
+</ul>
+</li>
+<li>Until the heap size reduces to 1, all elements are sorted</li>
 </ol>
 <h3 id="complexity-5">Complexity</h3>
 <ul>
-<li>Time <code>O(n log(n))</code>
+<li>Time <code>O(n log n)</code>
 <ul>
 <li>it takes <code>O(log n)</code> time to maintain the min-heap property by swapping elements down the tree as necessary</li>
 </ul>
@@ -662,7 +699,7 @@ i
 <ul>
 <li>In the case of Heapsort vs. Quicksort, it turns out that there are ways (median of 5, for example) to make Quicksort&rsquo;s worst cases very rare indeed</li>
 <li>Also, maintaining a heap is not free.</li>
-<li>Given an array with a normal distribution, Quicksort and Heapsort will both run in <code>O(n log(n))</code>. But Quicksort will execute faster because its constant factors are smaller than the constant factors for Heapsort</li>
+<li>Given an array with a normal distribution, Quicksort and Heapsort will both run in <code>O(n log n)</code>. But Quicksort will execute faster because its constant factors are smaller than the constant factors for Heapsort</li>
 <li>partitioning is faster than maintaining the heap</li>
 </ul>
 </li>
@@ -925,8 +962,8 @@ since it avoids the need for expensive comparisons between elements.</p>
  value  |  0  |  0  |  0  |  0  |
          -----------------------
 </code></pre>
-<p>Now, start to fill the sorted array. Note: To maintain the stability of the sorting, iterate the loop of input array in reverse order.</p>
-<p>Start with the value <code>21</code></p>
+<p>Now, start to fill the sorted array</p>
+<p>To make sure this algorithm performs stable sorting, start with the last element <code>21</code> from the input</p>
 <pre><code> index     0     1     2     3
          -----------------------
  value  | 18  | 21  | 25  | 21  |
@@ -1382,12 +1419,6 @@ The algorithm continues until the target value is found or the search interval i
 <li>used to sort integrers or strings</li>
 </ul>
 </li>
-<li>Counting sort
-<ul>
-<li>Time <code>O(n+k)</code></li>
-<li>Space <code>O(k)</code></li>
-</ul>
-</li>
 </ul>
 <h3 id="shortest-path-of-a-weighted-graph">shortest path (of a weighted graph)</h3>
 <ul>
@@ -1398,11 +1429,25 @@ The algorithm continues until the target value is found or the search interval i
 </li>
 <li>Dijkstra</li>
 </ul>
-<h1 id="dynamic-programming">Dynamic Programming</h1>
+<h1 id="terms">Terms</h1>
+<h3 id="dynamic-programming">Dynamic Programming</h3>
 <ul>
+<li>Aim to find the best solution among a set of possible solutions</li>
+<li>It is mainly used when the problem can be broken down into overlapping subproblems, and the optimal solutions of these subproblems can be used iteratively to solve the overall problem
+<ul>
+<li>to solve each subproblem only once, rather than repeatedly</li>
+</ul>
+</li>
 <li>= Divide &amp; Conquer + Memoisation</li>
 </ul>
-<h1 id="functional-programming">Functional Programming</h1>
+<h3 id="functional-programming">Functional Programming</h3>
+<ul>
+<li>uses pure functions to create maintainable software</li>
+<li>uses immutable data and avoids concepts like shared states (opposite to OOP)</li>
+<li>focuses on the results, not the process</li>
+<li>make code easier to understand, test, and debug</li>
+<li>independent and reusable</li>
+</ul>
 <h1 id="interview">Interview</h1>
 <h3 id="top-6-coding-interview-concepts">Top 6 Coding Interview Concepts</h3>
 <ul>
