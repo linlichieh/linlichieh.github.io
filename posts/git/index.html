@@ -20,9 +20,14 @@
     <h1>Git</h1>
     
   </header>
-  <h1 id="command-git-add">[command] git add</h1>
-<p>加入空的目錄: 建立 <code>gitkeep</code> 或 <code>.keep</code> 在空的目錄</p>
-<h1 id="command-git-branch">[command] git branch</h1>
+  <h1 id="add">add</h1>
+<p>Add a new file or folder</p>
+<pre><code>git add example.txt
+</code></pre>
+<p>Add all untracked files and folders</p>
+<pre><code>git add .
+</code></pre>
+<h1 id="branch">branch</h1>
 <ul>
 <li>都不加 : 顯示 local branch</li>
 <li><code>-r</code> : 顯示 remote branch</li>
@@ -52,7 +57,11 @@ git branch -D {branch name}
 <blockquote>
 <p>[origin/bug/more-phan-fixes: gone] [REFACTOR] Phan fixes</p>
 </blockquote>
-<h1 id="command-git-merge">[command] git merge</h1>
+<h1 id="blame">blame</h1>
+<p>Show the editor of each line</p>
+<pre><code>git blame test.qq
+</code></pre>
+<h1 id="merge">merge</h1>
 <p>讓 commit log 紀錄您是開分支出去再 merge 回來的。</p>
 <pre><code>git merge --no-ff develop
 </code></pre>
@@ -65,7 +74,7 @@ git branch -D {branch name}
 <blockquote>
 <p>如果對結果不太確定的話, 建議先用目前的 branch 建一個測試用的 branch 練習, 確定結果符合你要的再做在原本的 branch</p>
 </blockquote>
-<h1 id="command-git-rebase">[command] git rebase</h1>
+<h1 id="rebase">rebase</h1>
 <p>rebase 基本操作概念</p>
 <ol>
 <li>
@@ -160,7 +169,7 @@ Avocado 🥑
 <li>mark fixup on the commit that you want it to go (called commit C)</li>
 <li>change the order of commit C to middle, because it will rebase onto the commit above it</li>
 </ol>
-<h1 id="command-git-merge-與-git-rebase-差異">[command] git merge 與 git rebase 差異</h1>
+<h3 id="merge-vs-rebase">merge vs rebase</h3>
 <p>兩者結果是一樣的，產生的 history 不同點 :</p>
 <ul>
 <li>git merge
@@ -177,7 +186,7 @@ Avocado 🥑
 </ul>
 </li>
 </ul>
-<h1 id="command-git-checkout">[command] git checkout</h1>
+<h1 id="checkout">checkout</h1>
 <p>新增 develop branch 並且切換過去</p>
 <pre><code>$ git checkout -b develop
 </code></pre>
@@ -200,11 +209,33 @@ Avocado 🥑
 <pre><code>git checkout -
 相當於 git checkout master (不一定是 master 取決於在哪一個 branch)
 </code></pre>
-<h1 id="command-git-commit">[command] git commit</h1>
+<h1 id="commit">commit</h1>
 <ul>
 <li><code>--amend</code> : 修改最後一次commit message</li>
 </ul>
-<h1 id="command-git-reset">[command] git reset</h1>
+<h3 id="how-to-write-commmit-message">How to write commmit message</h3>
+<ul>
+<li>add a new line between subject and body</li>
+<li>word count should be below 50 words</li>
+<li>use imperative mood and present tense
+<ul>
+<li>e.g. Add feature</li>
+<li>e.g. Fix bug</li>
+</ul>
+</li>
+<li>categories
+<ul>
+<li>Initial</li>
+<li>Add</li>
+<li>Update</li>
+<li>Refactor</li>
+<li>Fix</li>
+<li>Build</li>
+<li>Remove</li>
+</ul>
+</li>
+</ul>
+<h1 id="reset">reset</h1>
 <ul>
 <li><code>--soft</code> : 回復到之前的狀態, 但修改過的檔案仍不變</li>
 <li><code>--hard</code> : 回復到之前的狀態, <strong>但修改過的檔案仍會保留</strong></li>
@@ -265,7 +296,7 @@ HEAD is now at f6e5064... added file2
 $ cat file2
 added new file
 </code></pre>
-<h1 id="command-git-revert">[command] git revert</h1>
+<h1 id="revert">revert</h1>
 <blockquote>
 <p>與 reset 不同的事他回復是會有紀錄的，log 會疊下去，所以如果你不小心 push 了一個 commit 到 master，你想回復，用 revert 會比 reset 簡單操作</p>
 </blockquote>
@@ -281,7 +312,7 @@ added new file
 <blockquote>
 <p>回復後它會有一個 commit 紀錄, 如果想再把它加回來, 無法用 merge (<code>Already up-to-date.</code>), 但可以用 cherry-pick 加回來</p>
 </blockquote>
-<h1 id="command-git-cherry-pick">[command] git cherry-pick</h1>
+<h1 id="cherry-pick">cherry-pick</h1>
 <ul>
 <li><code>-x</code>: Preserve original commit id</li>
 </ul>
@@ -292,19 +323,19 @@ git cherry-pick f08515bc579a06dd9c8bd7f2dfc30ad4d5a73646
 <blockquote>
 <p>將某一個 branch 的<strong>某一個</strong> commit 的變動 merge 到另一條 branch, 假如 develop 只想要 merge feature 的某一個 commit, 則需要先把 feature 的那條 commit id 記下來, 再切到 develop 做 cherry-pick</p>
 </blockquote>
-<h1 id="command-git-rerere">[command] git rerere</h1>
+<h1 id="rerere">rerere</h1>
 <p>It is used for cherry-pick
 Especially for fixing conflict when cherry-pick latest commits from develop branch against an old tag commit
 Basically, it records the change you made and apply the fixes to next conflicts</p>
 <p>See more: <a href="https://git-scm.com/docs/git-rerere">https://git-scm.com/docs/git-rerere</a></p>
-<h1 id="command-git-show">[command] git show</h1>
+<h1 id="show">show</h1>
 <p>查看某一個 tag 的變動</p>
 <pre><code>git show v1.0.0
 </code></pre>
 <p>查看 commit id 修改內容</p>
 <pre><code>git show 41e24b9349acc9bbc1b8853284866f498892ce4b
 </code></pre>
-<h1 id="command-git-log">[command] git log</h1>
+<h1 id="log">log</h1>
 <ul>
 <li><code>--stat</code> : 列出有增減的檔案</li>
 <li><code>--oneline</code> : 精簡的log，每一次的commit資訊為一行，只顯示前7碼的SHA1及message</li>
@@ -315,9 +346,9 @@ Basically, it records the change you made and apply the fixes to next conflicts<
 <p>最近一次 commit 的更改細節</p>
 <pre><code>git log -n 1 -p
 </code></pre>
-<h1 id="command-git-reflog">[command] git reflog</h1>
+<h1 id="reflog">reflog</h1>
 <p>顯示 git 的每個 log (包括操作 command 及 commit 內容等等)</p>
-<h1 id="command-git-diff">[command] git diff</h1>
+<h1 id="diff">diff</h1>
 <ul>
 <li>default or <code>--</code> : 非 staged 裡的與目前版本的差異</li>
 <li><code>--staged</code> or <code>--cached</code>(1.6版前) : stage 裡的與目前版本的差異</li>
@@ -335,11 +366,11 @@ Basically, it records the change you made and apply the fixes to next conflicts<
 <p>比較兩個 branch</p>
 <pre><code>git diff develop master
 </code></pre>
-<h1 id="command-git-diff-tree">[command] git diff-tree</h1>
+<h1 id="diff-tree">diff-tree</h1>
 <p>List modified files on a specific commid id</p>
 <pre><code>git diff-tree --no-commit-id --name-only -r cf5f610b67ce52c8d6e39a526e6405675f430bd8
 </code></pre>
-<h1 id="command-git-config">[command] git config</h1>
+<h1 id="config">config</h1>
 <ul>
 <li><code>--list</code> : 查看 config 內容，也可以用另種方式看 <code>cat ~/.gitconfig</code></li>
 <li><code>--unset</code> : reset 某個 config. e.g. <code>git config --global --unset {key}</code></li>
@@ -349,12 +380,12 @@ Basically, it records the change you made and apply the fixes to next conflicts<
 git config --global difftool.prompt false   # 執行上面指令, 會問你是否執行, 很麻煩所以關掉它
 git config --global alias.d difftool        # 使用 `git d` 相當於 `git difftool`
 </code></pre>
-<h1 id="command-git-rm">[command] git rm</h1>
+<h1 id="rm">rm</h1>
 <ul>
 <li><code>--cache filename.php</code> : 將已被 git 追蹤的檔案取消追蹤, 放心! 它並不會將檔案刪除, 而將狀態變成 Untracked</li>
 <li><code>--cached filename.php</code> : 結果似乎和 <code>--cache</code> 一樣</li>
 </ul>
-<h1 id="command-git-push">[command] git push</h1>
+<h1 id="push">push</h1>
 <p>強制 push, 之前的commit 紀錄會不見,只會有目前這個branch的commit 紀錄</p>
 <pre><code>git push origin master -f
 </code></pre>
@@ -371,7 +402,7 @@ git push origin dev:refs/heads/dev
 <p>push to a private repo</p>
 <pre><code>git push https://dummy@github.com/dummy/example.git
 </code></pre>
-<h1 id="command-git-pull">[command] git pull</h1>
+<h1 id="pull">pull</h1>
 <p><code>git pull --rebase</code> 等於以下兩步</p>
 <pre><code>git fetch
 git merge origin dev
@@ -383,7 +414,7 @@ git rebase -p origin/develop
 <blockquote>
 <p>在目前 branch 下 <code>git pull origin {branch_name}</code>: 代表將 {branch_name} (remote branch) merge 到目前這個 branch</p>
 </blockquote>
-<h1 id="command-git-stash">[command] git stash</h1>
+<h1 id="stash">stash</h1>
 <p>放進暫存</p>
 <pre><code>git stash
 </code></pre>
@@ -403,7 +434,7 @@ git rebase -p origin/develop
 <pre><code>git add a1.go                   // files that You don't want to stash
 git stash save --keep-index     // this command will stash the rest of files
 </code></pre>
-<h1 id="command-git-tag">[command] git tag</h1>
+<h1 id="tag">tag</h1>
 <p>查看目前 tag</p>
 <pre><code>git tag
 v1.0.0
@@ -412,7 +443,7 @@ v1.0.0
 <pre><code>git tag -a v1.4 -m &quot;my version 1.4&quot;
 git push --tags
 </code></pre>
-<h1 id="command-git-fetch">[command] git fetch</h1>
+<h1 id="fetch">fetch</h1>
 <p>更新 <code>git branch -r</code> 的名單</p>
 <pre><code>git fetch
 </code></pre>
@@ -430,7 +461,7 @@ git merge origin dev
 <p>clean up local cache of remote branch</p>
 <pre><code>git fetch —prune
 </code></pre>
-<h1 id="command-git-remote">[command] git remote</h1>
+<h1 id="remote">remote</h1>
 <p>(建議) 更新 remote branch list</p>
 <pre><code>git remote prune origin
 </code></pre>
@@ -459,15 +490,15 @@ git pull upstream master
 <p>show remote origin list</p>
 <pre><code>git remote -v
 </code></pre>
-<h1 id="command-git-rev-parse">[command] git rev-parse</h1>
+<h1 id="rev-parse">rev-parse</h1>
 <p>latest commit hash</p>
 <pre><code>git rev-parse HEAD
 </code></pre>
-<h1 id="command-git-clean">[command] git clean</h1>
+<h1 id="clean">clean</h1>
 <p>Remove untracked file and directory.</p>
 <pre><code>git clean -df
 </code></pre>
-<h1 id="git-submodule">git submodule</h1>
+<h1 id="submodule">submodule</h1>
 <h3 id="basic-commands">Basic commands</h3>
 <p>Add a new submodules</p>
 <pre><code>git submodule add https://github.com/msanders/snipmate.vim.git bundle/snipmate.vim
@@ -506,6 +537,13 @@ rm -rf &quot;.git/modules/${oldPath}&quot;
 git add .gitmodules
 git commit -m &quot;Removed ${oldPath}&quot;
 </code></pre>
+<h1 id="tig-not-built-in-command">tig (not built-in command)</h1>
+<p>只顯示 merge 線圖</p>
+<pre><code>tig --merges
+</code></pre>
+<p>use Git’s default commit order</p>
+<pre><code>tig --topo-order
+</code></pre>
 <h1 id="operation-in-practice">Operation in practice</h1>
 <p>Add a new submodule</p>
 <pre><code>git submodule add https://github.com/test-user/practice_submodule.git
@@ -518,18 +556,7 @@ git submodule update
 <p>Pull submodule in the existing repo</p>
 <pre><code>git submodule update
 </code></pre>
-<h1 id="其他指令">其他指令</h1>
-<ul>
-<li><code>git blame test.qq</code> : test.php這份檔案顯示每行的編輯者</li>
-<li><code>git branch -r </code> : 查看遠端 branch</li>
-<li><code>git add -u</code> : 自動將所有的檔案都放到 stage 等待 commit, 而重要的是被刪除過的檔案也會一起放進去, 不需用 <code>git rm</code> 一個一個點被刪除過的檔案, 很方便!</li>
-<li><code>tig</code> : 顯示樹狀</li>
-<li><code>gitk</code> : 顯示樹狀 (GUI version)</li>
-</ul>
-<blockquote>
-<p><code>prune</code> 是在 <code>grb delete</code> 後才需要做的</p>
-</blockquote>
-<h3 id="remote-branch-operations">Remote branch operations</h3>
+<h1 id="remote-branch-operations">Remote branch operations</h1>
 <p>create</p>
 <pre><code>git push origin develop:refs/heads/branch_to_create
 git fetch origin
@@ -629,100 +656,43 @@ fatal: HTTP request failed
 <li>Push to the branch (git push origin my-new-feature)</li>
 <li>Create new Pull Request</li>
 </ol>
-<h3 id="如何寫-commit-messages">如何寫 commit messages</h3>
-<ol>
-<li>
-<p>Subject 與 body 以一行空格分開</p>
-<p>Derezz the master control program</p>
-<p>MCP turned out to be evil and had become intent on world domination.
-This commit throws Tron&rsquo;s disc into MCP (causing its deresolution)
-and turns it back into a chess game.</p>
-</li>
-</ol>
-<blockquote>
-<p>這樣<code>git log --oneline</code> or <code>git shortlog</code>就可以只顯示主旨</p>
-</blockquote>
-<ol start="2">
-<li>
-<p>Subject 不要超過 50 字元, 開頭要大寫, 結尾不需句號</p>
-</li>
-<li>
-<p>簡明的 subject</p>
-<p>Refactor subsystem X for readability
-Update getting started documentation
-Remove deprecated methods
-Release version 1.0.0
-也可以用以下的句子
-If applied, this commit will refactor subsystem X for readability
-If applied, this commit will update getting started documentation
-If applied, this commit will remove deprecated methods
-If applied, this commit will release version 1.0.0
-If applied, this commit will merge pull request #123 from user/branch</p>
-</li>
-<li>
-<p>Body 在 72 字元換行，確保加上 git 本身的 indent 每行可以在 80 字元內</p>
-</li>
-<li>
-<p>Body 用來解釋 what changed and why，主角不是 how</p>
-<p>Simplify serialize.h&rsquo;s exception handling</p>
-<p>Remove the &lsquo;state&rsquo; and &rsquo;exceptmask&rsquo; from serialize.h&rsquo;s stream
-implementations, as well as related methods.</p>
-<p>As exceptmask always included &lsquo;failbit&rsquo;, and setstate was always
-called with bits = failbit, all it did was immediately raise an
-exception. Get rid of those variables, and replace the setstate
-with direct exception throwing (which also removes some dead
-code).</p>
-<p>As a result, good() is never reached after a failure (there are
-only 2 calls, one of which is in tests), and can just be replaced
-by !eof().</p>
-<p>fail(), clear(n) and exceptions() are just never called. Delete
-them.</p>
-</li>
-</ol>
-<p>ref : <a href="http://chris.beams.io/posts/git-commit/">http://chris.beams.io/posts/git-commit/</a></p>
-<h3 id="其他參考-message">其他參考 message</h3>
-<pre><code>Other bug fixes
-    * Fixed an issue that of forcibly terminating while running Peel remoate application.
-    * The latest Android security patch has been applied.
-    * Device security has been further enhanced.
-Fixed the XXX bug in YYY
-</code></pre>
-<h3 id="該用-present-tense-還是-past-tense">該用 present tense 還是 past tense?</h3>
-<p>兩邊都有支持者, git 本身的專案的 message 是用 present tense,
-但有人覺得 present tense 是告訴別人將要做什麼, 用 past tense 比較正確,
-但查了一輪下來, 支持 present tense 的人比較多一些,
-我的建議是取決於團隊的 style, 當多數人用哪個就用哪個</p>
-<h3 id="commit-的分類">commit 的分類</h3>
+<h1 id="code-review-best-practices">Code review best practices</h1>
 <ul>
-<li>feat: (new feature for the user, not a new feature for build script)</li>
-<li>fix: (bug fix for the user, not a fix to a build script)</li>
-<li>docs: (changes to the documentation)</li>
-<li>style: (formatting, missing semi colons, etc; no production code change)</li>
-<li>refactor: (refactoring production code, eg. renaming a variable)</li>
-<li>test: (adding missing tests, refactoring tests; no production code change)</li>
-<li>chore: (updating grunt tasks etc; no production code change)</li>
-</ul>
-<p>Categories</p>
+<li>Context
 <ul>
-<li>[INITIAL] — for the initial commit and set up</li>
-<li>[ADD] — broad category for code that’s added</li>
-<li>[UPDATE] — for small updates</li>
-<li>[REFACTOR] — refactored code</li>
-<li>[FIX] — fixes (e.g. typos, linter rules, broken links/imports, etc.)</li>
-<li>[TESTS] — if you write them :)</li>
-<li>[STYLES] — style related commits</li>
-<li>[BUILD] — during the build process</li>
-<li>[PRODUCTION] — production related</li>
-<li>[WIP] — work in progress</li>
-<li>[REMOVE] — when removing files or old, unnecessary code</li>
+<li>What is the code doing?</li>
+<li>Know the scope of the code</li>
 </ul>
-<h1 id="tig">tig</h1>
-<p>只顯示 merge 線圖</p>
-<pre><code>tig --merges
-</code></pre>
-<p>use Git’s default commit order</p>
-<pre><code>tig --topo-order
-</code></pre>
+</li>
+<li>Readability
+<ul>
+<li>Coding style - Is the code wrtten in a similar style to other code in the project?</li>
+<li>Are variables named appropriately? Can it be easy to understand in the future?</li>
+<li>Refactor the code if needed</li>
+</ul>
+</li>
+<li>Reusability
+<ul>
+<li>Does the code follow SOLID principles?</li>
+<li>Is it easy to be maintained? Would it introduce new tech debt?</li>
+</ul>
+</li>
+<li>Security
+<ul>
+<li>Does the code handle errors well?</li>
+<li>Does the code introduce vulnerabilities?</li>
+<li>Does the code manage concurrency properly?</li>
+<li>Does the code make any race condition?</li>
+<li>Does the code filter user input carefully?</li>
+<li>Does the output contain any confidential infomation?</li>
+</ul>
+</li>
+<li>Test coverage
+<ul>
+<li>Does it have enough unit or integration tests to cover its functionalities?</li>
+</ul>
+</li>
+</ul>
 <h3 id="ref">ref:</h3>
 <ul>
 <li><a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a></li>

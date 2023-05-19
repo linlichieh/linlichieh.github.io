@@ -12,13 +12,12 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/git/</guid>
-      <description>[command] git add 加入空的目錄: 建立 gitkeep 或 .keep 在空的目錄
-[command] git branch 都不加 : 顯示 local branch -r : 顯示 remote branch -a : 顯示所有 branch (local + remote) -v : 顯示branch的詳細資料 --merged : 列出已經merge的branch --no-merged : 列出尚未merge的branch Rename branch
+      <description>add Add a new file or folder
+git add example.txt Add all untracked files and folders
+git add . branch 都不加 : 顯示 local branch -r : 顯示 remote branch -a : 顯示所有 branch (local + remote) -v : 顯示branch的詳細資料 --merged : 列出已經merge的branch --no-merged : 列出尚未merge的branch Rename branch
 git branch -m {old_name} {new_name} Rename current branch
 git branch -m {new_name} 刪除branch
-git branch -d developXD git branch -D {branch name} git branch —no-merged
-Remove outdated local branch
-git checkout master git branch —merged or git branch -vv [origin/bug/more-phan-fixes: gone] [REFACTOR] Phan fixes</description>
+git branch -d developXD git branch -D {branch name} git branch —no-merged</description>
     </item>
     
   </channel>
