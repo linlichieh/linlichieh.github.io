@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>MySQL Optimisation | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/mysql-optimisation/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>MySQL Optimisation</h1>
+    
+  </header>
+  <h1 id="index">Index</h1>
+<h3 id="does-the-order-matter-in-a-composite-index">Does the order matter in a composite index?</h3>
+<p>Yes!</p>
+<p>For example, if there is an index on (uid, gid, pid),</p>
+<p>the index will fully come into effect under the following cases:</p>
+<ul>
+<li>uid = &ldquo;AAA&rdquo;</li>
+<li>uid = &ldquo;AAA&rdquo; AND gid = &ldquo;BBB&rdquo;</li>
+<li>uid = &ldquo;AAA&rdquo; AND gid = &ldquo;BBB&rdquo; AND pid = &ldquo;CCC&rdquo;</li>
+</ul>
+<p>the index will partially come into effect under the following cases:</p>
+<ul>
+<li>uid = &ldquo;AAA&rdquo; AND pid = &ldquo;CCC&rdquo;
+<ul>
+<li>only uid comes into effect in this index</li>
+</ul>
+</li>
+</ul>
+<p>the index won&rsquo;t come into effect under the following cases:</p>
+<ul>
+<li>gid = &ldquo;BBB&rdquo;</li>
+<li>pid = &ldquo;CCC&rdquo;</li>
+<li>gid = &ldquo;BBB&rdquo; AND pid = &ldquo;CCC&rdquo;</li>
+</ul>
+<blockquote>
+<p>they reason why the index won&rsquo;t work is because the index followed by uid that isn&rsquo;t in the WHERE clause</p>
+</blockquote>
+<h3 id="does-the-order-matter-in-where-clauses">Does the order matter in &ldquo;WHERE&rdquo; clauses?</h3>
+<p>No, the order of where clauses does not matter.</p>
+<p>Query optimizer will look at all the parts of the WHERE clause and figure out the most efficient way to satisfy that query</p>
+<h3 id="can-a-query-choose-more-than-one-index">Can a query choose more than one index?</h3>
+<p>Yes, a query optimizer can choose to use more than one index in a single query if doing so would make the query more efficient.</p>
+<p>For example:</p>
+<ul>
+<li>WHERE - If a query has multiple conditions in the WHERE clause, the optimizer might use multiple indexes to satisfy these conditions</li>
+<li>JOIN - If a query joins multiple tables and there are indexes on the join columns, the optimizer can use these indexes to speed up the join operation</li>
+<li>Covering Index - If a query selects or filters on multiple columns, and there are separate indexes on those columns, the optimizer might use all of these indexes</li>
+</ul>
+<p>It&rsquo;s worth noting that using multiple indexes in a single query can also have downsides.
+Each index lookup has a cost, and the database has to combine the results from multiple lookups, which also takes time.
+Therefore, the query optimizer will only choose to use multiple indexes if it estimates that doing so will be faster than the alternatives.
+This estimation is based on various factors, such as the size of the table, the selectivity of the indexes, and the complexity of the query.</p>
+<h5 id="if-two-indices-exist-for-the-columns-uid-and-pid-and-both-are-specified-in-the-where-clause-would-the-query-optimizer-utilize-both-indices">If two indices exist for the columns &lsquo;uid&rsquo; and &lsquo;pid&rsquo;, and both are specified in the WHERE clause, would the query optimizer utilize both indices?</h5>
+<p>Yes, it depends.</p>
+<p>The query optimizer may use both indices if both &lsquo;uid&rsquo; and &lsquo;pid&rsquo; columns are used in the WHERE clause and their indices are highly selective.
+However, it may also choose to use only one index which is more selective than the other one.</p>
+<h3 id="what-factors-does-the-query-optimizer-consider-when-making-decisions-on-index">What factors does the query optimizer consider when making decisions on index?</h3>
+<ul>
+<li>Cardinality
+<ul>
+<li>The uniqueness of data in a column.</li>
+<li>If a column has a high cardinality (many unique values), then an index on that column can be very efficient for certain lookups.</li>
+<li>Conversely, if a column has low cardinality (few unique values), then an index might not be as useful.</li>
+</ul>
+</li>
+<li>Selectivity
+<ul>
+<li>This is related to cardinality and refers to the percentage of rows a particular index entry selects.</li>
+<li>If an index entry refers to many rows (low selectivity), the optimizer may choose a table scan or another index.</li>
+<li>But if an index entry refers to few rows (high selectivity), the optimizer may opt to use the index.</li>
+</ul>
+</li>
+<li>Distribution of Values
+<ul>
+<li>If the values in a column are unevenly distributed, this might affect the optimizer&rsquo;s decision.</li>
+<li>For instance, if a large number of rows have the same value for an indexed column, and a query is selecting rows with that value, a full table scan might be more efficient than using the index.</li>
+</ul>
+</li>
+<li>Size of the Table
+<ul>
+<li>Larger tables are more likely to benefit from indexing than smaller tables.</li>
+<li>In a small table, it might be quicker to perform a full table scan rather than using an index.</li>
+</ul>
+</li>
+<li>Type of Query
+<ul>
+<li>The kind of operation being performed in the query can also influence the decision.</li>
+<li>For instance, indexes are more beneficial in <code>SELECT</code> queries than in <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> queries, because the latter group of operations require additional time to update the index.</li>
+</ul>
+</li>
+<li>Index Type
+<ul>
+<li>Different DBMS support different types of indexes (B-tree, hash, bitmap, etc.).</li>
+<li>The type of an index can determine its usefulness for certain types of queries.</li>
+</ul>
+</li>
+<li>Statistics
+<ul>
+<li>Modern databases keep statistics about data distribution in tables and indexes.</li>
+<li>The optimizer uses these to make educated decisions about which indexes to use.</li>
+</ul>
+</li>
+</ul>
+<h3 id="which-clauses-in-a-query-can-affect-the-query-optimizers-decision-on-indices">Which clauses in a query can affect the query optimizer&rsquo;s decision on indices?</h3>
+<ul>
+<li><code>SELECT</code>
+<ul>
+<li>While the SELECT clause doesn&rsquo;t directly affect index selection, the columns that are being selected can influence the optimizer.</li>
+<li>If all selected columns are part of a single index (a situation known as a &ldquo;covering index&rdquo;), the optimizer may choose to scan the index instead of the actual table.</li>
+</ul>
+</li>
+<li><code>JOIN</code>
+<ul>
+<li>The optimizer takes into account the tables being joined and the join type.</li>
+<li>If there are indexes on the columns being used to join the tables, the optimizer will likely use those indexes to speed up the join operation.</li>
+</ul>
+</li>
+<li><code>WHERE</code>
+<ul>
+<li>The optimizer looks at the columns and values in the WHERE clause.</li>
+<li>If there are indexes on the columns being used in the WHERE conditions, it can use these indexes to quickly locate the rows that match the condition, instead of scanning the entire table.</li>
+</ul>
+</li>
+<li><code>GROUP BY</code>: If you&rsquo;re grouping by a column that&rsquo;s indexed, the optimizer might use the index to speed up the operation.</li>
+<li><code>ORDER BY</code>: If you&rsquo;re ordering by a column that&rsquo;s indexed, the database can use the index to avoid having to sort the result set, since the index already provides a sorted set of values.</li>
+<li><code>LIMIT</code>: The LIMIT clause can significantly influence how the optimizer chooses to use indexes, especially when combined with an ORDER BY clause.</li>
+</ul>
+<h3 id="which-clauses-are-given-precedence-over-others-by-the-query-optimizer-within-a-query">Which clauses are given precedence over others by the query optimizer within a query?</h3>
+<p>No clause takes precedence over the others.</p>
+<p>When deciding on the usage of indexes, the optimizer doesn&rsquo;t strictly prioritize one clause over the other.</p>
+<p>For example, it doesn&rsquo;t necessarily favor &lsquo;WHERE&rsquo; over &lsquo;ORDER BY&rsquo;.
+It evaluates the entire query and the available indexes to choose the best indexes to use.</p>
+<h3 id="the-pros-and-cons-of-setting-foreign-keys">The pros and cons of setting foreign keys</h3>
+<p>Setting foreign keys in a database comes with several advantages and a few considerations. Here are some pros and cons of setting foreign keys:</p>
+<p>Pros</p>
+<ul>
+<li>Data Integrity
+<ul>
+<li>Foreign keys enforce referential integrity, ensuring that relationships between tables are maintained correctly.</li>
+<li>They prevent the insertion of invalid or orphaned data by enforcing constraints on the referenced columns.</li>
+<li>This helps to maintain the overall integrity and consistency of the data.</li>
+</ul>
+</li>
+<li>Data Consistency
+<ul>
+<li>Foreign keys help to ensure data consistency by automatically updating or deleting related records when changes are made to the referenced records.</li>
+<li>This avoids inconsistencies and errors that can occur when managing relationships manually.</li>
+</ul>
+</li>
+<li>Query Optimization
+<ul>
+<li>Foreign keys can improve query performance by allowing the database to optimize JOIN operations.</li>
+<li>With foreign keys in place, the query optimizer can efficiently navigate between related tables using available indexes, resulting in faster query execution.</li>
+</ul>
+</li>
+<li>Documentation and Understanding
+<ul>
+<li>Foreign keys provide a clear and explicit representation of the relationships between tables.</li>
+<li>They serve as documentation for developers, making it easier to understand and work with the database structure.</li>
+</ul>
+</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>Performance Overhead
+<ul>
+<li>Validation Checks: When a foreign key constraint is defined, the database needs to validate the referential integrity of the data during data modification operations. This involves checking if the referenced key values exist in the referenced table.
+<ul>
+<li>For inserts and updates, the database must ensure that the referenced key value being inserted or updated exists in the referenced table</li>
+<li>For deletes, the database must verify if there are any dependent records in the child table</li>
+</ul>
+</li>
+<li>Indexing Considerations
+<ul>
+<li>Foreign keys often involve indexes on the referencing and referenced columns to speed up the referential integrity checks.</li>
+<li>Maintaining and updating these indexes can introduce a slight performance overhead during data modification operations.</li>
+<li>However, these indexes are also beneficial for optimizing query performance, as they allow for efficient JOIN operations.</li>
+</ul>
+</li>
+<li>Bulk Data Operations: In scenarios involving bulk data operations, such as large-scale data imports or updates, the performance overhead of foreign keys can become more noticeable.
+<ul>
+<li>The validation checks and index maintenance for each individual record can accumulate and slow down the overall operation.
+<ul>
+<li>In such cases, it&rsquo;s common practice to temporarily disable or defer foreign key constraints during the bulk data operations and re-enable them afterward. This helps to improve the performance of the bulk operations while still maintaining the integrity of the data.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Transaction Overhead
+<ul>
+<li>When working with transactions, the use of foreign keys can introduce additional overhead due to the need to validate and enforce referential integrity constraints within the transaction boundaries.</li>
+<li>This overhead can be more noticeable in high-concurrency environments with frequent concurrent updates to related tables.</li>
+</ul>
+</li>
+<li>The impact is usually minimal unless dealing with very high transaction volumes.</li>
+</ul>
+</li>
+<li>Complexity and Maintenance
+<ul>
+<li>Setting and managing foreign keys requires careful planning and design.</li>
+<li>It adds complexity to the database schema, and any modifications to relationships or referenced tables may require updating the foreign keys.</li>
+<li>This can introduce additional maintenance and management considerations.</li>
+</ul>
+</li>
+<li>Concurrency and Locking
+<ul>
+<li>In some scenarios, foreign keys can introduce additional concurrency and locking considerations.</li>
+<li>Updates or deletes on heavily related tables may require acquiring and releasing locks on multiple tables, potentially impacting system performance and concurrency.</li>
+</ul>
+</li>
+<li>Database Migration and Data Loading
+<ul>
+<li>When performing database migrations or large-scale data loading, foreign key constraints can sometimes pose challenges.</li>
+<li>Disabling or temporarily removing foreign key constraints may be necessary to facilitate the migration or data loading process.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>the benefits of setting foreign keys typically outweigh the drawbacks</p>
+</blockquote>
+<h3 id="can-i-speed-up-like-queries-by-adding-an-index">Can I speed up <code>LIKE</code> queries by adding an index?</h3>
+<p>For string columns, MySQL indexes the left side of a string.</p>
+<p>An index can speed a like query that has a wildcard on the right side:</p>
+<pre><code>SELECT * FROM foo WHERE field LIKE &quot;bar%&quot;
+</code></pre>
+<p>It can not speed up a query that has a variable left side:</p>
+<pre><code>SELECT * FROM foo WHERE field LIKE &quot;%bar%&quot;
+</code></pre>
+<h1 id="explain">EXPLAIN</h1>
+<h3 id="the-columns-in-the-output">The columns in the output</h3>
+<ul>
+<li>id
+<ul>
+<li>he ID of the select operation within the query execution plan. If there are multiple rows, they represent a nested subquery</li>
+</ul>
+</li>
+<li>select_type
+<ul>
+<li>The type of select operation being performed. It indicates the type of query or subquery, such as <code>SIMPLE</code>, <code>PRIMARY</code>, <code>SUBQUERY</code>, <code>DERIVED</code>, etc.</li>
+</ul>
+</li>
+<li>table
+<ul>
+<li>The name of the table involved in the corresponding row of the query execution plan.</li>
+</ul>
+</li>
+<li>partitions
+<ul>
+<li>The partitions of the table that are accessed or searched during the query execution.</li>
+</ul>
+</li>
+<li>type
+<ul>
+<li>The join type or access method used for retrieving rows.</li>
+<li>Values
+<ul>
+<li><code>ALL</code>
+<ul>
+<li>potentially undesirable value</li>
+<li>This indicates a full table scan where all rows of the table are read.</li>
+<li>It can be resource-intensive and generally not desirable, especially for large tables.</li>
+</ul>
+</li>
+<li><code>index</code>
+<ul>
+<li>potentially undesirable value</li>
+<li>This value indicates that the query uses a non-unique index to retrieve rows.</li>
+<li>It typically involves scanning a range of index entries to fetch the required data.</li>
+<li>The range might be determined by conditions specified in the WHERE clause.</li>
+</ul>
+</li>
+<li><code>range</code>
+<ul>
+<li>potentially undesirable value</li>
+<li>This suggests that the query uses an index to retrieve a range of rows based on a specific condition, such as a range comparison (<code>BETWEEN</code>, <code>&lt;</code>, <code>&gt;</code>).</li>
+<li>It is more efficient than a full table scan but still involves accessing a subset of rows.</li>
+</ul>
+</li>
+<li><code>ref</code>
+<ul>
+<li>ideal value</li>
+<li>This indicates that the query uses a non-unique index to access rows based on a single value from another table.</li>
+<li>It typically occurs when joining tables using a column that is not unique but has an index.</li>
+</ul>
+</li>
+<li><code>eq_ref</code>
+<ul>
+<li>ideal value</li>
+<li>This is similar to ref, but it occurs when the join is performed using a unique index.</li>
+<li>It&rsquo;s a more efficient access method compared to ref because only one row is expected to match.</li>
+</ul>
+</li>
+<li><code>const</code>
+<ul>
+<li>ideal value</li>
+<li>This suggests that the query accesses a single row based on a constant value or a primary key.</li>
+<li>It&rsquo;s the most efficient access method because it retrieves a specific row directly.</li>
+</ul>
+</li>
+<li><code>system</code>
+<ul>
+<li>This indicates that the query examines a single row from a system table, which contains database-specific metadata.</li>
+</ul>
+</li>
+<li><code>unique_subquery</code>
+<ul>
+<li>This value suggests that a subquery is used to fetch a single unique row.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>You generally want <code>ALL</code> or <code>index</code> to be as low as possible.</li>
+<li>If you see <code>ALL</code>, it means a full table scan is happening which can be a performance hit.</li>
+<li>If <code>type</code> is <code>ALL</code> or <code>index</code>, and especially if the <code>rows</code> column is a large number, MySQL is scanning a large number of rows or scanning an entire table or index. You may need to add an index to speed this up.</li>
+</ul>
+</li>
+<li>possible_keys
+<ul>
+<li>The indexes that could potentially be used for the query execution.</li>
+<li>If <code>possible_keys</code> is <code>NULL</code>, it means there are no relevant indexes that MySQL can use. You might want to add an index.</li>
+</ul>
+</li>
+<li>key
+<ul>
+<li>The actual key (index) that will be used.</li>
+<li>If <code>key</code> is <code>NULL</code>, it means MySQL isn&rsquo;t using an index. This could also indicate the need for an index.</li>
+</ul>
+</li>
+<li>key_len
+<ul>
+<li>The length of the index used.</li>
+<li>Shorter is usually better.</li>
+<li>The maximum number of bytes used from the index for key comparisons</li>
+<li>It is measured in bytes, and its calculation depends on the data types of the columns involved in the index.</li>
+</ul>
+</li>
+<li>ref
+<ul>
+<li>The columns or constants used with the chosen index to retrieve rows.</li>
+</ul>
+</li>
+<li>rows
+<ul>
+<li>The estimated number of rows that will be examined or processed by a particular step in the query execution plan</li>
+<li>A lower value in the rows column does not necessarily indicate that it is better or worse</li>
+</ul>
+</li>
+<li>Extra
+<ul>
+<li>Contains additional information about the query execution plan</li>
+<li>If <code>Extra</code> shows <code>Using filesort</code>, MySQL needs to do an extra pass to sort the results. You might be able to avoid this by indexing the columns in the <code>ORDER BY</code> clause.</li>
+<li>Values
+<ul>
+<li><code>Using index</code>
+<ul>
+<li>This is generally an ideal value</li>
+<li>the query is using an index to satisfy the query conditions, and the index provides the required data without accessing the table directly.</li>
+<li>It suggests that the query can benefit from index optimization.</li>
+</ul>
+</li>
+<li><code>Using where</code>
+<ul>
+<li>a filtering operation is performed after retrieving rows using an index.</li>
+<li>It means that the query needs to evaluate additional conditions that are not covered by the index, and it may involve scanning rows that don&rsquo;t match the conditions.</li>
+<li>While using where is not necessarily undesirable, it suggests that additional filtering is performed after retrieving rows using an index. If this value appears in a significant number of rows in the <code>EXPLAIN</code> output, it may indicate that the query is not fully utilizing the available indexes or that further optimization is possible.</li>
+</ul>
+</li>
+<li><code>Using temporary</code>
+<ul>
+<li>the query requires the creation of a temporary table to hold intermediate results.</li>
+<li>Temporary tables are used when the query involves complex operations or sorting.</li>
+<li>Using a temporary table is not inherently undesirable, but it indicates that the query requires the creation of a temporary table for sorting or other intermediate results.
+<ul>
+<li>If this value appears in a significant number of rows or for large result sets, it may suggest potential performance bottlenecks.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>Using filesort</code>
+<ul>
+<li>This is generally considered undesirable, because it&rsquo;s less efficient than in-memory sorting or sorting using an index. It may indicate a performance concern.</li>
+<li>the query requires a filesort operation to sort the result set. It occurs when the requested order of rows doesn&rsquo;t match the order of the index used, or when sorting cannot be performed using an index.</li>
+</ul>
+</li>
+<li><code>Using join buffer</code> (<code>Block Nested Loop</code>, <code>Batched Key Access</code>, etc.)
+<ul>
+<li>This is not necessarily undesirable
+<ul>
+<li>However, if these values appear frequently and involve large result sets, it may indicate that the query performance could be improved through better indexing or query optimization.</li>
+</ul>
+</li>
+<li>These values indicate that the query is using a join buffer for specific join strategies. The join buffer is a temporary storage area used to process <code>JOIN</code> operations efficiently.</li>
+</ul>
+</li>
+<li><code>Range checked for each record</code>: the query is using a range scan to access rows within a specified range, such as using <code>BETWEEN</code> or <code>IN</code> conditions.</li>
+<li><code>Full scan on NULL key</code>: the query is scanning the entire index or table to find rows with NULL values for the indexed column.</li>
+<li><code>Distinct</code>: the query is removing duplicate rows from the result set using a distinct operation.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="whats-filesort">What&rsquo;s <code>filesort</code>?</h3>
+<p>The filesort operation  used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
+It involves writing temporary data to disk and performing an external sorting algorithm to order the rows.</p>
+<p>Here&rsquo;s what filesort operation does:</p>
+<ul>
+<li>Sorting Algorithm
+<ul>
+<li>When a filesort is needed, MySQL uses an external sorting algorithm, typically based on the merge sort algorithm.</li>
+<li>This algorithm is designed to efficiently sort data that is too large to fit entirely in memory.</li>
+</ul>
+</li>
+<li>Temporary File
+<ul>
+<li>MySQL creates a temporary file on disk to store intermediate results during the sorting process.</li>
+<li>This file is usually written to the disk, and the data is read back as needed for the sorting operation.</li>
+</ul>
+</li>
+<li>Data Partitioning
+<ul>
+<li>If the result set is larger than the available memory, MySQL divides the data into partitions that can fit in memory.</li>
+<li>It sorts each partition individually and writes the sorted partitions to the temporary file.</li>
+</ul>
+</li>
+<li>Merging Sorted Partitions
+<ul>
+<li>Once all the partitions are sorted individually, MySQL performs a merge operation to combine the sorted partitions into a single sorted result set.</li>
+<li>This merge process continues until all partitions have been merged.</li>
+</ul>
+</li>
+<li>Disk I/O
+<ul>
+<li>The filesort operation involves reading data from disk, writing intermediate results to disk, and performing disk I/O during the merge process.</li>
+<li>This can have an impact on query performance, especially if the disk I/O operations become a bottleneck.</li>
+</ul>
+</li>
+</ul>
+<h3 id="how-to-improve-filesort">How to improve <code>filesort</code>?</h3>
+<ul>
+<li>Ensure that the query is using appropriate indexes</li>
+<li>Review the query and the data model to see if there are ways to simplify or optimize the query to reduce the need for filesort</li>
+<li>Consider adjusting the MySQL configuration to increase the available memory for sorting operations, if feasible.</li>
+<li>Evaluate the possibility of adding or modifying indexes</li>
+</ul>
+<h1 id="tablerow-lock-mysql-56-and-onwards">Table/Row lock (MySQL 5.6 and onwards)</h1>
+<blockquote>
+<ul>
+<li>The table or row lock behaviours depend on the engine such as InnoDB, MyISAM, PostgreSQL. The given list below only serves as a reference or an overview.</li>
+<li>As of MySQL 5.6 and onwards, the InnoDB storage engine supports online DDL (Data Definition Language) operations. This allows most types of ALTER TABLE operations to be performed online, meaning that the table remains available for &lsquo;read&rsquo; and &lsquo;write&rsquo; operations during the operation.</li>
+</ul>
+</blockquote>
+<ul>
+<li>Table Locks
+<ul>
+<li><code>TRUNCATE TABLE</code>: This statement removes all rows from a table, and it acquires a table lock to ensure exclusive access during the truncation process.</li>
+<li><code>REPAIR TABLE</code>, <code>OPTIMIZE TABLE</code>: Certain table maintenance operations, such as repairing or optimizing a table, may require a table lock to prevent other operations from modifying the table during the maintenance process.</li>
+<li><code>LOCK TABLES</code>: This statement explicitly locks one or more tables, preventing other connections from accessing or modifying the locked tables.</li>
+<li><code>DDL Statements</code>: Certain data definition language (DDL) statements, like <code>CREATE TABLE</code>, <code>DROP TABLE</code>, or <code>RENAME TABLE</code>, may acquire table locks during their execution.</li>
+</ul>
+</li>
+<li>Row Locks
+<ul>
+<li><code>UPDATE</code>: When an <code>UPDATE</code> statement modifies one or more rows, it typically acquires row-level locks on the affected rows to ensure data consistency. The locks are held until the transaction is committed or rolled back.</li>
+<li><code>DELETE</code>: Similar to the <code>UPDATE</code> statement, a <code>DELETE</code> statement acquires row-level locks on the affected rows to maintain data consistency.</li>
+<li><code>SELECT ... FOR UPDATE</code>: When using the <code>SELECT ... FOR UPDATE</code> syntax, the selected rows are locked for exclusive access within the transaction. This allows you to perform updates on the selected rows without conflicts.</li>
+<li><code>INSERT INTO ... SELECT</code>: If an <code>INSERT INTO ... SELECT</code> statement inserts data into a table based on a select query, it may acquire row-level locks on the selected rows during the insertion process.</li>
+<li><code>Transactions</code>: In a transactional environment, locks can be acquired implicitly during data modification operations to maintain consistency and isolation. The duration and scope of the locks depend on the transaction isolation level and the specific statements executed within the transaction.</li>
+</ul>
+</li>
+<li>No Table or Row lock
+<ul>
+<li><code>SELECT</code></li>
+<li><code>CREATE</code>: such as create a new table, index or view</li>
+<li><code>DROP</code>: It doesn&rsquo;t lock on other tables or rows</li>
+<li><code>GRAN</code> / <code>REVOKE</code></li>
+</ul>
+</li>
+<li><code>ALTER TABLE</code>
+<ul>
+<li>At the beginning and end of the operation, brief locks may be required, but for the majority of the operation, normal operations on the table can proceed.
+<ul>
+<li>Adding a new column.</li>
+<li>Adding or dropping an index or primary key.</li>
+<li>Changing a column&rsquo;s default value.</li>
+<li>Reordering of columns.</li>
+<li>Changing the auto_increment value.</li>
+<li>Creating, dropping, or renaming a column.</li>
+</ul>
+</li>
+<li>table lock as they require a full table copy
+<ul>
+<li>Changing the data type of existing columns.</li>
+<li>Dropping a column or primary key.</li>
+<li>Adding a auto_increment to an existing column.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="add-a-new-column">Add a new column</h3>
+<p>Environment: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
+<p>It doesn&rsquo;t lock table.</p>
+<p>For 1.3M rows, it takes 67s and the CPU usage is around 35%. It doesn&rsquo;t affect <code>INSERT</code> operation.</p>
+<h3 id="modify-a-column-alter-table">Modify a column (ALTER TABLE)</h3>
+<p>Environment: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
+<p>This operation locks table as it executes <code>copy to tmp table</code>, so the whole table gets stucked.</p>
+<p>It takes 30+ mins for a table with 3M rows.</p>
+<p>ref</p>
+<ul>
+<li>chatGPT</li>
+<li>phind</li>
+<li><a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

@@ -266,49 +266,11 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <h3 id="啟動">啟動</h3>
 <pre><code>sudo service mysql start
 </code></pre>
-<h2 id="index">INDEX</h2>
-<h3 id="為什麼要建立索引">為什麼要建立索引:</h3>
-<p>適當的設定index可以有效的降低資料庫查詢的時間, 但這是以空間爭取時間的做法, 所以建立索引必須先考量到常被查詢的欄位</p>
-<p>如果查詢時判斷多個欄位, 建立多組欄位的索引也要考量優先順序, 才能有效降低索引所佔用的資料庫空間</p>
-<h3 id="索引的規則">索引的規則:</h3>
-<p>假設有一組索引是uid+gid+ctime</p>
-<ul>
-<li>where條件不分先後順序, 假設ctime先再來是uid及gid, 也是符合的</li>
-<li>這組索引的重要順序也是依你設定的順序為主, 假設你的索引是uid+ctime, 那麼這組索引只有uid對你有效</li>
-<li>如果條件是gid+ctime這組索引是沒有效用的, 因為這組索引是由uid先開始排</li>
-<li>換句話說條件為uid+uname的話, 這組索引至少也可以幫你減少搜尋uid的時間n 但uname沒在索引上, 所以mysql還是得一行一行找</li>
-</ul>
-<h3 id="使用-explain-來檢查執行命令後索引的使用狀況">使用 <code>EXPLAIN</code> 來檢查執行命令後索引的使用狀況</h3>
-<pre><code>EXPLAIN SELECT *
-FROM  `user_log`
-WHERE uid =2
-AND gid =2
-AND ctime &gt;0
-</code></pre>
-<p>結果：（只列出重要的）</p>
-<pre><code>key : uid+gid+ctime  （使用到的索引）
-raw : 4              （查詢筆數）
-</code></pre>
-<p>參考來源：夯哥</p>
-<h3 id="排序order-by">排序(ORDER BY)</h3>
-<p>mysql 排序是按照該欄位的編碼, 例如 utf8_unicode_ci 就是按照 UTF8(unicode) 的順序去排 <code>數 &gt; 英 &gt; 日 &gt; 中 &gt; 韓</code></p>
-<p>也可以用 <code>COLLATE</code> 指定排序的編碼</p>
-<p><a href="http://dev.networkerror.org/utf8/">utf8(unicode) table</a></p>
-<h3 id="不會使用到-index-的狀況-innodb">不會使用到 index 的狀況 (innodb)</h3>
-<p>如果 where 多個已經有建 index 的欄位, 不會使用到 index</p>
-<pre><code>user_id = 'A01' or user_id = 'A02'
-IN('A01','A02')
-</code></pre>
-<p>單個才會使用到 index</p>
-<pre><code>user_id = 'A01'
-IN('A01')
-</code></pre>
-<h3 id="欄位優化">欄位優化</h3>
+<h1 id="欄位優化">欄位優化</h1>
 <h4 id="ip-用-int-unsigned-存">IP 用 int unsigned 存</h4>
 <pre><code>&gt; echo ip2long('10.0.115.80');
 &gt; 167801680
 </code></pre>
-<h3 id="修改大-table-innno-db">修改大 TABLE (Innno DB)</h3>
 <h4 id="新增欄位">新增欄位</h4>
 <p>目前測試的量沒有很多, 但可以參考看看</p>
 <p>環境: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
