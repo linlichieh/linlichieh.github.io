@@ -467,6 +467,57 @@ git pull upstream master
 <p>Remove untracked file and directory.</p>
 <pre><code>git clean -df
 </code></pre>
+<h1 id="git-submodule">git submodule</h1>
+<h3 id="basic-commands">Basic commands</h3>
+<p>Add a new submodules</p>
+<pre><code>git submodule add https://github.com/msanders/snipmate.vim.git bundle/snipmate.vim
+</code></pre>
+<p>Create the local config file for submodules if it doesn&rsquo;t exist</p>
+<pre><code>git submodule init
+</code></pre>
+<p>Fetch all data from submodules (after cloning a repo)</p>
+<pre><code>git submodule update
+</code></pre>
+<blockquote>
+<p>it will check out the commit that was most recently registered in the main repository. This does not necessarily align with the most recent commit in the submodule&rsquo;s remote repository</p>
+</blockquote>
+<p>Pull the latest changes from all submodules</p>
+<pre><code>git submodule update --remote
+</code></pre>
+<blockquote>
+<p>git will ignore the commit recorded in the parent repository, and instead, it will fetch and check out the latest commit from the remote of the submodule</p>
+</blockquote>
+<p>Clone a repo and automatically clone all its submodules</p>
+<pre><code>git clone --recurse-submodules https://github.com/msanders/snipmate.vim.git
+</code></pre>
+<h3 id="remove-a-submodule">Remove a submodule</h3>
+<p>Delete the relevant section from <code>.gitmodules</code> and <code>.git/config</code></p>
+<pre><code>oldPath=&quot;bundle/snipmate.vim&quot;
+git config -f .git/config --remove-section &quot;submodule.${oldPath}&quot;
+git config -f .gitmodules --remove-section &quot;submodule.${oldPath}&quot;
+</code></pre>
+<p>Run git rm &ndash;cached path_to_submodule (no trailing slash).</p>
+<pre><code>$ git rm --cached &quot;${oldPath}&quot;
+</code></pre>
+<p>Commit and delete the untracked submodule files.</p>
+<pre><code>rm 'bundle/snipmate.vim'
+rm -rf &quot;${oldPath}&quot;
+rm -rf &quot;.git/modules/${oldPath}&quot;
+git add .gitmodules
+git commit -m &quot;Removed ${oldPath}&quot;
+</code></pre>
+<h1 id="operation-in-practice">Operation in practice</h1>
+<p>Add a new submodule</p>
+<pre><code>git submodule add https://github.com/test-user/practice_submodule.git
+git submodule init
+</code></pre>
+<p>Pull submodule for the first time</p>
+<pre><code>git submodule init
+git submodule update
+</code></pre>
+<p>Pull submodule in the existing repo</p>
+<pre><code>git submodule update
+</code></pre>
 <h1 id="其他指令">其他指令</h1>
 <ul>
 <li><code>git blame test.qq</code> : test.php這份檔案顯示每行的編輯者</li>

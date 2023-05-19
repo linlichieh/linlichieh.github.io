@@ -105,71 +105,49 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 <h1 id="osi-model">OSI Model</h1>
 <h3 id="standard-osi-model">Standard OSI model</h3>
 <ol>
-<li>Physical
+<li>Layer 1 - Physical
 <ul>
 <li>electric signals / driver</li>
+<li>the data gets converted into a bit stream (1/0)</li>
+<li>Bits -&gt; Signal</li>
 </ul>
 </li>
-<li>Data Link
+<li>Layer 2 - Data Link
 <ul>
 <li>frames / mac address / ethernet</li>
+<li>facilitates data transfer between two devices on the same network</li>
+<li>Frame (breaks packets into smaller pieces called frames)</li>
 </ul>
 </li>
-<li>Network
+<li>Layer 3 - Network
 <ul>
 <li>IP / ARP / ICMP</li>
 <li>destination and source IP</li>
+<li>Packet (break segments into smaller units called packets and reassembles these packets on the receiving device)</li>
 </ul>
 </li>
-<li>Transport
+<li>Layer 4 - Transport
 <ul>
 <li>TCP / UDP</li>
 <li>destination and source Port to identify services or applications</li>
+<li>Segment (break the data into chunks called segments)</li>
 </ul>
 </li>
-<li>Session
+<li>Layer 5 - Session
 <ul>
 <li>connection establishment / TLS</li>
 <li>state / stateful / cookie session</li>
 </ul>
 </li>
-<li>Presentation
+<li>Layer 6 - Presentation
 <ul>
 <li>encoding / serialisation</li>
 <li>JSON object / UTF-8</li>
 </ul>
 </li>
-<li>Application
+<li>Layer 7 - Application
 <ul>
 <li>HTTP / FTP / gRPC</li>
-</ul>
-</li>
-</ol>
-<p>it can be simplified like this</p>
-<ol>
-<li>Physical
-<ul>
-<li>Bits -&gt; Signal</li>
-</ul>
-</li>
-<li>Data Link
-<ul>
-<li>Frame</li>
-</ul>
-</li>
-<li>Network
-<ul>
-<li>Packet (OS makes the segment into packet using IP protocal)</li>
-</ul>
-</li>
-<li>Transport
-<ul>
-<li>Segment (break the data into small pieces)</li>
-</ul>
-</li>
-<li>Application (Session + Presentation + Application)
-<ul>
-<li>Protocol Data Unit / Data <code>100110100110...</code></li>
 </ul>
 </li>
 </ol>
@@ -226,7 +204,11 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 </ul>
 </li>
 </ul>
-<p>Ref: gpt-4</p>
+<p>Ref:</p>
+<ul>
+<li>gpt-4</li>
+<li><a href="https://github.com/karanpratapsingh/system-design/blob/main/README.md">https://github.com/karanpratapsingh/system-design/blob/main/README.md</a></li>
+</ul>
 <h1 id="ip">IP</h1>
 <h3 id="basics">Basics</h3>
 <ul>
@@ -398,7 +380,7 @@ so the limit is really the number of file descriptors that the system has been c
 The maximum limit is typically up over 300K, but is configurable e.g. with sysctl
 </code></pre>
 <h3 id="nf_conntrack-table-full-dropping-packet">nf_conntrack: table full, dropping packet</h3>
-<h5 id="whats-nf_conntract">What&rsquo;s nf_conntract?</h5>
+<h5 id="whats-nf_conntrack">What&rsquo;s nf_conntrack?</h5>
 <p>It is a feature to allow kernel to keep track of connections. It might be only used in haproxy server.
 When NAT or firewall works, it&rsquo;s nf_conntrack under the hood. nf_conntract records connections info,
 including the mapping between public IPs (external IPs) and private IPs (internal IPs) for NAT,
