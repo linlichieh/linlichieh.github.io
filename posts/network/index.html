@@ -20,7 +20,27 @@
     <h1>Network</h1>
     
   </header>
-  <h1 id="proxy-server-vs-reverse-proxy-server">Proxy server vs Reverse proxy server</h1>
+  <h1 id="how-dns-resolution-works-when-entering-examplecom-into-browser">How DNS resolution works when entering &ldquo;example.com&rdquo; into browser?</h1>
+<ul>
+<li>Browser cache check: the brwoser first checks its own cache to see if it has the IP of &ldquo;example.com&rdquo;</li>
+<li>Operating system cache check: operating system also maintain a DNS cache</li>
+<li>Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare. These servers also maintain a DNS cache
+<ul>
+<li>handle requests from clients, such as web browsers</li>
+</ul>
+</li>
+<li>Root DNS server: Resolver contacts a root DNS server for the address of TLD DNS server (<code>.com</code>)</li>
+<li>TLD NDS server: Resolver queries the TLD DNS server (<code>.com</code>) for the address of authoritative DNS server of &ldquo;example.com&rdquo;</li>
+<li>Authoritative DNS Server: Resolver queries the authoritative DNS server for the IP address of &ldquo;example.com&rdquo;
+<ul>
+<li>Domain Name Server most commonly refers to the &ldquo;Authoritative DNS Server&rdquo; where knows the actual IP address</li>
+<li>GoDaddy serves as an Authoritative DNS Server. They store the DNS records for these domains</li>
+</ul>
+</li>
+<li>Returning the IP address to browser: the browser can then make a request to the IP address to get the website data</li>
+<li>Caching the IP address</li>
+</ul>
+<h1 id="proxy-server-vs-reverse-proxy-server">Proxy server vs Reverse proxy server</h1>
 <h3 id="regular-proxy-server">regular proxy server</h3>
 <ul>
 <li>When a client sends a request to access a server, the request is first intercepted by the proxy server.</li>
