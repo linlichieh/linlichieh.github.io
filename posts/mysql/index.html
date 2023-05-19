@@ -271,26 +271,6 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <pre><code>&gt; echo ip2long('10.0.115.80');
 &gt; 167801680
 </code></pre>
-<h4 id="新增欄位">新增欄位</h4>
-<p>目前測試的量沒有很多, 但可以參考看看</p>
-<p>環境: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
-<p>MySQL 5.6 以前不支援 ALTER table without locking table, 如果是 5.6 又是 InnoDB 的話，可以放心 alter，TABLE 不會被 lock</p>
-<p>130 萬筆資料庫的檔案大約需要 67s，cpu 會吃 35%，一直 insert 也很順, 不會影響到服務</p>
-<blockquote>
-<p>不建議建立另一個沒 data 的 TABLE, 先 ALTER 後再 copy 舊 TABLE 到新的, 因為 cpu 會吃到 80% 以上, 操作也略為複雜</p>
-</blockquote>
-<h4 id="修改欄位屬性-alter-table">修改欄位屬性 (ALTER TABLE)</h4>
-<p>這個動作會 lock table, INSERT / UPDATE / SELECT 都會, 它會先執行 <code>copy to tmp table</code>, 所以會整個會卡死</p>
-<p>300 萬筆就足夠 lock 30 分以上</p>
-<h4 id="加欄位跟index">加欄位跟index</h4>
-<p>不會 lock table</p>
-<blockquote>
-<ul>
-<li>新開一個 m3.medium RDS (與 prod 等級相同) 來測試新增一個 index (只 index 一個欄位), 將近 580 萬筆的 table, 需 <code>10 min 40.88 sec</code> CPU 會上升 20%, 但在 prod 實際執行時只需 <code>2 min 33.05 sec</code> CPU 一樣上升 20% (目前還不清楚為什麼 prod 需要的時間短很多)</li>
-</ul>
-</blockquote>
-<h4 id="createdrop-index">Create/Drop index</h4>
-<p>這個動作不會 lock table, <a href="https://dev.mysql.com/doc/refman/5.6/en/innodb-online-ddl-operations.html">see more</a></p>
 <h3 id="對大-table-做-crud-的效能參考">對大 table 做 CRUD 的效能參考</h3>
 <h4 id="860-萬的-table">860 萬的 table</h4>
 <p>SELECT</p>
@@ -319,14 +299,6 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <p>測試環境: AWS RDS MySQL db.t2.small</p>
 <p>Table 筆數: 近 570 萬</p>
 <p>執行 query 所花時間差不多都是 0.75 秒</p>
-<h3 id="can-i-speed-up-like-queries-by-adding-an-index">Can I speed up LIKE queries by adding an index?</h3>
-<p>will be faster with an index</p>
-<pre><code>SELECT * FROM foo WHERE field LIKE &quot;bar%&quot;
-</code></pre>
-<p>will not be faster with an index</p>
-<pre><code>SELECT * FROM foo WHERE field LIKE &quot;%bar%&quot;
-</code></pre>
-<p>ref: <a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></p>
 <h2 id="troubleshootings">Troubleshootings</h2>
 <h3 id="某些中文字無法存入問題">某些中文字無法存入問題</h3>
 <p>unicode 編碼一般常用字都是 3bytes, 但因為它是 4 byte 而無法寫入, 例如 : <code>𡟛</code><a href="https://zh.wiktionary.org/zh-hant/%F0%A1%9F%9B">參考 wiki</a></p>

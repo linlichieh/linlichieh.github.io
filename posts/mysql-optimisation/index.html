@@ -62,7 +62,7 @@
 Each index lookup has a cost, and the database has to combine the results from multiple lookups, which also takes time.
 Therefore, the query optimizer will only choose to use multiple indexes if it estimates that doing so will be faster than the alternatives.
 This estimation is based on various factors, such as the size of the table, the selectivity of the indexes, and the complexity of the query.</p>
-<h5 id="if-two-indices-exist-for-the-columns-uid-and-pid-and-both-are-specified-in-the-where-clause-would-the-query-optimizer-utilize-both-indices">If two indices exist for the columns &lsquo;uid&rsquo; and &lsquo;pid&rsquo;, and both are specified in the WHERE clause, would the query optimizer utilize both indices?</h5>
+<h3 id="if-two-indices-exist-for-the-columns-uid-and-pid-and-both-are-specified-in-the-where-clause-would-the-query-optimizer-utilize-both-indices">If two indices exist for the columns &lsquo;uid&rsquo; and &lsquo;pid&rsquo;, and both are specified in the WHERE clause, would the query optimizer utilize both indices?</h3>
 <p>Yes, it depends.</p>
 <p>The query optimizer may use both indices if both &lsquo;uid&rsquo; and &lsquo;pid&rsquo; columns are used in the WHERE clause and their indices are highly selective.
 However, it may also choose to use only one index which is more selective than the other one.</p>
