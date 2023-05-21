@@ -40,6 +40,21 @@
 <li>Returning the IP address to browser: the browser can then make a request to the IP address to get the website data</li>
 <li>Caching the IP address</li>
 </ul>
+<h1 id="which-layer-of-the-osi-model-does-dns-resolution-happen-at">Which layer of the OSI model does DNS resolution happen at?</h1>
+<ul>
+<li>Application Layer (Layer 7)
+<ul>
+<li>DNS is a high-level application protocol designed to resolve human-friendly domain names into IP addresses.</li>
+<li>This process is a service provided to applications so they can use IP networks correctly, which is a primary function of Layer 7.</li>
+</ul>
+</li>
+<li>Transport Layer (Layer 4)
+<ul>
+<li>Although DNS primarily operates at the application layer, it&rsquo;s also important to note that DNS uses protocols at the transport layer to exchange data.</li>
+<li>DNS typically uses UDP (User Datagram Protocol) for query and response messages, but it can also use TCP (Transmission Control Protocol) for larger data exchanges (like zone transfers) or when a UDP packet is dropped.</li>
+</ul>
+</li>
+</ul>
 <h1 id="proxy-server-vs-reverse-proxy-server">Proxy server vs Reverse proxy server</h1>
 <h3 id="regular-proxy-server">regular proxy server</h3>
 <ul>
@@ -123,6 +138,8 @@ First Server (FS)   &lt;&lt;&lt;─────────────[Response
 <pre><code>First Server (FS)    &lt;────────────[P2P Connection]──────────&gt;   Second Server (SS)
 </code></pre>
 <h1 id="osi-model">OSI Model</h1>
+<p>The OSI model is a theoretical model designed to understand and describe how different network protocols interact and work together.
+In the real world, protocols don&rsquo;t always fit neatly into a single layer and may operate across multiple layers.</p>
 <h3 id="standard-osi-model">Standard OSI model</h3>
 <ol>
 <li>Layer 1 - Physical
@@ -779,23 +796,80 @@ iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark
 <li>OpenVPN (SSL VPN) or IPsec</li>
 <li>OpenVPN 安全性會比 IPsec 好</li>
 </ul>
-<h1 id="常用的-http-status">常用的 Http status</h1>
+<h1 id="http-status">HTTP status</h1>
+<p>HTTP status codes are grouped into five classes</p>
 <ul>
-<li>301 (Permanent) — Redirects to the site you specified in the Forward To field using a &ldquo;301 Moved Permanently&rdquo; HTTP response. The HTTP 301 response code tells user-agents (including search engines) that the location has permanently moved.</li>
-<li>302 (Temporary) — Redirects to the site you specified in the Forward To field using a &ldquo;302 Found&rdquo; HTTP response. The HTTP 302 response code tells user-agents (including search engines) that the location has temporarily moved.</li>
-<li>200 (:ok) : ok. 常用在一般 api</li>
-<li>201 (:created) : 新增成功. 在 call create api 時回應</li>
-<li>422 (:unprocessable_entity) : Creating a new resource is not successful. create 失敗時回應</li>
-<li>204 (:no_content) : Successful responses with no content. 在 call destroy api 時回應</li>
-<li>500 : internal server errors  # Rails automatically handles server errors and returns a 500 response.</li>
-<li>401 : Unauthorized</li>
+<li>1xx: Informational</li>
+<li>2xx: Success
+<ul>
+<li><code>200 OK</code>: Request successful</li>
+<li><code>201 Created</code>
+<ul>
+<li>For example, consider a client sending a POST request to create a new user on a web service</li>
+<li>This is most commonly used in response to a POST request.</li>
 </ul>
-<h3 id="server-回覆較常使用的">Server 回覆較常使用的</h3>
+</li>
+<li><code>204 No Content</code>: Request successful, but no data to return</li>
+</ul>
+</li>
+<li>3xx: Redirection
 <ul>
-<li>200 : 成功回覆</li>
-<li>400 : Client 發送時引發的錯誤，例如參數有少</li>
-<li>401 : 認證錯誤，例如 AccessToken 錯誤</li>
-<li>500 : Server 內部發生錯誤，例如 DB 連線錯誤</li>
+<li><code>301 Moved Permanently</code>: the URI of the requested resource has been changed permanently.
+<ul>
+<li>Future requests should use one of the returned URIs.</li>
+<li>It&rsquo;s often used when a web page has been moved to a new URL.</li>
+</ul>
+</li>
+<li><code>302 Found</code> (Previously <code>Moved Temporarily</code>): the URI of the requested resource has been changed temporarily.
+<ul>
+<li>Further changes in the URI might be made in the future.</li>
+<li>Therefore, this same URI should be used by the client for future requests.</li>
+</ul>
+</li>
+<li><code>304 Not Modified</code>: Cached response is still valid
+<ul>
+<li>It tells the client that the requested resource has not been modified since the last request.</li>
+<li>For example, the browser can still use the same cache on its local storage</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>4xx: Client errors
+<ul>
+<li><code>400 Bad Request</code>: the server can&rsquo;t understand the request, and this can happen for several reasons
+<ul>
+<li>such as a missing required parameter, an illegal character in the URL, a request exceeds the size limit</li>
+</ul>
+</li>
+<li><code>401 Unauthorized</code>: Client needs to authenticate, and this can happen for several reasons
+<ul>
+<li>the client&rsquo;s request lacks valid authentication credentials</li>
+<li>the server rejects the credentials</li>
+</ul>
+</li>
+<li><code>403 Forbidden</code>: Client doesn&rsquo;t have access rights</li>
+<li><code>404 Not Found</code>: Requested resource can&rsquo;t be found</li>
+</ul>
+</li>
+<li>5xx: Server errors
+<ul>
+<li><code>500 Internal Server Error</code>: Unexpected server issue</li>
+<li><code>502 Bad Gateway</code>: The server was acting as a gateway or proxy and received an invalid response from the upstream server.
+<ul>
+<li>If your server is acting as a reverse proxy and the upstream server (like an application server) fails or returns an error, your server may return a 502.</li>
+<li>If there are network problems between your server and the upstream server, a 502 might be returned.</li>
+<li>If your server receives an invalid response from an upstream server that it doesn&rsquo;t understand, it may return a 502.</li>
+<li>Note that a 502 error is indicative of a problem with the servers or network</li>
+</ul>
+</li>
+<li><code>503 Service Unavailable</code>: The server is not ready to handle the request, usually because it’s overloaded or under maintenance.</li>
+<li><code>504 Gateway Timeout</code>: The server was acting as a gateway or proxy and did not get a response from the upstream server.
+<ul>
+<li>For example, nginx returns 504 because it doesn&rsquo;t receive return from php-fpm that could be caused by deadlock or slow query.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h1 id="traceroute-觀察-host-經過的節點狀態">traceroute 觀察 host 經過的節點狀態</h1>
 <pre><code>$ traceroute google.com
