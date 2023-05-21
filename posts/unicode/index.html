@@ -28,12 +28,17 @@
 <h1 id="difference-between-ascii-utf-8-and-utf-16">Difference between ASCII, UTF-8 and UTF-16</h1>
 <ul>
 <li>ASCII is a 7-bit encoding standard that can only represent 128 characters, including the standard English alphabet, numbers, and basic punctuation</li>
-<li>UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters. This means that characters in the ASCII range (0-127) can be represented using a single byte, while other characters may use up to 4 bytes.</li>
-<li>UTF-16 uses a minimum of 16 bits to represent each character, making it a fixed-width encoding scheme. This means that all characters use the same number of bytes, making it easier to process strings in this encoding, but also making it less space-efficient than UTF-8.</li>
+<li>UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters.
+<ul>
+<li>This means that characters in the ASCII range (0-127) can be represented using a single byte, while other characters may use up to 4 bytes.</li>
 </ul>
-<h1 id="how-does-program-know-which-character-one-alphbet-and-which-one-is-a-chinese-character">How does program know which character one alphbet and which one is a chinese character</h1>
-<p>The first byte of a multi-byte character has a special pattern of bits that indicates the number of bytes used to represent the character.
-This allows the program to determine the length of each character, even in a string that contains a mixture of ASCII and non-ASCII characters.</p>
+</li>
+<li>UTF-16 uses a minimum of 16 bits to represent each character, making it a fixed-width encoding scheme.
+<ul>
+<li>This means that all characters use the same number of bytes, making it easier to process strings in this encoding, but also making it less space-efficient than UTF-8.</li>
+</ul>
+</li>
+</ul>
 <h1 id="how-are-characters-stored-in-the-server">How are characters stored in the server?</h1>
 <p>For examples, store &ldquo;hello 世界&rdquo; in memory, will be converted to the code point based on the unicode standard used before being stored into the disk in binary</p>
 <pre><code>104 101 108 108 111 32 228 184 150 231 149 140
@@ -41,42 +46,43 @@ This allows the program to determine the length of each character, even in a str
 <p>According to <a href="https://www.utf8-chartable.de/">UTF-8 encoding table</a>, choose <code>decimal</code> from <code>display format for UTF-8 encoding</code> and now we know what each number represents</p>
 <p>use decimal to hex converter, now we got</p>
 <ul>
-<li>104 -&gt; h (utf-8)</li>
-<li>101 -&gt; e (utf-8)</li>
-<li>108 -&gt; l (utf-8)</li>
-<li>108 -&gt; l (utf-8)</li>
-<li>111 -&gt; o (utf-8)</li>
-<li>32 -&gt; (space) (utf-8)</li>
-<li>228 184 150 -&gt; 世 (utf-8)</li>
-<li>231 149 140 -&gt; 界 (utf-8)</li>
+<li><code>104</code> (<code>U+68</code>) -&gt; h (utf-8)</li>
+<li><code>101</code> (<code>U+65</code>) -&gt; e (utf-8)</li>
+<li><code>108</code> (<code>U+6C</code>) -&gt; l (utf-8)</li>
+<li><code>108</code> (<code>U+6C</code>) -&gt; l (utf-8)</li>
+<li><code>111</code> (<code>U+6F</code>) -&gt; o (utf-8)</li>
+<li><code>32</code> (<code>U+20</code>) -&gt; (space) (utf-8)</li>
+<li><code>228 184 150</code> (<code>U+4E16</code>) -&gt; 世 (utf-8)</li>
+<li><code>231 149 140</code> (<code>U+754C</code>) -&gt; 界 (utf-8)</li>
 </ul>
 <p>choose <code>U+4DC0 ...U+4DFF Yijing Hexagram Symbols</code>, you can see <code>世</code> represented as decimal <code>228 184 150</code></p>
-<h1 id="how-does-encoding-distinguish-between-a-one-byte-character-and-a-three-byte-character-in-a-byte-stream">How does encoding distinguish between a one-byte character and a three-byte character in a byte stream?</h1>
-<p>Before answering this question, we need to know why the code point of <code>世</code> is <code>U+4E16</code> instead of <code>U+E4B896</code>?</p>
-<p>The <code>U+</code> follows by hex value, but why do I get <code>4E16</code> instead of <code>E4B896</code> (the hex of <code>228 184 150</code>)?
-How do I convert <code>228 184 150</code> to <code>世</code>?</p>
+<h1 id="how-does-decoding-tell-how-many-bytes-are-used-to-represent-a-single-unicode-code-point">How does decoding tell how many bytes are used to represent a single Unicode code point?</h1>
+<p>The leading bits of the first byte of a character can be used to determine wether it&rsquo;s a one-byte character and a three-byte character.</p>
+<p>For example, if the first byte starts with <code>11110</code>, it indicates that the character is represented using 4 bytes.
+If the first byte starts with <code>110</code>, it means that the character is represented using 2 bytes.</p>
+<h1 id="the-process-of-converting-bytes-into-a-character-世">The process of converting bytes into a character (<code>世</code>)</h1>
+<p>If you convert the decimal <code>228 184 150</code> of <code>世</code> into hex, you will get <code>E4B896</code> which is not its code point.
+The code point of <code>世</code> is <code>U+4E16</code> instead of <code>U+E4B896</code>.</p>
+<p>How is it converted?</p>
 <p>First, we need to convert the decimal to binary</p>
 <pre><code>228 = 11100100
 184 = 10111000
 150 = 10010110
 </code></pre>
-<p>Next, concatenate these binary then we get 24-bit binary representation of the code point</p>
+<p>Next, concatenate these binary, and we get 24-bit binary representation of the code point</p>
 <pre><code>11100100 10111000 10010110
 </code></pre>
-<p>Now, we see <code>1110</code> that leads in the first byte, it gives us the information that it&rsquo;s a 3-byte sequence and the following 2 bytes will start with <code>10</code></p>
-<blockquote>
-<p>The first byte in the UTF-8 encoded sequence is used to indicate how many bytes are used to represent a single Unicode code point.
-For example, if the first byte starts with 11110, it means that the character is represented using 4 bytes.
-If the first byte starts with 110, it means that the character is represented using 2 bytes.</p>
-</blockquote>
-<p>This is probably the most trick part that gets me. Here is a <a href="https://www.youtube.com/watch?v=tbdym9ZtepQ">good video</a> explaining it in detail.</p>
-<p>Now let&rsquo;s remove <code>1110</code> from the first byte and <code>10</code> from the second and third byte, and concatencate them, we will get:</p>
+<p>Then, we have <code>1110</code> as leading bits in the first byte, it tells us that it&rsquo;s a 3-byte sequence and the following 2 bytes will start with <code>10</code>.</p>
+<p>Now let&rsquo;s remove <code>1110</code> from the first byte, and <code>10</code> from the second and third byte. After that, concatencate them, we will get:</p>
 <pre><code>0100 111000 010110
 </code></pre>
-<p>And convert above to hex, now we have <code>4E16</code></p>
-<p>Finally, we know the code point of chinese character <code>世</code> is <code>U+4E16</code></p>
-<p>Apply the same steps to <code>界</code>, you will get its code point <code>U+754C</code></p>
-<p>In conclusion, encoding utilizes the initial bits of the bytes to differentiate between a one-byte character and a three-byte character.</p>
+<p>Finally, convert this binary to hex and we will get <code>4E16</code>. It&rsquo;s the code point of chinese character <code>世</code></p>
+<p>Apply the same steps to <code>界</code>, you will get its code point <code>754C</code></p>
+<p>ref:</p>
+<ul>
+<li>chatGPT</li>
+<li>good explanation in this <a href="https://www.youtube.com/watch?v=tbdym9ZtepQ">video</a></li>
+</ul>
 
 </article>
 
