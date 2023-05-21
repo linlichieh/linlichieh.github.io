@@ -7,12 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/os/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>OS</title>
+      <title>Operating System</title>
       <link>/posts/os/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/os/</guid>
       <description>File descriptor (FD) open a file by calling system call open() that specifies access mode (read, write, or both), then the kernel returns FD number to the program Use the FD by performing I/O operations on the file such as read() or write() Close the FD by calling system call close() When the program terminates, either normally or due to an error, all open file descriptors are automatically closed by the kernel 動態庫與靜態庫 linux 下有動態庫和靜態庫.</description>
+    </item>
+    
+    <item>
+      <title>Unicode</title>
+      <link>/posts/unicode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/unicode/</guid>
+      <description>What&amp;rsquo;s Unicode? Unicode is the standard for character encoding UTF-8 is a specific implementation of Unicode (A -&amp;gt; 41 -&amp;gt; binary) Difference between ASCII, UTF-8 and UTF-16 ASCII is a 7-bit encoding standard that can only represent 128 characters, including the standard English alphabet, numbers, and basic punctuation UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters.</description>
     </item>
     
   </channel>

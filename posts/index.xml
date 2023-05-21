@@ -930,7 +930,7 @@ var gulp = require(&#39;gulp&#39;); var compass = require(&#39;gulp-compass&#39;
     </item>
     
     <item>
-      <title>OS</title>
+      <title>Operating System</title>
       <link>/posts/os/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -1445,6 +1445,15 @@ cd /tmp wget http://downloads.sourceforge.net/project/wqy/wqy-microhei/0.2.0-bet
       <description>查 ubuntu 版本 $ lsb_release -a No LSB modules are available. Distributor ID: Ubuntu Description: Ubuntu 13.10 Release: 13.10 Codename: saucy 升級 Linux kernel 查看目前版本
 確切版號 $ uname -r 4.8.3-x86_64-linode76 $ uname -a Linux 139-162-12-42 4.8.3-x86_64-linode76 #1 SMP Thu Oct 20 19:05:39 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux 尋找要的 Kernel image
 sudo apt-get update sudo apt-cache search linux-image linux-image-3.19.0-15-generic - Linux kernel image for version 3.19.0 on 64 bit x86 SMP linux-image-3.</description>
+    </item>
+    
+    <item>
+      <title>Unicode</title>
+      <link>/posts/unicode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/unicode/</guid>
+      <description>What&amp;rsquo;s Unicode? Unicode is the standard for character encoding UTF-8 is a specific implementation of Unicode (A -&amp;gt; 41 -&amp;gt; binary) Difference between ASCII, UTF-8 and UTF-16 ASCII is a 7-bit encoding standard that can only represent 128 characters, including the standard English alphabet, numbers, and basic punctuation UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters.</description>
     </item>
     
     <item>

@@ -301,11 +301,11 @@
     <loc>/categories/octopress/</loc>
     <lastmod>2015-03-24T10:27:48+00:00</lastmod>
   </url><url>
-    <loc>/categories/os/</loc>
-    <lastmod>2015-02-13T10:55:43+08:00</lastmod>
-  </url><url>
     <loc>/posts/os/</loc>
     <lastmod>2015-02-13T10:55:43+08:00</lastmod>
+  </url><url>
+    <loc>/categories/os/</loc>
+    <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
     <loc>/posts/payments/</loc>
     <lastmod>2016-04-07T16:42:53+08:00</lastmod>
@@ -467,6 +467,9 @@
   </url><url>
     <loc>/posts/ubuntu/</loc>
     <lastmod>2013-08-06T15:40:00+00:00</lastmod>
+  </url><url>
+    <loc>/posts/unicode/</loc>
+    <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
     <loc>/posts/virtualbox/</loc>
     <lastmod>2013-05-20T05:28:00+00:00</lastmod>
