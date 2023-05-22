@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>system-design on Software engineering notes</title>
+    <link>/categories/system-design/</link>
+    <description>Recent content in system-design on Software engineering notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/categories/system-design/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>System Design</title>
+      <link>/posts/system-design/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/system-design/</guid>
+      <description>How can you generate a key that is guaranteed to be unique? The possibility to get duplicates by UUIDv4 UUIDv4 generates a random id using random numbers, with 122 random bits. The chances of generating a duplicate are extremely low but not zero.
+To understand the probability, consider that the number of version 4 UUIDs which can be generated is 2^122 or about 5.3x10^36.
+To put these numbers into perspective, the annual risk of a given person being hit by a meteorite is estimated to be one chance in 17 billion , which means the probability is about 0.</description>
+    </item>
+    
+  </channel>
+</rss>

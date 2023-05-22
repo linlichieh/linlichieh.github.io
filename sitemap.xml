@@ -47,7 +47,7 @@
     <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
-    <lastmod>2023-05-07T14:31:13+08:00</lastmod>
+    <lastmod>2023-05-21T18:22:30+08:00</lastmod>
   </url><url>
     <loc>/posts/data-structures/</loc>
     <lastmod>2017-05-20T18:53:13+08:00</lastmod>
@@ -350,7 +350,7 @@
     <lastmod>2016-05-01T13:45:44+08:00</lastmod>
   </url><url>
     <loc>/posts/</loc>
-    <lastmod>2023-05-07T14:31:13+08:00</lastmod>
+    <lastmod>2023-05-21T18:22:30+08:00</lastmod>
   </url><url>
     <loc>/posts/process-manager/</loc>
     <lastmod>2014-10-29T00:27:20+08:00</lastmod>
@@ -449,7 +449,7 @@
     <lastmod>2016-05-13T08:29:59+08:00</lastmod>
   </url><url>
     <loc>/</loc>
-    <lastmod>2023-05-07T14:31:13+08:00</lastmod>
+    <lastmod>2023-05-21T18:22:30+08:00</lastmod>
   </url><url>
     <loc>/categories/ssh/</loc>
     <lastmod>2013-07-21T16:03:00+00:00</lastmod>
@@ -459,6 +459,12 @@
   </url><url>
     <loc>/posts/swftools/</loc>
     <lastmod>2013-07-21T05:52:18+00:00</lastmod>
+  </url><url>
+    <loc>/posts/system-design/</loc>
+    <lastmod>2023-05-21T18:22:30+08:00</lastmod>
+  </url><url>
+    <loc>/categories/system-design/</loc>
+    <lastmod>2023-05-21T18:22:30+08:00</lastmod>
   </url><url>
     <loc>/tags/</loc>
   </url><url>

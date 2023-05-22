@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>System Design | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/system-design/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>System Design</h1>
+    
+  </header>
+  <h1 id="how-can-you-generate-a-key-that-is-guaranteed-to-be-unique">How can you generate a key that is guaranteed to be unique?</h1>
+<h3 id="the-possibility-to-get-duplicates-by-uuidv4">The possibility to get duplicates by UUIDv4</h3>
+<p>UUIDv4 generates a random id using random numbers, with 122 random bits. The chances of generating a duplicate are extremely low but not zero.</p>
+<p>To understand the probability, consider that the number of version 4 UUIDs which can be generated is <code>2^122</code> or about <code>5.3x10^36</code>.</p>
+<blockquote>
+<p>To put these numbers into perspective, the annual risk of a given person being hit by a meteorite is estimated to be one chance in 17 billion
+, which means the probability is about <code>0.00000000006</code> (6 × 10−11), equivalent to the odds of creating a few tens of trillions of UUIDs in a year and having one duplicate.
+In other words, only after generating 1 billion UUIDs every second for approximately 100 years would the probability of creating a single duplicate reach 50%.</p>
+</blockquote>
+<p>The approaches to improve the collision issue</p>
+<ul>
+<li>Combination of UUID and Timestamp or System-Specific Identifier
+<ul>
+<li>e.g. use timestamp as prefix or suffix to the UUID</li>
+</ul>
+</li>
+<li>Use a Version 1 UUID (UUIDv1)
+<ul>
+<li>e.g. the MAC address of the host that generated the UUID and the current time</li>
+<li>e.g. privacy concerns since MAC addresses can be traced back to the machine</li>
+</ul>
+</li>
+<li>Check Before Use
+<ul>
+<li>check whether it&rsquo;s been used before</li>
+</ul>
+</li>
+</ul>
+<h3 id="another-method-to-ensure-the-generation-of-a-unique-key">Another method to ensure the generation of a unique key</h3>
+<ul>
+<li>Centralized ID Generation
+<ul>
+<li>Using a centralized server or database that generates and keeps track of IDs used can guarantee uniqueness.</li>
+<li>This could involve using an auto-incrementing field in a database, or a dedicated service that generates unique IDs.</li>
+<li>However, this approach might not be suitable for systems that need to generate IDs in a distributed or offline manner.</li>
+<li>For example
+<ul>
+<li>generate all unique keys in advance (6 character long keys might be around 56.8 billion) in a table</li>
+<li>once the key is used, then mark it by moving it to a separate table with appropriate locking in place</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Distributed Consensus (solution to &ldquo;Centralized ID Generation&rdquo;)
+<ul>
+<li>In a distributed system where a centralized authority for ID generation isn&rsquo;t feasible, a consensus algorithm like Paxos or Raft could be used to agree on the next ID to use.</li>
+<li>This requires more complexity and communication between nodes, but can guarantee uniqueness.</li>
+</ul>
+</li>
+</ul>
+<p>ref:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/w/index.php?title=Universally_unique_identifier&amp;oldid=755882275#Random_UUID_probability_of_duplicates">Random UUID probability of duplicates</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions">collisions</a></li>
+</ul>
+
+</article>
+
+
+
+</html>
