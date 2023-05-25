@@ -52,19 +52,12 @@
 <p>Query optimizer will look at all the parts of the WHERE clause and figure out the most efficient way to satisfy that query</p>
 <h3 id="can-a-query-choose-more-than-one-index">Can a query choose more than one index?</h3>
 <p>Yes, a query optimizer can choose to use more than one index in a single query if doing so would make the query more efficient.</p>
-<p>For example:</p>
-<ul>
-<li>WHERE - If a query has multiple conditions in the WHERE clause, the optimizer might use multiple indexes to satisfy these conditions</li>
-<li>JOIN - If a query joins multiple tables and there are indexes on the join columns, the optimizer can use these indexes to speed up the join operation</li>
-<li>Covering Index - If a query selects or filters on multiple columns, and there are separate indexes on those columns, the optimizer might use all of these indexes</li>
-</ul>
 <p>It&rsquo;s worth noting that using multiple indexes in a single query can also have downsides.
 Each index lookup has a cost, and the database has to combine the results from multiple lookups, which also takes time.
 Therefore, the query optimizer will only choose to use multiple indexes if it estimates that doing so will be faster than the alternatives.
 This estimation is based on various factors, such as the size of the table, the selectivity of the indexes, and the complexity of the query.</p>
-<h3 id="if-two-indices-exist-for-the-columns-uid-and-pid-and-both-are-specified-in-the-where-clause-would-the-query-optimizer-utilize-both-indices">If two indices exist for the columns &lsquo;uid&rsquo; and &lsquo;pid&rsquo;, and both are specified in the WHERE clause, would the query optimizer utilize both indices?</h3>
-<p>Well, it depends.</p>
-<p>The query optimizer may use both indices if both &lsquo;uid&rsquo; and &lsquo;pid&rsquo; columns are used in the WHERE clause and their indices are highly selective.
+<p>For example, if there are two indexes, one for &lsquo;uid&rsquo; and another for &lsquo;pid&rsquo;, and both are used for filtering in the WHERE clause, will the query optimizer use both indexes?</p>
+<p>It depends. The query optimizer may use both indexes if both &lsquo;uid&rsquo; and &lsquo;pid&rsquo; columns are used in the WHERE clause and their indexes are highly selective.
 However, it may also choose to use only one index which is more selective than the other one.</p>
 <h3 id="what-factors-does-the-query-optimizer-consider-when-making-decisions-on-index">What factors does the query optimizer consider when making decisions on index?</h3>
 <ul>
@@ -80,6 +73,7 @@ However, it may also choose to use only one index which is more selective than t
 <li>This is related to cardinality and refers to the percentage of rows a particular index entry selects.</li>
 <li>If an index entry refers to many rows (low selectivity), the optimizer may choose a table scan or another index.</li>
 <li>But if an index entry refers to few rows (high selectivity), the optimizer may opt to use the index.</li>
+<li>If there is a choice between multiple indexes, MySQL normally uses the index that finds the smallest number of rows (the most selective index)</li>
 </ul>
 </li>
 <li>Distribution of Values
@@ -113,7 +107,17 @@ However, it may also choose to use only one index which is more selective than t
 </ul>
 </li>
 </ul>
-<h3 id="which-clauses-in-a-query-can-affect-the-query-optimizers-decision-on-indices">Which clauses in a query can affect the query optimizer&rsquo;s decision on indices?</h3>
+<h3 id="whats-covering-index">What&rsquo;s covering index?</h3>
+<p>A covering index in MySQL is a type of index that includes all the fields retrieved by a particular query.
+if a query can be satisfied entirely using an index without having to perform additional disk I/O operation to fetch the actual data row.</p>
+<p>For example:</p>
+<pre><code>SELECT first_name, last_name FROM users WHERE email = 'user@example.com';
+CREATE INDEX idx_email_first_last ON users(email, first_name, last_name);
+</code></pre>
+<p>This index &ldquo;covers&rdquo; the query because the index includes all the fields used in this query.</p>
+<p>Any column index or composite index could act as a covering index, given the right query.
+Design your indexes and queries to take advantage of this optimization technique wherever possible.</p>
+<h3 id="which-clauses-in-a-query-can-affect-the-query-optimizers-decision-on-indexes">Which clauses in a query can affect the query optimizer&rsquo;s decision on indexes?</h3>
 <ul>
 <li><code>SELECT</code>
 <ul>
@@ -148,27 +152,25 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>Data Integrity
 <ul>
-<li>Foreign keys enforce referential integrity, ensuring that relationships between tables are maintained correctly.</li>
-<li>They prevent the insertion of invalid or orphaned data by enforcing constraints on the referenced columns.</li>
-<li>This helps to maintain the overall integrity and consistency of the data.</li>
+<li>ensure that relationships between tables are maintained correctly</li>
+<li>prevent the insertion of invalid or orphaned data by enforcing constraints on the referenced columns</li>
 </ul>
 </li>
 <li>Data Consistency
 <ul>
-<li>Foreign keys help to ensure data consistency by automatically updating or deleting related records when changes are made to the referenced records.</li>
-<li>This avoids inconsistencies and errors that can occur when managing relationships manually.</li>
+<li>automatically update or delete related records when changes are made to the referenced records</li>
+<li>minimise manual errors and inconsistencies</li>
 </ul>
 </li>
 <li>Query Optimization
 <ul>
-<li>Foreign keys can improve query performance by allowing the database to optimize JOIN operations.</li>
-<li>With foreign keys in place, the query optimizer can efficiently navigate between related tables using available indexes, resulting in faster query execution.</li>
+<li>optimise JOIN operations through efficient navigation between related tables using indexes.</li>
 </ul>
 </li>
 <li>Documentation and Understanding
 <ul>
-<li>Foreign keys provide a clear and explicit representation of the relationships between tables.</li>
-<li>They serve as documentation for developers, making it easier to understand and work with the database structure.</li>
+<li>illustrate relationships between tables</li>
+<li>serve as guides, making database structure easier to understand</li>
 </ul>
 </li>
 </ul>
@@ -176,66 +178,49 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>Performance Overhead
 <ul>
-<li>Validation Checks: When a foreign key constraint is defined, the database needs to validate the referential integrity of the data during data modification operations. This involves checking if the referenced key values exist in the referenced table.
+<li>Validation Checks
 <ul>
-<li>For inserts and updates, the database must ensure that the referenced key value being inserted or updated exists in the referenced table</li>
+<li>For inserts and updates, the database must ensure that the referenced key value exists in the referenced table</li>
 <li>For deletes, the database must verify if there are any dependent records in the child table</li>
 </ul>
 </li>
-<li>Indexing Considerations
+<li>Index maintenance
 <ul>
-<li>Foreign keys often involve indexes on the referencing and referenced columns to speed up the referential integrity checks.</li>
-<li>Maintaining and updating these indexes can introduce a slight performance overhead during data modification operations.</li>
-<li>However, these indexes are also beneficial for optimizing query performance, as they allow for efficient JOIN operations.</li>
+<li>maintain and update referencing and referenced indexes</li>
 </ul>
 </li>
-<li>Bulk Data Operations: In scenarios involving bulk data operations, such as large-scale data imports or updates, the performance overhead of foreign keys can become more noticeable.
+<li>Bulk Data Operations:
 <ul>
-<li>The validation checks and index maintenance for each individual record can accumulate and slow down the overall operation.
-<ul>
-<li>In such cases, it&rsquo;s common practice to temporarily disable or defer foreign key constraints during the bulk data operations and re-enable them afterward. This helps to improve the performance of the bulk operations while still maintaining the integrity of the data.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Transaction Overhead
-<ul>
-<li>When working with transactions, the use of foreign keys can introduce additional overhead due to the need to validate and enforce referential integrity constraints within the transaction boundaries.</li>
-<li>This overhead can be more noticeable in high-concurrency environments with frequent concurrent updates to related tables.</li>
-</ul>
-</li>
-<li>The impact is usually minimal unless dealing with very high transaction volumes.</li>
-</ul>
-</li>
-<li>Complexity and Maintenance
-<ul>
-<li>Setting and managing foreign keys requires careful planning and design.</li>
-<li>It adds complexity to the database schema, and any modifications to relationships or referenced tables may require updating the foreign keys.</li>
-<li>This can introduce additional maintenance and management considerations.</li>
+<li>operations such as concurrent updates and transactions to large-scale tables</li>
 </ul>
 </li>
 <li>Concurrency and Locking
 <ul>
-<li>In some scenarios, foreign keys can introduce additional concurrency and locking considerations.</li>
-<li>Updates or deletes on heavily related tables may require acquiring and releasing locks on multiple tables, potentially impacting system performance and concurrency.</li>
+<li>For updates and deletes, system performance and concurrency can be impacted due to lock operations on related tables</li>
 </ul>
 </li>
-<li>Database Migration and Data Loading
+</ul>
+</li>
+<li>Complexity and Maintenance
 <ul>
-<li>When performing database migrations or large-scale data loading, foreign key constraints can sometimes pose challenges.</li>
-<li>Disabling or temporarily removing foreign key constraints may be necessary to facilitate the migration or data loading process.</li>
+<li>For database schema, any modifications to relationships or referenced tables may require updating the foreign keys</li>
+<li>When performing database migrations or large-scale data loading, foreign key constraints can sometimes pose challenges.
+<ul>
+<li>Workaround: Disabling or temporarily removing foreign key constraints may be necessary to facilitate the migration or data loading process</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <blockquote>
 <p>the benefits of setting foreign keys typically outweigh the drawbacks</p>
 </blockquote>
-<h3 id="can-i-speed-up-like-queries-by-adding-an-index">Can I speed up <code>LIKE</code> queries by adding an index?</h3>
-<p>For string columns, MySQL indexes the left side of a string.</p>
-<p>An index can speed a like query that has a wildcard on the right side:</p>
+<h3 id="how-to-speed-up-like-query-by-using-an-index">How to speed up <code>LIKE</code> query by using an index?</h3>
+<p>For string columns, MySQL indexes the left side of a string</p>
+<p>It can speed up <code>like</code> query that has a wildcard on the right side</p>
 <pre><code>SELECT * FROM foo WHERE field LIKE &quot;bar%&quot;
 </code></pre>
-<p>It can not speed up a query that has a variable left side:</p>
+<p>It doesn&rsquo;t work for a query that has a wildcard on the left side</p>
 <pre><code>SELECT * FROM foo WHERE field LIKE &quot;%bar%&quot;
 </code></pre>
 <h1 id="explain">EXPLAIN</h1>
@@ -523,6 +508,7 @@ It involves writing temporary data to disk and performing an external sorting al
 <li>chatGPT</li>
 <li>phind</li>
 <li><a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index">https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index</a></li>
 </ul>
 
 </article>
