@@ -72,7 +72,7 @@
 <li>runs the encapsulated application containers</li>
 </ul>
 </li>
-<li>Kubelet Service
+<li>Kubelet Service (kubelet)
 <ul>
 <li>relays information to and from control plane service</li>
 <li>interacts with etcd store to read configuration details and write values</li>
@@ -82,7 +82,7 @@
 <li>runs on each node</li>
 </ul>
 </li>
-<li>Kubernetes Proxy Service
+<li>Kubernetes Proxy Service (kube-proxy)
 <ul>
 <li>makes services available to the external host</li>
 <li>forwards the request to correct containers and is capable of performing primitive load balancing</li>
@@ -92,13 +92,19 @@
 </ul>
 </li>
 </ul>
-<h1 id="more-components-explaination">More components explaination</h1>
+<h3 id="more-components-explaination">More components explaination</h3>
 <ul>
 <li>Node
 <ul>
-<li>can be physical, VM or a cloud instance</li>
+<li>a single machine, can be physical, VM or a cloud instance</li>
 <li>have multiple pods e.g. my-app pod / DB pod</li>
 <li>in k8s you only work with the pod&rsquo;s</li>
+</ul>
+</li>
+<li>Container Runtime
+<ul>
+<li>responsible for running containers in pod</li>
+<li>Kubernetes supports several runtimes: Docker, containerd, CRI-O, and any implementation of the Kubernetes CRI (Container Runtime Interface).</li>
 </ul>
 </li>
 <li>Service
@@ -190,6 +196,68 @@
 </ul>
 </li>
 </ul>
+<h3 id="diagram-for-core-components">Diagram for core components</h3>
+<pre><code>┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                                                           ┃
+┃                          Kubernetes Cluster                               ┃
+┃                                                                           ┃
+┃   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                                        ┃
+┃   ┃                              ┃                                        ┃
+┃   ┃    Control Plane (Master)    ┃                                        ┃
+┃   ┃                              ┃                                        ┃
+┃   ┃   ┏━━━━━━━━┓ ┏━━━━━━━━━━━┓   ┃                                        ┃
+┃   ┃   ┃  etcd  ┃ ┃ scheduler ┃   ┃                                        ┃
+┃   ┃   ┗━━━━┳━━━┛ ┗━━━━━┳━━━━━┛   ┃                                        ┃
+┃   ┃   ┏━━━━┻━━━━━━━━━━━┻━━━━━┓   ┃    ┏━━━━━━━━━┓                         ┃
+┃   ┃   ┃                      ┣━━━╋━━━━┫ kubectl ┃                         ┃
+┃   ┃   ┃      API Server      ┃   ┃    ┗━━━━━━━━━┛                         ┃
+┃   ┃   ┃                      ┣━━━╋━━┓                                     ┃
+┃   ┃   ┗━━━━━━━━━━━┳━━━━━━━━━━┛   ┃  ┃                                     ┃
+┃   ┃   ┏━━━━━━━━━━━┻━━━━━━━━━━┓   ┃  ┃                                     ┃
+┃   ┃   ┃  Controller Manager  ┃   ┃  ┃                                     ┃
+┃   ┃   ┗━━━━━━━━━━━━━━━━━━━━━━┛   ┃  ┃                                     ┃
+┃   ┃                              ┃  ┃                                     ┃
+┃   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┃                                     ┃
+┃                                     ┃                                     ┃
+┃   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓    ┃                                     ┃
+┃   ┃                            ┃    ┃                                     ┃
+┃   ┃    Node 1 (Worker)         ┃    ┃                                     ┃
+┃   ┃                            ┃    ┃                                     ┃
+┃   ┃   ┏━━━━━━━━━━━━━━━━━┓      ┃    ┃                                     ┃
+┃   ┃   ┃     kubelet     ┣━━━━━━╋━━━━┛                                     ┃
+┃   ┃   ┗━━━━━━━━┳━━━━━━━━┛      ┃                                          ┃
+┃   ┃   ┏━━━━━━━━┻━━━━━━━━┓      ┃                                          ┃
+┃   ┃   ┃    container    ┃      ┃                                          ┃
+┃   ┃   ┃     runtime     ┃      ┃   ┏━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━┓     ┃
+┃   ┃   ┗━━━━━━━━━━━━━━━━━┛      ┃   ┃              ┃  ┃              ┃     ┃    ┏━━━━━━━━━━━┓
+┃   ┃   ┏━━━━━━━━━━━━━━━━━┓      ┃   ┃    Service   ┃  ┃   Ingress    ┃     ┃    ┃    Load   ┃    ┏━━━━━━━━┓
+┃   ┃   ┃    kube-proxy   ┣━━━━━━╋━━━┫  Cluster IP  ┣━━┫  Controller  ┣━━━━━╋━━━━┫  Balancer ┣━━━━┫ Client ┃
+┃   ┃   ┃                 ┣━━┓   ┃   ┃  (1:N nodes) ┃  ┃              ┃     ┃    ┃           ┃    ┗━━━━━━━━┛
+┃   ┃   ┗━━━━━━━━━━━━━━━━━┛  ┃   ┃   ┃              ┃  ┃              ┃     ┃    ┗━━━━━━━━━━━┛
+┃   ┃                        ┃   ┃   ┗━━━━━━━━━━━━━━┛  ┗━━━━━━┳━━━━━━━┛     ┃
+┃   ┃   ┏━━━━━━━━━━━━━━━━━┓  ┃   ┃                     ┏━━━━━━┻━━━━━━━┓     ┃
+┃   ┃   ┃      Pod 1      ┃  ┃   ┃                     ┃   Ingress    ┃     ┃
+┃   ┃   ┃ ┏━━━━━━━━━━━━━┓ ┣━━┫   ┃                     ┃ (route rules)┃     ┃
+┃   ┃   ┃ ┃ container 1 ┃ ┃  ┃   ┃                     ┗━━━━━━━━━━━━━━┛     ┃
+┃   ┃   ┃ ┗━━━━━━━━━━━━━┛ ┃  ┃   ┃                                          ┃
+┃   ┃   ┃ ┏━━━━━━━━━━━━━┓ ┃  ┃   ┃                                          ┃
+┃   ┃   ┃ ┃ container 2 ┃ ┃  ┃   ┃                                          ┃
+┃   ┃   ┃ ┗━━━━━━━━━━━━━┛ ┃  ┃   ┃                                          ┃
+┃   ┃   ┗━━━━━━━━━━━━━━━━━┛  ┃   ┃                                          ┃
+┃   ┃   ┏━━━━━━━━━━━━━━━━━┓  ┃   ┃                                          ┃
+┃   ┃   ┃      Pod 2      ┃  ┃   ┃                                          ┃
+┃   ┃   ┃ ┏━━━━━━━━━━━━━┓ ┣━━┛   ┃                                          ┃
+┃   ┃   ┃ ┃ container 1 ┃ ┃      ┃                                          ┃
+┃   ┃   ┃ ┗━━━━━━━━━━━━━┛ ┃      ┃                                          ┃
+┃   ┃   ┃ ┏━━━━━━━━━━━━━┓ ┃      ┃                                          ┃
+┃   ┃   ┃ ┃ container 2 ┃ ┃      ┃                                          ┃
+┃   ┃   ┃ ┗━━━━━━━━━━━━━┛ ┃      ┃                                          ┃
+┃   ┃   ┗━━━━━━━━━━━━━━━━━┛      ┃                                          ┃
+┃   ┃                            ┃                                          ┃
+┃   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛                                          ┃
+┃                                                                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+</code></pre>
 <h1 id="basis">Basis</h1>
 <ul>
 <li>k8s doesn&rsquo;t manage data persistance</li>

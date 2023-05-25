@@ -21,7 +21,7 @@
     
   </header>
   <p>(最後更新: 2016-04-14)</p>
-<h2 id="install">Install</h2>
+<h1 id="install">Install</h1>
 <p>ubuntu :</p>
 <pre><code>sudo apt-get install mysql-server-5.6 mysql-client-5.6 mysql-client-core-5.6
 </code></pre>
@@ -36,7 +36,7 @@ brew install mysql --client-only
 <pre><code>mkdir -p ~/Library/LaunchAgents
 ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
 </code></pre>
-<h2 id="登入不用密碼">登入不用密碼</h2>
+<h1 id="登入不用密碼">登入不用密碼</h1>
 <blockquote>
 <p>如果你連 mysql 都進不去，從步驟[1]開始，如果你可以進到 mysql console 從步驟[3]開始</p>
 </blockquote>
@@ -61,7 +61,7 @@ UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
 <p>[5] Restart mysql</p>
 <pre><code>sudo service mysql restart
 </code></pre>
-<h2 id="設定修改密碼">設定/修改密碼</h2>
+<h1 id="設定修改密碼">設定/修改密碼</h1>
 <p>設定 root 密碼 (安裝時沒有設定過密碼)</p>
 <pre><code>mysqladmin -u root password
 </code></pre>
@@ -72,7 +72,7 @@ Enter password:
 New password:
 Confirm new password:
 </code></pre>
-<h2 id="解除只有本機-ip-能連到-mysql-的限制">解除只有本機 IP 能連到 MySQL 的限制</h2>
+<h1 id="解除只有本機-ip-能連到-mysql-的限制">解除只有本機 IP 能連到 MySQL 的限制</h1>
 <p>[1] 預設 MySQL 的 3306 port 只有監聽本機的連結</p>
 <pre><code>root@test:/etc/apache2# netstat -an | grep 3306
 tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN
@@ -115,7 +115,7 @@ mysql&gt; SELECT user,host FROM user WHERE User='root';
 | root | %    |
 +------+------+
 </code></pre>
-<h2 id="slow-query">Slow query</h2>
+<h1 id="slow-query">Slow query</h1>
 <p>目的 : 將拖慢速度的 query 找出來, 進一步改善效能</p>
 <h3 id="開啟-slow-query">開啟 slow query</h3>
 <h4 id="1-etcmysqlmysqlconfdmysqldcnf-">1) <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> :</h4>
@@ -167,7 +167,7 @@ log-queries-not-using-indexes                           # 會記錄沒有索引�
 <p>The root cause is one of fields whose type is <code>json</code> and in some records, they might be big but I don&rsquo;t think they are more than 1k,
 but it is enough to make the query slow. It doesn&rsquo;t matter how well I narrow down the scope in <code>WHERE</code> condition.
 To sum up, you should not use <code>*</code> in case you don&rsquo;t notice that you include a big field.</p>
-<h2 id="binlog">Binlog</h2>
+<h1 id="binlog">Binlog</h1>
 <p>目的 : 將執行過的 query 紀錄下來, 當有一天操作失誤或數據遺失還可以復原回來</p>
 <h3 id="開啟-binlog">開啟 binlog</h3>
 <h4 id="1-etcmysqlmysqlconfdmysqldcnf--1">1) <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> :</h4>
@@ -255,7 +255,7 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <p>[1] 找出 comment.sql 誤操作的語法並刪除, 如果只是要恢復數據可以不用做動作</p>
 <p>[2] 執行 <code>mysql&gt; SOURCE comment.sql</code></p>
 <p>ref : 參考<a href="http://ifxoxo.com/mysql_binlog.html">恢復數據</a></p>
-<h2 id="mariadb">MariaDB</h2>
+<h1 id="mariadb">MariaDB</h1>
 <p>MariaDB 是 mysql 的分支，效能比 MySQL 好，吃的資源也較少，用法與 MySQL 一模一樣，可以直接拿它來替代 MySQL</p>
 <h3 id="install-1">Install</h3>
 <pre><code>sudo apt-get install mariadb-server mariadb-client
@@ -299,7 +299,14 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <p>測試環境: AWS RDS MySQL db.t2.small</p>
 <p>Table 筆數: 近 570 萬</p>
 <p>執行 query 所花時間差不多都是 0.75 秒</p>
-<h2 id="troubleshootings">Troubleshootings</h2>
+<h1 id="acid">ACID</h1>
+<ul>
+<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
+<li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
+<li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
+<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
+</ul>
+<h1 id="troubleshootings">Troubleshootings</h1>
 <h3 id="某些中文字無法存入問題">某些中文字無法存入問題</h3>
 <p>unicode 編碼一般常用字都是 3bytes, 但因為它是 4 byte 而無法寫入, 例如 : <code>𡟛</code><a href="https://zh.wiktionary.org/zh-hant/%F0%A1%9F%9B">參考 wiki</a></p>
 <pre><code>Mysql2::Error: Incorrect string value: '\xF0\xA1\x9F\x9B'
