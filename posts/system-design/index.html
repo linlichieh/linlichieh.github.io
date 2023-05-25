@@ -48,7 +48,7 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </ul>
 </li>
 </ul>
-<h3 id="another-method-to-ensure-the-generation-of-a-unique-key">Another method to ensure the generation of a unique key</h3>
+<h3 id="another-way-to-make-sure-that-the-generated-key-is-unique">Another way to make sure that the generated key is unique</h3>
 <ul>
 <li>Centralized ID Generation
 <ul>
@@ -70,10 +70,228 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </ul>
 </li>
 </ul>
+<h1 id="database-scaling">Database scaling</h1>
+<h3 id="vertical-vs-horizontal">Vertical vs Horizontal</h3>
+<p>Vertical: increase the capacity of a single server by adding more powerful hardware resources such as CPU, RAM, and storage</p>
+<ul>
+<li>Pros
+<ul>
+<li>Less complexity
+<ul>
+<li>simpler to scale up by adding more resources to a single server</li>
+<li>no additional work to maintain data across machines like horizontal scaling does</li>
+</ul>
+</li>
+<li>Data Consistency</li>
+</ul>
+</li>
+<li>Cons
+<ul>
+<li>Limited Growth
+<ul>
+<li>There are physical limits to how much you can scale a single server. Once those limits are reached, you&rsquo;ll need to look at horizontal scaling or other options.</li>
+</ul>
+</li>
+<li>Single point of failure</li>
+</ul>
+</li>
+<li>In between
+<ul>
+<li>Cost
+<ul>
+<li>Low-cost initially; less cost-effective over time</li>
+<li>High-end hardware can also be expensive</li>
+</ul>
+</li>
+<li>Downtime
+<ul>
+<li>You might need a backup server to handle operations while scaling</li>
+<li>With some platforms, you can add resources without causing downtime</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>User cases
+<ul>
+<li>If you are operating within a limited budget and require a rapid and cost-effective expansion of your infrastructure, vertical scaling is a good option</li>
+<li>You don&rsquo;t know how much traffic or users you will get</li>
+<li>infrequent upgdade</li>
+</ul>
+</li>
+</ul>
+<p>Horizontal: distribute the database load across multiple servers by adding more instances to the existing pool of servers</p>
+<ul>
+<li>pros
+<ul>
+<li>Reliability
+<ul>
+<li>If one server fails, other servers can take over the load as you are not relying on a single machine</li>
+</ul>
+</li>
+<li>Flexibility
+<ul>
+<li>based on your usage</li>
+</ul>
+</li>
+<li>Scalability
+<ul>
+<li>Horizontal scaling allows you to handle larger loads by simply adding more servers</li>
+</ul>
+</li>
+<li>Topographic distribution
+<ul>
+<li>to server nationwide or global clients</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>More Complexity
+<ul>
+<li>It requires changes to the application architecture such as implementing sharding or replication strategies</li>
+<li>Data partitioning and replication strategies can be complex to implement and maintain. Data integrity and avoiding data duplication can also be challenging</li>
+</ul>
+</li>
+<li>Data inconsistency
+<ul>
+<li>ensuring data consistency can be challenging due to issues like network partitioning and latency</li>
+<li>require more complex coordination and consensus protocols</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>In between
+<ul>
+<li>Cost
+<ul>
+<li>High costs initially; optimal over time</li>
+</ul>
+</li>
+<li>Downtime
+<ul>
+<li>operation such as addition or removal of nodes doesn&rsquo;t require downtime
+<ul>
+<li>as it doesn&rsquo;t need to switch the old machine off like vertical scaling does</li>
+</ul>
+</li>
+<li>However, changes such as data sharding, repartitioning, or rebalancing data across nodes can potentially require downtime</li>
+</ul>
+</li>
+<li>Performance
+<ul>
+<li>The traffic can be shared across connections to multiple machines</li>
+<li>However, more servers mean more network traffic and potential for latency as data may need to be synchronized between servers.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Use cases
+<ul>
+<li>Serve your clients in different geographical locations at lower latency</li>
+<li>Expect your service will be in high demand</li>
+</ul>
+</li>
+</ul>
+<h3 id="data-consistency">Data consistency</h3>
+<ul>
+<li>Strong consistency:
+<ul>
+<li>it requires a synchronisation process between all replica servers before a write operation can be considered complete</li>
+<li>Use cases
+<ul>
+<li>a banking application might require strong consistency to prevent issues like double spending</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Eventual Consistency:
+<ul>
+<li>the write operation might take some time to propagate to all servers</li>
+<li>a read operation might return the old data before the write operation propagates to the replica server</li>
+<li>Use cases
+<ul>
+<li>a social media application might be fine with eventual consistency</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Note that MySQL replication only provides eventual consistency, not strong consistency</p>
+</blockquote>
+<h3 id="sharding-and-partitioning">Sharding and Partitioning</h3>
+<p>both are breaking up a large data set into smaller subsets</p>
+<ul>
+<li>sharding
+<ul>
+<li>the data is spread across multiple machines</li>
+</ul>
+</li>
+<li>partitioning
+<ul>
+<li>grouping subsets of data within a single database instance</li>
+</ul>
+</li>
+</ul>
+<p>Common methods of database sharding</p>
+<ul>
+<li>Range-based sharding
+<ul>
+<li>split rows based on a range of values, for example split by the initial of Name (A to I, J to S, T to Z)</li>
+<li>pros
+<ul>
+<li>it is easier to implement</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>can result in the overloading of data on a single physical node, for example shard A might contain a much larger number of rows of data than shard C</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Hashed sharding
+<ul>
+<li>splites rows by assigning the shard key (hash value) to each row of the database, for example 4 rows can be grouped by 2 different hash value</li>
+<li>pros
+<ul>
+<li>more even distribution</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>difficult to assign the hash value when adding more physical shards</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="how-to-read-data-by-user_id-from-a-sharded-database">How to read data by user_id from a sharded database?</h3>
+<p>Before sending a query, we need to determine the shard key so that we know which shard we want to query</p>
+<p>For example, use the hash function for user_id to get the shard key, then query the appropriate shard based on the shard key</p>
+<h3 id="how-to-retrieve-data-for-top-n-rows-in-the-order-of-creation-time-from-a-sharded-mysql-database">How to retrieve data for top N rows in the order of creation time from a sharded MySQL database?</h3>
+<p>Use the scatter-gatter approach</p>
+<ul>
+<li>Scatter
+<ul>
+<li>Send a query to each shard (broadcasting) asking for the top N rows ordered by created_at</li>
+</ul>
+</li>
+<li>Gather
+<ul>
+<li>Once we all results back from each shard, we need to merge them and sort them again to get the overall top N rows ordered by created_at</li>
+</ul>
+</li>
+</ul>
 <p>ref:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/w/index.php?title=Universally_unique_identifier&amp;oldid=755882275#Random_UUID_probability_of_duplicates">Random UUID probability of duplicates</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Collisions">collisions</a></li>
+<li><a href="https://github.com/karanpratapsingh/system-design/blob/main/README.md">https://github.com/karanpratapsingh/system-design/blob/main/README.md</a></li>
+<li>chatGPT</li>
+<li><a href="https://aws.amazon.com/what-is/database-sharding/">https://aws.amazon.com/what-is/database-sharding/</a></li>
+<li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76">https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76</a></li>
 </ul>
 
 </article>
