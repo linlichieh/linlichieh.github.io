@@ -668,12 +668,12 @@ fatal: HTTP request failed
 <ul>
 <li>Coding style - Is the code wrtten in a similar style to other code in the project?</li>
 <li>Are variables named appropriately? Can it be easy to understand in the future?</li>
-<li>Refactor the code if needed</li>
 </ul>
 </li>
 <li>Reusability
 <ul>
 <li>Does the code follow SOLID principles?</li>
+<li>Refactor the code if needed</li>
 <li>Is it easy to be maintained? Would it introduce new tech debt?</li>
 </ul>
 </li>
@@ -681,13 +681,18 @@ fatal: HTTP request failed
 <ul>
 <li>Does the code handle errors well?</li>
 <li>Does the code introduce vulnerabilities?</li>
-<li>Does the code manage concurrency properly?</li>
-<li>Does the code make any race condition?</li>
 <li>Does the code filter user input carefully?</li>
-<li>Does the output contain any confidential infomation?</li>
+<li>Does the code output contain any confidential infomation?</li>
 </ul>
 </li>
-<li>Test coverage
+<li>Stability
+<ul>
+<li>Does the code manage concurrency properly?</li>
+<li>Does the code introduce race condition?</li>
+<li>Is the sql performant enough?</li>
+</ul>
+</li>
+<li>Test Coverage
 <ul>
 <li>Does it have enough unit or integration tests to cover its functionalities?</li>
 </ul>
