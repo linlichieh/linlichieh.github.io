@@ -228,12 +228,27 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>id
 <ul>
-<li>he ID of the select operation within the query execution plan. If there are multiple rows, they represent a nested subquery</li>
+<li>The ID of the select operation within the query execution plan. If there are multiple rows, they represent a nested subquery</li>
 </ul>
 </li>
 <li>select_type
 <ul>
 <li>The type of select operation being performed. It indicates the type of query or subquery, such as <code>SIMPLE</code>, <code>PRIMARY</code>, <code>SUBQUERY</code>, <code>DERIVED</code>, etc.</li>
+<li>Values
+<ul>
+<li><code>SIMPLE</code>: A simple <code>SELECT</code> statement without any subqueries or <code>UNION</code>s.</li>
+<li><code>PRIMARY</code>: The main select statement in a complex query (for example, outer query in a subquery).</li>
+<li><code>SUBQUERY</code>: The first <code>SELECT</code> statement in a subquery.</li>
+<li><code>DERIVED</code>: MySQL creates a temporary table for the results of the <code>SELECT</code> statement. This is usually in <code>FROM</code> subqueries.</li>
+<li><code>UNION</code>: A second or subsequent <code>SELECT</code> statement in a <code>UNION</code>.</li>
+<li><code>UNION RESULT</code>: The result of a <code>UNION</code>.</li>
+<li><code>DEPENDENT UNION</code>: A second or subsequent <code>SELECT</code> statement in a <code>UNION</code>, but depending on outer query.</li>
+<li><code>DEPENDENT SUBQUERY</code>: A subquery that depends on the outer query.</li>
+<li><code>MATERIALIZED</code>: It refers to a materialized subquery, which is a subquery that has been precomputed and stored.</li>
+<li><code>UNCACHEABLE SUBQUERY</code>: A subquery result that is not cached and hence is re-evaluated for each row of the outer query.</li>
+<li><code>UNCACHEABLE UNION</code>: The result of a <code>UNION</code> is not cached, and hence the <code>UNION</code> operation is re-evaluated for each row of the outer query.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>table
@@ -251,42 +266,6 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>The join type or access method used for retrieving rows.</li>
 <li>Values
 <ul>
-<li><code>ALL</code>
-<ul>
-<li>potentially undesirable value</li>
-<li>This indicates a full table scan where all rows of the table are read.</li>
-<li>It can be resource-intensive and generally not desirable, especially for large tables.</li>
-</ul>
-</li>
-<li><code>index</code>
-<ul>
-<li>potentially undesirable value</li>
-<li>This value indicates that the query uses a non-unique index to retrieve rows.</li>
-<li>It typically involves scanning a range of index entries to fetch the required data.</li>
-<li>The range might be determined by conditions specified in the WHERE clause.</li>
-</ul>
-</li>
-<li><code>range</code>
-<ul>
-<li>potentially undesirable value</li>
-<li>This suggests that the query uses an index to retrieve a range of rows based on a specific condition, such as a range comparison (<code>BETWEEN</code>, <code>&lt;</code>, <code>&gt;</code>).</li>
-<li>It is more efficient than a full table scan but still involves accessing a subset of rows.</li>
-</ul>
-</li>
-<li><code>ref</code>
-<ul>
-<li>ideal value</li>
-<li>This indicates that the query uses a non-unique index to access rows based on a single value from another table.</li>
-<li>It typically occurs when joining tables using a column that is not unique but has an index.</li>
-</ul>
-</li>
-<li><code>eq_ref</code>
-<ul>
-<li>ideal value</li>
-<li>This is similar to ref, but it occurs when the join is performed using a unique index.</li>
-<li>It&rsquo;s a more efficient access method compared to ref because only one row is expected to match.</li>
-</ul>
-</li>
 <li><code>const</code>
 <ul>
 <li>ideal value</li>
@@ -294,9 +273,32 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>It&rsquo;s the most efficient access method because it retrieves a specific row directly.</li>
 </ul>
 </li>
-<li><code>system</code>
+<li><code>ALL</code>
 <ul>
-<li>This indicates that the query examines a single row from a system table, which contains database-specific metadata.</li>
+<li>this is the worst join type</li>
+<li>This indicates a full table scan where all rows of the table are read.</li>
+<li>It can be resource-intensive and generally not desirable, especially for large tables.</li>
+</ul>
+</li>
+<li><code>index</code>
+<ul>
+<li>MySQL will scan the entire index to find matching rows</li>
+<li>This happens when all the columns being selected are part of the same index.</li>
+<li>MySQL can go directly to the index to find the necessary data, instead of searching the entire table.</li>
+<li>It&rsquo;s more efficient than a full table scan (<code>ALL</code> type), but not efficient enough because it still reads the entire index</li>
+</ul>
+</li>
+<li><code>range</code>
+<ul>
+<li>MySQL uses an index to read rows from a table based on a range</li>
+<li>this type is used when querying on indexed columns with operators like <code>BETWEEN</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>IN</code>, etc.</li>
+<li>much more efficient than <code>index</code> and <code>ALL</code> types because it only reads rows where the index is within a certain range, rather than reading the entire index or table</li>
+<li>For example, <code>SELECT * FROM table WHERE date BETWEEN '2023-01-01' AND '2023-12-31'</code> with indexed <code>date</code> column</li>
+</ul>
+</li>
+<li><code>index_merge</code>
+<ul>
+<li>This join type indicates that the Index Merge optimization is used. In this case, MySQL accesses the table rows using multiple index scans and merges the results.</li>
 </ul>
 </li>
 <li><code>unique_subquery</code>
@@ -304,11 +306,50 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>This value suggests that a subquery is used to fetch a single unique row.</li>
 </ul>
 </li>
+<li><code>index_subquery</code>
+<ul>
+<li>Similar to <code>unique_subquery</code>, but tbl value inside the <code>IN</code> clause is non-unique.</li>
 </ul>
 </li>
-<li>You generally want <code>ALL</code> or <code>index</code> to be as low as possible.</li>
+<li><code>ref</code>
+<ul>
+<li>ideal value</li>
+<li>This indicates that the query uses a non-unique index to access rows based on a single value from another table.</li>
+<li>It typically occurs when joining tables using a column that is not unique but has an index.</li>
+<li>e.g. JOIN on gid = gid (1:N)</li>
+</ul>
+</li>
+<li><code>eq_ref</code>
+<ul>
+<li>ideal value</li>
+<li>This is similar to ref, but it occurs when the join is performed using a unique index.</li>
+<li>It&rsquo;s a more efficient access method compared to ref because only one row is expected to match.</li>
+<li>e.g. JOIN on gid = gid (1:1)</li>
+</ul>
+</li>
+<li><code>ref_or_null</code>
+<ul>
+<li>This join type is like the ref type, but MySQL does an extra search for rows that contain <code>NULL</code> values.</li>
+</ul>
+</li>
+<li><code>fulltext</code>
+<ul>
+<li>A full-text search is performed.</li>
+</ul>
+</li>
+<li><code>system</code>
+<ul>
+<li>This indicates that the query examines a single row from a system table, which contains database-specific metadata.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>You generally want <code>ALL</code> or <code>index</code> to be as low as possible.
+<ul>
 <li>If you see <code>ALL</code>, it means a full table scan is happening which can be a performance hit.</li>
-<li>If <code>type</code> is <code>ALL</code> or <code>index</code>, and especially if the <code>rows</code> column is a large number, MySQL is scanning a large number of rows or scanning an entire table or index. You may need to add an index to speed this up.</li>
+<li>You may need to add an index to speed this up.</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>possible_keys
@@ -329,17 +370,51 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>Shorter is usually better.</li>
 <li>The maximum number of bytes used from the index for key comparisons</li>
 <li>It is measured in bytes, and its calculation depends on the data types of the columns involved in the index.</li>
+<li>For example, 8 means the length of primary key if it&rsquo;s 8-byte <code>bigint</code></li>
 </ul>
 </li>
 <li>ref
 <ul>
-<li>The columns or constants used with the chosen index to retrieve rows.</li>
+<li>shows which columns or constants are compared to the index named in the <code>key</code> column to select rows from the table.</li>
+<li>If the value is <code>func</code>, the value used is the result of some function</li>
+<li>Values
+<ul>
+<li><code>Const</code>
+<ul>
+<li>the most efficient</li>
+<li>If the column value is matched to a constant, you&rsquo;ll see const here. This is an ideal scenario where the query can match exactly one row in the table.</li>
+</ul>
+</li>
+<li><code>Column Name(s)</code>
+<ul>
+<li>the named columns are used in an index lookup and are part of the <code>WHERE</code> clause in the query</li>
+</ul>
+</li>
+<li><code>NULL</code>
+<ul>
+<li>This shows that no index has been used for this table in the query</li>
+<li>can be a sign of less efficient queries as they may indicate full table or index scans</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>rows
 <ul>
-<li>The estimated number of rows that will be examined or processed by a particular step in the query execution plan</li>
-<li>A lower value in the rows column does not necessarily indicate that it is better or worse</li>
+<li>The rows column indicates the number of rows MySQL believes it must examine to execute the query.</li>
+<li>Lower is Better: Generally, you want the number in this column to be as low as possible. The fewer rows that need to be examined, the faster your query will run.</li>
+</ul>
+</li>
+<li>filtered
+<ul>
+<li>estimates the percentage of table rows that will be filtered by the table condition</li>
+<li>This condition refers to the portion of the <code>WHERE</code> clause  (before examining any possible JOINs)</li>
+<li>The maximum value is 100, which means no filtering of rows occurred</li>
+<li>the low number indicates that the query could benefit from an index</li>
+<li><code>rows</code> column shows the estimated number of rows examined</li>
+<li><code>rows × filtered / 100</code> shows the number of rows that will be joined with previous tables</li>
+<li>For example, rows is 100 and filtered is <code>20.00</code> (20%), which means only around 20 rows will remian after filter has been applied.</li>
 </ul>
 </li>
 <li>Extra
@@ -359,7 +434,8 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>a filtering operation is performed after retrieving rows using an index.</li>
 <li>It means that the query needs to evaluate additional conditions that are not covered by the index, and it may involve scanning rows that don&rsquo;t match the conditions.</li>
-<li>While using where is not necessarily undesirable, it suggests that additional filtering is performed after retrieving rows using an index. If this value appears in a significant number of rows in the <code>EXPLAIN</code> output, it may indicate that the query is not fully utilizing the available indexes or that further optimization is possible.</li>
+<li>While using where is not necessarily undesirable, it suggests that additional filtering is performed after retrieving rows using an index.</li>
+<li>If this value appears in a significant number of rows in the <code>EXPLAIN</code> output, it may indicate that the query is not fully utilizing the available indexes or that further optimization is possible.</li>
 </ul>
 </li>
 <li><code>Using temporary</code>
@@ -397,6 +473,16 @@ It evaluates the entire query and the available indexes to choose the best index
 </ul>
 </li>
 </ul>
+<p>For example</p>
+<pre><code>EXPLAIN SELECT * FROM orders WHERE product_id = 123 AND order_date &gt; '2023-01-01';
++----+-------------+--------+------------+------+---------------+------------+---------+-------+------+----------+-------------+
+| id | select_type | table  | partitions | type | possible_keys | key        | key_len | ref   | rows | filtered | Extra       |
++----+-------------+--------+------------+------+---------------+------------+---------+-------+------+----------+-------------+
+|  1 | SIMPLE      | orders | NULL       | ref  | product_index | product_id | 4       | const | 100  |   10.00  | Using where |
++----+-------------+--------+------------+------+---------------+------------+---------+-------+------+----------+-------------+
+</code></pre>
+<p>In this example, the filtered column shows a value of <code>10.00</code>.
+This means MySQL estimates that about 10% of the rows selected by the query (specifically, those rows matching the index on <code>product_id</code>) will pass the additional <code>order_date</code> condition in the <code>WHERE</code> clause.</p>
 <h3 id="whats-filesort">What&rsquo;s <code>filesort</code>?</h3>
 <p>The filesort operation  used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
 It involves writing temporary data to disk and performing an external sorting algorithm to order the rows.</p>
@@ -503,12 +589,13 @@ It involves writing temporary data to disk and performing an external sorting al
 <p>Environment: AWS RDS Aurora MySQL 5.6.10a (db.t2.small)</p>
 <p>This operation locks table as it executes <code>copy to tmp table</code>, so the whole table gets stucked.</p>
 <p>It takes 30+ mins for a table with 3M rows.</p>
-<p>ref</p>
+<p>ref:</p>
 <ul>
 <li>chatGPT</li>
 <li>phind</li>
 <li><a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></li>
 <li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index">https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index</a></li>
+<li><a href="https://www.variables.sh/mysql-explain-plan-examples/">https://www.variables.sh/mysql-explain-plan-examples/</a></li>
 </ul>
 
 </article>
