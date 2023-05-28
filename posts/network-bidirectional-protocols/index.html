@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Network Bi-directional Protocols | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/network-bidirectional-protocols/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Network Bi-directional Protocols</h1>
+    
+  </header>
+  <h1 id="websocket">Websocket</h1>
+<ul>
+<li>a protocol that operates over a TCP connection</li>
+<li>bi-directional communication protocol</li>
+<li>it&rsquo;s stateful because it involves establishing a long-lived TCP connection</li>
+<li>support binary data like images, audio, video, or any raw binary content</li>
+<li>it&rsquo;s stateful</li>
+</ul>
+<h1 id="server-sent-events-sse">Server-Sent Events (SSE)</h1>
+<ul>
+<li>SSE uses HTTP/1</li>
+<li>unidirectional communication protocol from server to client</li>
+<li>it allows a web server to push updates to a client</li>
+<li>is text-based and doesn&rsquo;t support binary data</li>
+<li>over http/2
+<ul>
+<li>It&rsquo;s binary, instead of textual, making it more efficient to parse</li>
+<li>It&rsquo;s still unidirectional updates (server to client)</li>
+</ul>
+</li>
+<li>over http/3
+<ul>
+<li>chatGPT uses this protocol over http/3 <code>text/event-stream; charset=utf-8</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="webrtc-web-real-time-communication">WebRTC (Web Real-Time Communication)</h1>
+<ul>
+<li>real-time communication directly between browsers or apps</li>
+<li>used for video and audio chat, but it can also be used for text chat</li>
+<li>Large data transfer</li>
+<li>Direct use on browser</li>
+</ul>
+<h1 id="mqtt-message-queuing-telemetry-transport">MQTT (Message Queuing Telemetry Transport)</h1>
+<p>check <a href="/posts/mqtt/">here</a></p>
+<h1 id="grpc">gRPC</h1>
+<ul>
+<li>use HTTP/2 for transport, which allows for client-server and duplex streaming of data</li>
+<li>Suitable for large data transfer and small API calls</li>
+</ul>
+<h3 id="how-to-expose-grpc-like-restful-does-for-support-grpc">How to expose gRPC like RESTful does for support gRPC?</h3>
+<p>you might need gRPC Gateway that translate a JSON API into gRPC payload</p>
+<h3 id="does-browser-which-supports-http-2-support-grpc">Does browser, which supports HTTP 2, support gRPC?</h3>
+<p>No, either use &ldquo;gRPC-Web&rdquo; or &ldquo;gRPC Gateway&rdquo;</p>
+<blockquote>
+<p>gRPC-Web is designed to be used in the browser. It&rsquo;s implemented as a JavaScript library and also requires a proxy layer (like Envoy) in your backend to translate between gRPC-Web requests and gRPC.</p>
+</blockquote>
+<h1 id="xmpp-extensible-messaging-and-presence-protocol">XMPP (Extensible Messaging and Presence Protocol)</h1>
+<ul>
+<li>it&rsquo;s based on XML</li>
+<li>not popular as others</li>
+</ul>
+<p>ref:</p>
+<ul>
+<li><a href="https://www.mirrorfly.com/blog/best-communication-protocols/">https://www.mirrorfly.com/blog/best-communication-protocols/</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

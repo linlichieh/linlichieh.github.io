@@ -62,6 +62,15 @@ Standard OSI model Layer 1 - Physical electric signals / driver the data gets co
     </item>
     
     <item>
+      <title>Network Bi-directional Protocols</title>
+      <link>/posts/network-bidirectional-protocols/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-bidirectional-protocols/</guid>
+      <description>Websocket a protocol that operates over a TCP connection bi-directional communication protocol it&amp;rsquo;s stateful because it involves establishing a long-lived TCP connection support binary data like images, audio, video, or any raw binary content it&amp;rsquo;s stateful Server-Sent Events (SSE) SSE uses HTTP/1 unidirectional communication protocol from server to client it allows a web server to push updates to a client is text-based and doesn&amp;rsquo;t support binary data over http/2 It&amp;rsquo;s binary, instead of textual, making it more efficient to parse It&amp;rsquo;s still unidirectional updates (server to client) over http/3 chatGPT uses this protocol over http/3 text/event-stream; charset=utf-8 WebRTC (Web Real-Time Communication) real-time communication directly between browsers or apps used for video and audio chat, but it can also be used for text chat Large data transfer Direct use on browser MQTT (Message Queuing Telemetry Transport) check here</description>
+    </item>
+    
+    <item>
       <title>Network DHCP</title>
       <link>/posts/network-dhcp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
