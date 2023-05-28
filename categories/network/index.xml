@@ -47,10 +47,10 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     
     <item>
       <title>Linux netstat</title>
-      <link>/posts/netstat/</link>
+      <link>/posts/linux-netstat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/netstat/</guid>
+      <guid>/posts/linux-netstat/</guid>
       <description>常用 -t: tcp -u: udp -n: don&amp;rsquo;t resolve names -l: listening -p: show pid or program name -i: Display a table of all network interfaces. -a: Show both listening and non-listening sockets. 如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行 列出在監聽的網路服務:
 netstat -tunl 列出所有的連線
 netstat -antp 列出已連線的網路連線狀態:
@@ -60,24 +60,24 @@ $ netstat -antop tcp 0 0 0.</description>
     </item>
     
     <item>
-      <title>Linux Network Sniffer Tools</title>
-      <link>/posts/listen-packet/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/listen-packet/</guid>
-      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
-    </item>
-    
-    <item>
       <title>Linux nmap</title>
-      <link>/posts/nmap/</link>
+      <link>/posts/linux-nmap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/nmap/</guid>
+      <guid>/posts/linux-nmap/</guid>
       <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
 安裝 ubuntu :
 sudo apt-get install nmap 使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010 或
 $ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 port [tcp/mysql] succeeded! -z: Specifies that nc should just scan for listening daemons, without sending any data to them. It is an error to use this option in conjunction with the -l option. -v: Have nc give more verbose output.</description>
+    </item>
+    
+    <item>
+      <title>Linux tcpdump</title>
+      <link>/posts/linux-tcpdump/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-tcpdump/</guid>
+      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
     </item>
     
     <item>

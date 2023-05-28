@@ -88,10 +88,10 @@ sudo gpasswd -d test sudo 方法2 加入: 手動新增帳號到 /etc/sudoers :</
     
     <item>
       <title>Linux Compression</title>
-      <link>/posts/linux-compressed/</link>
+      <link>/posts/linux-compression/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/linux-compressed/</guid>
+      <guid>/posts/linux-compression/</guid>
       <description>gzip Usage: gzip [OPTION]... [FILE]... Compress or uncompress FILEs (by default, compress FILES in-place). Mandatory arguments to long options are mandatory for short options too. -c, --stdout write on standard output, keep original files unchanged -d, --decompress decompress -f, --force force overwrite of output file and compress links -h, --help give this help -l, --list list compressed file contents -L, --license display software license -n, --no-name do not save or restore the original name and time stamp -N, --name save or restore the original name and time stamp -q, --quiet suppress all warnings -r, --recursive operate recursively on directories -S, --suffix=SUF use suffix SUF on compressed files -t, --test test compressed file integrity -v, --verbose verbose mode -V, --version display version number -1, --fast compress faster -9, --best compress better --rsyncable Make rsync-friendly archive With no FILE, or when FILE is -, read standard input.</description>
     </item>
     
@@ -109,10 +109,10 @@ $ crontab -e 會進入編輯器，輸入:
     
     <item>
       <title>Linux curl</title>
-      <link>/posts/curl/</link>
+      <link>/posts/linux-curl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/curl/</guid>
+      <guid>/posts/linux-curl/</guid>
       <description>-i -I 顯示 response 的 detail 只顯示 header
 curl -I http://wwww.example.com 顯示 header + body
 curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization:Bearer NDQzYmM1ZD&amp;quot; http://www.example.com -D 將 response 的 header 輸出成檔案 curl www.google.com -D /tmp/google-cookie.txt v 顯示 request/reqsponse 的 request detail curl -v http://wwww.example.com -L support 302 redirect $ curl -L www.google.com -x 指定 proxy curl -x proxy.example2.com:8080 http://www.example.com -b 使用指定的 cookie curl -b cookie.txt http://www.example.com -e Referrer (若該網站限制需先訪問網站首頁才能訪問下載頁) curl -e &amp;quot;www.</description>
@@ -130,10 +130,10 @@ curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization
     
     <item>
       <title>Linux grep</title>
-      <link>/posts/grep/</link>
+      <link>/posts/linux-grep/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/grep/</guid>
+      <guid>/posts/linux-grep/</guid>
       <description>一般用法 grep -R &#39;時間&#39; * -r, &amp;ndash;recursive like &amp;ndash;directories=recurse -R, &amp;ndash;dereference-recursive likewise, but follow all symlinks &amp;ndash;include=FILE_PATTERN search only files that match FILE_PATTERN &amp;ndash;exclude=FILE_PATTERN skip files and directories matching FILE_PATTERN &amp;ndash;exclude-from=FILE skip files matching any file pattern from FILE &amp;ndash;exclude-dir=PATTERN directories that match PATTERN will be skipped. &amp;ndash;exclude-dir={dir1,dir2,dir3} directories that match PATTERN will be skipped. -i, &amp;ndash;ignore-case ignore case distinctions -P, &amp;ndash;perl-regexp -o, &amp;ndash;only-matching grep ^d：過濾出資料夾
 OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
     </item>
@@ -161,10 +161,10 @@ $ locale -a locale: Cannot set LC_CTYPE to default locale: No such file or direc
     
     <item>
       <title>Linux mkfifo</title>
-      <link>/posts/mkfifo/</link>
+      <link>/posts/linux-mkfifo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/mkfifo/</guid>
+      <guid>/posts/linux-mkfifo/</guid>
       <description>介紹 用在兩個不同執行的程式溝通, 他就像是一條水管(pipeline file)將兩個程式連接起來
 其中一邊不斷的將水倒進去, 另一邊則取水, 這樣就可以達到資料
 Example session 1 : 建立 pipe
@@ -179,10 +179,10 @@ O_NONBLOCK enable : 立刻返回失敗, error code 為 ENXIO O_NONBLOCK dieable 
     
     <item>
       <title>Linux nc (netcat)</title>
-      <link>/posts/netcat/</link>
+      <link>/posts/linux-netcat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/netcat/</guid>
+      <guid>/posts/linux-netcat/</guid>
       <description>介紹 用來連接特定 port, 或啟動一個 port 來監聽, 可以執行簡單的訊息或檔案傳送
 有些系統將 nc 改為 netcat
 快速看如何使用 啟動 20000 port
@@ -196,10 +196,10 @@ $ cat backup.iso | pv -b | nc 54.</description>
     
     <item>
       <title>Linux netstat</title>
-      <link>/posts/netstat/</link>
+      <link>/posts/linux-netstat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/netstat/</guid>
+      <guid>/posts/linux-netstat/</guid>
       <description>常用 -t: tcp -u: udp -n: don&amp;rsquo;t resolve names -l: listening -p: show pid or program name -i: Display a table of all network interfaces. -a: Show both listening and non-listening sockets. 如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行 列出在監聽的網路服務:
 netstat -tunl 列出所有的連線
 netstat -antp 列出已連線的網路連線狀態:
@@ -209,20 +209,11 @@ $ netstat -antop tcp 0 0 0.</description>
     </item>
     
     <item>
-      <title>Linux Network Sniffer Tools</title>
-      <link>/posts/listen-packet/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/listen-packet/</guid>
-      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
-    </item>
-    
-    <item>
       <title>Linux nmap</title>
-      <link>/posts/nmap/</link>
+      <link>/posts/linux-nmap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/nmap/</guid>
+      <guid>/posts/linux-nmap/</guid>
       <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
 安裝 ubuntu :
 sudo apt-get install nmap 使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010 或
@@ -250,11 +241,24 @@ Installation sudo apt-get install smartmontools 當硬碟不支援時顯示 Unav
     </item>
     
     <item>
-      <title>Linux sendmail</title>
-      <link>/posts/email/</link>
+      <title>Linux sed and awk</title>
+      <link>/posts/linux-sed-awk/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/email/</guid>
+      <guid>/posts/linux-sed-awk/</guid>
+      <description>sed -i : is used to affect the file. ^ : is a beginning of line $ : is a end of line d : delete if there is a empty line ((.|\n)*) : multiple line 刪除含有FOO及BAR這兩個字串的行 sed &amp;quot;s/^.*FOO.*BAR.*$//g&amp;quot; fstab 這作法該行被刪除，但是會是空的一行
+改成 :
+sed &amp;quot;/^.*FOO.*BAR.*$/d&amp;quot; file.txt 該行被刪除，不會變成空行
+去除空行 sed -i &amp;quot;/^\s*$/d&amp;quot; file.txt 取代空白 \s* 取代 windows 換行 sed -i &#39;s/\r$//&#39; wrap-trim.log 修改檔案內容 假設有一個test檔:
+$a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 將取代結果印出,但還不會做取代的動作</description>
+    </item>
+    
+    <item>
+      <title>Linux sendmail</title>
+      <link>/posts/linux-sendmail/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-sendmail/</guid>
       <description>sendmail 使用本機寄信的套件
 安裝 sudo apt-get install sendmail 測試 sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . Troubleshootings 如果網站 hostname 有改過, 會發現寄信很慢, 甚至要一分鐘以上 在 /etc/hosts 的 127.0.1.1 加上以下兩個 hostname :
 127.0.1.1 ubuntu 106-185-47-26 106-185-47-26.localhost 如果 example.com 當作 gmail 的信箱, 主機 hostname 又設定成 example.com 的話 如果寄到
@@ -311,6 +315,15 @@ sudo systemctl enable test Start it</description>
     </item>
     
     <item>
+      <title>Linux tcpdump</title>
+      <link>/posts/linux-tcpdump/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-tcpdump/</guid>
+      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
+    </item>
+    
+    <item>
       <title>Linux TTY/PTY</title>
       <link>/posts/linux-tty-pty/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -351,10 +364,10 @@ Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 
     
     <item>
       <title>Linux xargs</title>
-      <link>/posts/xargs/</link>
+      <link>/posts/linux-xargs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/xargs/</guid>
+      <guid>/posts/linux-xargs/</guid>
       <description>介紹 build and execute command lines from standard input
 用法 假設有個檔案結構如下 :
 $ tree test test ├── c1 │ ├── ii.del │ └── pp.ext ├── c2 │ ├── gg.del │ └── hh.ext └── c3 ├── c3-1 │ ├── qq.del │ └── xx.ext ├── cc.ext └── ff.del 4 directories, 8 files 如果我要刪除 test 下所有 *.del 的檔案
@@ -384,19 +397,6 @@ sudo apt-get install supervisor 唯一要注意的是 command=/usr/local/bin/lon
 [program:aws-sqs] command=/home/ubuntu/mygo/bin/aws-sqs autostart=true autorestart=true stderr_logfile=/var/log/golang.err.log stdout_logfile=/var/log/golang.out.log stderr_logfile_maxbytes=10MB user=ubuntu environment=USER=&#39;test&#39;,BRAND=&#39;Company_name&#39;,HOME=/home/my_user directory=/var/www 將 supervisor 跑起來
 sudo service supervisor start 對 program conf 的指令
 sudo supervisorctl &amp;gt; restart worker &amp;gt; reread &amp;gt; status &amp;gt; start resque &amp;gt; tail resque // error log or sudo supervisorctl reread goworker 有時候不管怎麼 restart 及 reread 都沒有用時用 reload Error CRIT Server &#39;unix_http_server&#39; running without any HTTP authentication checking 設定 unix_http_server 帳密</description>
-    </item>
-    
-    <item>
-      <title>sed and awk</title>
-      <link>/posts/sed-awk/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/sed-awk/</guid>
-      <description>sed -i : is used to affect the file. ^ : is a beginning of line $ : is a end of line d : delete if there is a empty line ((.|\n)*) : multiple line 刪除含有FOO及BAR這兩個字串的行 sed &amp;quot;s/^.*FOO.*BAR.*$//g&amp;quot; fstab 這作法該行被刪除，但是會是空的一行
-改成 :
-sed &amp;quot;/^.*FOO.*BAR.*$/d&amp;quot; file.txt 該行被刪除，不會變成空行
-去除空行 sed -i &amp;quot;/^\s*$/d&amp;quot; file.txt 取代空白 \s* 取代 windows 換行 sed -i &#39;s/\r$//&#39; wrap-trim.log 修改檔案內容 假設有一個test檔:
-$a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 將取代結果印出,但還不會做取代的動作</description>
     </item>
     
     <item>

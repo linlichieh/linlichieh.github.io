@@ -88,25 +88,15 @@ ls 查看 Server 端的目錄或檔案 pwd 查看 Server 端目前所在的目�
     
     <item>
       <title>Linux logrotate</title>
-      <link>/posts/logrotate/</link>
+      <link>/posts/linux-logrotate/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/logrotate/</guid>
+      <guid>/posts/linux-logrotate/</guid>
       <description>(最後更新: 2016-04-27)
 介紹 設定 log 定期壓縮及輩份，通常是 /var/log 下的 log，主要是控制 log 的大小不要越來越大
 如何設定 有兩個地方可以設定
 /etc/logrotate.conf : 直接寫在裡面 /etc/logrotate.d/ : 新增你想要控制 log 的程式，比較建議寫在這裡，一個程序 (i.e. nginx) 就是一個檔案，方便管理 但不管寫在哪裡效果都是一樣的，因為 /etc/logrotate.d/ 下的檔案最後也是會被讀取到 /etc/logrotate.conf 裡執行
 參數 daily | weekly | monthly : 進行 rotate 的間隔 rotate 7 : 保留 7 份 log, 也就是只會保留到 mysql.log.7.gz create : 如果 log 被改名，建立一個新的繼續儲存 create 0664 root web-admin : 設定新建的 log 檔的權限與擁有者/群組 dateext : 被輪替的檔案加上日期作為檔名 compress : 壓縮輩份的 log，預設使用 gzip minsize 50M : rotates only when the file has reached an appropriate size and the set time period has passed.</description>
-    </item>
-    
-    <item>
-      <title>Load Testing</title>
-      <link>/posts/load-testing/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/load-testing/</guid>
-      <description>Siege 設定檔 /etc/siege siegerc : 設定檔, 可以將 verbose 改為 true, 預設就是 -v 了 urls.txt : 將 url 或 post 資料寫在裡面, 下指令可以不用指定 url, 預設會讀取這裡 Example siege -c200 -t10S www.google.com -v -c, &amp;ndash;concurrent=NUM CONCURRENT users, default is 10 -t, &amp;ndash;time=NUMm TIMED testing where &amp;ldquo;m&amp;rdquo; is modifier S, M, or H (ex: &amp;ndash;time=1H, one hour test.) -v, &amp;ndash;verbose VERBOSE, prints notification to screen. 結果 :
-Transactions: 652 hits Availability: 100.00 % Elapsed time: 3.</description>
     </item>
     
     <item>

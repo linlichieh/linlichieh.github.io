@@ -8,11 +8,11 @@
     <language>en-us</language><atom:link href="/categories/db/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Database</title>
-      <link>/posts/db/</link>
+      <link>/posts/database/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/db/</guid>
-      <description>ACID 原子性 (atomicity, 或稱不可分割性) : 一個交易（transaction）中的所有操作，要就全部完成，不然就全部不完成，不會結束在中間某個環節。事務執行過程中其中一個環境發生錯誤，會被回滾（Rollback）到一開始的狀態，就像事務從來沒有執行過一樣。 一致性 (consistency) : 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。 隔離性 (isolation, 又稱獨立性) : 隔離性：當兩個或者多個事務並發訪問（此處訪問指查詢和修改的操作）資料庫的同一數據時所表現出的相互關係。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和串列&amp;gt;化（Serializable）。 持久性 (durability) : 持久性：在事務完成以後，該事務對資料庫所作的更改便持久地保存在資料庫之中，並且是完全的。 MySQL InnoDB vs MyIsam InnoDB 支援 transaction InnoDB 支援 row lock InnoDB 不需要等 row 上的 lock 釋放就可以讀取 row 上的 snapshot MySQL int length 型態 Byte(s) 預設長度 範圍 Unsigned --------------------------------------------------------------------------------------------------------------- TINYINT[(長度)] 1 4 -128~127 0~255 (unisgned 的預設長度會是 3, 因為沒有負號, 最多就 3 位數) SMALLINT[(長度)] 2 6 -32768~32767 0~65535 MEDIUMINT[(長度)] 3 9 -8388608~8388607 0~16777215 INT[(長度)] 4 11 -2147683648~2147683647 0~4294967295 BIGINT[(長度)] 8 20 -9223372036854775808~9223372036854775807 0~18446744073709551615 MySQL Char vs Varchar 比較 官方詳細說明 : https://dev.</description>
+      <guid>/posts/database/</guid>
+      <description>ACID Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back. Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity. Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions. Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</description>
     </item>
     
     <item>

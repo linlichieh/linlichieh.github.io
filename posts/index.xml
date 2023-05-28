@@ -94,19 +94,6 @@ session 則完全違反 REST 的無狀態性
     </item>
     
     <item>
-      <title>C/C&#43;&#43; Basics</title>
-      <link>/posts/c/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/c/</guid>
-      <description>Basic int = 4 bytes double = 8 bytes char = 1 byte 1 char 存的是 ASCII 數字 一般說來，我們編譯安裝一個由GNU Autoconf 配置的程序是採用如下的步驟： ./configure &amp;amp;&amp;amp; make &amp;amp;&amp;amp; make install 這個configure 腳本文件是用來“猜”出一系列系統相關的變量，這些變量是在後面的編譯過程要用到的。它將檢查系統變量值是否滿足編譯要求，然後使用這些變量在程序包內每個文件夾下生 成Makefile。此外，configure 腳本還會生成其它文件： 每個文件夾／子文件夾下的一個或多個Makefile(s) 一個名叫config.status 的腳本 一個文本文件config.log Configure 腳本文件成功運行之後, 你會輸入make 來編譯程序，得到你需要的可執行文件。如果make 成功的完成，你可以使用make install 來安裝這個程序。
-ref : http://www.ibm.com/developerworks/cn/linux/l-cn-checkinstall/
-c include path 在 GCC 編譯下 C header 的 #include &amp;lt;stdio.h&amp;gt; 預設會到以下4個路徑去找(非絕對, 不同系統有不同的路徑)
-/usr/local/include libdir/gcc/target/version/include /usr/target/include /usr/include /usr/local/lib 也可以加上 -I dir 選項指定搜尋的路徑
-gcc -I /usr/local/include/qq .</description>
-    </item>
-    
-    <item>
       <title>Cryptography</title>
       <link>/posts/cryptography/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -131,11 +118,11 @@ O(1) constant O(logn) logarithmic base is 2 an array storing 1M items, will do 1
     
     <item>
       <title>Database</title>
-      <link>/posts/db/</link>
+      <link>/posts/database/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/db/</guid>
-      <description>ACID 原子性 (atomicity, 或稱不可分割性) : 一個交易（transaction）中的所有操作，要就全部完成，不然就全部不完成，不會結束在中間某個環節。事務執行過程中其中一個環境發生錯誤，會被回滾（Rollback）到一開始的狀態，就像事務從來沒有執行過一樣。 一致性 (consistency) : 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。 隔離性 (isolation, 又稱獨立性) : 隔離性：當兩個或者多個事務並發訪問（此處訪問指查詢和修改的操作）資料庫的同一數據時所表現出的相互關係。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和串列&amp;gt;化（Serializable）。 持久性 (durability) : 持久性：在事務完成以後，該事務對資料庫所作的更改便持久地保存在資料庫之中，並且是完全的。 MySQL InnoDB vs MyIsam InnoDB 支援 transaction InnoDB 支援 row lock InnoDB 不需要等 row 上的 lock 釋放就可以讀取 row 上的 snapshot MySQL int length 型態 Byte(s) 預設長度 範圍 Unsigned --------------------------------------------------------------------------------------------------------------- TINYINT[(長度)] 1 4 -128~127 0~255 (unisgned 的預設長度會是 3, 因為沒有負號, 最多就 3 位數) SMALLINT[(長度)] 2 6 -32768~32767 0~65535 MEDIUMINT[(長度)] 3 9 -8388608~8388607 0~16777215 INT[(長度)] 4 11 -2147683648~2147683647 0~4294967295 BIGINT[(長度)] 8 20 -9223372036854775808~9223372036854775807 0~18446744073709551615 MySQL Char vs Varchar 比較 官方詳細說明 : https://dev.</description>
+      <guid>/posts/database/</guid>
+      <description>ACID Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back. Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity. Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions. Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</description>
     </item>
     
     <item>
@@ -418,7 +405,7 @@ str = &#39;aabbddeeffggiiCC&#39;; reFee=/cc/i; //補上i(忽略大小寫) 才會
     </item>
     
     <item>
-      <title>jekyll Octopress</title>
+      <title>jekyll Octopress (Archived)</title>
       <link>/posts/octopress/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -476,10 +463,10 @@ sudo gpasswd -d test sudo 方法2 加入: 手動新增帳號到 /etc/sudoers :</
     
     <item>
       <title>Linux Compression</title>
-      <link>/posts/linux-compressed/</link>
+      <link>/posts/linux-compression/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/linux-compressed/</guid>
+      <guid>/posts/linux-compression/</guid>
       <description>gzip Usage: gzip [OPTION]... [FILE]... Compress or uncompress FILEs (by default, compress FILES in-place). Mandatory arguments to long options are mandatory for short options too. -c, --stdout write on standard output, keep original files unchanged -d, --decompress decompress -f, --force force overwrite of output file and compress links -h, --help give this help -l, --list list compressed file contents -L, --license display software license -n, --no-name do not save or restore the original name and time stamp -N, --name save or restore the original name and time stamp -q, --quiet suppress all warnings -r, --recursive operate recursively on directories -S, --suffix=SUF use suffix SUF on compressed files -t, --test test compressed file integrity -v, --verbose verbose mode -V, --version display version number -1, --fast compress faster -9, --best compress better --rsyncable Make rsync-friendly archive With no FILE, or when FILE is -, read standard input.</description>
     </item>
     
@@ -497,10 +484,10 @@ $ crontab -e 會進入編輯器，輸入:
     
     <item>
       <title>Linux curl</title>
-      <link>/posts/curl/</link>
+      <link>/posts/linux-curl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/curl/</guid>
+      <guid>/posts/linux-curl/</guid>
       <description>-i -I 顯示 response 的 detail 只顯示 header
 curl -I http://wwww.example.com 顯示 header + body
 curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization:Bearer NDQzYmM1ZD&amp;quot; http://www.example.com -D 將 response 的 header 輸出成檔案 curl www.google.com -D /tmp/google-cookie.txt v 顯示 request/reqsponse 的 request detail curl -v http://wwww.example.com -L support 302 redirect $ curl -L www.google.com -x 指定 proxy curl -x proxy.example2.com:8080 http://www.example.com -b 使用指定的 cookie curl -b cookie.txt http://www.example.com -e Referrer (若該網站限制需先訪問網站首頁才能訪問下載頁) curl -e &amp;quot;www.</description>
@@ -518,10 +505,10 @@ curl -i http://wwww.example.com -H 指定 Header curl -H &amp;quot;Authorization
     
     <item>
       <title>Linux grep</title>
-      <link>/posts/grep/</link>
+      <link>/posts/linux-grep/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/grep/</guid>
+      <guid>/posts/linux-grep/</guid>
       <description>一般用法 grep -R &#39;時間&#39; * -r, &amp;ndash;recursive like &amp;ndash;directories=recurse -R, &amp;ndash;dereference-recursive likewise, but follow all symlinks &amp;ndash;include=FILE_PATTERN search only files that match FILE_PATTERN &amp;ndash;exclude=FILE_PATTERN skip files and directories matching FILE_PATTERN &amp;ndash;exclude-from=FILE skip files matching any file pattern from FILE &amp;ndash;exclude-dir=PATTERN directories that match PATTERN will be skipped. &amp;ndash;exclude-dir={dir1,dir2,dir3} directories that match PATTERN will be skipped. -i, &amp;ndash;ignore-case ignore case distinctions -P, &amp;ndash;perl-regexp -o, &amp;ndash;only-matching grep ^d：過濾出資料夾
 OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
     </item>
@@ -549,10 +536,10 @@ $ locale -a locale: Cannot set LC_CTYPE to default locale: No such file or direc
     
     <item>
       <title>Linux logrotate</title>
-      <link>/posts/logrotate/</link>
+      <link>/posts/linux-logrotate/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/logrotate/</guid>
+      <guid>/posts/linux-logrotate/</guid>
       <description>(最後更新: 2016-04-27)
 介紹 設定 log 定期壓縮及輩份，通常是 /var/log 下的 log，主要是控制 log 的大小不要越來越大
 如何設定 有兩個地方可以設定
@@ -562,10 +549,10 @@ $ locale -a locale: Cannot set LC_CTYPE to default locale: No such file or direc
     
     <item>
       <title>Linux mkfifo</title>
-      <link>/posts/mkfifo/</link>
+      <link>/posts/linux-mkfifo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/mkfifo/</guid>
+      <guid>/posts/linux-mkfifo/</guid>
       <description>介紹 用在兩個不同執行的程式溝通, 他就像是一條水管(pipeline file)將兩個程式連接起來
 其中一邊不斷的將水倒進去, 另一邊則取水, 這樣就可以達到資料
 Example session 1 : 建立 pipe
@@ -580,10 +567,10 @@ O_NONBLOCK enable : 立刻返回失敗, error code 為 ENXIO O_NONBLOCK dieable 
     
     <item>
       <title>Linux nc (netcat)</title>
-      <link>/posts/netcat/</link>
+      <link>/posts/linux-netcat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/netcat/</guid>
+      <guid>/posts/linux-netcat/</guid>
       <description>介紹 用來連接特定 port, 或啟動一個 port 來監聽, 可以執行簡單的訊息或檔案傳送
 有些系統將 nc 改為 netcat
 快速看如何使用 啟動 20000 port
@@ -597,10 +584,10 @@ $ cat backup.iso | pv -b | nc 54.</description>
     
     <item>
       <title>Linux netstat</title>
-      <link>/posts/netstat/</link>
+      <link>/posts/linux-netstat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/netstat/</guid>
+      <guid>/posts/linux-netstat/</guid>
       <description>常用 -t: tcp -u: udp -n: don&amp;rsquo;t resolve names -l: listening -p: show pid or program name -i: Display a table of all network interfaces. -a: Show both listening and non-listening sockets. 如果 netstat / lsof 無法顯示出 pid or program name 要改用 sudo 執行 列出在監聽的網路服務:
 netstat -tunl 列出所有的連線
 netstat -antp 列出已連線的網路連線狀態:
@@ -610,20 +597,11 @@ $ netstat -antop tcp 0 0 0.</description>
     </item>
     
     <item>
-      <title>Linux Network Sniffer Tools</title>
-      <link>/posts/listen-packet/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/listen-packet/</guid>
-      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
-    </item>
-    
-    <item>
       <title>Linux nmap</title>
-      <link>/posts/nmap/</link>
+      <link>/posts/linux-nmap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/nmap/</guid>
+      <guid>/posts/linux-nmap/</guid>
       <description>介紹 有時候你想知道該網域下有哪些 ip 正在使用或有哪些 port 是開放的, 就可以使用 nmap 來檢查
 安裝 ubuntu :
 sudo apt-get install nmap 使用 假如已經有確定的 port 想知道是否開放可直接用 telnet nc telnet xxx.oo 8010 或
@@ -651,11 +629,24 @@ Installation sudo apt-get install smartmontools 當硬碟不支援時顯示 Unav
     </item>
     
     <item>
-      <title>Linux sendmail</title>
-      <link>/posts/email/</link>
+      <title>Linux sed and awk</title>
+      <link>/posts/linux-sed-awk/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/email/</guid>
+      <guid>/posts/linux-sed-awk/</guid>
+      <description>sed -i : is used to affect the file. ^ : is a beginning of line $ : is a end of line d : delete if there is a empty line ((.|\n)*) : multiple line 刪除含有FOO及BAR這兩個字串的行 sed &amp;quot;s/^.*FOO.*BAR.*$//g&amp;quot; fstab 這作法該行被刪除，但是會是空的一行
+改成 :
+sed &amp;quot;/^.*FOO.*BAR.*$/d&amp;quot; file.txt 該行被刪除，不會變成空行
+去除空行 sed -i &amp;quot;/^\s*$/d&amp;quot; file.txt 取代空白 \s* 取代 windows 換行 sed -i &#39;s/\r$//&#39; wrap-trim.log 修改檔案內容 假設有一個test檔:
+$a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 將取代結果印出,但還不會做取代的動作</description>
+    </item>
+    
+    <item>
+      <title>Linux sendmail</title>
+      <link>/posts/linux-sendmail/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-sendmail/</guid>
       <description>sendmail 使用本機寄信的套件
 安裝 sudo apt-get install sendmail 測試 sendmail xxx@example.com Subject: Test from example.com Hello~anyone! . Troubleshootings 如果網站 hostname 有改過, 會發現寄信很慢, 甚至要一分鐘以上 在 /etc/hosts 的 127.0.1.1 加上以下兩個 hostname :
 127.0.1.1 ubuntu 106-185-47-26 106-185-47-26.localhost 如果 example.com 當作 gmail 的信箱, 主機 hostname 又設定成 example.com 的話 如果寄到
@@ -712,6 +703,15 @@ sudo systemctl enable test Start it</description>
     </item>
     
     <item>
+      <title>Linux tcpdump</title>
+      <link>/posts/linux-tcpdump/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-tcpdump/</guid>
+      <description>Tcpdump 監聽封包 sudo tcpdump -i lo -nn port 8080 13:45:48.703124 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [S], seq 2569649818, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 0,nop,wscale 6], length 0 13:45:48.703130 IP 127.0.0.1.8080 &amp;gt; 127.0.0.1.42893: Flags [S.], seq 986657362, ack 2569649819, win 43690, options [mss 65495,sackOK,TS val 2431608 ecr 2431608,nop,wscale 6], length 0 13:45:48.703137 IP 127.0.0.1.42893 &amp;gt; 127.0.0.1.8080: Flags [.], ack 1, win 683, options [nop,nop,TS val 2431608 ecr 2431608], length 0 13:45:48.</description>
+    </item>
+    
+    <item>
       <title>Linux TTY/PTY</title>
       <link>/posts/linux-tty-pty/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -752,25 +752,15 @@ Tue Aug 8 11:32:54 UTC 2017 Second Example 這個範例可以保持你想要的 
     
     <item>
       <title>Linux xargs</title>
-      <link>/posts/xargs/</link>
+      <link>/posts/linux-xargs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/xargs/</guid>
+      <guid>/posts/linux-xargs/</guid>
       <description>介紹 build and execute command lines from standard input
 用法 假設有個檔案結構如下 :
 $ tree test test ├── c1 │ ├── ii.del │ └── pp.ext ├── c2 │ ├── gg.del │ └── hh.ext └── c3 ├── c3-1 │ ├── qq.del │ └── xx.ext ├── cc.ext └── ff.del 4 directories, 8 files 如果我要刪除 test 下所有 *.del 的檔案
 找出 *.del
 $ find test -name &amp;quot;*.del&amp;quot; test/c3/ff.del test/c3/c3-1/qq.del test/c2/gg.del test/c1/ii.del 加上 xargs 指令, 可以一次幫你把找到的結果刪除</description>
-    </item>
-    
-    <item>
-      <title>Load Testing</title>
-      <link>/posts/load-testing/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/load-testing/</guid>
-      <description>Siege 設定檔 /etc/siege siegerc : 設定檔, 可以將 verbose 改為 true, 預設就是 -v 了 urls.txt : 將 url 或 post 資料寫在裡面, 下指令可以不用指定 url, 預設會讀取這裡 Example siege -c200 -t10S www.google.com -v -c, &amp;ndash;concurrent=NUM CONCURRENT users, default is 10 -t, &amp;ndash;time=NUMm TIMED testing where &amp;ldquo;m&amp;rdquo; is modifier S, M, or H (ex: &amp;ndash;time=1H, one hour test.) -v, &amp;ndash;verbose VERBOSE, prints notification to screen. 結果 :
-Transactions: 652 hits Availability: 100.00 % Elapsed time: 3.</description>
     </item>
     
     <item>
@@ -1409,19 +1399,6 @@ rvm requirements [3] Install Ruby rvm install ruby rvm use ruby --default [4] In
       
       <guid>/posts/samba/</guid>
       <description>安裝 sudo apt-get install samba 關閉 $ sudo service smbd stop smbd stop/waiting 開啟 $ sudo service smbd start smbd start/running, process 15892 重新啟動 $ sudo service smbd restart smbd stop/waiting smbd start/running, process 7782 查看目前狀態 $ sudo service smbd status smbd start/running, process 9395 設定 /etc/samba/smb.conf : (append到最下面) [share] &amp;lt;= 這個samba位置的名字, 變更時URL也會變 path = /home/test/share &amp;lt;= 自已指定放置網芳的位置 public = yes writable = yes printable = no #only guest = yes #guest ok = yes 連線 windows連進samba輸入\\{IP/Domain name}\share :</description>
-    </item>
-    
-    <item>
-      <title>sed and awk</title>
-      <link>/posts/sed-awk/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/sed-awk/</guid>
-      <description>sed -i : is used to affect the file. ^ : is a beginning of line $ : is a end of line d : delete if there is a empty line ((.|\n)*) : multiple line 刪除含有FOO及BAR這兩個字串的行 sed &amp;quot;s/^.*FOO.*BAR.*$//g&amp;quot; fstab 這作法該行被刪除，但是會是空的一行
-改成 :
-sed &amp;quot;/^.*FOO.*BAR.*$/d&amp;quot; file.txt 該行被刪除，不會變成空行
-去除空行 sed -i &amp;quot;/^\s*$/d&amp;quot; file.txt 取代空白 \s* 取代 windows 換行 sed -i &#39;s/\r$//&#39; wrap-trim.log 修改檔案內容 假設有一個test檔:
-$a = &#39;ccc&#39;; $b = &#39;ddd&#39;; $c = &#39;ccc&#39;; $d = &#39;fff&#39;; 將取代結果印出,但還不會做取代的動作</description>
     </item>
     
     <item>

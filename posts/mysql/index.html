@@ -299,13 +299,6 @@ mysqlbinlog --database=my_db --start-datetime=&quot;2015-05-25 00:00:00&quot;  -
 <p>測試環境: AWS RDS MySQL db.t2.small</p>
 <p>Table 筆數: 近 570 萬</p>
 <p>執行 query 所花時間差不多都是 0.75 秒</p>
-<h1 id="acid">ACID</h1>
-<ul>
-<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
-<li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
-<li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
-<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
-</ul>
 <h1 id="troubleshootings">Troubleshootings</h1>
 <h3 id="某些中文字無法存入問題">某些中文字無法存入問題</h3>
 <p>unicode 編碼一般常用字都是 3bytes, 但因為它是 4 byte 而無法寫入, 例如 : <code>𡟛</code><a href="https://zh.wiktionary.org/zh-hant/%F0%A1%9F%9B">參考 wiki</a></p>

@@ -20,7 +20,7 @@
     <h1>I/O</h1>
     
   </header>
-  <h2 id="測試-filesystem-讀寫速度">測試 filesystem 讀寫速度</h2>
+  <h1 id="測試-filesystem-讀寫速度">測試 filesystem 讀寫速度</h1>
 <p>dd 只能測試寫入速度</p>
 <pre><code>$ dd if=/dev/zero of=/tmp/output conv=fdatasync bs=384k count=1k; rm -f /tmp/output
 1024+0 records in
@@ -44,7 +44,7 @@ sys 0m0.065s
  Timing cached reads:   12588 MB in  2.00 seconds = 6308.45 MB/sec
  Timing buffered disk reads: 514 MB in  3.01 seconds = 170.53 MB/sec
 </code></pre>
-<h2 id="server-效能調校">Server 效能調校</h2>
+<h1 id="server-效能調校">Server 效能調校</h1>
 <h3 id="快速設定最多開啟-file-的數量">快速設定最多開啟 file 的數量</h3>
 <p><code>/etc/security/limits.conf</code> 最後增加</p>
 <pre><code>* soft nofile 65535
@@ -85,7 +85,7 @@ net.ipv4.tcp_tw_recycle = 1
 fs.file-max = 65000
 </code></pre>
 <p>ref : <a href="http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/">http://blog.didibird.com/2016/05/24/the-way-of-turning-the-best-performance-for-nginx/</a></p>
-<h2 id="phpconf-io">PHPConf I/O</h2>
+<h1 id="phpconf-io">PHPConf I/O</h1>
 <p>之前參加 PHPConf Ricky 講者發表的一個主題裡談到 I/O 架構, 然候我再以它的投影片為基礎做的一個小整理</p>
 <p>這篇適合簡單及快速了解 I/O 架構的基本介紹, 沒辦法提供專業的教學說明。</p>
 <h3 id="c10k-problem">C10K Problem</h3>
@@ -145,7 +145,7 @@ fs.file-max = 65000
 </ul>
 <p>ref:
 <a href="http://ricky.ez2.us/">http://ricky.ez2.us/</a></p>
-<h2 id="openresty-介紹">OpenResty 介紹</h2>
+<h1 id="openresty-介紹">OpenResty 介紹</h1>
 <p>這是在一次技術活動聽 Pahud 大神推薦的 web server 時做的筆記,</p>
 <p>它可大幅度提升 server 的反應速度, 尤其是對 php 這種 request / per process 的語言</p>
 <p>先介紹各 web server 的特點</p>

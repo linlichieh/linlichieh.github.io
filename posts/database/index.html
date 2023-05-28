@@ -5,7 +5,7 @@
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/db/">
+<link rel="canonical" href="/posts/database/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -20,12 +20,12 @@
     <h1>Database</h1>
     
   </header>
-  <h2 id="acid">ACID</h2>
+  <h1 id="acid">ACID</h1>
 <ul>
-<li>原子性 (atomicity, 或稱不可分割性)  : 一個交易（transaction）中的所有操作，要就全部完成，不然就全部不完成，不會結束在中間某個環節。事務執行過程中其中一個環境發生錯誤，會被回滾（Rollback）到一開始的狀態，就像事務從來沒有執行過一樣。</li>
-<li>一致性 (consistency)                : 在事務開始之前和事務結束以後，資料庫的完整性沒有被破壞。這表示寫入的資料必須完全符合所有的預設規則，這包含資料的精確度、串聯性以及後續資料庫可以自發性地完成預定的工作。</li>
-<li>隔離性 (isolation, 又稱獨立性)      : 隔離性：當兩個或者多個事務並發訪問（此處訪問指查詢和修改的操作）資料庫的同一數據時所表現出的相互關係。事務隔離分為不同級別，包括讀未提交（Read uncommitted）、讀提交（read committed）、可重複讀（repeatable read）和串列&gt;化（Serializable）。</li>
-<li>持久性 (durability)                 : 持久性：在事務完成以後，該事務對資料庫所作的更改便持久地保存在資料庫之中，並且是完全的。</li>
+<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
+<li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
+<li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
+<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
 </ul>
 <h2 id="mysql-innodb-vs-myisam">MySQL InnoDB vs MyIsam</h2>
 <ul>

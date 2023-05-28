@@ -40,9 +40,6 @@
   </url><url>
     <loc>/categories/c/c&#43;&#43;/</loc>
   </url><url>
-    <loc>/posts/c/</loc>
-    <lastmod>2014-03-09T23:06:12+08:00</lastmod>
-  </url><url>
     <loc>/categories/cache/</loc>
     <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
@@ -58,7 +55,7 @@
     <loc>/categories/data-structures/</loc>
     <lastmod>2017-05-20T18:53:13+08:00</lastmod>
   </url><url>
-    <loc>/posts/db/</loc>
+    <loc>/posts/database/</loc>
     <lastmod>2014-10-29T10:24:54+08:00</lastmod>
   </url><url>
     <loc>/categories/db/</loc>
@@ -169,19 +166,19 @@
     <loc>/posts/linux-commands/</loc>
     <lastmod>2013-05-24T08:34:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/linux-compressed/</loc>
+    <loc>/posts/linux-compression/</loc>
     <lastmod>2013-09-07T15:15:00+00:00</lastmod>
   </url><url>
     <loc>/posts/linux-crontab/</loc>
     <lastmod>2013-05-02T01:06:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/curl/</loc>
+    <loc>/posts/linux-curl/</loc>
     <lastmod>2015-02-21T23:54:06+08:00</lastmod>
   </url><url>
     <loc>/posts/linux-file-system/</loc>
     <lastmod>2013-05-13T06:09:04+00:00</lastmod>
   </url><url>
-    <loc>/posts/grep/</loc>
+    <loc>/posts/linux-grep/</loc>
     <lastmod>2013-11-26T21:39:00+00:00</lastmod>
   </url><url>
     <loc>/posts/linux-iptables/</loc>
@@ -190,22 +187,19 @@
     <loc>/posts/linux-locale/</loc>
     <lastmod>2013-06-08T09:53:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/logrotate/</loc>
+    <loc>/posts/linux-logrotate/</loc>
     <lastmod>2014-08-05T21:11:35+08:00</lastmod>
   </url><url>
-    <loc>/posts/mkfifo/</loc>
+    <loc>/posts/linux-mkfifo/</loc>
     <lastmod>2014-01-19T16:23:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/netcat/</loc>
+    <loc>/posts/linux-netcat/</loc>
     <lastmod>2014-01-19T15:54:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/netstat/</loc>
+    <loc>/posts/linux-netstat/</loc>
     <lastmod>2014-01-19T14:47:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/listen-packet/</loc>
-    <lastmod>2013-12-15T20:39:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/nmap/</loc>
+    <loc>/posts/linux-nmap/</loc>
     <lastmod>2013-12-15T18:00:00+00:00</lastmod>
   </url><url>
     <loc>/posts/linux-rsync/</loc>
@@ -214,7 +208,10 @@
     <loc>/posts/linux-smart/</loc>
     <lastmod>2013-05-17T06:04:35+00:00</lastmod>
   </url><url>
-    <loc>/posts/email/</loc>
+    <loc>/posts/linux-sed-awk/</loc>
+    <lastmod>2013-08-24T15:27:00+00:00</lastmod>
+  </url><url>
+    <loc>/posts/linux-sendmail/</loc>
     <lastmod>2014-07-29T14:48:05+08:00</lastmod>
   </url><url>
     <loc>/posts/linux-shell-script/</loc>
@@ -226,6 +223,9 @@
     <loc>/posts/linux-systemd/</loc>
     <lastmod>2018-01-31T21:20:29+08:00</lastmod>
   </url><url>
+    <loc>/posts/linux-tcpdump/</loc>
+    <lastmod>2013-12-15T20:39:00+00:00</lastmod>
+  </url><url>
     <loc>/posts/linux-tty-pty/</loc>
     <lastmod>2019-01-25T11:02:08+08:00</lastmod>
   </url><url>
@@ -235,11 +235,8 @@
     <loc>/posts/linux-vim/</loc>
     <lastmod>2013-05-15T07:47:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/xargs/</loc>
+    <loc>/posts/linux-xargs/</loc>
     <lastmod>2013-12-15T20:28:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/load-testing/</loc>
-    <lastmod>2014-06-05T00:02:45+08:00</lastmod>
   </url><url>
     <loc>/categories/mac/</loc>
     <lastmod>2013-09-20T21:34:00+00:00</lastmod>
@@ -447,9 +444,6 @@
   </url><url>
     <loc>/categories/security/</loc>
     <lastmod>2014-12-05T11:52:58+08:00</lastmod>
-  </url><url>
-    <loc>/posts/sed-awk/</loc>
-    <lastmod>2013-08-24T15:27:00+00:00</lastmod>
   </url><url>
     <loc>/categories/server/</loc>
     <lastmod>2016-05-13T08:29:59+08:00</lastmod>
