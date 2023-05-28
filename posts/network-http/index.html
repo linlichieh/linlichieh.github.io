@@ -20,7 +20,57 @@
     <h1>Network - HTTP</h1>
     
   </header>
-  <h1 id="http-status">Http Status</h1>
+  <h1 id="http1-vs-http2-vs-http3">HTTP/1 vs HTTP/2 vs HTTP/3</h1>
+<ul>
+<li>HTTP/1
+<ul>
+<li>build on TCP</li>
+<li>each request to the same server requires the process of TCP connection (3-way handshake)</li>
+</ul>
+</li>
+<li>HTTP/1.1
+<ul>
+<li>introduce the <code>keep-alive</code> mechanism, which allows a connection can be used for multiple requests</li>
+<li>reduce latency because each request doesn&rsquo;t need to do 3-way handshake</li>
+</ul>
+</li>
+<li>HTTP/2
+<ul>
+<li>published in 2015</li>
+<li>introduce HTTP streams
+<ul>
+<li>multiple streams of requests sent to the same server on a single TCP connection</li>
+<li>each stream is independent of each other</li>
+</ul>
+</li>
+<li>introduce push
+<ul>
+<li>it allows server to send updates to the clients without polling</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>HTTP/3
+<ul>
+<li>published in Jun 2022</li>
+<li>use a new protocol called QUIC
+<ul>
+<li>based on UDP</li>
+<li>introduce streams as the first-class citizen at transport layer</li>
+<li>QUIC streams share the same UDP connection, no handshakes are required</li>
+<li>streams are independent, packet loss affecting one stream doesn&rsquo;t affect others</li>
+<li>designed for mobile heavy internet usage</li>
+<li>Use connection ID, which allows connections to move between IP address and network interfaces (5G, client wifi)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>ref:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=a-sBfyiXysI">https://www.youtube.com/watch?v=a-sBfyiXysI</a></li>
+</ul>
+<h1 id="http-status">Http Status</h1>
 <p>HTTP status codes are grouped into five classes</p>
 <ul>
 <li>1xx: Informational</li>
@@ -111,9 +161,10 @@
 </ul>
 <h1 id="http-haader">Http Haader</h1>
 <h3 id="keep-alive">keep-alive</h3>
-<p>tcp 沒有 keep-alive 一個 request 就會佔用一條通道</p>
-<p>tcp 有 keep-alive 就多個 request 只需做一次三項交握, 都在同一條通道傳送</p>
-<p>一個 socket 只能接一個 session, 不能一對多</p>
+<p><code>Connection: Keep-Alive</code> is used to reuse the same TCP connection to send and receive multiple HTTP requests/responses, instead of opening a new connection for each request/response pair</p>
+<blockquote>
+<p>TCP keep-alive and HTTP keep-alive serve different purposes</p>
+</blockquote>
 <h3 id="etag">Etag</h3>
 <p>第一次 : browser 對 server 發出請求, server 回應 200 ok, 並多加上 header[&lsquo;ETag&rsquo;] =  body 以 md5 編碼</p>
 <p>browser 會 cache response 及儲存 Etag</p>

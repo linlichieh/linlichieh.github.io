@@ -815,8 +815,7 @@ Standard OSI model Layer 1 - Physical electric signals / driver the data gets co
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/network-http/</guid>
-      <description>Http Status HTTP status codes are grouped into five classes
-1xx: Informational 2xx: Success 200 OK: Request successful 201 Created For example, consider a client sending a POST request to create a new user on a web service This is most commonly used in response to a POST request. 204 No Content: Request successful, but no data to return 3xx: Redirection 301 Moved Permanently: the URI of the requested resource has been changed permanently.</description>
+      <description>HTTP/1 vs HTTP/2 vs HTTP/3 HTTP/1 build on TCP each request to the same server requires the process of TCP connection (3-way handshake) HTTP/1.1 introduce the keep-alive mechanism, which allows a connection can be used for multiple requests reduce latency because each request doesn&amp;rsquo;t need to do 3-way handshake HTTP/2 published in 2015 introduce HTTP streams multiple streams of requests sent to the same server on a single TCP connection each stream is independent of each other introduce push it allows server to send updates to the clients without polling HTTP/3 published in Jun 2022 use a new protocol called QUIC based on UDP introduce streams as the first-class citizen at transport layer QUIC streams share the same UDP connection, no handshakes are required streams are independent, packet loss affecting one stream doesn&amp;rsquo;t affect others designed for mobile heavy internet usage Use connection ID, which allows connections to move between IP address and network interfaces (5G, client wifi) ref:</description>
     </item>
     
     <item>
