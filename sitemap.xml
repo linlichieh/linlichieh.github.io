@@ -262,9 +262,6 @@
     <loc>/posts/network/</loc>
     <lastmod>2015-01-16T12:15:03+08:00</lastmod>
   </url><url>
-    <loc>/posts/network-http/</loc>
-    <lastmod>2015-01-16T12:15:03+08:00</lastmod>
-  </url><url>
     <loc>/posts/network-dhcp/</loc>
     <lastmod>2014-01-19T17:09:00+00:00</lastmod>
   </url><url>
@@ -273,6 +270,9 @@
   </url><url>
     <loc>/posts/network-dns-bind9/</loc>
     <lastmod>2015-01-29T23:14:14+08:00</lastmod>
+  </url><url>
+    <loc>/posts/network-http/</loc>
+    <lastmod>2015-01-16T12:15:03+08:00</lastmod>
   </url><url>
     <loc>/posts/nfs/</loc>
     <lastmod>2013-11-26T15:54:00+00:00</lastmod>

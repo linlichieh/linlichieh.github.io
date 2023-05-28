@@ -62,15 +62,6 @@ Standard OSI model Layer 1 - Physical electric signals / driver the data gets co
     </item>
     
     <item>
-      <title>Network - HTTP</title>
-      <link>/posts/network-http/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/network-http/</guid>
-      <description>HTTP/1 vs HTTP/2 vs HTTP/3 HTTP/1 build on TCP each request to the same server requires the process of TCP connection (3-way handshake) HTTP/1.1 introduce the keep-alive mechanism, which allows a connection can be used for multiple requests reduce latency because each request doesn&amp;rsquo;t need to do 3-way handshake HTTP/2 published in 2015 introduce HTTP streams multiple streams of requests sent to the same server on a single TCP connection each stream is independent of each other introduce push it allows server to send updates to the clients without polling HTTP/3 published in Jun 2022 use a new protocol called QUIC based on UDP introduce streams as the first-class citizen at transport layer QUIC streams share the same UDP connection, no handshakes are required streams are independent, packet loss affecting one stream doesn&amp;rsquo;t affect others designed for mobile heavy internet usage Use connection ID, which allows connections to move between IP address and network interfaces (5G, client wifi) ref:</description>
-    </item>
-    
-    <item>
       <title>Network DHCP</title>
       <link>/posts/network-dhcp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -106,6 +97,15 @@ zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zon
 /etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
 改設定要記得增加Serial值
 $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
+    </item>
+    
+    <item>
+      <title>Network HTTP</title>
+      <link>/posts/network-http/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-http/</guid>
+      <description>HTTP/1 vs HTTP/2 vs HTTP/3 HTTP/1 build on TCP each request to the same server requires the process of TCP connection (3-way handshake) HTTP/1.1 introduce the keep-alive mechanism, which allows a connection can be used for multiple requests reduce latency because each request doesn&amp;rsquo;t need to do 3-way handshake HTTP/2 published in 2015 introduce HTTP streams multiple streams of requests sent to the same server on a single TCP connection each stream is independent of each other introduce push it allows server to send updates to the clients without polling HTTP/3 published in Jun 2022 use a new protocol called QUIC based on UDP introduce streams as the first-class citizen at transport layer QUIC streams share the same UDP connection, no handshakes are required streams are independent, packet loss affecting one stream doesn&amp;rsquo;t affect others designed for mobile heavy internet usage Use connection ID, which allows connections to move between IP address and network interfaces (5G, client wifi) ref:</description>
     </item>
     
     <item>
