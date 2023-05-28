@@ -251,41 +251,6 @@ In the real world, protocols don&rsquo;t always fit neatly into a single layer a
 <li><code>127.0.0.0</code>: loopback addresses</li>
 <li><code>255.255.255.255</code>: a limited broadcast address, which is used to send a network broadcast packet to all devices on the local network</li>
 </ul>
-<h1 id="how-dns-resolution-works-when-entering-examplecom-into-browser">How DNS resolution works when entering &ldquo;example.com&rdquo; into browser?</h1>
-<ul>
-<li>Browser cache check: the brwoser first checks its own cache to see if it has the IP of &ldquo;example.com&rdquo;</li>
-<li>Operating system cache check: operating system also maintain a DNS cache</li>
-<li>Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare. These servers also maintain a DNS cache
-<ul>
-<li>handle requests from clients, such as web browsers</li>
-</ul>
-</li>
-<li>Root DNS server: Resolver contacts a root DNS server for the address of TLD DNS server (<code>.com</code>)</li>
-<li>TLD NDS server: Resolver queries the TLD DNS server (<code>.com</code>) for the address of authoritative DNS server of &ldquo;example.com&rdquo;</li>
-<li>Authoritative DNS Server: Resolver queries the authoritative DNS server for the IP address of &ldquo;example.com&rdquo;
-<ul>
-<li>Domain Name Server most commonly refers to the &ldquo;Authoritative DNS Server&rdquo; where knows the actual IP address</li>
-<li>GoDaddy serves as an Authoritative DNS Server. They store the DNS records for these domains</li>
-</ul>
-</li>
-<li>Returning the IP address to browser: the browser can then make a request to the IP address to get the website data</li>
-<li>Caching the IP address</li>
-</ul>
-<h1 id="which-layer-of-the-osi-model-does-dns-resolution-happen-at">Which layer of the OSI model does DNS resolution happen at?</h1>
-<ul>
-<li>Application Layer (Layer 7)
-<ul>
-<li>DNS is a high-level application protocol designed to resolve human-friendly domain names into IP addresses.</li>
-<li>This process is a service provided to applications so they can use IP networks correctly, which is a primary function of Layer 7.</li>
-</ul>
-</li>
-<li>Transport Layer (Layer 4)
-<ul>
-<li>Although DNS primarily operates at the application layer, it&rsquo;s also important to note that DNS uses protocols at the transport layer to exchange data.</li>
-<li>DNS typically uses UDP (User Datagram Protocol) for query and response messages, but it can also use TCP (Transmission Control Protocol) for larger data exchanges (like zone transfers) or when a UDP packet is dropped.</li>
-</ul>
-</li>
-</ul>
 <h1 id="proxy-server-vs-reverse-proxy-server">Proxy server vs Reverse proxy server</h1>
 <h3 id="regular-proxy-server">regular proxy server</h3>
 <ul>

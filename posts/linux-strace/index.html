@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<title>Debugging Tools | Software engineering notes</title>
+<title>Linux strace | Software engineering notes</title>
 <meta charset="utf-8">
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/debugging-tools/">
+<link rel="canonical" href="/posts/linux-strace/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -17,23 +17,22 @@
 
 <article>
   <header>
-    <h1>Debugging Tools</h1>
+    <h1>Linux strace</h1>
     
   </header>
-  <h2 id="strace">strace</h2>
-<h3 id="installation">Installation</h3>
+  <h1 id="installation">Installation</h1>
 <pre><code>$ sudo apt install strace   #Debian/Ubuntu
 # yum install strace        #RHEL/CentOS
 # dnf install strace        #Fedora 22+
 </code></pre>
-<h3 id="trace-linux-command">Trace linux command</h3>
+<h1 id="trace-linux-command">Trace linux command</h1>
 <p>Simply run a command with strace, tracing of all system calls, e.g. <code>df -h</code>.</p>
 <pre><code>sudo strace df -h
 </code></pre>
-<h3 id="trace-pid">Trace PID</h3>
+<p>trace PID</p>
 <pre><code>sudo strace -p 5206
 </code></pre>
-<h3 id="get-summary-of-process">Get summary of process</h3>
+<h1 id="get-summary-of-process">Get summary of process</h1>
 <p>Generate a report of total time, calls, and errors for each system call.</p>
 <pre><code>sudo strace -c -p 5206
 
@@ -47,13 +46,13 @@
 ------ ----------- ----------- --------- --------- ----------------
 100.00    0.001262                    80         1 total
 </code></pre>
-<h3 id="print-command-time-spent-in-system-calls">Print command time spent in system calls</h3>
+<h1 id="print-command-time-spent-in-system-calls">Print command time spent in system calls</h1>
 <pre><code>sudo strace -T ls
 
 open(&quot;/proc/filesystems&quot;, O_RDONLY)     = 3 &lt;0.000024&gt;
 fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0 &lt;0.000006&gt;
 </code></pre>
-<h3 id="trace-only-specific-system-calls">Trace only specific system calls</h3>
+<h1 id="trace-only-specific-system-calls">Trace only specific system calls</h1>
 <pre><code>sudo strace -e trace=write df -h
 sudo strace -e trace=open,close df -h
 sudo strace -e trace=open,close,read,write df -h
@@ -62,7 +61,7 @@ sudo strace -e trace=all df -h
 <blockquote>
 <p>qualifier: signal, abbrev, verbose, raw, read, or write</p>
 </blockquote>
-<h3 id="trace-system-calls-based-on-a-certain-condition">Trace system calls based on a certain condition</h3>
+<h1 id="trace-system-calls-based-on-a-certain-condition">Trace system calls based on a certain condition</h1>
 <p>Trace all system calls involving process management.</p>
 <pre><code>sudo strace -e trace=process ls
 
@@ -121,20 +120,6 @@ setsockopt(3, SOL_SOCKET, SO_KEEPALIVE, [1], 4) = 0
 <p>Show debugging information for strace tool</p>
 <pre><code>sudo strace -d ls
 </code></pre>
-<h3 id="todo">TODO</h3>
-<p>System call</p>
-<pre><code>...
-open(&quot;/etc/ld.so.cache&quot;, O_RDONLY|O_CLOEXEC) = 3
-...
-</code></pre>
-<blockquote>
-<p><code>type of system call</code>(<code>argument</code>) = <code>return value</code></p>
-</blockquote>
-<ul>
-<li>epoll_wait(5, {}, 128, 0)               = 0</li>
-<li>clock_gettime(CLOCK_MONOTONIC, {1696036, 90909291}) = 0</li>
-<li>futex(0x1178818, FUTEX_WAKE, 1)         = 1</li>
-</ul>
 <p>ref:</p>
 <ul>
 <li><a href="https://www.tecmint.com/strace-commands-for-troubleshooting-and-debugging-linux/">strace</a></li>

@@ -18,21 +18,6 @@ sudo a2ensite test Options All: 以下諸功能皆有 None: 以下諸功能皆�
     </item>
     
     <item>
-      <title>Apache - Reduce Requests From Browser</title>
-      <link>/posts/apache-reduce-requests-from-browser/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/apache-reduce-requests-from-browser/</guid>
-      <description>當瀏覽器第一次讀取圖檔 status : 200 OK
-request header:
-Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Connection:keep-alive Host:test.com User-Agent:Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36 response header:
-Accept-Ranges:bytes Connection:Keep-Alive Content-Length:45860 Content-Type:image/jpeg Date:Thu, 11 Jul 2013 08:09:03 GMT ETag:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; Keep-Alive:timeout=5, max=100 Last-Modified:Thu, 11 Jul 2013 07:00:57 GMT Server:Apache/2.2.22 (Ubuntu) 內容會有圖檔
-第二次讀取讀檔會跟cache要所以 status : 304 Not Modified
-request header:
-Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Cache-Control:max-age=0 Connection:keep-alive Host:test.com If-Modified-Since:Thu, 11 Jul 2013 07:00:57 GMT If-None-Match:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; User-Agent:Mozilla/5.0 (Windows NT 6.</description>
-    </item>
-    
-    <item>
       <title>AWS</title>
       <link>/posts/aws/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -56,21 +41,6 @@ Region &amp;amp; AZ region 是 Data Center 的集合 AZ 與 AZ 至少隔70公里
       <description>介紹 Heroku 是雲端主機供應商，它有提供免費方案，提供 DB 及 mailgun etc.，如果只是一個小型不複雜的專案使用它還蠻合適的
 如何 Deploy 到 Heroku 1) 安裝 Heroku 的 command 並登入 heroku login 2) 到你的 Repository 目錄裡 3) Push 你的 code 到 heroku Production 不能使用 sqlite3，詳細說明在這 Production 要用 PostgreSQL，最好是 Dev 及 Production 都用 PostgreSQL Production 一定要有 gem &#39;pg&#39; 否則即使 deploy 成功，頁面也會噴錯 Gemfile.lock 必須要有，不要在 .gitignore 加上它 這裡可以先做個小修改，讓 App 能順利 deploy 再說，Postgres 安裝再另外解決，Gemfile :
 gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :production 如果 PostgreSQL 還沒安裝，在 bundle install 先略過它</description>
-    </item>
-    
-    <item>
-      <title>DNS server</title>
-      <link>/posts/dns/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dns/</guid>
-      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
-Installation sudo apt-get install bind9 bind9-doc dnsutils /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
-name.conf.local 正解 :
-zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
-/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
-改設定要記得增加Serial值
-$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>

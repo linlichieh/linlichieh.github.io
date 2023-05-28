@@ -7,32 +7,6 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Debugging Tools</title>
-      <link>/posts/debugging-tools/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/debugging-tools/</guid>
-      <description>strace Installation $ sudo apt install strace #Debian/Ubuntu # yum install strace #RHEL/CentOS # dnf install strace #Fedora 22+ Trace linux command Simply run a command with strace, tracing of all system calls, e.g. df -h.
-sudo strace df -h Trace PID sudo strace -p 5206 Get summary of process Generate a report of total time, calls, and errors for each system call.
-sudo strace -c -p 5206 % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 90.</description>
-    </item>
-    
-    <item>
-      <title>DNS server</title>
-      <link>/posts/dns/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dns/</guid>
-      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
-Installation sudo apt-get install bind9 bind9-doc dnsutils /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
-name.conf.local 正解 :
-zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
-/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
-改設定要記得增加Serial值
-$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
-    </item>
-    
-    <item>
       <title>FTP server</title>
       <link>/posts/ftp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -282,6 +256,18 @@ cat &amp;gt; qq.php &amp;lt;&amp;lt; EOF this is line 1 this is line 1 EOF 執�
 echo -e &amp;quot;line1\nline2&amp;quot; | tee -a /tmp/q.txt append到檔案最後面
 tee -a /tmp/t.txt &amp;lt;&amp;lt; EOF line 1 line 2 EOF 讀取檔案，將每行放入陣列
 file=1.txt seq=1 while read line do lines[$seq]=$line ((seq++)) done &amp;lt; $file for ((i=1;i&amp;lt;=${#lines[@]};i++)) do echo ${lines[$i]} done 使用sh執行會有錯誤，但bash執行沒問題</description>
+    </item>
+    
+    <item>
+      <title>Linux strace</title>
+      <link>/posts/linux-strace/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-strace/</guid>
+      <description>Installation $ sudo apt install strace #Debian/Ubuntu # yum install strace #RHEL/CentOS # dnf install strace #Fedora 22+ Trace linux command Simply run a command with strace, tracing of all system calls, e.g. df -h.
+sudo strace df -h trace PID
+sudo strace -p 5206 Get summary of process Generate a report of total time, calls, and errors for each system call.
+sudo strace -c -p 5206 % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 90.</description>
     </item>
     
     <item>

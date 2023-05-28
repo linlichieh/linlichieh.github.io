@@ -38,21 +38,6 @@ sudo a2ensite test Options All: 以下諸功能皆有 None: 以下諸功能皆�
     </item>
     
     <item>
-      <title>Apache - Reduce Requests From Browser</title>
-      <link>/posts/apache-reduce-requests-from-browser/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/apache-reduce-requests-from-browser/</guid>
-      <description>當瀏覽器第一次讀取圖檔 status : 200 OK
-request header:
-Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Connection:keep-alive Host:test.com User-Agent:Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36 response header:
-Accept-Ranges:bytes Connection:Keep-Alive Content-Length:45860 Content-Type:image/jpeg Date:Thu, 11 Jul 2013 08:09:03 GMT ETag:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; Keep-Alive:timeout=5, max=100 Last-Modified:Thu, 11 Jul 2013 07:00:57 GMT Server:Apache/2.2.22 (Ubuntu) 內容會有圖檔
-第二次讀取讀檔會跟cache要所以 status : 304 Not Modified
-request header:
-Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 Accept-Encoding:gzip,deflate,sdch Accept-Language:zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4 Cache-Control:max-age=0 Connection:keep-alive Host:test.com If-Modified-Since:Thu, 11 Jul 2013 07:00:57 GMT If-None-Match:&amp;quot;bc003e-b324-4e136f4c01a37&amp;quot; User-Agent:Mozilla/5.0 (Windows NT 6.</description>
-    </item>
-    
-    <item>
       <title>AWS</title>
       <link>/posts/aws/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -78,19 +63,6 @@ session 則完全違反 REST 的無狀態性
 解決方式是 client 登入後產生 token, 再從 url 帶 token 過來 驗證身份方法1. 永遠使用 ssl, 就不用每次讓用戶對每次請求簽名
 驗證身份方法2. server 將 token 加/解密對應到 session ID, application server 再用 session ID 取得用戶資料判斷權限
 增加網站效能 server ELB (HA), auto-scaling nginx 取代 apache 後端 background job cache 靜態頁面 memcache / redis 前端 js/css minify &amp;amp; combine 圖片用另一個 domain 避免 browser 一次只能發幾個 request 的限制, 也避免帶到不必要的 cookie 一開始先載 lazy_image, 放真正圖片連結在 data-original= 最後再用 js 將 load 正確圖片 mysql 使用 in 代替 or slow query Mysql set index master - slave 關於 App 手機裡的 App 會有個 UUID，不同的 App UUID 也會不一樣，即使同 App App 重新安裝 UUID 會是新的，或者 UUID 好像也有過期時間 (e.</description>
-    </item>
-    
-    <item>
-      <title>Bootstrap</title>
-      <link>/posts/bootstrap/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/bootstrap/</guid>
-      <description>版面 本身左右會留一些空間
-&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 全版, full width container, spanning the entire width of your viewport
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 引入時, 不要把 row 寫在 partial 裡 partial
-&amp;lt;div class=&amp;quot;col-md-12&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 否則即使用 container-flud 包起來也可能發生版面超過
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;margin-top-50&amp;quot;&amp;gt; &amp;lt;%= render ... partial view ... %&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; Modal &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;btn btn-primary btn-lg&amp;quot; data-toggle=&amp;quot;modal&amp;quot; data-target=&amp;quot;#myModal&amp;quot;&amp;gt; Launch demo modal &amp;lt;/button&amp;gt; &amp;lt;div class=&amp;quot;modal fade&amp;quot; id=&amp;quot;myModal&amp;quot; tabindex=&amp;quot;-1&amp;quot; role=&amp;quot;dialog&amp;quot; aria-labelledby=&amp;quot;myModalLabel&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-dialog modal-lg&amp;quot; role=&amp;quot;document&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-content&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-header bg-primary&amp;quot;&amp;gt; &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;close&amp;quot; data-dismiss=&amp;quot;modal&amp;quot; aria-label=&amp;quot;Close&amp;quot;&amp;gt;&amp;lt;span aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;amp;times;&amp;lt;/span&amp;gt;&amp;lt;/button&amp;gt; &amp;lt;h4 class=&amp;quot;modal-title&amp;quot; id=&amp;quot;myModalLabel&amp;quot;&amp;gt;Modal title&amp;lt;/h4&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;modal-body&amp;quot;&amp;gt; .</description>
     </item>
     
     <item>
@@ -126,17 +98,6 @@ O(1) constant O(logn) logarithmic base is 2 an array storing 1M items, will do 1
     </item>
     
     <item>
-      <title>Debugging Tools</title>
-      <link>/posts/debugging-tools/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/debugging-tools/</guid>
-      <description>strace Installation $ sudo apt install strace #Debian/Ubuntu # yum install strace #RHEL/CentOS # dnf install strace #Fedora 22+ Trace linux command Simply run a command with strace, tracing of all system calls, e.g. df -h.
-sudo strace df -h Trace PID sudo strace -p 5206 Get summary of process Generate a report of total time, calls, and errors for each system call.
-sudo strace -c -p 5206 % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 90.</description>
-    </item>
-    
-    <item>
       <title>Deploy on Heroku</title>
       <link>/posts/deploy-on-heroku/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -154,35 +115,6 @@ gem &#39;sqlite3&#39;, group: [:development, :test] gem &#39;pg&#39;, group: :pr
       
       <guid>/posts/design-patterns/</guid>
       <description>SOLID Principles Single Responsibility Principle Each class should have only one responsibility or reason to change. narrow down the behaviour a class can have Open-Closed Principle Software entities should be open for extension but closed for modification. to add new functionality to a class without changing the existing code by extending a class and adding new functions into subclass Liskov Substitution Principle Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.</description>
-    </item>
-    
-    <item>
-      <title>DHCP</title>
-      <link>/posts/dhcp/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dhcp/</guid>
-      <description>發送流程 [1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server 來源位址 : 0.0.0.0:68 目的位址 : 255.255.255.255:67
-當 client 開機或重啟網卡時會發出此的封包
-[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client 來源位址 : 192.168.181.30:67 目的位址 : 255.255.255.255:68
-收到請求會先依據 client 的 MAC 來判斷以下
-到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端； 若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端； 若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。 接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主
-[3] client 發出 DHCPREQUEST 給 DHCP Server 來源位址 : 0.</description>
-    </item>
-    
-    <item>
-      <title>DNS server</title>
-      <link>/posts/dns/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dns/</guid>
-      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
-Installation sudo apt-get install bind9 bind9-doc dnsutils /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
-name.conf.local 正解 :
-zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
-/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
-改設定要記得增加Serial值
-$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>
@@ -673,6 +605,18 @@ file=1.txt seq=1 while read line do lines[$seq]=$line ((seq++)) done &amp;lt; $f
     </item>
     
     <item>
+      <title>Linux strace</title>
+      <link>/posts/linux-strace/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/linux-strace/</guid>
+      <description>Installation $ sudo apt install strace #Debian/Ubuntu # yum install strace #RHEL/CentOS # dnf install strace #Fedora 22+ Trace linux command Simply run a command with strace, tracing of all system calls, e.g. df -h.
+sudo strace df -h trace PID
+sudo strace -p 5206 Get summary of process Generate a report of total time, calls, and errors for each system call.
+sudo strace -c -p 5206 % time seconds usecs/call calls errors syscall ------ ----------- ----------- --------- --------- ---------------- 90.</description>
+    </item>
+    
+    <item>
       <title>Linux Swap</title>
       <link>/posts/linux-swap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -873,6 +817,44 @@ Standard OSI model Layer 1 - Physical electric signals / driver the data gets co
       <guid>/posts/network-http/</guid>
       <description>Http Status HTTP status codes are grouped into five classes
 1xx: Informational 2xx: Success 200 OK: Request successful 201 Created For example, consider a client sending a POST request to create a new user on a web service This is most commonly used in response to a POST request. 204 No Content: Request successful, but no data to return 3xx: Redirection 301 Moved Permanently: the URI of the requested resource has been changed permanently.</description>
+    </item>
+    
+    <item>
+      <title>Network DHCP</title>
+      <link>/posts/network-dhcp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dhcp/</guid>
+      <description>發送流程 [1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server 來源位址 : 0.0.0.0:68 目的位址 : 255.255.255.255:67
+當 client 開機或重啟網卡時會發出此的封包
+[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client 來源位址 : 192.168.181.30:67 目的位址 : 255.255.255.255:68
+收到請求會先依據 client 的 MAC 來判斷以下
+到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端； 若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端； 若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。 接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主
+[3] client 發出 DHCPREQUEST 給 DHCP Server 來源位址 : 0.</description>
+    </item>
+    
+    <item>
+      <title>Network DNS</title>
+      <link>/posts/network-dns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dns/</guid>
+      <description>How DNS resolution works when entering &amp;ldquo;example.com&amp;rdquo; into browser? Browser cache check: the brwoser first checks its own cache to see if it has the IP of &amp;ldquo;example.com&amp;rdquo; Operating system cache check: operating system also maintain a DNS cache Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare.</description>
+    </item>
+    
+    <item>
+      <title>Network DNS server - bind9</title>
+      <link>/posts/network-dns-bind9/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dns-bind9/</guid>
+      <description>Introduction Bind9 是一個可以架設 dns server 的套件
+Installation sudo apt-get install bind9 bind9-doc dnsutils config /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
+name.conf.local 正解 :
+zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
+/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
+改設定要記得增加Serial值
+$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>

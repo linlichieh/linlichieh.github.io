@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<title>DNS server | Software engineering notes</title>
+<title>Network DNS server - bind9 | Software engineering notes</title>
 <meta charset="utf-8">
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/dns/">
+<link rel="canonical" href="/posts/network-dns-bind9/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -17,24 +17,24 @@
 
 <article>
   <header>
-    <h1>DNS server</h1>
+    <h1>Network DNS server - bind9</h1>
     
   </header>
-  <h2 id="bind9">Bind9</h2>
+  <h1 id="introduction">Introduction</h1>
 <p>Bind9 是一個可以架設 dns server 的套件</p>
-<h3 id="installation">Installation</h3>
+<h1 id="installation">Installation</h1>
 <pre><code>sudo apt-get install bind9 bind9-doc dnsutils
 </code></pre>
-<h3 id="etcbind">/etc/bind</h3>
+<h1 id="config-etcbind">config <code>/etc/bind</code></h1>
 <ul>
 <li><code>named.conf</code> : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案</li>
 <li><code>named.conf.local</code> : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態</li>
 <li><code>named.conf.options</code> : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係</li>
 </ul>
-<h3 id="add-blogexamplecom">add blog.example.com</h3>
-<h4 id="nameconfoptions">name.conf.options</h4>
+<h1 id="add-blogexamplecom">add blog.example.com</h1>
+<h3 id="nameconfoptions">name.conf.options</h3>
 <p>不用改</p>
-<h4 id="nameconflocal">name.conf.local</h4>
+<h3 id="nameconflocal">name.conf.local</h3>
 <p>正解 :</p>
 <pre><code>zone &quot;example.com&quot; {
     type master;
@@ -44,9 +44,9 @@
 <blockquote>
 <p>反解只有 ISP 可以做到, 所以我就不設定了</p>
 </blockquote>
-<h4 id="etcbindzonesexamplecomdb">/etc/bind/zones/example.com.db</h4>
+<h3 id="etcbindzonesexamplecomdb"><code>/etc/bind/zones/example.com.db</code></h3>
 <p>自行建立 zones 資料夾, zone 都放在這裡方便管理</p>
-<p><strong>改設定要記得增加Serial值</strong></p>
+<p>改設定要記得增加Serial值</p>
 <pre><code>$TTL 604800
 ; 指定 SOA
 @ IN SOA ns.example.com. root.example.com. (
@@ -63,7 +63,7 @@ ns      IN A    106.185.47.26
 www     IN A    106.185.47.26
 blog IN  CNAME domains.logdown.com.
 </code></pre>
-<h3 id="etcresolvconf">/etc/resolv.conf</h3>
+<h3 id="etcresolvconf"><code>/etc/resolv.conf</code></h3>
 <p>加到第一行</p>
 <pre><code>nameserver 106.185.47.26
 </code></pre>
@@ -170,109 +170,6 @@ blog IN  CNAME domains.logdown.com.
 <p>當 dig, nslookup 都能正確解析 domain 不代表 ping 就會 ping 的到, 即使你在 dns server ping ping 自己的 domain</p>
 <p>如果 <code>ping: unknown host ns.example.com</code></p>
 <p>用 <code>+trace</code> 找問題</p>
-<h2 id="dns-補充">DNS 補充</h2>
-<ul>
-<li><code>A</code> : 用來解析IP位址, 將 HostName 對應到某個IP.</li>
-<li><code>CNAME</code> : 將 HostName 對應某個網域.</li>
-<li><code>MX</code> : 郵件伺服交換記錄, 對應郵件伺服器使用.</li>
-<li><code>TXT</code> : 文件記錄,這幾乎用不到, 特殊用途.</li>
-<li><code>SRV</code> : 資源記錄,一樣用不到, 特殊用途.</li>
-<li><code>AAAA</code> : 等同A記錄,只不過A是IPv4,而AAAA是IPv6.</li>
-<li><code>NS</code> : Name Server, 指定你的DNS要交由哪個NS進行解析.</li>
-</ul>
-<h3 id="只能指向-domain-或-ip">只能指向 domain 或 ip</h3>
-<p>例如 :</p>
-<ul>
-<li>example.com -&gt; 106.173.25.11</li>
-<li>a.example.com -&gt; ttt.example222.com</li>
-</ul>
-<p>無法解析到 <code>/</code> 之後, 因為這不是 dns 的工作 :</p>
-<ul>
-<li>example.com -&gt; ttt.example.222.com/home</li>
-</ul>
-<h3 id="只允許特定-host">只允許特定 host</h3>
-<p>只開放 <code>example.com</code>, <code>www.example.com</code>, <code>db.example.com</code></p>
-<pre><code>A (Host) 設定
-@       45.33.60.10             =&gt; example.com
-db      45.33.60.10             =&gt; www.example.com
-www     45.33.60.10             =&gt; db.example.com
-</code></pre>
-<h3 id="將-wwwexamplecom-導到-examplecom">將 <a href="https://www.example.com">www.example.com</a> 導到 example.com</h3>
-<pre><code>A (Host) 設定
-@     45.33.60.10
-*     45.33.60.10
-
-CName (Alias)
-www   example.com
-</code></pre>
-<h3 id="將-examplecom-導到-wwwexample">將 example.com 導到 www.example</h3>
-<p>這要在 http server (nginx) 設定</p>
-<h2 id="解決-dns-一直沒有更新問題">解決 DNS 一直沒有更新問題</h2>
-<p><strong>解法: 直接用 google 的 dns server (<code>8.8.8.8</code>)</strong></p>
-<p>我的 macbook 預設的 DNS 第一個是 seednet, 第二才是 google</p>
-<p>我在 godaddy 的 dns 設定將 domain 指向新 IP 時, 在半小時內就生效了</p>
-<p>但不管本機 DNS cache 怎麼清 ping 出來的一直是錯的 IP,</p>
-<p>用 dig 及 nslookup 以 google dns 去找都可以找到正確的 IP,</p>
-<p>猜想是不是 seednet 的 dns server 的資料一直是舊的, 造成我一直抓不到正確的 IP,</p>
-<p><strong>索性最後直接把本機的 DNS 改成 googld dns, 問題都解決了</strong>, 改的方法如下 :</p>
-<p>到 <code>系統偏好設定</code> -&gt; <code>網路</code> -&gt; <code>USB 乙太網路 下面 進階</code> -&gt; 新增 <code>8.8.8.8</code></p>
-<blockquote>
-<p>不需要改 <code>/etc/resolv.conf</code>, 因為改它是沒有用的, mac 每次開機都會自動產生一份檔案</p>
-</blockquote>
-<h2 id="dig">dig</h2>
-<h3 id="顯示-domain-經由-dns-路徑的主機">顯示 domain 經由 dns 路徑的主機</h3>
-<pre><code>$ dig +short NS blog.example.com
-test-user.github.io.
-github.map.fastly.net.
-</code></pre>
-<h3 id="顯示完整的-dns-路徑">顯示完整的 DNS 路徑</h3>
-<pre><code>dig +trace blog.example.com
-
-; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; +trace blog.example.com
-;; global options: +cmd
-.                       369863  IN      NS      k.root-servers.net.
-.                       369863  IN      NS      e.root-servers.net.
-(...略...)
-;; Received 228 bytes from 168.95.1.1#53(168.95.1.1) in 205 ms          // 第一個 dns server IP, 中華電信 DNS server
-
-tw.                     172800  IN      NS      d.dns.tw.
-tw.                     172800  IN      NS      i.dns.tw.
-(...略...)
-;; Received 508 bytes from 192.5.5.241#53(192.5.5.241) in 266 ms        // 第二個 dns server IP
-example.com.                 86400   IN      NS      ns73.domaincontrol.com.
-example.com.                 86400   IN      NS      ns74.domaincontrol.com.
-;; Received 84 bytes from 61.220.48.1#53(61.220.48.1) in 114 ms         // 第三個 dns server IP
-
-blog.example.com.            3600    IN      CNAME   test-user.github.io.
-;; Received 60 bytes from 216.69.185.47#53(216.69.185.47) in 201 ms     // 第四個 dns server IP
-</code></pre>
-<ol>
-<li>
-<p>先找到全球性的根節點, 問到 .tw 的 dns 主機位置</p>
-</li>
-<li>
-<p>在 dns.tw 主機問到 example.com 主機位置在 <code>ns73.domaincontrol.com</code> 及 <code>ns74.domaincontrol.com</code>, 這兩個都是我的 domain 商 godaddy 幫我安排的 dns server</p>
-</li>
-<li>
-<p>在 godaddy ns server 中問到需要 CNAME 到 test-user.github.io</p>
-</li>
-</ol>
-<h2 id="nslookup">nslookup</h2>
-<p>找出 domain 的 dns server</p>
-<pre><code>nslookup blog.example.com
-Server:     106.187.35.20
-Address:    106.187.35.20#53        // 第一個 dns server IP, linode DNS server
-
-Non-authoritative answer:
-blog.example.com canonical name = test-user.github.io.
-test-user.github.io   canonical name = github.map.fastly.net.
-Name:   github.map.fastly.net
-Address: 103.245.222.133
-</code></pre>
-<h3 id="ref">ref</h3>
-<ul>
-<li><a href="http://wpnote.tw/dnsdomain-name-system%E5%9F%BA%E7%A4%8E%E5%B8%B8%E8%AD%98%EF%BC%8C%E5%A6%82%E4%BD%95%E8%A8%AD%E5%AE%9Adns/">DNS 設定</a></li>
-</ul>
 
 </article>
 

@@ -7,19 +7,6 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/frontend/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Bootstrap</title>
-      <link>/posts/bootstrap/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/bootstrap/</guid>
-      <description>版面 本身左右會留一些空間
-&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 全版, full width container, spanning the entire width of your viewport
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 引入時, 不要把 row 寫在 partial 裡 partial
-&amp;lt;div class=&amp;quot;col-md-12&amp;quot;&amp;gt; ... &amp;lt;/div&amp;gt; 否則即使用 container-flud 包起來也可能發生版面超過
-&amp;lt;div class=&amp;quot;container-fluid&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;margin-top-50&amp;quot;&amp;gt; &amp;lt;%= render ... partial view ... %&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;/div&amp;gt; Modal &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;btn btn-primary btn-lg&amp;quot; data-toggle=&amp;quot;modal&amp;quot; data-target=&amp;quot;#myModal&amp;quot;&amp;gt; Launch demo modal &amp;lt;/button&amp;gt; &amp;lt;div class=&amp;quot;modal fade&amp;quot; id=&amp;quot;myModal&amp;quot; tabindex=&amp;quot;-1&amp;quot; role=&amp;quot;dialog&amp;quot; aria-labelledby=&amp;quot;myModalLabel&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-dialog modal-lg&amp;quot; role=&amp;quot;document&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-content&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;modal-header bg-primary&amp;quot;&amp;gt; &amp;lt;button type=&amp;quot;button&amp;quot; class=&amp;quot;close&amp;quot; data-dismiss=&amp;quot;modal&amp;quot; aria-label=&amp;quot;Close&amp;quot;&amp;gt;&amp;lt;span aria-hidden=&amp;quot;true&amp;quot;&amp;gt;&amp;amp;times;&amp;lt;/span&amp;gt;&amp;lt;/button&amp;gt; &amp;lt;h4 class=&amp;quot;modal-title&amp;quot; id=&amp;quot;myModalLabel&amp;quot;&amp;gt;Modal title&amp;lt;/h4&amp;gt; &amp;lt;/div&amp;gt; &amp;lt;div class=&amp;quot;modal-body&amp;quot;&amp;gt; .</description>
-    </item>
-    
-    <item>
       <title>Frontend Basics HTML / CSS / JS</title>
       <link>/posts/frontend/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

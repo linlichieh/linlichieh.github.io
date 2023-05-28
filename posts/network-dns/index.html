@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Network DNS | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/network-dns/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Network DNS</h1>
+    
+  </header>
+  <h1 id="how-dns-resolution-works-when-entering-examplecom-into-browser">How DNS resolution works when entering &ldquo;example.com&rdquo; into browser?</h1>
+<ul>
+<li>Browser cache check: the brwoser first checks its own cache to see if it has the IP of &ldquo;example.com&rdquo;</li>
+<li>Operating system cache check: operating system also maintain a DNS cache</li>
+<li>Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare. These servers also maintain a DNS cache
+<ul>
+<li>handle requests from clients, such as web browsers</li>
+</ul>
+</li>
+<li>Root DNS server: Resolver contacts a root DNS server for the address of TLD DNS server (<code>.com</code>)</li>
+<li>TLD NDS server: Resolver queries the TLD DNS server (<code>.com</code>) for the address of authoritative DNS server of &ldquo;example.com&rdquo;</li>
+<li>Authoritative DNS Server: Resolver queries the authoritative DNS server for the IP address of &ldquo;example.com&rdquo;
+<ul>
+<li>Domain Name Server most commonly refers to the &ldquo;Authoritative DNS Server&rdquo; where knows the actual IP address</li>
+<li>GoDaddy serves as an Authoritative DNS Server. They store the DNS records for these domains</li>
+</ul>
+</li>
+<li>Returning the IP address to browser: the browser can then make a request to the IP address to get the website data</li>
+<li>Caching the IP address</li>
+</ul>
+<h1 id="which-layer-of-the-osi-model-does-dns-resolution-happen-at">Which layer of the OSI model does DNS resolution happen at?</h1>
+<ul>
+<li>Application Layer (Layer 7)
+<ul>
+<li>DNS is a high-level application protocol designed to resolve human-friendly domain names into IP addresses.</li>
+<li>This process is a service provided to applications so they can use IP networks correctly, which is a primary function of Layer 7.</li>
+</ul>
+</li>
+<li>Transport Layer (Layer 4)
+<ul>
+<li>Although DNS primarily operates at the application layer, it&rsquo;s also important to note that DNS uses protocols at the transport layer to exchange data.</li>
+<li>DNS typically uses UDP (User Datagram Protocol) for query and response messages, but it can also use TCP (Transmission Control Protocol) for larger data exchanges (like zone transfers) or when a UDP packet is dropped.</li>
+</ul>
+</li>
+</ul>
+<h1 id="dns-settings">DNS settings</h1>
+<ul>
+<li><code>A</code> : 用來解析IP位址, 將 HostName 對應到某個IP.</li>
+<li><code>CNAME</code> : 將 HostName 對應某個網域.</li>
+<li><code>MX</code> : 郵件伺服交換記錄, 對應郵件伺服器使用.</li>
+<li><code>TXT</code> : 文件記錄,這幾乎用不到, 特殊用途.</li>
+<li><code>SRV</code> : 資源記錄,一樣用不到, 特殊用途.</li>
+<li><code>AAAA</code> : 等同A記錄,只不過A是IPv4,而AAAA是IPv6.</li>
+<li><code>NS</code> : Name Server, 指定你的DNS要交由哪個NS進行解析.</li>
+</ul>
+<h3 id="只能指向-domain-或-ip">只能指向 domain 或 ip</h3>
+<p>例如 :</p>
+<ul>
+<li>example.com -&gt; 106.173.25.11</li>
+<li>a.example.com -&gt; ttt.example222.com</li>
+</ul>
+<p>無法解析到 <code>/</code> 之後, 因為這不是 dns 的工作 :</p>
+<ul>
+<li>example.com -&gt; ttt.example.222.com/home</li>
+</ul>
+<h3 id="只允許特定-host">只允許特定 host</h3>
+<p>只開放 <code>example.com</code>, <code>www.example.com</code>, <code>db.example.com</code></p>
+<pre><code>A (Host) 設定
+@       45.33.60.10             =&gt; example.com
+db      45.33.60.10             =&gt; www.example.com
+www     45.33.60.10             =&gt; db.example.com
+</code></pre>
+<h3 id="將-wwwexamplecom-導到-examplecom">將 <a href="https://www.example.com">www.example.com</a> 導到 example.com</h3>
+<pre><code>A (Host) 設定
+@     45.33.60.10
+*     45.33.60.10
+
+CName (Alias)
+www   example.com
+</code></pre>
+<h3 id="將-examplecom-導到-wwwexample">將 example.com 導到 www.example</h3>
+<p>這要在 http server (nginx) 設定</p>
+<h1 id="解決-dns-一直沒有更新問題">解決 DNS 一直沒有更新問題</h1>
+<p><strong>解法: 直接用 google 的 dns server (<code>8.8.8.8</code>)</strong></p>
+<p>我的 macbook 預設的 DNS 第一個是 seednet, 第二才是 google</p>
+<p>我在 godaddy 的 dns 設定將 domain 指向新 IP 時, 在半小時內就生效了</p>
+<p>但不管本機 DNS cache 怎麼清 ping 出來的一直是錯的 IP,</p>
+<p>用 dig 及 nslookup 以 google dns 去找都可以找到正確的 IP,</p>
+<p>猜想是不是 seednet 的 dns server 的資料一直是舊的, 造成我一直抓不到正確的 IP,</p>
+<p><strong>索性最後直接把本機的 DNS 改成 googld dns, 問題都解決了</strong>, 改的方法如下 :</p>
+<p>到 <code>系統偏好設定</code> -&gt; <code>網路</code> -&gt; <code>USB 乙太網路 下面 進階</code> -&gt; 新增 <code>8.8.8.8</code></p>
+<blockquote>
+<p>不需要改 <code>/etc/resolv.conf</code>, 因為改它是沒有用的, mac 每次開機都會自動產生一份檔案</p>
+</blockquote>
+<h1 id="dig">dig</h1>
+<h3 id="顯示-domain-經由-dns-路徑的主機">顯示 domain 經由 dns 路徑的主機</h3>
+<pre><code>$ dig +short NS blog.example.com
+test-user.github.io.
+github.map.fastly.net.
+</code></pre>
+<h3 id="顯示完整的-dns-路徑">顯示完整的 DNS 路徑</h3>
+<pre><code>dig +trace blog.example.com
+
+; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; +trace blog.example.com
+;; global options: +cmd
+.                       369863  IN      NS      k.root-servers.net.
+.                       369863  IN      NS      e.root-servers.net.
+(...略...)
+;; Received 228 bytes from 168.95.1.1#53(168.95.1.1) in 205 ms          // 第一個 dns server IP, 中華電信 DNS server
+
+tw.                     172800  IN      NS      d.dns.tw.
+tw.                     172800  IN      NS      i.dns.tw.
+(...略...)
+;; Received 508 bytes from 192.5.5.241#53(192.5.5.241) in 266 ms        // 第二個 dns server IP
+example.com.                 86400   IN      NS      ns73.domaincontrol.com.
+example.com.                 86400   IN      NS      ns74.domaincontrol.com.
+;; Received 84 bytes from 61.220.48.1#53(61.220.48.1) in 114 ms         // 第三個 dns server IP
+
+blog.example.com.            3600    IN      CNAME   test-user.github.io.
+;; Received 60 bytes from 216.69.185.47#53(216.69.185.47) in 201 ms     // 第四個 dns server IP
+</code></pre>
+<ol>
+<li>
+<p>先找到全球性的根節點, 問到 .tw 的 dns 主機位置</p>
+</li>
+<li>
+<p>在 dns.tw 主機問到 example.com 主機位置在 <code>ns73.domaincontrol.com</code> 及 <code>ns74.domaincontrol.com</code>, 這兩個都是我的 domain 商 godaddy 幫我安排的 dns server</p>
+</li>
+<li>
+<p>在 godaddy ns server 中問到需要 CNAME 到 test-user.github.io</p>
+</li>
+</ol>
+<h1 id="nslookup">nslookup</h1>
+<p>找出 domain 的 dns server</p>
+<pre><code>nslookup blog.example.com
+Server:     106.187.35.20
+Address:    106.187.35.20#53        // 第一個 dns server IP, linode DNS server
+
+Non-authoritative answer:
+blog.example.com canonical name = test-user.github.io.
+test-user.github.io   canonical name = github.map.fastly.net.
+Name:   github.map.fastly.net
+Address: 103.245.222.133
+</code></pre>
+<h3 id="ref">ref</h3>
+<ul>
+<li><a href="http://wpnote.tw/dnsdomain-name-system%E5%9F%BA%E7%A4%8E%E5%B8%B8%E8%AD%98%EF%BC%8C%E5%A6%82%E4%BD%95%E8%A8%AD%E5%AE%9Adns/">DNS 設定</a></li>
+</ul>
+
+</article>
+
+
+
+</html>

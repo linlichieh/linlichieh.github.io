@@ -7,35 +7,6 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/network/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>DHCP</title>
-      <link>/posts/dhcp/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dhcp/</guid>
-      <description>發送流程 [1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server 來源位址 : 0.0.0.0:68 目的位址 : 255.255.255.255:67
-當 client 開機或重啟網卡時會發出此的封包
-[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client 來源位址 : 192.168.181.30:67 目的位址 : 255.255.255.255:68
-收到請求會先依據 client 的 MAC 來判斷以下
-到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端； 若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端； 若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。 接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主
-[3] client 發出 DHCPREQUEST 給 DHCP Server 來源位址 : 0.</description>
-    </item>
-    
-    <item>
-      <title>DNS server</title>
-      <link>/posts/dns/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/dns/</guid>
-      <description>Bind9 Bind9 是一個可以架設 dns server 的套件
-Installation sudo apt-get install bind9 bind9-doc dnsutils /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
-name.conf.local 正解 :
-zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
-/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
-改設定要記得增加Serial值
-$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
-    </item>
-    
-    <item>
       <title>Linux iptables</title>
       <link>/posts/linux-iptables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -98,6 +69,44 @@ Standard OSI model Layer 1 - Physical electric signals / driver the data gets co
       <guid>/posts/network-http/</guid>
       <description>Http Status HTTP status codes are grouped into five classes
 1xx: Informational 2xx: Success 200 OK: Request successful 201 Created For example, consider a client sending a POST request to create a new user on a web service This is most commonly used in response to a POST request. 204 No Content: Request successful, but no data to return 3xx: Redirection 301 Moved Permanently: the URI of the requested resource has been changed permanently.</description>
+    </item>
+    
+    <item>
+      <title>Network DHCP</title>
+      <link>/posts/network-dhcp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dhcp/</guid>
+      <description>發送流程 [1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server 來源位址 : 0.0.0.0:68 目的位址 : 255.255.255.255:67
+當 client 開機或重啟網卡時會發出此的封包
+[2] DHCP Server 發出 DHCPOFFER 廣播封包給 client 來源位址 : 192.168.181.30:67 目的位址 : 255.255.255.255:68
+收到請求會先依據 client 的 MAC 來判斷以下
+到伺服器的登錄檔中尋找該用戶之前是否曾經用過某個 IP ，若有且該 IP 目前無人使用，則提供此 IP 給用戶端； 若設定檔針對該 MAC 提供額外的固定 IP (static IP) 時，則提供該固定 IP 給用戶端； 若不符合上述兩個條件，則隨機取用目前沒有被使用的 IP 參數給用戶端，並記錄下來。 接著 server 提供一組 IP 及租約期限訊息給 client, 如果網路有很多台 DHCP Server, client 會以收到的第一個 DHCPOFFER 訊息為主
+[3] client 發出 DHCPREQUEST 給 DHCP Server 來源位址 : 0.</description>
+    </item>
+    
+    <item>
+      <title>Network DNS</title>
+      <link>/posts/network-dns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dns/</guid>
+      <description>How DNS resolution works when entering &amp;ldquo;example.com&amp;rdquo; into browser? Browser cache check: the brwoser first checks its own cache to see if it has the IP of &amp;ldquo;example.com&amp;rdquo; Operating system cache check: operating system also maintain a DNS cache Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare.</description>
+    </item>
+    
+    <item>
+      <title>Network DNS server - bind9</title>
+      <link>/posts/network-dns-bind9/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-dns-bind9/</guid>
+      <description>Introduction Bind9 是一個可以架設 dns server 的套件
+Installation sudo apt-get install bind9 bind9-doc dnsutils config /etc/bind named.conf : 主要設定檔, bind 啟動會讀取它, 它會負責讀取其他檔案 named.conf.local : 裡面可以設定正反解的zone, 在裡面加入 zone 的 DNS record 存放位置以及 DNS server 的形態 named.conf.options : 主要在設定dns的一些選項和安全性. 其他的檔案就是預設的一些localhost的正反解相關, 這裡我們不用理他沒關係 add blog.example.com name.conf.options 不用改
+name.conf.local 正解 :
+zone &amp;quot;example.com&amp;quot; { type master; file &amp;quot;/etc/bind/zones/example.com.db&amp;quot;; }; 反解只有 ISP 可以做到, 所以我就不設定了
+/etc/bind/zones/example.com.db 自行建立 zones 資料夾, zone 都放在這裡方便管理
+改設定要記得增加Serial值
+$TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>
