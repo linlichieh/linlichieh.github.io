@@ -139,11 +139,11 @@ OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
     </item>
     
     <item>
-      <title>Linux iptable</title>
-      <link>/posts/firewall/</link>
+      <title>Linux iptables</title>
+      <link>/posts/linux-iptables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/firewall/</guid>
+      <guid>/posts/linux-iptables/</guid>
       <description>基本設定 /etc/iptables.firewall.rules:
 *filter # Allow all loopback (lo0) traffic and drop all traffic to 127/8 that doesn&#39;t use lo0 -A INPUT -i lo -j ACCEPT -A INPUT -d 127.0.0.0/8 -j REJECT # Accept all established inbound connections -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Allow all outbound traffic - you can modify this to only allow certain traffic -A OUTPUT -j ACCEPT # Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).</description>
     </item>

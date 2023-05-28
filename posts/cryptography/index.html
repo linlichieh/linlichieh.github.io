@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<title>Encryption | Software engineering notes</title>
+<title>Cryptography | Software engineering notes</title>
 <meta charset="utf-8">
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/encryptionw/">
+<link rel="canonical" href="/posts/cryptography/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -17,7 +17,7 @@
 
 <article>
   <header>
-    <h1>Encryption</h1>
+    <h1>Cryptography</h1>
     
   </header>
   <h1 id="asymmetric-cryptography-public-key-cryptography">Asymmetric cryptography (public-key cryptography)</h1>
@@ -68,6 +68,17 @@
 <li>Asymmetric encryption offers a higher level of security because the private key is never shared or transmitted.</li>
 <li>Symmetric encryption is faster and more efficient than asymmetric encryption.</li>
 <li>Symmetric encryption is often used for bulk data encryption.</li>
+</ul>
+<h1 id="symmetrical-and-asymmetrical-encryption">Symmetrical and Asymmetrical encryption</h1>
+<ul>
+<li>SSH and SSL use both Symmetrical encryption and Asymmetrical encryption.</li>
+<li>SSH
+<ul>
+<li>Symmetrical encryption is used to encrypt the entire communication during a SSH Session.</li>
+<li>Asymmetrical encryption is not used to encrypt the entire SSH session. Instead, it is only used during the key exchange algorithm of symmetric encryption.</li>
+<li>Before initiating a secured connection, both parties generate temporary public-private key pairs, and share their respective private keys to produce the shared secret key.</li>
+</ul>
+</li>
 </ul>
 <h1 id="aes">AES</h1>
 <p>AES replaced the older Data Encryption Standard (DES) as a more secure and efficient option.</p>
@@ -124,6 +135,51 @@
 <li>CFB and CBC are equally secure</li>
 <li>CBC is widely adopted and scrutinised, and used in many protocols such as SSL and TLS</li>
 <li>GCM is the most secure and the best choice because it provides both confidentiality and authentication.</li>
+</ul>
+<h1 id="hash-functions">Hash functions</h1>
+<ul>
+<li>MD5 (Message Digest Algorithm 5)
+<ul>
+<li>128-bit hash value, 32-character hexadecimal number</li>
+<li>not recommended as it&rsquo;s easy to be broken than others</li>
+</ul>
+</li>
+<li>SHA-1 (Secure Hash Algorithm 1)
+<ul>
+<li>160-bit hash value, 40-digit hexadecimal number</li>
+</ul>
+</li>
+<li>SHA-2
+<ul>
+<li>SHA-256 (Secure Hash Algorithm 256)
+<ul>
+<li>a member of the SHA-2 set of cryptographic hashes</li>
+<li>is widely used security applications and protocols</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SHA-3
+<ul>
+<li>the latest member of the Secure Hash Algorithm family and provides the same capabilities as SHA-2</li>
+<li>digests 224, 256, 384, 512, and variable lengths</li>
+</ul>
+</li>
+<li>Blake2
+<ul>
+<li>faster than MD5, SHA-1, SHA-2, and SHA-3, yet is at least as secure as the latest standard, SHA-3</li>
+</ul>
+</li>
+<li>CRC32 (Cyclic Redundancy Check)
+<ul>
+<li>It is used to produce a checksum</li>
+<li>CRCs are used to detect errors after transmission or storage</li>
+</ul>
+</li>
+</ul>
+<p>ref:</p>
+<ul>
+<li>chatGPT</li>
 </ul>
 
 </article>

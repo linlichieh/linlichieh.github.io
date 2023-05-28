@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<title>Linux iptable | Software engineering notes</title>
+<title>Linux iptables | Software engineering notes</title>
 <meta charset="utf-8">
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/firewall/">
+<link rel="canonical" href="/posts/linux-iptables/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -17,10 +17,10 @@
 
 <article>
   <header>
-    <h1>Linux iptable</h1>
+    <h1>Linux iptables</h1>
     
   </header>
-  <h2 id="基本設定">基本設定</h2>
+  <h1 id="基本設定">基本設定</h1>
 <p><code>/etc/iptables.firewall.rules</code>:</p>
 <pre><code>*filter
 
@@ -56,17 +56,17 @@
 
 COMMIT
 </code></pre>
-<h2 id="附加設定">附加設定</h2>
+<h1 id="附加設定">附加設定</h1>
 <pre><code>-A INPUT -p tcp --dport 445 -j ACCEPT    // for samba
 -A INPUT -p tcp -s 10.160.55.77     --dport 11211 -j ACCEPT // for memcache
 -A INPUT -p tcp -m state --state NEW --dport 4123 -j ACCEPT   // ssh port 改成 4123
 -A INPUT -p icmp -j ACCEPT // allow ping
 </code></pre>
-<h2 id="啟動防火牆">啟動防火牆</h2>
+<h1 id="啟動防火牆">啟動防火牆</h1>
 <p><code>sudo iptables-restore &lt; /etc/iptables.firewall.rules</code></p>
-<h2 id="檢查是否設定成功">檢查是否設定成功</h2>
+<h1 id="檢查是否設定成功">檢查是否設定成功</h1>
 <p><code>sudo iptables -L</code></p>
-<h2 id="重開後防火牆自動啟動">重開後防火牆自動啟動</h2>
+<h1 id="重開後防火牆自動啟動">重開後防火牆自動啟動</h1>
 <p>編輯 <code>sudo vim /etc/network/if-pre-up.d/firewall</code>:</p>
 <pre><code>#!/bin/sh
 /sbin/iptables-restore &lt; /etc/iptables.firewall.rules
@@ -74,12 +74,21 @@ COMMIT
 <p>permission :</p>
 <pre><code>sudo chmod +x /etc/network/if-pre-up.d/firewall
 </code></pre>
-<h2 id="troubleshootings">Troubleshootings</h2>
+<h1 id="troubleshootings">Troubleshootings</h1>
 <h3 id="發生-iptables-restore-line-36-failed">發生 <code>iptables-restore: line 36 failed</code></h3>
 <p>雖然 36 行是指向 COMMIT, 但並不是它的問題, 是前面一些設定的問題,</p>
 <p>把下面這些刪除再跑一次看看, 在 Raspberry Pi 發現不刪會一直過不了</p>
 <pre><code>#  Log iptables denied calls
 -A INPUT -m limit --limit 5/min -j LOG --log-prefix &quot;iptables denied: &quot; --log-level 7
+</code></pre>
+<h3 id="web-app-開-80-port-遇到-permission-denied">Web app 開 80 port 遇到 permission denied</h3>
+<p>只有 root 才可以開小於 1024 的 port，最簡單的解決方法就是先開一個高一點的 port (e.g. 8080)，再用 iptable 去 forward 80 -&gt; 8080</p>
+<pre><code>iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK --set-mark 1
+iptables -t mangle -A PREROUTING -p tcp --dport 443 -j MARK --set-mark 1
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8181
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -m mark --mark 1 -j ACCEPT
+iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 8181 -m mark --mark 1 -j ACCEPT
 </code></pre>
 
 </article>

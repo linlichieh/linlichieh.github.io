@@ -78,14 +78,6 @@
 <ul>
 <li>如果 app 在前景 android 可以攔截, 並且指定要給的 title, 如果 app 在背景會由系統自行判斷, 如果 notification json format 有 title 的話會使用 title 的值當 notification title</li>
 </ul>
-<h1 id="app-與-server-溝通的幾種方式">app 與 server 溝通的幾種方式</h1>
-<ol>
-<li>原本的 silent push notification (APN/GCM)</li>
-<li>websocket (app 也能用 websocket)</li>
-<li>使用主流的 library/sdk 來幫忙 e.g. google firebase / aws contigo</li>
-<li>mqtt, ampq, etc. messaging protocal</li>
-<li>AWS AppSync 可讓您輕鬆地建立協作式應用程式，以即時更新共享資料。您只要用簡易程式碼陳述式指定應用程式的資料，AWS AppSync 就會管理即時更新應用程式資料的所有必要作業。此外，AWS AppSync 還會在離線使用者重新連上網路時立刻更新相關資料。它只會擷取必要的資料，藉此降低訊息流量並提升應用程式效能和電池壽命。</li>
-</ol>
 <h1 id="distributed-system-subpub">Distributed System (Sub/Pub)</h1>
 <ul>
 <li>MQTT

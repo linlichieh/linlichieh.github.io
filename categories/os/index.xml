@@ -7,21 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/os/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Encoding Schemes</title>
+      <link>/posts/encoding-schemes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/encoding-schemes/</guid>
+      <description>Common encoding schemes ASCII (American Standard Code for Information Interchange) a character encoding standard used to represent text in computers and other devices that use text UTF-8 the dominant character encoding for the web, used to represent a wide array of characters from various languages a variable-width encoding able to encode all 1,112,064 valid character code points in Unicode using one to four 8-bit bytes UTF-16 Like UTF-8, this is a variable-width encoding, but it uses 16-bit units It&amp;rsquo;s used predominantly for native encoding in Microsoft products ISO-8859-1 Also known as Latin-1, it is a single-byte encoding that can represent the first 256 Unicode characters.</description>
+    </item>
+    
+    <item>
       <title>Operating System</title>
       <link>/posts/os/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/os/</guid>
       <description>File descriptor (FD) open a file by calling system call open() that specifies access mode (read, write, or both), then the kernel returns FD number to the program Use the FD by performing I/O operations on the file such as read() or write() Close the FD by calling system call close() When the program terminates, either normally or due to an error, all open file descriptors are automatically closed by the kernel 動態庫與靜態庫 linux 下有動態庫和靜態庫.</description>
-    </item>
-    
-    <item>
-      <title>Unicode</title>
-      <link>/posts/unicode/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/unicode/</guid>
-      <description>What&amp;rsquo;s Unicode? Unicode is the standard for character encoding UTF-8 is a specific implementation of Unicode (A -&amp;gt; 41 -&amp;gt; binary) Difference between ASCII, UTF-8 and UTF-16 ASCII is a 7-bit encoding standard that can only represent 128 characters, including the standard English alphabet, numbers, and basic punctuation UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters.</description>
     </item>
     
   </channel>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<title>Unicode | Software engineering notes</title>
+<title>Encoding Schemes | Software engineering notes</title>
 <meta charset="utf-8">
 <meta name="generator" content="Hugo 0.104.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/css/index.css">
-<link rel="canonical" href="/posts/unicode/">
+<link rel="canonical" href="/posts/encoding-schemes/">
 <link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
 
 <header>
@@ -17,13 +17,68 @@
 
 <article>
   <header>
-    <h1>Unicode</h1>
+    <h1>Encoding Schemes</h1>
     
   </header>
-  <h1 id="whats-unicode">What&rsquo;s Unicode?</h1>
+  <h1 id="common-encoding-schemes">Common encoding schemes</h1>
+<ul>
+<li>ASCII (American Standard Code for Information Interchange)
+<ul>
+<li>a character encoding standard used to represent text in computers and other devices that use text</li>
+</ul>
+</li>
+<li>UTF-8
+<ul>
+<li>the dominant character encoding for the web, used to represent a wide array of characters from various languages</li>
+<li>a variable-width encoding able to encode all 1,112,064 valid character code points in Unicode using one to four 8-bit bytes</li>
+</ul>
+</li>
+<li>UTF-16
+<ul>
+<li>Like UTF-8, this is a variable-width encoding, but it uses 16-bit units</li>
+<li>It&rsquo;s used predominantly for native encoding in Microsoft products</li>
+</ul>
+</li>
+<li>ISO-8859-1
+<ul>
+<li>Also known as Latin-1, it is a single-byte encoding that can represent the first 256 Unicode characters.</li>
+</ul>
+</li>
+<li>Base62
+<ul>
+<li>It is a binary-to-text encoding that represents binary data in an ASCII string format</li>
+<li>Consist of <code>0-9</code>, <code>a-z</code>, <code>A-Z</code></li>
+<li>This is a case-sensitive encoding.</li>
+<li>a good choice for URL shortening services, as it doesn&rsquo;t use any special characters that would need to be escaped in a URL</li>
+</ul>
+</li>
+<li>Base64
+<ul>
+<li>This is used to encode binary data, particularly when that data needs to be sent over email.</li>
+<li>Base64 takes binary data and turns it into text so it can be more easily transmitted in scenarios that can&rsquo;t handle binary.</li>
+<li>Consist of <code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>+</code>, <code>/</code> and <code>=</code> for padding</li>
+<li>It is not URL safe because the characters <code>+</code>, <code>/</code> and <code>=</code> have special meanings in URLs</li>
+</ul>
+</li>
+<li>URL Encoding (Percent Encoding)
+<ul>
+<li>It is used to encode URL strings into a format that can be transmitted over the Internet.</li>
+</ul>
+</li>
+<li>Hexadecimal Encoding
+<ul>
+<li>Often used in programming, it encodes binary data as a string of hexadecimal digits.</li>
+</ul>
+</li>
+</ul>
+<h1 id="whats-unicode">What&rsquo;s Unicode?</h1>
 <ul>
 <li>Unicode is the standard for character encoding</li>
-<li>UTF-8 is a specific implementation of Unicode (A -&gt; 41 -&gt; binary)</li>
+<li>Unicode is a map of characters to numbers, and encoding schemes like UTF-8, UTF-16, and UTF-32 specify how to represent those numbers in binary.
+<ul>
+<li>For example, UTF-8 is a specific implementation of Unicode (A -&gt; 41 -&gt; binary)</li>
+</ul>
+</li>
 </ul>
 <h1 id="difference-between-ascii-utf-8-and-utf-16">Difference between ASCII, UTF-8 and UTF-16</h1>
 <ul>

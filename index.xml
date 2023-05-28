@@ -107,6 +107,18 @@ gcc -I /usr/local/include/qq .</description>
     </item>
     
     <item>
+      <title>Cryptography</title>
+      <link>/posts/cryptography/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/cryptography/</guid>
+      <description>Asymmetric cryptography (public-key cryptography) It contains a pair of Public key and Private key.
+Public key
+The public key is openly shared and accessible to anyone. It can be used by anyone to encrypt data intended for the recipient who holds the corresponding private key. The public key can also be used to verify digital signatures created by the corresponding private key holder. Private key
+The private key is kept secret by its owner and should never be shared with anyone.</description>
+    </item>
+    
+    <item>
       <title>Data Structures</title>
       <link>/posts/data-structures/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -199,15 +211,12 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>
-      <title>Encryption</title>
-      <link>/posts/encryptionw/</link>
+      <title>Encoding Schemes</title>
+      <link>/posts/encoding-schemes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/encryptionw/</guid>
-      <description>Asymmetric cryptography (public-key cryptography) It contains a pair of Public key and Private key.
-Public key
-The public key is openly shared and accessible to anyone. It can be used by anyone to encrypt data intended for the recipient who holds the corresponding private key. The public key can also be used to verify digital signatures created by the corresponding private key holder. Private key
-The private key is kept secret by its owner and should never be shared with anyone.</description>
+      <guid>/posts/encoding-schemes/</guid>
+      <description>Common encoding schemes ASCII (American Standard Code for Information Interchange) a character encoding standard used to represent text in computers and other devices that use text UTF-8 the dominant character encoding for the web, used to represent a wide array of characters from various languages a variable-width encoding able to encode all 1,112,064 valid character code points in Unicode using one to four 8-bit bytes UTF-16 Like UTF-8, this is a variable-width encoding, but it uses 16-bit units It&amp;rsquo;s used predominantly for native encoding in Microsoft products ISO-8859-1 Also known as Latin-1, it is a single-byte encoding that can represent the first 256 Unicode characters.</description>
     </item>
     
     <item>
@@ -518,11 +527,11 @@ OR 沒有任何 option, 必須使用 \| 來分隔 pattern :</description>
     </item>
     
     <item>
-      <title>Linux iptable</title>
-      <link>/posts/firewall/</link>
+      <title>Linux iptables</title>
+      <link>/posts/linux-iptables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/firewall/</guid>
+      <guid>/posts/linux-iptables/</guid>
       <description>基本設定 /etc/iptables.firewall.rules:
 *filter # Allow all loopback (lo0) traffic and drop all traffic to 127/8 that doesn&#39;t use lo0 -A INPUT -i lo -j ACCEPT -A INPUT -d 127.0.0.0/8 -j REJECT # Accept all established inbound connections -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Allow all outbound traffic - you can modify this to only allow certain traffic -A OUTPUT -j ACCEPT # Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).</description>
     </item>
@@ -862,7 +871,18 @@ uid = &amp;ldquo;AAA&amp;rdquo; AND pid = &amp;ldquo;CCC&amp;rdquo; only uid com
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/network/</guid>
-      <description>How DNS resolution works when entering &amp;ldquo;example.com&amp;rdquo; into browser? Browser cache check: the brwoser first checks its own cache to see if it has the IP of &amp;ldquo;example.com&amp;rdquo; Operating system cache check: operating system also maintain a DNS cache Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare.</description>
+      <description>OSI Model The OSI model is a theoretical model designed to understand and describe how different network protocols interact and work together. In the real world, protocols don&amp;rsquo;t always fit neatly into a single layer and may operate across multiple layers.
+Standard OSI model Layer 1 - Physical electric signals / driver the data gets converted into a bit stream (1/0) Bits -&amp;gt; Signal Layer 2 - Data Link frames / mac address / ethernet facilitates data transfer between two devices on the same network Frame (breaks packets into smaller pieces called frames) Layer 3 - Network IP / ARP / ICMP destination and source IP Packet (break segments into smaller units called packets and reassembles these packets on the receiving device) Layer 4 - Transport TCP / UDP destination and source Port to identify services or applications Segment (break the data into chunks called segments) Layer 5 - Session connection establishment / TLS state / stateful / cookie session Layer 6 - Presentation encoding / serialisation JSON object / UTF-8 Layer 7 - Application HTTP / FTP / gRPC TCP/IP model</description>
+    </item>
+    
+    <item>
+      <title>Network - HTTP</title>
+      <link>/posts/network-http/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-http/</guid>
+      <description>Http Status HTTP status codes are grouped into five classes
+1xx: Informational 2xx: Success 200 OK: Request successful 201 Created For example, consider a client sending a POST request to create a new user on a web service This is most commonly used in response to a POST request. 204 No Content: Request successful, but no data to return 3xx: Redirection 301 Moved Permanently: the URI of the requested resource has been changed permanently.</description>
     </item>
     
     <item>
@@ -1456,15 +1476,6 @@ To put these numbers into perspective, the annual risk of a given person being h
       <description>查 ubuntu 版本 $ lsb_release -a No LSB modules are available. Distributor ID: Ubuntu Description: Ubuntu 13.10 Release: 13.10 Codename: saucy 升級 Linux kernel 查看目前版本
 確切版號 $ uname -r 4.8.3-x86_64-linode76 $ uname -a Linux 139-162-12-42 4.8.3-x86_64-linode76 #1 SMP Thu Oct 20 19:05:39 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux 尋找要的 Kernel image
 sudo apt-get update sudo apt-cache search linux-image linux-image-3.19.0-15-generic - Linux kernel image for version 3.19.0 on 64 bit x86 SMP linux-image-3.</description>
-    </item>
-    
-    <item>
-      <title>Unicode</title>
-      <link>/posts/unicode/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/unicode/</guid>
-      <description>What&amp;rsquo;s Unicode? Unicode is the standard for character encoding UTF-8 is a specific implementation of Unicode (A -&amp;gt; 41 -&amp;gt; binary) Difference between ASCII, UTF-8 and UTF-16 ASCII is a 7-bit encoding standard that can only represent 128 characters, including the standard English alphabet, numbers, and basic punctuation UTF-8 is a variable-length encoding scheme that uses a minimum of 8 bits to represent each character and can represent up to 1,112,064 unique characters.</description>
     </item>
     
     <item>

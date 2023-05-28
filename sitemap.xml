@@ -49,6 +49,9 @@
     <loc>/categories/</loc>
     <lastmod>2023-05-21T18:22:30+08:00</lastmod>
   </url><url>
+    <loc>/posts/cryptography/</loc>
+    <lastmod>2014-12-05T11:52:58+08:00</lastmod>
+  </url><url>
     <loc>/posts/data-structures/</loc>
     <lastmod>2017-05-20T18:53:13+08:00</lastmod>
   </url><url>
@@ -85,8 +88,8 @@
     <loc>/posts/docker/</loc>
     <lastmod>2014-12-24T00:53:54+08:00</lastmod>
   </url><url>
-    <loc>/posts/encryptionw/</loc>
-    <lastmod>2014-12-05T11:52:58+08:00</lastmod>
+    <loc>/posts/encoding-schemes/</loc>
+    <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
     <loc>/categories/frontend/</loc>
     <lastmod>2013-10-01T22:21:00+00:00</lastmod>
@@ -181,7 +184,7 @@
     <loc>/posts/grep/</loc>
     <lastmod>2013-11-26T21:39:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/firewall/</loc>
+    <loc>/posts/linux-iptables/</loc>
     <lastmod>2014-01-20T23:24:00+00:00</lastmod>
   </url><url>
     <loc>/posts/linux-locale/</loc>
@@ -272,6 +275,9 @@
     <lastmod>2015-01-29T23:14:14+08:00</lastmod>
   </url><url>
     <loc>/posts/network/</loc>
+    <lastmod>2015-01-16T12:15:03+08:00</lastmod>
+  </url><url>
+    <loc>/posts/network-http/</loc>
     <lastmod>2015-01-16T12:15:03+08:00</lastmod>
   </url><url>
     <loc>/posts/nfs/</loc>
@@ -473,9 +479,6 @@
   </url><url>
     <loc>/posts/ubuntu/</loc>
     <lastmod>2013-08-06T15:40:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/unicode/</loc>
-    <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
     <loc>/posts/virtualbox/</loc>
     <lastmod>2013-05-20T05:28:00+00:00</lastmod>

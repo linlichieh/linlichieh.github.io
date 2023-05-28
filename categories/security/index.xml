@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Encryption</title>
-      <link>/posts/encryptionw/</link>
+      <title>Cryptography</title>
+      <link>/posts/cryptography/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/encryptionw/</guid>
+      <guid>/posts/cryptography/</guid>
       <description>Asymmetric cryptography (public-key cryptography) It contains a pair of Public key and Private key.
 Public key
 The public key is openly shared and accessible to anyone. It can be used by anyone to encrypt data intended for the recipient who holds the corresponding private key. The public key can also be used to verify digital signatures created by the corresponding private key holder. Private key

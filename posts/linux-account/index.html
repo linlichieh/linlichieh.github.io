@@ -20,21 +20,21 @@
     <h1>Linux Account</h1>
     
   </header>
-  <h2 id="顯示-account-權限">顯示 account 權限</h2>
+  <h1 id="顯示-account-權限">顯示 account 權限</h1>
 <pre><code>show grants for test@'%';
 </code></pre>
-<h2 id="查詢所屬群組">查詢所屬群組</h2>
+<h1 id="查詢所屬群組">查詢所屬群組</h1>
 <pre><code>$ id test
 uid=1000(test) gid=1000(test) groups=1000(test),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),108(sambashare),115(lpadmin)
 </code></pre>
-<h2 id="useradd-adduser差別">useradd adduser差別</h2>
+<h1 id="useradd-adduser差別">useradd adduser差別</h1>
 <p>useradd 只會建立帳號，沒有Home, password, 系統shell</p>
-<h2 id="新增-account">新增 account</h2>
+<h1 id="新增-account">新增 account</h1>
 <pre><code>sudo adduser newuser
 或
 RUN useradd --create-home -s /bin/bash test
 </code></pre>
-<h2 id="將帳號加上-sudo-權限">將帳號加上 sudo 權限</h2>
+<h1 id="將帳號加上-sudo-權限">將帳號加上 sudo 權限</h1>
 <h3 id="方法1">方法1</h3>
 <p>加入: 將帳號加入 <code>sudo</code> group</p>
 <pre><code>sudo usermod -a -G sudo test
@@ -57,7 +57,7 @@ root    ALL=(ALL:ALL) ALL
 test     ALL=(ALL:ALL) ALL
 </code></pre>
 <p>移除: 到 <code>/etc/sudoers</code> 刪除該筆帳號</p>
-<h2 id="刪除user">刪除user</h2>
+<h1 id="刪除user">刪除user</h1>
 <p>先退出group，再執行</p>
 <pre><code>sudo deluser my_account --remove-all-files
 </code></pre>
@@ -65,12 +65,12 @@ test     ALL=(ALL:ALL) ALL
 <pre><code>sudo userdel my_account
 sudo rm -rf /home/my_account
 </code></pre>
-<h2 id="list-sudo-account">List sudo account</h2>
+<h1 id="list-sudo-account">List sudo account</h1>
 <p>執行</p>
 <pre><code>getent group sudo | cut -d: -f4
 </code></pre>
 <p>或者去 <code>/etc/group</code> 的 sudo 看</p>
-<h2 id="帳號相關資訊">帳號相關資訊</h2>
+<h1 id="帳號相關資訊">帳號相關資訊</h1>
 <p>/etc/passwd :</p>
 <pre><code>test:x:1000:1000:test,,,:/home/test:/bin/bash
 </code></pre>
@@ -80,7 +80,7 @@ sudo rm -rf /home/my_account
 <li>1000 為 uid</li>
 </ul>
 </blockquote>
-<h2 id="切換-www-data-帳號">切換 <code>www-data</code> 帳號</h2>
+<h1 id="切換-www-data-帳號">切換 <code>www-data</code> 帳號</h1>
 <p>直接用 su 會跳出錯誤訊息</p>
 <pre><code>su www-data
 This account is currently not available.
@@ -88,7 +88,7 @@ This account is currently not available.
 <p>應該用</p>
 <pre><code>su -s /bin/bash www-data
 </code></pre>
-<h2 id="無法-ssh-www-data-帳號">無法 ssh <code>www-data</code> 帳號</h2>
+<h1 id="無法-ssh-www-data-帳號">無法 ssh <code>www-data</code> 帳號</h1>
 <p>直接 ssh 是不行的</p>
 <pre><code>ssh www-data@localhost -p
 www-data@localhost's password:

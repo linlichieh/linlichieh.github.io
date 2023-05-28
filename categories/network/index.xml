@@ -36,11 +36,11 @@ $TTL 604800 ; 指定 SOA @ IN SOA ns.</description>
     </item>
     
     <item>
-      <title>Linux iptable</title>
-      <link>/posts/firewall/</link>
+      <title>Linux iptables</title>
+      <link>/posts/linux-iptables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/firewall/</guid>
+      <guid>/posts/linux-iptables/</guid>
       <description>基本設定 /etc/iptables.firewall.rules:
 *filter # Allow all loopback (lo0) traffic and drop all traffic to 127/8 that doesn&#39;t use lo0 -A INPUT -i lo -j ACCEPT -A INPUT -d 127.0.0.0/8 -j REJECT # Accept all established inbound connections -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Allow all outbound traffic - you can modify this to only allow certain traffic -A OUTPUT -j ACCEPT # Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).</description>
     </item>
@@ -86,7 +86,18 @@ $ nc -zv test-db.c6c8mn7tsdgv0.us-west-2.rds.amazonaws.com 3306 Connection to te
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/network/</guid>
-      <description>How DNS resolution works when entering &amp;ldquo;example.com&amp;rdquo; into browser? Browser cache check: the brwoser first checks its own cache to see if it has the IP of &amp;ldquo;example.com&amp;rdquo; Operating system cache check: operating system also maintain a DNS cache Resolver or Recursive DNS servers cache check: the system makes a request to the recursive DNS servers provided by your Internet Service Provider (ISP), or another provider like Google DNS or Cloudflare.</description>
+      <description>OSI Model The OSI model is a theoretical model designed to understand and describe how different network protocols interact and work together. In the real world, protocols don&amp;rsquo;t always fit neatly into a single layer and may operate across multiple layers.
+Standard OSI model Layer 1 - Physical electric signals / driver the data gets converted into a bit stream (1/0) Bits -&amp;gt; Signal Layer 2 - Data Link frames / mac address / ethernet facilitates data transfer between two devices on the same network Frame (breaks packets into smaller pieces called frames) Layer 3 - Network IP / ARP / ICMP destination and source IP Packet (break segments into smaller units called packets and reassembles these packets on the receiving device) Layer 4 - Transport TCP / UDP destination and source Port to identify services or applications Segment (break the data into chunks called segments) Layer 5 - Session connection establishment / TLS state / stateful / cookie session Layer 6 - Presentation encoding / serialisation JSON object / UTF-8 Layer 7 - Application HTTP / FTP / gRPC TCP/IP model</description>
+    </item>
+    
+    <item>
+      <title>Network - HTTP</title>
+      <link>/posts/network-http/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/network-http/</guid>
+      <description>Http Status HTTP status codes are grouped into five classes
+1xx: Informational 2xx: Success 200 OK: Request successful 201 Created For example, consider a client sending a POST request to create a new user on a web service This is most commonly used in response to a POST request. 204 No Content: Request successful, but no data to return 3xx: Redirection 301 Moved Permanently: the URI of the requested resource has been changed permanently.</description>
     </item>
     
     <item>
