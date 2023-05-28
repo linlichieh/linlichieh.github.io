@@ -20,7 +20,7 @@
     <h1>Network DHCP</h1>
     
   </header>
-  <h2 id="發送流程">發送流程</h2>
+  <h1 id="發送流程">發送流程</h1>
 <h3 id="1-client-以-udp-發出-dhcpdiscover-廣播封包尋找-dhcp-server">[1] client 以 UDP 發出 DHCPDISCOVER 廣播封包尋找 DHCP Server</h3>
 <p>來源位址 : 0.0.0.0:68
 目的位址 : 255.255.255.255:67</p>
@@ -55,7 +55,7 @@
 <p>IP 租約到期的情況 :</p>
 <p>用戶端離線：不論是關閉網路介面 (ifdown)、重新開機 (reboot)、關機 (shutdown) 等行為，皆算是離線狀態，這個時候 Server 端就會將該 IP 回收，並放到 Server 自己的備用區中，等待未來的使用；</p>
 <p>用戶端租約到期：前面提到 DHCP server 端發放的 IP 有使用的期限，用戶端使用這個 IP 到達期限規定的時間，而且沒有重新提出 DHCP 的申請時，就需要將 IP 繳回去！這個時候就會造成斷線。但用戶也可以再向 DHCP 伺服器要求再次分配 IP 囉。</p>
-<h2 id="其他">其他</h2>
+<h1 id="其他">其他</h1>
 <h3 id="更新租約期">更新租約期：</h3>
 <p>往往 DHCP Client 為了持續延用此 IP 位址，而會向 DHCP Server 要求更新租約期，一旦更新成功，則 Client 的 IP 租約期限就會從頭開始計算起。在 Client 更新租約期的時候，會向 Server 送出一個 DHCPREQUEST 的訊息。接著以下就舉兩種 Client 送出 DHCPREQUEST 給 Server 的時機：</p>
 <ol>
