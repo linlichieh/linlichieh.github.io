@@ -284,6 +284,36 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </ul>
 </li>
 </ul>
+<h1 id="types-of-bounds">Types of bounds</h1>
+<ul>
+<li>IO Bound
+<ul>
+<li>spend most of its time waiting for input/output</li>
+<li>e.g. reading from or writing to the file, network communication, DB queries, downloading/uploading</li>
+</ul>
+</li>
+<li>CPU Bound
+<ul>
+<li>heavily rely on computational power</li>
+<li>e.g. mathematical calculations, cryptographic operations, video encoding, image processing, complex algorithms</li>
+</ul>
+</li>
+<li>Memory Bound
+<ul>
+<li>constrained by available memory</li>
+<li>e.g. processing large datasets</li>
+<li>can be improved by investigating memory leaks, optimising memory usage</li>
+</ul>
+</li>
+<li>Network Bound
+<ul>
+<li>limit by network factors</li>
+<li>e.g. latency, bandwidth limitations,</li>
+<li>e.g. sending or receiving large files, numerous API calls</li>
+<li>can be improved by CDN, optimising network config, reducing request,</li>
+</ul>
+</li>
+</ul>
 <p>ref:</p>
 <ul>
 <li><a href="https://en.wikipedia.org/w/index.php?title=Universally_unique_identifier&amp;oldid=755882275#Random_UUID_probability_of_duplicates">Random UUID probability of duplicates</a></li>
