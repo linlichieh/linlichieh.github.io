@@ -70,6 +70,9 @@
     <loc>/posts/docker/</loc>
     <lastmod>2014-12-24T00:53:54+08:00</lastmod>
   </url><url>
+    <loc>/posts/docker-kubernetes/</loc>
+    <lastmod>2023-01-28T15:10:34+08:00</lastmod>
+  </url><url>
     <loc>/posts/encoding-schemes/</loc>
     <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
@@ -138,9 +141,6 @@
   </url><url>
     <loc>/posts/json-and-jsonp/</loc>
     <lastmod>2013-02-19T17:25:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/kubernetes/</loc>
-    <lastmod>2023-01-28T15:10:34+08:00</lastmod>
   </url><url>
     <loc>/categories/linux/</loc>
     <lastmod>2019-01-25T11:02:08+08:00</lastmod>
