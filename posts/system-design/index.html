@@ -221,7 +221,6 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 <p>Note that MySQL replication only provides eventual consistency, not strong consistency</p>
 </blockquote>
 <h3 id="sharding-and-partitioning">Sharding and Partitioning</h3>
-<p>both are breaking up a large data set into smaller subsets</p>
 <ul>
 <li>sharding
 <ul>
@@ -230,12 +229,30 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </li>
 <li>partitioning
 <ul>
-<li>grouping subsets of data within a single database instance</li>
+<li>break up a large data set into smaller subsets</li>
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>breaking up large tables into partitions and storing each partition on separate servers is called &ldquo;sharding&rdquo;</p>
+</blockquote>
 <p>Common methods of database sharding</p>
 <ul>
+<li>geo-based sharding
+<ul>
+<li>based on geo the user&rsquo;s location</li>
+<li>pros
+<ul>
+<li>reduce laterncy</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>might not be even distribution of users</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>Range-based sharding
 <ul>
 <li>split rows based on a range of values, for example split by the initial of Name (A to I, J to S, T to Z)</li>
@@ -246,14 +263,16 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </li>
 <li>cons
 <ul>
-<li>can result in the overloading of data on a single physical node, for example shard A might contain a much larger number of rows of data than shard C</li>
+<li>can result in the overloading of data on a single physical node</li>
+<li>for example shard A might contain a much larger number of rows of data than shard C</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Hashed sharding
 <ul>
-<li>splites rows by assigning the shard key (hash value) to each row of the database, for example 4 rows can be grouped by 2 different hash value</li>
+<li>splites rows by assigning the shard key (hash value) to each row of the database</li>
+<li>for example 4 rows can be grouped by 2 different hash value</li>
 <li>pros
 <ul>
 <li>more even distribution</li>
@@ -267,22 +286,46 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 </ul>
 </li>
 </ul>
-<h3 id="how-to-read-data-by-user_id-from-a-sharded-database">How to read data by user_id from a sharded database?</h3>
+<h3 id="the-pros-and-cons-of-sharding">The pros and cons of sharding</h3>
+<p>pros</p>
+<ul>
+<li>scalability</li>
+<li>smaller data on each shard means better performance</li>
+<li>more reliable than a single database</li>
+<li>more affordable</li>
+</ul>
+<p>cons</p>
+<ul>
+<li>Not all data can be sharded e.g. foreign key relationship can only be maintained in a single shard</li>
+<li>manual sharding, each shard runs on seperate servers and cross-shard query such as table join can be difficult to achieve</li>
+<li>once sharding is set up, it can be difficult to undo</li>
+</ul>
+<h3 id="manual-vs-automatic-sharding">Manual vs Automatic sharding</h3>
+<h3 id="how-to-read-data-a-shard-server">How to read data a shard server?</h3>
 <p>Before sending a query, we need to determine the shard key so that we know which shard we want to query</p>
 <p>For example, use the hash function for user_id to get the shard key, then query the appropriate shard based on the shard key</p>
-<h3 id="how-to-retrieve-data-for-top-n-rows-in-the-order-of-creation-time-from-a-sharded-mysql-database">How to retrieve data for top N rows in the order of creation time from a sharded MySQL database?</h3>
-<p>Use the scatter-gatter approach</p>
+<h3 id="how-to-read-data-across-shard-servers">How to read data across shard servers?</h3>
+<p>cross-shard query</p>
 <ul>
-<li>Scatter
+<li>Not all databases support this operation</li>
+<li>like a single, unified dataset, while the actual data may be distributed across multiple nodes</li>
+<li>e.g. Google Spanner, CockroachDB</li>
+</ul>
+<p>There are a few ways to achieve cross-shard query if the database doesn&rsquo;t support</p>
 <ul>
-<li>Send a query to each shard (broadcasting) asking for the top N rows ordered by created_at</li>
+<li>Application-Level Joins
+<ul>
+<li>retrieve the data seperately from each shard and then combine it</li>
 </ul>
 </li>
-<li>Gather
+<li>Denormalization or Data Duplication
 <ul>
-<li>Once we all results back from each shard, we need to merge them and sort them again to get the overall top N rows ordered by created_at</li>
+<li>make the data that needed to answer a particular query be in a single shard</li>
+<li>this might involve duplicating some data across shards</li>
+<li>BUT, it increases the complexity</li>
 </ul>
 </li>
+<li>Use a Database that Supports Cross-Shard Queries</li>
 </ul>
 <h1 id="types-of-bounds">Types of bounds</h1>
 <ul>
@@ -308,9 +351,16 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 <li>Network Bound
 <ul>
 <li>limit by network factors</li>
-<li>e.g. latency, bandwidth limitations,</li>
+<li>e.g. bandwidth limitations,</li>
 <li>e.g. sending or receiving large files, numerous API calls</li>
 <li>can be improved by CDN, optimising network config, reducing request,</li>
+</ul>
+</li>
+<li>Disk Bound
+<ul>
+<li>limited by the data transfer rate of the storage device</li>
+<li>increasing CPU or RAM might not help too much</li>
+<li>e.g. read/write speed</li>
 </ul>
 </li>
 </ul>
@@ -322,6 +372,7 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 <li>chatGPT</li>
 <li><a href="https://aws.amazon.com/what-is/database-sharding/">https://aws.amazon.com/what-is/database-sharding/</a></li>
 <li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76">https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76</a></li>
+<li><a href="https://www.youtube.com/watch?v=be6PLMKKSto">https://www.youtube.com/watch?v=be6PLMKKSto</a></li>
 </ul>
 
 </article>

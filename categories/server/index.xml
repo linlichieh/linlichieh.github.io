@@ -140,18 +140,6 @@ sudo supervisorctl &amp;gt; restart worker &amp;gt; reread &amp;gt; status &amp;
     </item>
     
     <item>
-      <title>Race condition</title>
-      <link>/posts/race-condition/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/posts/race-condition/</guid>
-      <description>當幾乎同時間被不同 Thread 存取共同資料時，而資料存取過程中沒有 lock 起來, 就會造成資料不符合預期的結果
-例如:
-p1.setProduct(prod); p2.setProduct(prod); p3.setProduct(prod); Thread t1 = new Thread(p1); Thread t2 = new Thread(p2); Thread t3 = new Thread(p3); t1.start(); t2.start(); t3.start(); 結果:
-Processor 3 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3) **Processor 2 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3)** **Processor 3 Create Order for: my_product_01(NT$ 20.0, modified by processor: 2)** **Processor 1 Create Order for: my_product_01(NT$ 30.0, modified by processor: 3)** Processor 2 Create Order for: my_product_01(NT$ 20.</description>
-    </item>
-    
-    <item>
       <title>Samba</title>
       <link>/posts/samba/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
