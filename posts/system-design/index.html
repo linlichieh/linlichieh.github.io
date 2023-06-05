@@ -300,10 +300,18 @@ In other words, only after generating 1 billion UUIDs every second for approxima
 <li>manual sharding, each shard runs on seperate servers and cross-shard query such as table join can be difficult to achieve</li>
 <li>once sharding is set up, it can be difficult to undo</li>
 </ul>
-<h3 id="manual-vs-automatic-sharding">Manual vs Automatic sharding</h3>
 <h3 id="how-to-read-data-a-shard-server">How to read data a shard server?</h3>
 <p>Before sending a query, we need to determine the shard key so that we know which shard we want to query</p>
 <p>For example, use the hash function for user_id to get the shard key, then query the appropriate shard based on the shard key</p>
+<p>code example</p>
+<pre><code># Determine the shard
+shard = hash_function(key)
+
+# Find the server for this shard
+server = metadata[shard]
+
+data = connect_and_retrieve(server, key)
+</code></pre>
 <h3 id="how-to-read-data-across-shard-servers">How to read data across shard servers?</h3>
 <p>cross-shard query</p>
 <ul>
