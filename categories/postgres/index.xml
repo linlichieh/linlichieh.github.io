@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/postgres/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>PostgreSQL</title>
-      <link>/posts/postgresql/</link>
+      <title>Database - PostgreSQL</title>
+      <link>/posts/database-postgresql/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/postgresql/</guid>
+      <guid>/posts/database-postgresql/</guid>
       <description>(最後更新 : 2016-05-01)
 介紹 和 MySQL 一樣都是關聯型資料庫，一樣使用 SQL 來執行 query
 正確念法為 post-gress-Q-L 或簡稱 postgres

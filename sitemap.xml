@@ -49,11 +49,32 @@
     <loc>/categories/data-structures/</loc>
     <lastmod>2017-05-20T18:53:13+08:00</lastmod>
   </url><url>
+    <loc>/categories/database/</loc>
+    <lastmod>2017-05-20T18:56:16+08:00</lastmod>
+  </url><url>
     <loc>/posts/database/</loc>
     <lastmod>2014-10-29T10:24:54+08:00</lastmod>
   </url><url>
-    <loc>/categories/db/</loc>
+    <loc>/posts/database-memcached/</loc>
+    <lastmod>2014-06-12T10:15:07+08:00</lastmod>
+  </url><url>
+    <loc>/posts/database-mysql/</loc>
+    <lastmod>2013-08-06T15:24:00+00:00</lastmod>
+  </url><url>
+    <loc>/posts/database-mysql-command-and-syntax/</loc>
+    <lastmod>2013-06-03T04:53:00+00:00</lastmod>
+  </url><url>
+    <loc>/posts/database-mysql-optimisation/</loc>
+    <lastmod>2017-05-20T18:56:16+08:00</lastmod>
+  </url><url>
+    <loc>/posts/database-phpmyadmin/</loc>
+    <lastmod>2013-10-23T23:03:00+00:00</lastmod>
+  </url><url>
+    <loc>/posts/database-postgresql/</loc>
     <lastmod>2016-05-01T13:45:44+08:00</lastmod>
+  </url><url>
+    <loc>/posts/database-redis/</loc>
+    <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
     <loc>/posts/deploy-on-heroku/</loc>
     <lastmod>2016-05-13T08:29:59+08:00</lastmod>
@@ -232,9 +253,6 @@
     <loc>/posts/mac-environment/</loc>
     <lastmod>2013-09-20T21:34:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/memcached/</loc>
-    <lastmod>2014-06-12T10:15:07+08:00</lastmod>
-  </url><url>
     <loc>/posts/messaging/</loc>
     <lastmod>2016-11-06T00:12:00+08:00</lastmod>
   </url><url>
@@ -245,15 +263,6 @@
     <lastmod>2016-10-20T14:38:29+08:00</lastmod>
   </url><url>
     <loc>/categories/mysql/</loc>
-    <lastmod>2013-10-23T23:03:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/mysql/</loc>
-    <lastmod>2013-08-06T15:24:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/mysql-command-and-syntax/</loc>
-    <lastmod>2013-06-03T04:53:00+00:00</lastmod>
-  </url><url>
-    <loc>/posts/mysql-optimisation/</loc>
     <lastmod>2017-05-20T18:56:16+08:00</lastmod>
   </url><url>
     <loc>/categories/network/</loc>
@@ -343,13 +352,7 @@
     <loc>/posts/php-yahoo-oauth/</loc>
     <lastmod>2013-11-26T22:43:00+00:00</lastmod>
   </url><url>
-    <loc>/posts/phpmyadmin/</loc>
-    <lastmod>2013-10-23T23:03:00+00:00</lastmod>
-  </url><url>
     <loc>/categories/postgres/</loc>
-    <lastmod>2016-05-01T13:45:44+08:00</lastmod>
-  </url><url>
-    <loc>/posts/postgresql/</loc>
     <lastmod>2016-05-01T13:45:44+08:00</lastmod>
   </url><url>
     <loc>/posts/</loc>
@@ -411,12 +414,6 @@
   </url><url>
     <loc>/categories/raspberrypi/</loc>
     <lastmod>2014-12-16T13:02:45+08:00</lastmod>
-  </url><url>
-    <loc>/categories/redis/</loc>
-    <lastmod>2014-09-03T12:36:07+08:00</lastmod>
-  </url><url>
-    <loc>/posts/redis/</loc>
-    <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
     <loc>/categories/regex/</loc>
     <lastmod>2013-01-16T18:10:00+00:00</lastmod>

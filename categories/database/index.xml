@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>mysql on Software engineering notes</title>
-    <link>/categories/mysql/</link>
-    <description>Recent content in mysql on Software engineering notes</description>
+    <title>database on Software engineering notes</title>
+    <link>/categories/database/</link>
+    <description>Recent content in database on Software engineering notes</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="/categories/database/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Database</title>
+      <link>/posts/database/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database/</guid>
+      <description>SQL vs NoSQL SQL
+vertical scaling pros relational data is strucutred ACID compliant cons structure must be created in advance difficult to scale horizontally NoSQL
+horizontal scaling pros flexible structure data sharding cons loss of consistency reading from a replica might get stale data ACID Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back. Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</description>
+    </item>
+    
+    <item>
+      <title>Database - Memcached</title>
+      <link>/posts/database-memcached/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database-memcached/</guid>
+      <description>connect to memcached server $ telnet localhost 11211 Trying ::1... Trying 127.0.0.1... Connected to localhost. Escape character is &#39;^]&#39;. get key get flag123 set key 設 key &amp;ldquo;flag123&amp;rdquo; 值為 1
+set flag123 0 86400 1 &amp;lt;= enter 1 &amp;lt;= enter STORED set flag123 0 86400 5 hello STORED set delete key delete flag123 DELETED ref : http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary</description>
+    </item>
+    
     <item>
       <title>Database - MySQL</title>
       <link>/posts/database-mysql/</link>
@@ -59,6 +80,36 @@ Include /etc/phpmyadmin/apache.conf sudo service apache2 restart nginx 將 phpmy
 ln -s /usr/share/phpmyadmin /var/www/phpmyadmin 建立 /etc/nginx/sites-available/phpmyadmin :
 server { listen 80; root /var/www/phpmyadmin; index index.php index.html index.htm index.nginx-debian.html; server_name db.ivy-way.com; location / { try_files $uri $uri/ =404; } location ~ \.php$ { include snippets/fastcgi-php.conf; fastcgi_pass unix:/var/run/php5-fpm.sock; } } 建立 phpmyadmin 的 site config
 ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin 如果沒有設定密碼會連不進去 修改 /etc/phpmyadmin/config.</description>
+    </item>
+    
+    <item>
+      <title>Database - PostgreSQL</title>
+      <link>/posts/database-postgresql/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database-postgresql/</guid>
+      <description>(最後更新 : 2016-05-01)
+介紹 和 MySQL 一樣都是關聯型資料庫，一樣使用 SQL 來執行 query
+正確念法為 post-gress-Q-L 或簡稱 postgres
+安裝 安裝 Postgres Ubuntu : todo&amp;hellip;
+Mac :
+brew install postgres 初始化 Database 安裝完要始初化一個 Database, 而它的 owner 就是執行這指令的 User
+initdb /usr/local/var/postgres -E utf8 Database 已存在 initdb: directory &amp;quot;/usr/local/var/postgres&amp;quot; exists but is not empty If you want to create a new database system, either remove or empty the directory &amp;quot;/usr/local/var/postgres&amp;quot; or run initdb with an argument other than &amp;quot;/usr/local/var/postgres&amp;quot;.</description>
+    </item>
+    
+    <item>
+      <title>Database - Redis</title>
+      <link>/posts/database-redis/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database-redis/</guid>
+      <description>介紹 Open source Key-Value 儲存型態 Value 可以是 strings, hashes, lists, sets, ordered sets 運作在 memory, 可用 snapshot 儲存在硬碟 不支援 2 層以上的 hash Install server
+brew install redis // Mac sudo apt-get install redis-server // Ubuntu Mac 需執行 redis-server 指令才會啟動
+client : 只需安裝 redis-tools
+sudo apt-get install redis-tools Command keys 全部的 key
+keys * Key 的數量
+info keyspace &amp;gt; db0:keys=74415,expires=63940,avg_ttl=306997004 Find prefix string key : &amp;lsquo;queue:&amp;rsquo;
+keys queue:* 刪除 prefix key</description>
     </item>
     
   </channel>

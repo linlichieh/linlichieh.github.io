@@ -7,21 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="/categories/cache/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>memcached</title>
-      <link>/posts/memcached/</link>
+      <title>Database - Memcached</title>
+      <link>/posts/database-memcached/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/memcached/</guid>
+      <guid>/posts/database-memcached/</guid>
       <description>connect to memcached server $ telnet localhost 11211 Trying ::1... Trying 127.0.0.1... Connected to localhost. Escape character is &#39;^]&#39;. get key get flag123 set key 設 key &amp;ldquo;flag123&amp;rdquo; 值為 1
 set flag123 0 86400 1 &amp;lt;= enter 1 &amp;lt;= enter STORED set flag123 0 86400 5 hello STORED set delete key delete flag123 DELETED ref : http://blog.elijaa.org/index.php?post/2010/05/21/Memcached-telnet-command-summary</description>
     </item>
     
     <item>
-      <title>Redis</title>
-      <link>/posts/redis/</link>
+      <title>Database - Redis</title>
+      <link>/posts/database-redis/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/posts/redis/</guid>
+      <guid>/posts/database-redis/</guid>
       <description>介紹 Open source Key-Value 儲存型態 Value 可以是 strings, hashes, lists, sets, ordered sets 運作在 memory, 可用 snapshot 儲存在硬碟 不支援 2 層以上的 hash Install server
 brew install redis // Mac sudo apt-get install redis-server // Ubuntu Mac 需執行 redis-server 指令才會啟動
 client : 只需安裝 redis-tools

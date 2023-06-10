@@ -20,63 +20,47 @@
     <h1>Database</h1>
     
   </header>
-  <h1 id="acid">ACID</h1>
+  <h1 id="sql-vs-nosql">SQL vs NoSQL</h1>
+<p>SQL</p>
+<ul>
+<li>vertical scaling</li>
+<li>pros
+<ul>
+<li>relational</li>
+<li>data is strucutred</li>
+<li>ACID compliant</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>structure must be created in advance</li>
+<li>difficult to scale horizontally</li>
+</ul>
+</li>
+</ul>
+<p>NoSQL</p>
+<ul>
+<li>horizontal scaling</li>
+<li>pros
+<ul>
+<li>flexible structure</li>
+<li>data sharding
+cons</li>
+<li>loss of consistency</li>
+<li>reading from a replica might get stale data</li>
+</ul>
+</li>
+</ul>
+<h1 id="acid">ACID</h1>
 <ul>
 <li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
 <li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
 <li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
 <li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
 </ul>
-<h2 id="mysql-innodb-vs-myisam">MySQL InnoDB vs MyIsam</h2>
+<p>ref:</p>
 <ul>
-<li>InnoDB 支援 transaction</li>
-<li>InnoDB 支援 row lock</li>
-<li>InnoDB 不需要等 row 上的 lock 釋放就可以讀取 row 上的 snapshot</li>
-</ul>
-<h2 id="mysql-int-length">MySQL int length</h2>
-<pre><code>型態                Byte(s)     預設長度    範圍                                        Unsigned
----------------------------------------------------------------------------------------------------------------
-TINYINT[(長度)]     1           4           -128~127                                    0~255 (unisgned 的預設長度會是 3, 因為沒有負號, 最多就 3 位數)
-SMALLINT[(長度)]    2           6           -32768~32767                                0~65535
-MEDIUMINT[(長度)]   3           9           -8388608~8388607                            0~16777215
-INT[(長度)]         4           11          -2147683648~2147683647                      0~4294967295
-BIGINT[(長度)]      8           20          -9223372036854775808~9223372036854775807    0~18446744073709551615
-</code></pre>
-<h2 id="mysql-char-vs-varchar-比較">MySQL Char vs Varchar 比較</h2>
-<p>官方詳細說明 : <a href="https://dev.mysql.com/doc/refman/5.7/en/char.html">https://dev.mysql.com/doc/refman/5.7/en/char.html</a></p>
-<p><strong>如果字串長度都固定的話使用 <code>char</code></strong>, mysql 會分配固定的 bytes 儲存它</p>
-<p><strong>如果字串長度不固定使用 <code>varchar</code></strong>, mysql 會分配浮動的 bytes + 長度 byte 給它, 而長度 byte 有可能是 1 byte 或 2 bytes, 取決於儲存的 bytes 有沒有超過 255 bytes</p>
-<p>e.g. 如果儲存 &lsquo;abcd&rsquo; 會用到幾 bytes?</p>
-<ul>
-<li>char : 4 bytes</li>
-<li>varchar : 4 + 1 bytes</li>
-</ul>
-<p>e.g. 如果儲存 &lsquo;abcd..(略)&hellip;&rsquo;, 假設共有256個字元, 會用到幾 bytes?</p>
-<ul>
-<li>char : 256 bytes</li>
-<li>varchar : 256 + 2 bytes</li>
-</ul>
-<h2 id="mysql-型態儲存長度-data-type-and-storage-required">MySQL 型態儲存長度 (Data Type and Storage Required)</h2>
-<ul>
-<li>&lsquo;abcd&rsquo; in CHAR(72) CHARACTER SET ascii occupies 72 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in CHAR(72) CHARACTER SET utf8 occupies 3*72 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in CHAR(72) CHARACTER SET utf8mb4 occupies 4*72 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in VARCHAR(72) occupies 1+4 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in TINYTEXT occupies 1+4 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in TEXT occupies 2+4 bytes on disk.</li>
-<li>&lsquo;abcd&rsquo; in LONGTEXT occupies 4+4 bytes on disk.</li>
-</ul>
-<p>詳細</p>
-<ul>
-<li>CHAR(M) M × w bytes, 0 &lt;= M &lt;= 255, where w is the number of bytes required for the maximum-length character in the character set. See Section 14.2.6.7, “Physical Row Structure” for information about CHAR data type storage requirements for InnoDB tables.</li>
-<li>BINARY(M) M bytes, 0 &lt;= M &lt;= 255</li>
-<li>VARCHAR(M), VARBINARY(M) L + 1 bytes if column values require 0 − 255 bytes, L + 2 bytes if values may require more than 255 bytes</li>
-<li>TINYBLOB, TINYTEXT L + 1 bytes, where L &lt; 28</li>
-<li>BLOB, TEXT L + 2 bytes, where L &lt; 216</li>
-<li>MEDIUMBLOB, MEDIUMTEXT L + 3 bytes, where L &lt; 224</li>
-<li>LONGBLOB, LONGTEXT L + 4 bytes, where L &lt; 232</li>
-<li>ENUM(&lsquo;value1&rsquo;,&lsquo;value2&rsquo;,&hellip;) 1 or 2 bytes, depending on the number of enumeration values (65,535 values maximum)</li>
-<li>SET(&lsquo;value1&rsquo;,&lsquo;value2&rsquo;,&hellip;) 1, 2, 3, 4, or 8 bytes, depending on the number of set members (64 members maximum)</li>
+<li><a href="https://www.youtube.com/watch?v=_Ss42Vb1SU4">https://www.youtube.com/watch?v=_Ss42Vb1SU4</a></li>
 </ul>
 
 </article>

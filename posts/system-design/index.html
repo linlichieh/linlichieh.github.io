@@ -335,6 +335,44 @@ data = connect_and_retrieve(server, key)
 </li>
 <li>Use a Database that Supports Cross-Shard Queries</li>
 </ul>
+<h1 id="sql-vs-nosql">SQL vs NoSQL</h1>
+<p>SQL</p>
+<ul>
+<li>vertical scaling</li>
+<li>pros
+<ul>
+<li>relational</li>
+<li>data is strucutred</li>
+<li>ACID compliant</li>
+</ul>
+</li>
+<li>cons
+<ul>
+<li>structure must be created in advance</li>
+<li>difficult to scale horizontally</li>
+</ul>
+</li>
+</ul>
+<p>NoSQL</p>
+<ul>
+<li>horizontal scaling</li>
+<li>pros
+<ul>
+<li>flexible structure</li>
+<li>data sharding
+cons</li>
+<li>loss of consistency</li>
+<li>reading from a replica might get stale data</li>
+</ul>
+</li>
+</ul>
+<h1 id="acid">ACID</h1>
+<ul>
+<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
+<li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
+<li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
+<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
+</ul>
 <h1 id="types-of-bounds">Types of bounds</h1>
 <ul>
 <li>IO Bound
@@ -381,6 +419,7 @@ data = connect_and_retrieve(server, key)
 <li><a href="https://aws.amazon.com/what-is/database-sharding/">https://aws.amazon.com/what-is/database-sharding/</a></li>
 <li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76">https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76</a></li>
 <li><a href="https://www.youtube.com/watch?v=be6PLMKKSto">https://www.youtube.com/watch?v=be6PLMKKSto</a></li>
+<li><a href="https://www.youtube.com/watch?v=_Ss42Vb1SU4">https://www.youtube.com/watch?v=_Ss42Vb1SU4</a></li>
 </ul>
 
 </article>
