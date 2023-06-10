@@ -62,11 +62,11 @@ SHOW PROCESSLIST; .. or ... SHOW FULL PROCESSLIST; +--------+----------+--------
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/database-mysql-optimisation/</guid>
-      <description>Index Does the order matter in a composite index? Yes!
+      <description>Index How is an index created? (simplified) A multi-column index functions as a sorted array, with concatenated values from indexed columns, enabling left-most portion of the index can be used for various queries
+Does the order matter in a multi-column index? Yes!
 For example, if there is an index on (uid, gid, pid),
 the index will fully come into effect under the following cases:
-uid = &amp;ldquo;AAA&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; AND pid = &amp;ldquo;CCC&amp;rdquo; the index will partially come into effect under the following cases:
-uid = &amp;ldquo;AAA&amp;rdquo; AND pid = &amp;ldquo;CCC&amp;rdquo; only uid comes into effect in this index the index won&amp;rsquo;t come into effect under the following cases:</description>
+uid = &amp;ldquo;AAA&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; AND pid = &amp;ldquo;CCC&amp;rdquo; the index will partially come into effect under the following cases:</description>
     </item>
     
     <item>

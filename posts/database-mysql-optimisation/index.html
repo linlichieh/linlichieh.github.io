@@ -21,7 +21,9 @@
     
   </header>
   <h1 id="index">Index</h1>
-<h3 id="does-the-order-matter-in-a-composite-index">Does the order matter in a composite index?</h3>
+<h3 id="how-is-an-index-created-simplified">How is an index created? (simplified)</h3>
+<p>A multi-column index functions as a sorted array, with concatenated values from indexed columns, enabling left-most portion of the index can be used for various queries</p>
+<h3 id="does-the-order-matter-in-a-multi-column-index">Does the order matter in a multi-column index?</h3>
 <p>Yes!</p>
 <p>For example, if there is an index on (uid, gid, pid),</p>
 <p>the index will fully come into effect under the following cases:</p>
@@ -59,6 +61,15 @@ This estimation is based on various factors, such as the size of the table, the 
 <p>For example, if there are two indexes, one for &lsquo;uid&rsquo; and another for &lsquo;pid&rsquo;, and both are used for filtering in the WHERE clause, will the query optimizer use both indexes?</p>
 <p>It depends. The query optimizer may use both indexes if both &lsquo;uid&rsquo; and &lsquo;pid&rsquo; columns are used in the WHERE clause and their indexes are highly selective.
 However, it may also choose to use only one index which is more selective than the other one.</p>
+<h3 id="can-an-index-be-used-for-both-order-by-and-where-at-the-same-time">Can an index be used for both <code>ORDER BY</code> and <code>WHERE</code> at the same time?</h3>
+<p>Yes, a multi-column index can be used for both <code>WHERE</code> and <code>ORDER BY</code> at the same time.</p>
+<p>The index needs to be carefully designed so that the fields used in the WHERE clause and the ORDER BY clause match the prefix of the composite index.</p>
+<p>For example:</p>
+<pre><code>SELECT * FROM employees WHERE last_name = 'Bob' ORDER BY created_at;
+
+index: last_name, created_at
+</code></pre>
+<p>The index can be used for both <code>WHERE</code>, searching the leftmost part of the index (<code>last_name = bob</code>), and the <code>ORDER BY</code>, mainting the order of <code>created_at</code> in the filtered data</p>
 <h3 id="what-factors-does-the-query-optimizer-consider-when-making-decisions-on-index">What factors does the query optimizer consider when making decisions on index?</h3>
 <ul>
 <li>Cardinality
@@ -115,7 +126,7 @@ if a query can be satisfied entirely using an index without having to perform ad
 CREATE INDEX idx_email_first_last ON users(email, first_name, last_name);
 </code></pre>
 <p>This index &ldquo;covers&rdquo; the query because the index includes all the fields used in this query.</p>
-<p>Any column index or composite index could act as a covering index, given the right query.
+<p>Any single-column index or multi-column index could act as a covering index, given the right query.
 Design your indexes and queries to take advantage of this optimization technique wherever possible.</p>
 <h3 id="which-clauses-in-a-query-can-affect-the-query-optimizers-decision-on-indexes">Which clauses in a query can affect the query optimizer&rsquo;s decision on indexes?</h3>
 <ul>
