@@ -559,13 +559,13 @@ which means there will be only 10 rows in the result.</p>
 </ul>
 </li>
 </ul>
-<h3 id="todo-what-columns-in-the-explain-output-we-want-to-pay-attention-to">TODO What columns in the <code>EXPLAIN</code> output we want to pay attention to?</h3>
+<h3 id="what-columns-in-the-explain-output-we-want-to-pay-attention-to">What columns in the <code>EXPLAIN</code> output we want to pay attention to?</h3>
 <ul>
 <li><code>type</code>: This tells you about how data in the database is scanned</li>
 <li><code>possible_keys</code>: This shows which indexes could be used for the query</li>
 <li><code>key</code>: This is the actual index that is choen to use for the query</li>
 <li><code>rows</code>: This is the estimated number of rows that need to be examined to execute the query</li>
-<li><code>Extra</code>: This tells you what operation need to be done after filtering out the data</li>
+<li><code>Extra</code>: This tells you what operation needs to be done after filtering out the data</li>
 </ul>
 <h3 id="whats-filesort">What&rsquo;s <code>filesort</code>?</h3>
 <p>The filesort operation is used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
