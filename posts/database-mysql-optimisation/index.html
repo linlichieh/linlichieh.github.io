@@ -249,10 +249,30 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li><code>SIMPLE</code>: A simple <code>SELECT</code> statement without any subqueries or <code>UNION</code>s.</li>
 <li><code>PRIMARY</code>: The main select statement in a complex query (for example, outer query in a subquery).</li>
-<li><code>SUBQUERY</code>: The first <code>SELECT</code> statement in a subquery.</li>
-<li><code>DERIVED</code>: MySQL creates a temporary table for the results of the <code>SELECT</code> statement. This is usually in <code>FROM</code> subqueries.</li>
-<li><code>UNION</code>: A second or subsequent <code>SELECT</code> statement in a <code>UNION</code>.</li>
-<li><code>UNION RESULT</code>: The result of a <code>UNION</code>.</li>
+<li><code>SUBQUERY</code>: The first <code>SELECT</code> statement in a subquery, not in the <code>FROM</code>.
+<ul>
+<li>e.g. <code>SELECT * FROM users WHERE user_id in (SELECT id FROM employees)</code></li>
+<li>select_type: <code>SUBQUERY</code>, table: <code>employees</code></li>
+</ul>
+</li>
+<li><code>DERIVED</code>: MySQL creates a temporary table for the results of the <code>SELECT</code> statement. This is usually in <code>FROM</code> subqueries.
+<ul>
+<li>e.g. <code>SELECT * FROM ( SELECT column1, column2 FROM table1) as derived_table</code></li>
+<li>select_type: <code>DERIVED</code>, table: <code>derived_table</code></li>
+</ul>
+</li>
+<li><code>UNION</code>: A second or subsequent <code>SELECT</code> statement in a <code>UNION</code>.
+<ul>
+<li>e.g. show the result of the union of tables 1 and 2</li>
+<li>e.g. <code>SELECT id FROM table1 UNION SELECT id FROM table2</code></li>
+<li>select_type: <code>UNION</code>, table: <code>table2</code></li>
+</ul>
+</li>
+<li><code>UNION RESULT</code>: The result of a <code>UNION</code>.
+<ul>
+<li>select_type: <code>UNION RESULT</code>, table: <code>&lt;union1,2&gt;</code></li>
+</ul>
+</li>
 <li><code>DEPENDENT UNION</code>: A second or subsequent <code>SELECT</code> statement in a <code>UNION</code>, but depending on outer query.</li>
 <li><code>DEPENDENT SUBQUERY</code>: A subquery that depends on the outer query.</li>
 <li><code>MATERIALIZED</code>: It refers to a materialized subquery, which is a subquery that has been precomputed and stored.</li>
@@ -282,13 +302,16 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>ideal value</li>
 <li>This suggests that the query accesses a single row based on a constant value or a primary key.</li>
 <li>It&rsquo;s the most efficient access method because it retrieves a specific row directly.</li>
+<li>e.g. <code>SELECT * FROM employees WHERE employee_id = 1</code>, assuming <code>employee_id</code> is a primary key</li>
+<li>e.g. <code>SELECT * FROM employees WHERE unique_index_column = 'unique_value'</code>, assuming <code>unique_index_column</code> is a column that has a unique index</li>
+<li>e.g. <code>SELECT * FROM employees WHERE column1 = 'value1' AND column2 = 'value2'</code>, assuming <code>column1</code> and <code>column2</code> together form a composite unique index</li>
 </ul>
 </li>
 <li><code>ALL</code>
 <ul>
-<li>this is the worst join type</li>
 <li>This indicates a full table scan where all rows of the table are read.</li>
 <li>It can be resource-intensive and generally not desirable, especially for large tables.</li>
+<li>e.g. <code>SELECT * FROM employees WHERE name LIKE '%John%'</code></li>
 </ul>
 </li>
 <li><code>index</code>
@@ -297,6 +320,14 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>This happens when all the columns being selected are part of the same index.</li>
 <li>MySQL can go directly to the index to find the necessary data, instead of searching the entire table.</li>
 <li>It&rsquo;s more efficient than a full table scan (<code>ALL</code> type), but not efficient enough because it still reads the entire index</li>
+<li>It&rsquo;s worth to note that this can happen even without a <code>WHERE</code> clause</li>
+<li>e.g. <code>SELECT * FROM employees</code>, mysql may opt to perform a full index scan if that&rsquo;s cheaper than a full table scan
+<ul>
+<li>e.g. If there is a covering index that includes all the columns in the table, mysql might instead opt to do a full scan of that index</li>
+</ul>
+</li>
+<li>e.g. <code>SELECT employee_name FROM employees</code>, assuming <code>employee_name</code> is an indexed column, mysql can simply scan the <code>employee_name</code> index to retrieve the data, rather than scanning the full table</li>
+<li>e.g. <code>SELECT * FROM employees ORDER BY employee_name</code>, assuming <code>employee_name</code> is an indexed column, mysql performs an index scan to take advantage of the fact that the index stores rows in order</li>
 </ul>
 </li>
 <li><code>range</code>
@@ -304,12 +335,14 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>MySQL uses an index to read rows from a table based on a range</li>
 <li>this type is used when querying on indexed columns with operators like <code>BETWEEN</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>IN</code>, etc.</li>
 <li>much more efficient than <code>index</code> and <code>ALL</code> types because it only reads rows where the index is within a certain range, rather than reading the entire index or table</li>
-<li>For example, <code>SELECT * FROM table WHERE date BETWEEN '2023-01-01' AND '2023-12-31'</code> with indexed <code>date</code> column</li>
+<li>e.g. <code>SELECT * FROM employees WHERE employee_id BETWEEN 100 AND 200</code>, assuming <code>employee_id</code> is an indexed column</li>
 </ul>
 </li>
 <li><code>index_merge</code>
 <ul>
-<li>This join type indicates that the Index Merge optimization is used. In this case, MySQL accesses the table rows using multiple index scans and merges the results.</li>
+<li>Only appear if the optimizer decides to use the Index Merge optimization</li>
+<li>Use multiple index scans and merges the results</li>
+<li>e.g. <code>SELECT * FROM employees WHERE employee_id = 1 OR department_id = 2</code>, assuming <code>employee_id</code> and <code>department_id</code> are seperately indexed columns (not multi-column index)</li>
 </ul>
 </li>
 <li><code>unique_subquery</code>
@@ -328,14 +361,16 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>This indicates that the query uses a non-unique index to access rows based on a single value from another table.</li>
 <li>It typically occurs when joining tables using a column that is not unique but has an index.</li>
 <li>e.g. JOIN on gid = gid (1:N)</li>
+<li>e.g. <code>SELECT * FROM employees WHERE department_id = 10</code>, assuming <code>department_id</code> is a non-unique indexed column</li>
 </ul>
 </li>
 <li><code>eq_ref</code>
 <ul>
 <li>ideal value</li>
-<li>This is similar to ref, but it occurs when the join is performed using a unique index.</li>
+<li>This is similar to <code>ref</code>, but it occurs when the join is performed using a unique index.</li>
 <li>It&rsquo;s a more efficient access method compared to ref because only one row is expected to match.</li>
 <li>e.g. JOIN on gid = gid (1:1)</li>
+<li>e.g. <code>SELECT * FROM employees JOIN departments ON employees.department_id = departments.department_id</code>, assuming <code>department_id</code> in <code>departments</code> is a unique indexed column</li>
 </ul>
 </li>
 <li><code>ref_or_null</code>
@@ -346,6 +381,8 @@ It evaluates the entire query and the available indexes to choose the best index
 <li><code>fulltext</code>
 <ul>
 <li>A full-text search is performed.</li>
+<li>e.g. find the employee name whose name is &lsquo;John&rsquo;</li>
+<li>e.g. <code>SELECT * FROM employees WHERE MATCH(employee_name) AGAINST('John')</code>, aassuming <code>employee_name</code> is a column with a <code>FULLTEXT</code> index</li>
 </ul>
 </li>
 <li><code>system</code>
@@ -386,19 +423,22 @@ It evaluates the entire query and the available indexes to choose the best index
 </li>
 <li>ref
 <ul>
-<li>shows which columns or constants are compared to the index named in the <code>key</code> column to select rows from the table.</li>
-<li>If the value is <code>func</code>, the value used is the result of some function</li>
+<li>It indicates a constant or which column is used against the column present in the <code>key</code> to fetch the data from the table.</li>
 <li>Values
 <ul>
 <li><code>Const</code>
 <ul>
 <li>the most efficient</li>
 <li>If the column value is matched to a constant, you&rsquo;ll see const here. This is an ideal scenario where the query can match exactly one row in the table.</li>
+<li>This usually happens when the query is using a primary key or unique index in a WHERE clause.</li>
 </ul>
 </li>
 <li><code>Column Name(s)</code>
 <ul>
 <li>the named columns are used in an index lookup and are part of the <code>WHERE</code> clause in the query</li>
+<li>e.g. <code>SELECT * FROM orders JOIN customers ON orders.customer_id = customers.customer_id</code></li>
+<li>e.g. table: <code>orders</code>, type: <code>ref</code>, key: <code>customer_id</code>, ref: <code>customers.customer_id</code></li>
+<li>e.g. This indicates that the <code>customer_id</code> column from the <code>customers</code> table is being used in the index <code>customer_id</code> of <code>orders</code> to select rows</li>
 </ul>
 </li>
 <li><code>NULL</code>
@@ -407,37 +447,40 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>can be a sign of less efficient queries as they may indicate full table or index scans</li>
 </ul>
 </li>
+<li><code>func</code>
+<ul>
+<li>The column is compared to the result of a function.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>rows
 <ul>
-<li>The rows column indicates the number of rows MySQL believes it must examine to execute the query.</li>
+<li>The rows column indicates the approximately number of rows need to examine to execute the query.</li>
 <li>Lower is Better: Generally, you want the number in this column to be as low as possible. The fewer rows that need to be examined, the faster your query will run.</li>
 </ul>
 </li>
 <li>filtered
 <ul>
-<li>estimates the percentage of table rows that will be filtered by the table condition</li>
-<li>This condition refers to the portion of the <code>WHERE</code> clause  (before examining any possible JOINs)</li>
-<li>The maximum value is 100, which means no filtering of rows occurred</li>
+<li>estimates the percentage of table rows that will meet the <code>WHERE</code> condition (before examining any possible JOINs)</li>
+<li>If the value is <code>100</code>, it indicates means no filtering of rows occurred</li>
 <li>the low number indicates that the query could benefit from an index</li>
 <li><code>rows</code> column shows the estimated number of rows examined</li>
-<li><code>rows × filtered / 100</code> shows the number of rows that will be joined with previous tables</li>
+<li><code>rows × filtered / 100</code> shows the number of rows that will be joined with the table</li>
 <li>For example, rows is 100 and filtered is <code>20.00</code> (20%), which means only around 20 rows will remian after filter has been applied.</li>
 </ul>
 </li>
 <li>Extra
 <ul>
-<li>Contains additional information about the query execution plan</li>
-<li>If <code>Extra</code> shows <code>Using filesort</code>, MySQL needs to do an extra pass to sort the results. You might be able to avoid this by indexing the columns in the <code>ORDER BY</code> clause.</li>
+<li>Provide additional information about how MySQL resolves the query</li>
 <li>Values
 <ul>
 <li><code>Using index</code>
 <ul>
 <li>This is generally an ideal value</li>
-<li>the query is using an index to satisfy the query conditions, and the index provides the required data without accessing the table directly.</li>
+<li>This indicates a &lsquo;Covering Index Scan&rsquo; – the entire query can be resolved using only information within the index, without having to do additional table lookups.</li>
 <li>It suggests that the query can benefit from index optimization.</li>
 </ul>
 </li>
@@ -445,7 +488,7 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>a filtering operation is performed after retrieving rows using an index.</li>
 <li>It means that the query needs to evaluate additional conditions that are not covered by the index, and it may involve scanning rows that don&rsquo;t match the conditions.</li>
-<li>While using where is not necessarily undesirable, it suggests that additional filtering is performed after retrieving rows using an index.</li>
+<li>While <code>using where</code> is not necessarily undesirable, it suggests that additional filtering is performed after retrieving rows using an index.</li>
 <li>If this value appears in a significant number of rows in the <code>EXPLAIN</code> output, it may indicate that the query is not fully utilizing the available indexes or that further optimization is possible.</li>
 </ul>
 </li>
@@ -453,6 +496,7 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>the query requires the creation of a temporary table to hold intermediate results.</li>
 <li>Temporary tables are used when the query involves complex operations or sorting.</li>
+<li>This often happens in queries with <code>ORDER BY</code> and <code>GROUP BY</code>.</li>
 <li>Using a temporary table is not inherently undesirable, but it indicates that the query requires the creation of a temporary table for sorting or other intermediate results.
 <ul>
 <li>If this value appears in a significant number of rows or for large result sets, it may suggest potential performance bottlenecks.</li>
@@ -464,6 +508,7 @@ It evaluates the entire query and the available indexes to choose the best index
 <ul>
 <li>This is generally considered undesirable, because it&rsquo;s less efficient than in-memory sorting or sorting using an index. It may indicate a performance concern.</li>
 <li>the query requires a filesort operation to sort the result set. It occurs when the requested order of rows doesn&rsquo;t match the order of the index used, or when sorting cannot be performed using an index.</li>
+<li>You might be able to avoid this by indexing the columns in the <code>ORDER BY</code> clause.</li>
 </ul>
 </li>
 <li><code>Using join buffer</code> (<code>Block Nested Loop</code>, <code>Batched Key Access</code>, etc.)
@@ -473,7 +518,8 @@ It evaluates the entire query and the available indexes to choose the best index
 <li>However, if these values appear frequently and involve large result sets, it may indicate that the query performance could be improved through better indexing or query optimization.</li>
 </ul>
 </li>
-<li>These values indicate that the query is using a join buffer for specific join strategies. The join buffer is a temporary storage area used to process <code>JOIN</code> operations efficiently.</li>
+<li>The join is executed by employing a join buffer to hold rows from the table and does not require a full table scan.</li>
+<li>The join buffer is a temporary storage area used to process <code>JOIN</code> operations efficiently.</li>
 </ul>
 </li>
 <li><code>Range checked for each record</code>: the query is using a range scan to access rows within a specified range, such as using <code>BETWEEN</code> or <code>IN</code> conditions.</li>
@@ -493,9 +539,36 @@ It evaluates the entire query and the available indexes to choose the best index
 +----+-------------+--------+------------+------+---------------+------------+---------+-------+------+----------+-------------+
 </code></pre>
 <p>In this example, the filtered column shows a value of <code>10.00</code>.
-This means MySQL estimates that about 10% of the rows selected by the query (specifically, those rows matching the index on <code>product_id</code>) will pass the additional <code>order_date</code> condition in the <code>WHERE</code> clause.</p>
+This means MySQL estimates that about <code>10%</code> of the rows selected by the query (specifically, those rows matching the index on <code>product_id</code>) will pass the additional <code>order_date</code> condition in the <code>WHERE</code> clause.
+which means there will be only 10 rows in the result.</p>
+<h3 id="the-difference-in-the-type-value-between-ref-and-index">The difference in the <code>type</code> value between <code>ref</code> and <code>index</code></h3>
+<ul>
+<li><code>ref</code>
+<ul>
+<li>Use an index to look up rows in a table.</li>
+<li>It may match multiple rows unlike a unique or primary key (<code>const</code>, <code>eq_ref</code>)</li>
+<li>e.g. <code>SELECT * FROM employees WHERE department_id = 10</code>, assuming <code>department_id</code> is an indexed column</li>
+</ul>
+</li>
+<li><code>index</code>
+<ul>
+<li>Uses the index to do a full index scan</li>
+<li>All the data needed is available within the index itself</li>
+<li>Usualy the query doesn&rsquo;t have <code>WHERE</code> to help mysql choose an better index</li>
+<li>e.g. <code>SELECT department_id FROM employees</code>, assuming <code>department_id</code> is an indexed column</li>
+</ul>
+</li>
+</ul>
+<h3 id="todo-what-columns-in-the-explain-output-we-want-to-pay-attention-to">TODO What columns in the <code>EXPLAIN</code> output we want to pay attention to?</h3>
+<ul>
+<li><code>type</code>: This tells you about how data in the database is scanned</li>
+<li><code>possible_keys</code>: This shows which indexes could be used for the query</li>
+<li><code>key</code>: This is the actual index that is choen to use for the query</li>
+<li><code>rows</code>: This is the estimated number of rows that need to be examined to execute the query</li>
+<li><code>Extra</code>: This tells you what operation need to be done after filtering out the data</li>
+</ul>
 <h3 id="whats-filesort">What&rsquo;s <code>filesort</code>?</h3>
-<p>The filesort operation  used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
+<p>The filesort operation is used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
 It involves writing temporary data to disk and performing an external sorting algorithm to order the rows.</p>
 <p>Here&rsquo;s what filesort operation does:</p>
 <ul>
