@@ -20,47 +20,102 @@
     <h1>Database</h1>
     
   </header>
-  <h1 id="sql-vs-nosql">SQL vs NoSQL</h1>
+  <h1 id="cap-theorem">CAP theorem</h1>
+<p>It&rsquo;s impossible for a distributed data store to simultaneously provide more than two out of these three guarantee:</p>
+<ul>
+<li>Consistency: All nodes see the same data at the same time. The write operation will only be seemed to be successful after the operation is replicated across all nodes.</li>
+<li>Availability: Every request receives a (non-error) response which doesn&rsquo;t guarantee the most updated data.</li>
+<li>Partition Tolerance: The system should continue to function correctly despite network failures among partitions</li>
+</ul>
+<blockquote>
+<p>Eventually consistent: The database prioritise Availability and Partition Tolerance over Consistency</p>
+</blockquote>
+<ul>
+<li>CA database: MySQL, PostgreSQL, MariaDB, Oracle Database, SQL server</li>
+<li>CP database: Google&rsquo;s Spanner, MongoDB, HBase, Cosmos DB</li>
+<li>AP database: Cassandra, CouchDB, DynamoDB, Riak</li>
+</ul>
+<h1 id="acid">ACID</h1>
+<p>A set of properties that guarantee that database transactions are processed reliably</p>
+<ul>
+<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
+<li>Consistency: Ensures any data in a transaction will be valid according to all defined rules including SQL constraints, maintaining data integrity.
+<ul>
+<li>constraints are sued to specify rules for the data e.g. <code>NOT NULL</code>, <code>FOREIGN KEY</code>, <code>DEFAULT</code></li>
+</ul>
+</li>
+<li>Isolation: Ensures that concurrent transactions are executed serially, one after another, preventing interference between transactions.
+<ul>
+<li>cockroachDB always use serialisable isolation</li>
+<li>the strongest of the four isolation levels defined by the SQL standard</li>
+</ul>
+</li>
+<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
+</ul>
+<h1 id="sql-vs-nosql">SQL vs NoSQL</h1>
 <p>SQL</p>
 <ul>
-<li>vertical scaling</li>
-<li>pros
+<li>Pros
 <ul>
-<li>relational</li>
-<li>data is strucutred</li>
+<li>Relational</li>
+<li>Data is strucutred</li>
 <li>ACID compliant</li>
 </ul>
 </li>
-<li>cons
+<li>Cons
 <ul>
-<li>structure must be created in advance</li>
-<li>difficult to scale horizontally</li>
+<li>Structure must be created in advance</li>
+<li>Difficult to scale horizontally</li>
 </ul>
 </li>
 </ul>
 <p>NoSQL</p>
 <ul>
-<li>horizontal scaling</li>
-<li>pros
+<li>Pros
 <ul>
-<li>flexible structure</li>
-<li>data sharding
-cons</li>
-<li>loss of consistency</li>
-<li>reading from a replica might get stale data</li>
+<li>Flexible structure (key-value, document, etc., semi-structured or unstructured data)</li>
+<li>Easy to scale horizontally (suitable for handling large volumes of data and high traffic loads)</li>
+<li>Faster write and query performance
+Cons</li>
+<li>Many NoSQL databases offer eventual consistency</li>
 </ul>
 </li>
 </ul>
-<h1 id="acid">ACID</h1>
+<h1 id="postgresql-vs-mysql-innodb">PostgreSQL vs MySQL (innodb)</h1>
+<p>Similarity</p>
 <ul>
-<li>Atomicity: Guarantees that all operations in a transaction are executed or none are. If a transaction fails, all changes are rolled back.</li>
-<li>Consistency: Ensures a transaction brings the database from one valid state to another, maintaining data integrity.</li>
-<li>Isolation: Ensures that concurrent transactions are executed as if they are serial, preventing interference between transactions.</li>
-<li>Durability: Guarantees that once a transaction is committed, its changes are permanent, even in case of system failure.</li>
+<li>Both are relational database</li>
+<li>SQL compliance</li>
+<li>ACID compliance</li>
+<li>support JSON</li>
+<li>support stored procedures</li>
+<li>support both synchronous and asynchronous replication</li>
+</ul>
+<p>PostgreSQL</p>
+<ul>
+<li>Open source</li>
+<li>support more index types such as B-tree, GiST (Generalized Search Tree), and GIN (Generalized Inverted Index)</li>
+<li>support multi-version concurrency control (MVCC)</li>
+<li>support more data types, including arrays, key-value, binary JSON</li>
+<li>designed for write-heavy workloads</li>
+<li>designed for more complex queries and transactions</li>
+<li>suitable for vertical scaling on a single server</li>
+<li>built-in security features including row-level security and SSL encryption</li>
+</ul>
+<p>MySQL</p>
+<ul>
+<li>commercial product owned by Oracle</li>
+<li>the default index type is B-tree, also supports hash indexes</li>
+<li>designed for ready-heavy workloads</li>
+<li>suitable for horizontal scalling and distributed systems</li>
 </ul>
 <p>ref:</p>
 <ul>
+<li>chatGPT</li>
 <li><a href="https://www.youtube.com/watch?v=_Ss42Vb1SU4">https://www.youtube.com/watch?v=_Ss42Vb1SU4</a></li>
+<li><a href="https://www.youtube.com/watch?v=6mLWpDFeR0c">https://www.youtube.com/watch?v=6mLWpDFeR0c</a></li>
+<li><a href="https://dbconvert.com/blog/mysql-vs-postgresql/">https://dbconvert.com/blog/mysql-vs-postgresql/</a></li>
+<li><a href="https://hackr.io/blog/postgresql-vs-mysql">https://hackr.io/blog/postgresql-vs-mysql</a></li>
 </ul>
 
 </article>

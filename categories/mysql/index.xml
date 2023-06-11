@@ -41,7 +41,7 @@ SHOW PROCESSLIST; .. or ... SHOW FULL PROCESSLIST; +--------+----------+--------
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/database-mysql-optimisation/</guid>
-      <description>Index How is an index created? (simplified) A multi-column index functions as a sorted array, with concatenated values from indexed columns, enabling left-most portion of the index can be used for various queries
+      <description>Index What is index? (simplified) An index functions as a sorted array, with concatenated values from indexed columns if it&amp;rsquo;s a multi-column index, enabling left-most portion of the index can be used for various queries
 Does the order matter in a multi-column index? Yes!
 For example, if there is an index on (uid, gid, pid),
 the index will fully come into effect under the following cases:

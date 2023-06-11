@@ -21,8 +21,8 @@
     
   </header>
   <h1 id="index">Index</h1>
-<h3 id="how-is-an-index-created-simplified">How is an index created? (simplified)</h3>
-<p>A multi-column index functions as a sorted array, with concatenated values from indexed columns, enabling left-most portion of the index can be used for various queries</p>
+<h3 id="what-is-index-simplified">What is index? (simplified)</h3>
+<p>An index functions as a sorted array, with concatenated values from indexed columns if it&rsquo;s a multi-column index, enabling left-most portion of the index can be used for various queries</p>
 <h3 id="does-the-order-matter-in-a-multi-column-index">Does the order matter in a multi-column index?</h3>
 <p>Yes!</p>
 <p>For example, if there is an index on (uid, gid, pid),</p>
@@ -63,7 +63,7 @@ This estimation is based on various factors, such as the size of the table, the 
 However, it may also choose to use only one index which is more selective than the other one.</p>
 <h3 id="can-an-index-be-used-for-both-order-by-and-where-at-the-same-time">Can an index be used for both <code>ORDER BY</code> and <code>WHERE</code> at the same time?</h3>
 <p>Yes, a multi-column index can be used for both <code>WHERE</code> and <code>ORDER BY</code> at the same time.</p>
-<p>The index needs to be carefully designed so that the fields used in the WHERE clause and the ORDER BY clause match the prefix of the composite index.</p>
+<p>The index needs to be carefully designed so that the fields used in the WHERE clause and the ORDER BY clause match the prefix of the multi-column index.</p>
 <p>For example:</p>
 <pre><code>SELECT * FROM employees WHERE last_name = 'Bob' ORDER BY created_at;
 
