@@ -12,8 +12,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/database/</guid>
-      <description>CAP theorem It&amp;rsquo;s impossible for a distributed data store to simultaneously provide more than two out of these three guarantee:
-Consistency: All nodes see the same data at the same time. The write operation will only be seemed to be successful after the operation is replicated across all nodes. Availability: Every request receives a (non-error) response which doesn&amp;rsquo;t guarantee the most updated data. Partition Tolerance: The system should continue to function correctly despite network failures among partitions Eventually consistent: The database prioritise Availability and Partition Tolerance over Consistency</description>
+      <description>Database scaling Vertical vs Horizontal Vertical: increase the capacity of a single server by adding more powerful hardware resources such as CPU, RAM, and storage
+Pros Less complexity simpler to scale up by adding more resources to a single server no additional work to maintain data across machines like horizontal scaling does Data Consistency Cons Limited Growth There are physical limits to how much you can scale a single server. Once those limits are reached, you&amp;rsquo;ll need to look at horizontal scaling or other options.</description>
     </item>
     
     <item>
