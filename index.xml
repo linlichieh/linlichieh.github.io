@@ -143,11 +143,8 @@ SHOW PROCESSLIST; .. or ... SHOW FULL PROCESSLIST; +--------+----------+--------
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/database-mysql-optimisation/</guid>
-      <description>Index What is index? (simplified) An index functions as a sorted array, with concatenated values from indexed columns if it&amp;rsquo;s a multi-column index, enabling left-most portion of the index can be used for various queries
-Does the order matter in a multi-column index? Yes!
-For example, if there is an index on (uid, gid, pid),
-the index will fully come into effect under the following cases:
-uid = &amp;ldquo;AAA&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; uid = &amp;ldquo;AAA&amp;rdquo; AND gid = &amp;ldquo;BBB&amp;rdquo; AND pid = &amp;ldquo;CCC&amp;rdquo; the index will partially come into effect under the following cases:</description>
+      <description>Index How does index work? MySQL uses a data structure (B-Tree is default) that stores the value of the indexed column(s) and a reference to the row that contains the rest of the data. This allows mysql to find the values without scanning the whole table.
+B-Tree is the most commonly used B-Tree is used for both clustered and non-clustered indexes If it&amp;rsquo;s a multi-column index, the value will be concatenated values of the indexed columns types of index</description>
     </item>
     
     <item>

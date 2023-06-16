@@ -21,34 +21,87 @@
     
   </header>
   <h1 id="index">Index</h1>
-<h3 id="what-is-index-simplified">What is index? (simplified)</h3>
-<p>An index functions as a sorted array, with concatenated values from indexed columns if it&rsquo;s a multi-column index, enabling left-most portion of the index can be used for various queries</p>
-<h3 id="does-the-order-matter-in-a-multi-column-index">Does the order matter in a multi-column index?</h3>
-<p>Yes!</p>
-<p>For example, if there is an index on (uid, gid, pid),</p>
-<p>the index will fully come into effect under the following cases:</p>
+<h3 id="how-does-index-work">How does index work?</h3>
+<p>MySQL uses a data structure (B-Tree is default) that stores the value of the indexed column(s)
+and a reference to the row that contains the rest of the data.
+This allows mysql to find the values without scanning the whole table.</p>
+<ul>
+<li>B-Tree is the most commonly used</li>
+<li>B-Tree is used for both clustered and non-clustered indexes</li>
+<li>If it&rsquo;s a multi-column index, the value will be concatenated values of the indexed columns</li>
+</ul>
+<p>types of index</p>
+<ul>
+<li>B-Tree
+<ul>
+<li>efficient for finding ranges of values and individual values, especially when dealing with <code>=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>BETWEEN</code>, <code>LIKE</code>, etc.</li>
+</ul>
+</li>
+<li>Hash
+<ul>
+<li>used for equality comparisons that use the <code>=</code> operator</li>
+<li>not used for range-based query or sorting (<code>ORDER BY</code>)</li>
+</ul>
+</li>
+<li>Full-text
+<ul>
+<li>used with full-text search functions <code>MATCH()</code>, <code>AGAINST()</code></li>
+<li>used for complex word-based searches</li>
+</ul>
+</li>
+<li>Spatial
+<ul>
+<li>used for geographic or multi-dimensional data</li>
+<li>used for finding points within a given radius or polygons that overlap</li>
+</ul>
+</li>
+<li>Clustered
+<ul>
+<li>stored as B-tree</li>
+<li>the primary key serves as a clustered index</li>
+<li>mysql can have only one clustered index in a table</li>
+<li>It&rsquo;s best for retrieving records in a range of values</li>
+</ul>
+</li>
+<li>Secondary (Non-clustered)
+<ul>
+<li>stored as B-tree</li>
+<li>an index that isn’t a table&rsquo;s primary key index (which is a clustered index)</li>
+<li>contain the indexed columns&rsquo; values and a pointer that references the primary key for the row</li>
+<li>best for retrieving individual records</li>
+</ul>
+</li>
+</ul>
+<h3 id="multi-column-index-best-practices">Multi-column index best practices</h3>
+<p>Most selective</p>
+<ul>
+<li>If one column in the index is going to narrow down the result significantly more than the other, it should be placed first in the index</li>
+</ul>
+<p>Column order Matters</p>
+<ul>
+<li>For example, if there is an index on (uid, gid, pid),</li>
+<li>the index will fully come into effect under the following cases:
 <ul>
 <li>uid = &ldquo;AAA&rdquo;</li>
 <li>uid = &ldquo;AAA&rdquo; AND gid = &ldquo;BBB&rdquo;</li>
 <li>uid = &ldquo;AAA&rdquo; AND gid = &ldquo;BBB&rdquo; AND pid = &ldquo;CCC&rdquo;</li>
 </ul>
-<p>the index will partially come into effect under the following cases:</p>
+</li>
+<li>the index will partially come into effect under the following cases:
 <ul>
-<li>uid = &ldquo;AAA&rdquo; AND pid = &ldquo;CCC&rdquo;
-<ul>
+<li>uid = &ldquo;AAA&rdquo; AND pid = &ldquo;CCC&rdquo;</li>
 <li>only uid comes into effect in this index</li>
 </ul>
 </li>
-</ul>
-<p>the index won&rsquo;t come into effect under the following cases:</p>
+<li>the index won&rsquo;t come into effect under the following cases:
 <ul>
 <li>gid = &ldquo;BBB&rdquo;</li>
 <li>pid = &ldquo;CCC&rdquo;</li>
 <li>gid = &ldquo;BBB&rdquo; AND pid = &ldquo;CCC&rdquo;</li>
 </ul>
-<blockquote>
-<p>they reason why the index won&rsquo;t work is because the index followed by uid that isn&rsquo;t in the WHERE clause</p>
-</blockquote>
+</li>
+<li>the reason why the index won&rsquo;t work is because the index followed by uid that isn&rsquo;t in the WHERE clause</li>
+</ul>
 <h3 id="does-the-order-matter-in-where-clauses">Does the order matter in &ldquo;WHERE&rdquo; clauses?</h3>
 <p>No, the order of where clauses does not matter.</p>
 <p>Query optimizer will look at all the parts of the WHERE clause and figure out the most efficient way to satisfy that query</p>
@@ -565,7 +618,7 @@ which means there will be only 10 rows in the result.</p>
 <li><code>possible_keys</code>: This shows which indexes could be used for the query</li>
 <li><code>key</code>: This is the actual index that is choen to use for the query</li>
 <li><code>rows</code>: This is the estimated number of rows that need to be examined to execute the query</li>
-<li><code>Extra</code>: This tells you what operation needs to be done after filtering out the data</li>
+<li><code>Extra</code>: This tells you what else operation needs to be done after filtering out the data</li>
 </ul>
 <h3 id="whats-filesort">What&rsquo;s <code>filesort</code>?</h3>
 <p>The filesort operation is used to sort rows in a result set when the requested order cannot be fulfilled using an index or when sorting cannot be performed in memory.
@@ -610,6 +663,18 @@ It involves writing temporary data to disk and performing an external sorting al
 <li>Consider adjusting the MySQL configuration to increase the available memory for sorting operations, if feasible.</li>
 <li>Evaluate the possibility of adding or modifying indexes</li>
 </ul>
+<h1 id="sql-execution-order">SQL Execution order</h1>
+<ol>
+<li><code>FROM</code></li>
+<li><code>JOIN</code></li>
+<li><code>ON</code></li>
+<li><code>WHERE</code></li>
+<li><code>GROUP BY</code></li>
+<li><code>HAVING</code></li>
+<li><code>SELECT</code></li>
+<li><code>ORDER BY</code></li>
+<li><code>LIMIT</code></li>
+</ol>
 <h1 id="tablerow-lock-mysql-56-and-onwards">Table/Row lock (MySQL 5.6 and onwards)</h1>
 <blockquote>
 <ul>
@@ -680,6 +745,8 @@ It involves writing temporary data to disk and performing an external sorting al
 <li><a href="https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index">https://makandracards.com/makandra/10843-mysql-can-i-speed-up-like-queries-by-adding-an-index</a></li>
 <li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index">https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_covering_index</a></li>
 <li><a href="https://www.variables.sh/mysql-explain-plan-examples/">https://www.variables.sh/mysql-explain-plan-examples/</a></li>
+<li><a href="https://www.youtube.com/watch?v=BHwzDmr6d7s">https://www.youtube.com/watch?v=BHwzDmr6d7s</a></li>
+<li><a href="https://www.youtube.com/watch?v=NKakuDRExJE">https://www.youtube.com/watch?v=NKakuDRExJE</a></li>
 </ul>
 
 </article>

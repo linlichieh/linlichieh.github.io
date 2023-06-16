@@ -270,6 +270,20 @@
 <li>Partitioning: MySQL supports the syntax <code>PARTITION BY RANGE( store_id )</code></li>
 <li>Sharding: MySQL doesn&rsquo;t support it, but you can implement it at the application layer</li>
 </ul>
+<h3 id="query-a-partitioned-table-in-mysql">Query a partitioned table in mysql</h3>
+<ul>
+<li>Partition key <code>=</code> column in the <code>ORDER BY</code>
+<ul>
+<li>only read data from the relevant partitions, aka partition pruning</li>
+</ul>
+</li>
+<li>Partition key <code>!=</code> column in the <code>ORDER BY</code>
+<ul>
+<li>MySQL has to sort the results after retrieving data from the relevant partitions</li>
+</ul>
+</li>
+</ul>
+<p>If the query involves joining partitioned tables or combining data from multiple partitions, MySQL might create temporary tables to process the query</p>
 <h3 id="how-to-read-data-a-shard-server">How to read data a shard server?</h3>
 <p>Before sending a query, we need to determine the shard key so that we know which shard we want to query</p>
 <p>For example, use the hash function for user_id to get the shard key, then query the appropriate shard based on the shard key</p>
@@ -394,6 +408,39 @@ Cons</li>
 <li>designed for ready-heavy workloads</li>
 <li>suitable for horizontal scalling and distributed systems</li>
 </ul>
+<h1 id="aws-redshift-vs-mysql">AWS Redshift vs MySQL</h1>
+<ul>
+<li>Purpose
+<ul>
+<li>Redshift a large-scale Data Warehouse service for analytics purpose</li>
+<li>MySQL is a more general purpose database</li>
+</ul>
+</li>
+<li>Scaling
+<ul>
+<li>Redshift can handle petabyte-scale data</li>
+<li>MySQL performs efficiently when handling medium-to-large scale data</li>
+</ul>
+</li>
+</ul>
+<p>Redshift features</p>
+<ul>
+<li>Data Warehousing
+<ul>
+<li>Redshift is a data warehouse service and it&rsquo;s highly suitable for performing ETL (Extract, Transform, Load) operations.</li>
+</ul>
+</li>
+<li>Data Loading
+<ul>
+<li>Data is often loaded into Redshift from other AWS services like S3, DynamoDB, or data streams like Kinesis.</li>
+</ul>
+</li>
+<li>Real-Time Analytics
+<ul>
+<li>Redshift can be used in conjunction with other AWS services like Kinesis for real-time data streaming and analytics.</li>
+</ul>
+</li>
+</ul>
 <p>ref:</p>
 <ul>
 <li>chatGPT</li>
@@ -405,6 +452,7 @@ Cons</li>
 <li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76">https://docs.oracle.com/en/database/oracle/oracle-database/21/shard/query-processing-multi-shard-queries.html#GUID-E3CF0022-FA38-4DD0-A5D5-7A409EA45F76</a></li>
 <li><a href="https://www.youtube.com/watch?v=be6PLMKKSto">https://www.youtube.com/watch?v=be6PLMKKSto</a></li>
 <li><a href="https://www.youtube.com/watch?v=_Ss42Vb1SU4">https://www.youtube.com/watch?v=_Ss42Vb1SU4</a></li>
+<li><a href="https://hevodata.com/learn/redshift-mysql/">https://hevodata.com/learn/redshift-mysql/</a></li>
 </ul>
 
 </article>
