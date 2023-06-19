@@ -65,9 +65,9 @@
 </ul>
 <h1 id="use-cases">Use cases</h1>
 <ul>
-<li>RSA use asymmetric encryption</li>
-<li>AES use symmetrical encryption</li>
-<li>SSH and SSL use both symmetrical encryption and asymmetrical encryption</li>
+<li>RSA is an asymmetric encryption</li>
+<li>AES is a symmetrical encryption</li>
+<li>SSH and SSL both are symmetrical encryption and asymmetrical encryption</li>
 <li>SSH
 <ul>
 <li>Symmetrical encryption is used to encrypt the entire communication during a SSH Session.</li>
@@ -170,6 +170,14 @@
 <ul>
 <li>It is used to produce a checksum</li>
 <li>CRCs are used to detect errors after transmission or storage</li>
+</ul>
+</li>
+<li>HMAC (Hash-based Message Authentication Code)
+<ul>
+<li>can be used with symmetric encryption, but not asymmetric key)</li>
+<li>can be used with MD5, SHA-1, SHA-256 in combination with a secret shared key</li>
+<li>use a secret sahred key (the same key of symmetric encryption) for data integrity and authentication</li>
+<li>The purpose of HMAC is not just to ensure data integrity, but also to authenticate that the data came from the original sender</li>
 </ul>
 </li>
 </ul>
