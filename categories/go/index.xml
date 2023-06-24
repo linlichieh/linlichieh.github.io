@@ -82,10 +82,9 @@ Mac : sudo tar -C /usr/local -xzf go1.6.darwin-amd64.tar.gz
 如果要重安裝直接 remove /usr/local/go 再執行上面指令就可以了
 [3] Create essential folders 在家目錄下建立 go, 將外部套件與原始程式分離
 .bashrc(linux) / .bash_profile(mac) :
-export GOROOT=/usr/local/go export PATH=$PATH:$GOROOT/bin:$GOPATH/bin Linux exec : source ~/.bashrc
+export GOPATH=/Users/lij/go export GOROOT=/usr/local/go export PATH=$PATH:$GOROOT/bin:$GOPATH/bin Linux exec : source ~/.bashrc
 Mac exec : source ~/.bash_profile
-解壓縮完且 .bashrc 設定好以上就算安裝完成了, 可用 go version 測試是否安裝成功
-Upgrade go version 移除 /usr/local/go 將官網載下來的 go 解壓縮到 /usr/local Done!</description>
+解壓縮完且 .bashrc 設定好以上就算安裝完成了, 可用 go version 測試是否安裝成功</description>
     </item>
     
     <item>

@@ -256,6 +256,10 @@ docker rm $(docker ps -a -q)
 <p>在 Docker config 設定將 log 接到標準輸出</p>
 <pre><code>RUN ln -sf /dev/stdout /var/log/test.log
 </code></pre>
+<h3 id="container-1">container</h3>
+<p>Remove the stopped containers</p>
+<pre><code>docker container prune
+</code></pre>
 <h3 id="其他指令">其他指令</h3>
 <ul>
 <li><code>expose</code></li>
