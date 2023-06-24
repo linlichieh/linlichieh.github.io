@@ -351,16 +351,52 @@ SHELL [&quot;cmd&quot;, &quot;/S&quot;&quot;, &quot;/C&quot;]
 RUN echo hello
 </code></pre>
 <h1 id="docker-compose">docker-compose</h1>
-<p>啟動</p>
+<p>To start and run the app</p>
 <pre><code>docker-compose up -d
 </code></pre>
-<p>指定 config</p>
-<pre><code>docker-compose -f custom.yml up -d
-</code></pre>
-<p>Build or rebuild services specified in the Dockerfile</p>
+<p>Build/rebuild the service</p>
 <pre><code>docker-compose build
 </code></pre>
-<h3 id="config">config</h3>
+<p>Build/rebuild the service and run the app</p>
+<h3 id="mysql-server-and-client-login">mysql server and client login</h3>
+<p>docker-compose.yml</p>
+<pre><code>version: &quot;3&quot;
+services:
+  app:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - &quot;3306:3306&quot;
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+</code></pre>
+<p>Run</p>
+<pre><code>docker-compose up --build
+</code></pre>
+<p>Find the network name</p>
+<pre><code>docker network ls
+
+NETWORK ID     NAME                                     DRIVER    SCOPE
+2e31601337aa   myproject_mynetwork                      bridge    local
+</code></pre>
+<p>Connect to mysql server</p>
+<pre><code>docker run -it --network myproject_mynetwork mysql:latest mysql -hdb -uroot -p
+(no need to enter password)
+</code></pre>
+<h3 id="config-for-mysql-redis-and-phpmyadmin">config for mysql, redis and phpmyadmin</h3>
 <p>docker-compose.yml</p>
 <pre><code>version: &quot;2&quot;
 services:
@@ -402,7 +438,7 @@ volumes:
 <blockquote>
 <p>phpmyadmin: <code>http://localhost:8888</code></p>
 </blockquote>
-<h2 id="docker-swarm">Docker Swarm</h2>
+<h1 id="docker-swarm">Docker Swarm</h1>
 <p>A distributed system tool,used to manage a cluster of Docker engines, allows you to deploy your services.</p>
 <h3 id="features">Features</h3>
 <ul>
