@@ -38,7 +38,7 @@
     <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
-    <lastmod>2023-05-28T11:29:17+08:00</lastmod>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
   </url><url>
     <loc>/posts/cryptography/</loc>
     <lastmod>2014-12-05T11:52:58+08:00</lastmod>
@@ -50,13 +50,16 @@
     <lastmod>2017-05-20T18:53:13+08:00</lastmod>
   </url><url>
     <loc>/categories/database/</loc>
-    <lastmod>2017-05-20T18:56:16+08:00</lastmod>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
   </url><url>
     <loc>/posts/database/</loc>
     <lastmod>2014-10-29T10:24:54+08:00</lastmod>
   </url><url>
     <loc>/posts/database-memcached/</loc>
     <lastmod>2014-06-12T10:15:07+08:00</lastmod>
+  </url><url>
+    <loc>/posts/database-mongodb/</loc>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
   </url><url>
     <loc>/posts/database-mysql/</loc>
     <lastmod>2013-08-06T15:24:00+00:00</lastmod>
@@ -256,6 +259,9 @@
     <loc>/posts/messaging/</loc>
     <lastmod>2016-11-06T00:12:00+08:00</lastmod>
   </url><url>
+    <loc>/categories/mongodb/</loc>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
+  </url><url>
     <loc>/categories/mqtt/</loc>
     <lastmod>2016-10-20T14:38:29+08:00</lastmod>
   </url><url>
@@ -356,7 +362,7 @@
     <lastmod>2016-05-01T13:45:44+08:00</lastmod>
   </url><url>
     <loc>/posts/</loc>
-    <lastmod>2023-05-28T11:29:17+08:00</lastmod>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
   </url><url>
     <loc>/posts/process-manager/</loc>
     <lastmod>2014-10-29T00:27:20+08:00</lastmod>
@@ -443,7 +449,7 @@
     <lastmod>2016-05-13T08:29:59+08:00</lastmod>
   </url><url>
     <loc>/</loc>
-    <lastmod>2023-05-28T11:29:17+08:00</lastmod>
+    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
   </url><url>
     <loc>/categories/ssh/</loc>
     <lastmod>2013-07-21T16:03:00+00:00</lastmod>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mongodb on Software engineering notes</title>
+    <link>/categories/mongodb/</link>
+    <description>Recent content in mongodb on Software engineering notes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/categories/mongodb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Database - MongoDB</title>
+      <link>/posts/database-mongodb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database-mongodb/</guid>
+      <description>Commands enter into console
+mongo show databases
+show dbs switch to specific db
+use dev_db show collections (tables)
+show collections show structure
+db.room_inventories.find().pretty() There is no way to only view structure, must through a document. Choose one record from the list to view its structure. find does not retrieve all the data in a collection by default show index
+db.room_plan_rates.getIndexes() query documents
+db.room_plan_rates.find({ hotel_id: 192, plan_code: &#39;R1363HP19216916370545220559650-1&#39;, date: ISODate(&#39;2023-08-12&#39;) }).pretty() </description>
+    </item>
+    
+  </channel>
+</rss>

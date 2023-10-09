@@ -109,6 +109,22 @@ set flag123 0 86400 1 &amp;lt;= enter 1 &amp;lt;= enter STORED set flag123 0 864
     </item>
     
     <item>
+      <title>Database - MongoDB</title>
+      <link>/posts/database-mongodb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/database-mongodb/</guid>
+      <description>Commands enter into console
+mongo show databases
+show dbs switch to specific db
+use dev_db show collections (tables)
+show collections show structure
+db.room_inventories.find().pretty() There is no way to only view structure, must through a document. Choose one record from the list to view its structure. find does not retrieve all the data in a collection by default show index
+db.room_plan_rates.getIndexes() query documents
+db.room_plan_rates.find({ hotel_id: 192, plan_code: &#39;R1363HP19216916370545220559650-1&#39;, date: ISODate(&#39;2023-08-12&#39;) }).pretty() </description>
+    </item>
+    
+    <item>
       <title>Database - MySQL</title>
       <link>/posts/database-mysql/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

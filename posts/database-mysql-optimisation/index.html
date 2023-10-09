@@ -675,6 +675,30 @@ It involves writing temporary data to disk and performing an external sorting al
 <li><code>ORDER BY</code></li>
 <li><code>LIMIT</code></li>
 </ol>
+<h1 id="independent-subquery-vs-dependent-subquery">Independent Subquery vs Dependent Subquery</h1>
+<h3 id="independent-subquery">Independent Subquery</h3>
+<p>This type of subquery can be run independently of the outer query. It does not rely on information obtained from the outer query.
+It executes once for the entire main query and passes the result set to the main query. Here&rsquo;s an example:</p>
+<pre><code>SELECT employee_name
+FROM employees
+WHERE department_id IN (SELECT department_id FROM departments WHERE location = 'Chicago');
+</code></pre>
+<p>In this case, the subquery (<code>SELECT ...</code>) can be run independently of the outer query, and it returns a list of department IDs.
+This subquery executes once and its result is used by the main query.</p>
+<blockquote>
+<p>more performance-efficient</p>
+</blockquote>
+<h3 id="dependent-subquery">Dependent Subquery</h3>
+<p>This type of subquery relies on the outer query for its values. This means that the subquery is executed once for each row processed by the outer query. Here&rsquo;s an example:</p>
+<pre><code>SELECT e.employee_name
+FROM employees e
+WHERE EXISTS (SELECT 1 FROM departments d WHERE d.manager_id = e.employee_id AND d.location = 'Chicago');
+</code></pre>
+<p>In this case, the subquery (<code>SELECT ...</code>) is a dependent subquery because it uses <code>e.employee_id</code> from the outer query.
+This subquery executes once for each row in the outer query, checking if an employee is a manager of a department located in &lsquo;Chicago&rsquo;.</p>
+<blockquote>
+<p>more powerful and flexible because they can use values from the outer query</p>
+</blockquote>
 <h1 id="tablerow-lock-mysql-56-and-onwards">Table/Row lock (MySQL 5.6 and onwards)</h1>
 <blockquote>
 <ul>

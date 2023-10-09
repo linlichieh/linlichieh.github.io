@@ -169,6 +169,15 @@
     </item>
     
     <item>
+      <title>mongodb</title>
+      <link>/categories/mongodb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/mongodb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>mqtt</title>
       <link>/categories/mqtt/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

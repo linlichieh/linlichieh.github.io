@@ -520,7 +520,25 @@ users = users.includes(:user_groups)
 <pre><code>users = users.preload(:user_groups)
 </code></pre>
 <h3 id="eager_load-vs-includes-vs-preload">eager_load vs includes vs preload</h3>
-<p>TODO &hellip;</p>
+<blockquote>
+<p><code>includes</code> is similar to eager_load but smarter</p>
+</blockquote>
+<p>preload</p>
+<pre><code>User.preload(:friends).where(id: 1)
+SELECT * FROM users WHERE id = 1
+SELECT * FROM friends WHERE user_id in ( .... )
+</code></pre>
+<p>eager_load</p>
+<pre><code>User.preload(:friends).where(id: 1)
+SELECT *  FROM users LEFT JOIN friends ON user_id = user_id WHERE id = 1
+</code></pre>
+<p>eager_load (erroneous example)</p>
+<pre><code>User.preload(:friends).where(id: 1).where(friends: { name: 'Wang'})
+SELECT *  FROM users LEFT JOIN friends ON user_id = user_id WHERE id = 1 WHERE friends.name = 'Wang'
+</code></pre>
+<blockquote>
+<p>In this case, we can&rsquo;t use <code>eager_load</code>, because the second <code>where</code> is for friends</p>
+</blockquote>
 <h2 id="enum">Enum</h2>
 <p>models/users.rb</p>
 <pre><code>enum gender: {female: 0, male: 1}

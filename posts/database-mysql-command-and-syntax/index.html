@@ -247,9 +247,6 @@ CREATE TABLE `info` (
 <p>Display table detail</p>
 <pre><code>DESC table_name;
 </code></pre>
-<p>Show index of a table</p>
-<pre><code>SHOW INDEX FROM table_name;
-</code></pre>
 <p>Alter column</p>
 <pre><code>ALTER TABLE qq_tab CHANGE qq_col qq_col varchar(80) NOT NULL;
 </code></pre>
@@ -275,6 +272,12 @@ SET FOREIGN_KEY_CHECKS=1;
 </code></pre>
 <p>顯示 Table 的 Index</p>
 <pre><code>SHOW INDEX FROM users;
+</code></pre>
+<p>Before making an index unique, check first</p>
+<pre><code>SELECT column1, column2 FROM my_table GROUP BY column1, column2 HAVING COUNT(*) &gt; 1;
+</code></pre>
+<p>Show index of a table</p>
+<pre><code>SHOW INDEX FROM table_name;
 </code></pre>
 <p>刪除資料表內的所有資料,並且重置AUTO_INCREMENT</p>
 <pre><code>TRUNCATE TableName

@@ -20,7 +20,7 @@
     <h1>Ruby Basics</h1>
     
   </header>
-  <h2 id="變數">變數</h2>
+  <h1 id="變數">變數</h1>
 <p>以此例為例子</p>
 <pre><code>class Var
   def print
@@ -41,7 +41,7 @@ t.print
 <li><code>Name</code> : 常數 (大寫開頭, 不可重覆定義). 結果: 正常</li>
 </ul>
 <p>結論 : 定義在 class 內的變數必須是 全域, 類別或常數</p>
-<h2 id="宣告">宣告</h2>
+<h1 id="宣告">宣告</h1>
 <p>陣列</p>
 <pre><code>%w(i1 b2 c3 j4)                 # [&quot;i1&quot;, &quot;b2&quot;, &quot;c3&quot;, &quot;j4&quot;]
 
@@ -50,7 +50,7 @@ arr = {                         # {:A =&gt; 1, :B =&gt; 2 }
     'B' : 2,
 }
 </code></pre>
-<h2 id="基本-class-觀念">基本 class 觀念</h2>
+<h1 id="基本-class-觀念">基本 class 觀念</h1>
 <pre><code>class Foo
 
   def instance_method                           # instance method   (可以用 self 取 instance 的值)
@@ -78,7 +78,7 @@ puts a.instance_method      # instance_method 要先 new 才能使用
 puts Foo.class_method       # slef.class_method 不能 new, 可直接使用
 puts a.call_method          # Call 內部的 inside_method 不需加 `self.` prefix
 </code></pre>
-<h2 id="判斷">判斷</h2>
+<h1 id="判斷">判斷</h1>
 <blockquote>
 <p>0 及 empty 都是 TRUE, 只有 false 與 nil 才是 FALSE</p>
 </blockquote>
@@ -89,7 +89,7 @@ puts a.call_method          # Call 內部的 inside_method 不需加 `self.` pre
 <pre><code>(11..15).include? 15
 15.between?(11, 15)
 </code></pre>
-<h3 id="檔案相關">檔案相關</h3>
+<h1 id="檔案相關">檔案相關</h1>
 <p>Check directory in existence, Create folder</p>
 <pre><code>require 'fileutils'
 if File.directory?('/tmp/layer1')
@@ -110,7 +110,7 @@ end
 <pre><code>2.0.0-p247 :003 &gt; File.basename(&quot;/tmp/ruby_test/send/qq.php&quot;)
  =&gt; &quot;qq.php&quot;
 </code></pre>
-<h2 id="integer--float">Integer &amp; Float</h2>
+<h1 id="integer--float">Integer &amp; Float</h1>
 <p>小數第一位四捨五入</p>
 <pre><code>a = 633.633
 a.round(1)     # 633.6
@@ -133,14 +133,14 @@ a.round(1)     # 633.6
 <p>下一個數</p>
 <pre><code>2.next      # 3
 </code></pre>
-<h2 id="二元運算">二元運算</h2>
+<h1 id="二元運算">二元運算</h1>
 <pre><code>n &amp; num
 n | num
 n ^ num (XOR)
 n &lt;&lt; num (向左位移)
 n &gt;&gt; num (向右位移)
 </code></pre>
-<h2 id="rand">Rand</h2>
+<h1 id="rand">Rand</h1>
 <pre><code>rand(1..10)
 [true, false].sample
 </code></pre>
@@ -155,7 +155,7 @@ SecureRandom.base64(20)                 # WcLJKJzgibphbiXHKIeCsP8jtN8=
 <blockquote>
 <p>SecureRandom : This library is an interface for secure random number generator which is suitable for generating session key in HTTP cookies</p>
 </blockquote>
-<h2 id="字串處理">字串處理</h2>
+<h1 id="字串處理">字串處理</h1>
 <p>gsub</p>
 <pre><code>&quot;hello&quot;.gsub(/[aeiou]/, '*')                    # &quot;h*ll*&quot;
 &quot;hello&quot;.gsub(/([aeiou])/, '&lt;\1&gt;')               # &quot;h&lt;e&gt;ll&lt;o&gt;&quot;
@@ -173,7 +173,7 @@ SecureRandom.base64(20)                 # WcLJKJzgibphbiXHKIeCsP8jtN8=
 <pre><code>a = &quot;1234567890&quot;
 a[1..3]  # 234
 </code></pre>
-<h2 id="hash">Hash</h2>
+<h1 id="hash">Hash</h1>
 <p>key 是否存在</p>
 <pre><code>genders.has_key?(:male)
 </code></pre>
@@ -222,7 +222,7 @@ Call : a.instance_method aa: 'aa', bb: 'bb'
 <pre><code>hash = {1: 'one'} # will not work
 hash = {1 =&gt; 'one'} # will work
 </code></pre>
-<h2 id="array">Array</h2>
+<h1 id="array">Array</h1>
 <p>是否為 array</p>
 <pre><code>array.is_a?(Array)
 </code></pre>
@@ -317,18 +317,51 @@ items
 <p>insert 一筆到最前面</p>
 <pre><code>[1,3,6].unshift(5)              # [5, 1, 3, 6]
 </code></pre>
-<h2 id="json">json</h2>
-<p>string to json</p>
-<pre><code>JSON.parse(params[:JSONData])
-</code></pre>
-<h2 id="each">each</h2>
-<p>一行</p>
+<h1 id="data-process-for-array-or-hash">Data process for Array or Hash</h1>
+<h3 id="extract-columns-from-an-array-of-objects-and-make-them-an-array">Extract columns from an array of objects and make them an array</h3>
 <pre><code>cats.each(&amp;:name)
 cat_names = cats.map(&amp;:name)            # 相當於 each cat.name
 cats.each do |cat| cat.name end
 cats.each {|cat| cat.name }
 </code></pre>
-<h2 id="call-dynamic-method-name">Call Dynamic method name</h2>
+<h3 id="only-preserve-specific-columns-from-an-array-of-objects-and-make-them-an-array">only preserve specific columns from an array of objects and make them an array</h3>
+<p>example</p>
+<pre><code>[{id: 1, name: 'xxx', ….}, {id: 2, name: 'ccc', ….}]
+=&gt;
+[{id: 1, name: 'xxx'}, {id: 2, name: 'ccc'}]
+</code></pre>
+<p>code</p>
+<pre><code>@rooms.map { |room| [room.id, room.plan] }
+</code></pre>
+<h3 id="only-preserve-specific-columns-from-objects-of-a-hash-by-key">only preserve specific columns from objects of a hash by key</h3>
+<p>example</p>
+<pre><code>{
+  &quot;AAA&quot;: [{id: 1, name: 'one', age: 25}, {id:2, name: 'one', age: 25}],
+  &quot;BBB&quot;: [{id: 3, name: 'three', age: 30}, {id:4, name: 'three', age: 30}]
+}
+=&gt;
+{
+  &quot;AAA&quot;: [{id: 1}, {id:2}],
+  &quot;BBB&quot;: [{id: 3}, {id:4}]
+}
+</code></pre>
+<p>code</p>
+<pre><code>h.transform_values { |arr| arr.map { |room| {id: room.id} }  }
+</code></pre>
+<h3 id="count-items-for-each-key-of-a-hash">Count items for each key of a hash</h3>
+<p>example</p>
+<pre><code>{&quot;AAA&quot;: [RoomA, RoomB], &quot;BBB&quot;: [RoomA]}
+=&gt;
+{&quot;AAA&quot;: 2, &quot;BBB&quot;: 1}
+</code></pre>
+<p>code</p>
+<pre><code>data.transform_values { |value| value.size }
+</code></pre>
+<h1 id="json">json</h1>
+<p>string to json</p>
+<pre><code>JSON.parse(params[:JSONData])
+</code></pre>
+<h1 id="call-dynamic-method-name">Call Dynamic method name</h1>
 <blockquote>
 <p>Sometimes you might need a dynamic method, you can use <code>send</code></p>
 </blockquote>
@@ -355,19 +388,19 @@ send('test')
 &gt; meth.call() # call the size method
 =&gt; 9
 </code></pre>
-<h2 id="型態">型態</h2>
+<h1 id="型態">型態</h1>
 <p>Print variable type</p>
 <pre><code>3.class
  =&gt; Fixnum
 3.class.superclass
  =&gt; Integer
 </code></pre>
-<h2 id="加密">加密</h2>
+<h1 id="加密">加密</h1>
 <pre><code>Digest::SHA256.digest 'message'         # &quot;\xABS\n\x13\xE4Y\x14\x98+y\xF9\xB7\xE3\xFB\xA9\x94\xCF\xD1\xF3\xFB\&quot;\xF7\x1C\xEA\x1A\xFB\xF0+F\fm\x1D&quot;
 
 Digest::SHA256.hexdigest('message')     # ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d
 </code></pre>
-<h2 id="date-format">Date format</h2>
+<h1 id="date-format">Date format</h1>
 <h3 id="symbol">Symbol</h3>
 <ul>
 <li><code>%Y</code>: 2017
@@ -523,7 +556,46 @@ time_ago_in_words(Time.now)                                 # =&gt; less than a 
 from_time = Time.now - 3.days - 14.minutes - 25.seconds     # =&gt; 3 days
 distance_of_time_in_words('2015-09-16'.to_date, Date.today) # =&gt; 不到 1 分鐘
 </code></pre>
-<h2 id="progress-bar">Progress bar</h2>
+<h3 id="yield">yield</h3>
+<p>example</p>
+<pre><code>class TT
+  attr_accessor :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+
+def test(tt)
+  qq(tt) do |c|
+    puts 'c'
+    tt.name = '456'
+    puts 'd'
+  end
+end
+
+def qq(tt)
+  puts 'a'
+  puts tt.name
+  yield tt
+  puts 'yield'
+  puts tt.name
+  puts 'b'
+end
+
+tt = TT.new('123')
+test(tt)
+</code></pre>
+<p>result</p>
+<pre><code>a
+123
+c
+d
+yield
+456
+b
+</code></pre>
+<h1 id="progress-bar">Progress bar</h1>
 <p>簡易</p>
 <pre><code>10.times{|i| STDOUT.write &quot;\r#{i}&quot;; sleep 1}
 </code></pre>
@@ -548,7 +620,7 @@ distance_of_time_in_words('2015-09-16'.to_date, Date.today) # =&gt; 不到 1 分
 end
 puts &quot;\nDone!&quot;
 </code></pre>
-<h2 id="rake">Rake</h2>
+<h1 id="rake">Rake</h1>
 <p><a href="https://github.com/ruby/rake">Rake</a> 是像 C 語言的 Make 工具, 但是用 Ruby 寫的, 主要是用來執行預先寫好的腳本語言</p>
 <h3 id="依不同環境跑-tasks">依不同環境跑 tasks</h3>
 <p>lib/tasks/tasks.rake :</p>

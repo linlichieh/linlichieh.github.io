@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Database - MongoDB | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/database-mongodb/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>Database - MongoDB</h1>
+    
+  </header>
+  <h1 id="commands">Commands</h1>
+<p>enter into console</p>
+<pre><code>mongo
+</code></pre>
+<p>show databases</p>
+<pre><code>show dbs
+</code></pre>
+<p>switch to specific db</p>
+<pre><code>use dev_db
+</code></pre>
+<p>show collections (tables)</p>
+<pre><code>show collections
+</code></pre>
+<p>show structure</p>
+<pre><code>db.room_inventories.find().pretty()
+</code></pre>
+<ul>
+<li>There is no way to only view structure, must through a document. Choose one record from the list to view its structure.</li>
+<li><code>find</code> does not retrieve all the data in a collection by default</li>
+</ul>
+<p>show index</p>
+<pre><code>db.room_plan_rates.getIndexes()
+</code></pre>
+<p>query documents</p>
+<pre><code>db.room_plan_rates.find({ hotel_id: 192, plan_code: 'R1363HP19216916370545220559650-1', date: ISODate('2023-08-12') }).pretty()
+</code></pre>
+
+</article>
+
+
+
+</html>
