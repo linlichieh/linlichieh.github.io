@@ -2533,7 +2533,16 @@ fmt.Println(unsafe.Sizeof(a4))  // 4
 </code></pre>
 <h1 id="utf8">utf8</h1>
 <h3 id="count-size-of-utf8-string">Count size of UTF8 string</h3>
-<pre><code>utf8.RuneCountInString(&quot;世界&quot;)
+<pre><code>utf8.RuneCountInString(&quot;世界&quot;)    // 2
+</code></pre>
+<h3 id="read-unicode-characters">read unicode characters</h3>
+<pre><code>s := &quot;Hello, 世界!&quot;
+
+for i := 0; i &lt; len(s); {
+    char, width := utf8.DecodeRuneInString(s[i:])
+    fmt.Printf(&quot;Character at byte index %d: %c (Unicode: %U) %d\n&quot;, i, char, char, width)
+    i += width // move forward by the number of bytes read
+}
 </code></pre>
 <h1 id="reflect-1">reflect</h1>
 <h3 id="implementation-of-generics">Implementation of generics</h3>
