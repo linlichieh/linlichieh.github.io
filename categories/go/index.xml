@@ -123,9 +123,11 @@ go test -cover PASS coverage: 37.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/go-third-party-packages/</guid>
-      <description>redigo github.com/garyburd/redigo/redis Connect to redis server One connection
-conn, err := redis.Dial(&amp;quot;tcp&amp;quot;, &amp;quot;:6379&amp;quot;) if err != nil { panic(err) } defer conn.Close() Connection pool
-pool := &amp;amp;redis.Pool{ MaxIdle: 300, // Maximum number of idle connections in the pool. MaxActive: 5, // Maximum number of connections allocated by the pool at a given time. IdleTimeout: 20 * time.Second, // Close connections after remaining idle for this duration. Applications should set the timeout to a value less than the server&#39;s timeout.</description>
+      <description>Debugger Installation
+go get github.com/go-delve/delve/cmd/dlv Set breakpoint
+import &amp;quot;runtime&amp;quot; func someFunction() { // ... some code ... runtime.Breakpoint() // This will act as your breakpoint // ... more code ... } Run
+dlv debug yourprogram.go or
+dlv test Commands continue or c: Continue execution until the next breakpoint. step or s: Execute the next line of code. next or n: Continue to the next line in the current function. list or ls: Show source code.</description>
     </item>
     
   </channel>

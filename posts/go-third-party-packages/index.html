@@ -20,7 +20,41 @@
     <h1>Go Third-party Packages</h1>
     
   </header>
-  <h2 id="redigohttpsgithubcomgaryburdredigo"><a href="https://github.com/garyburd/redigo">redigo</a></h2>
+  <h1 id="debugger">Debugger</h1>
+<p>Installation</p>
+<pre><code>go get github.com/go-delve/delve/cmd/dlv
+</code></pre>
+<p>Set breakpoint</p>
+<pre><code>import &quot;runtime&quot;
+
+func someFunction() {
+    // ... some code ...
+
+    runtime.Breakpoint() // This will act as your breakpoint
+
+    // ... more code ...
+}
+</code></pre>
+<p>Run</p>
+<pre><code>dlv debug yourprogram.go
+</code></pre>
+<p>or</p>
+<pre><code>dlv test
+</code></pre>
+<h3 id="commands">Commands</h3>
+<ul>
+<li><code>continue</code> or <code>c</code>: Continue execution until the next breakpoint.</li>
+<li><code>step</code> or <code>s</code>: Execute the next line of code.</li>
+<li><code>next</code> or <code>n</code>: Continue to the next line in the current function.</li>
+<li><code>list</code> or <code>ls</code>: Show source code.</li>
+<li><code>print</code> or <code>p</code>: Evaluate and print an expression.</li>
+<li><code>exit</code> or <code>quit</code>: Exit the debugger.</li>
+</ul>
+<p>For example, print an variable</p>
+<pre><code>(dlv) p string(char)
+&quot;a&quot;
+</code></pre>
+<h1 id="redigohttpsgithubcomgaryburdredigo"><a href="https://github.com/garyburd/redigo">redigo</a></h1>
 <pre><code>github.com/garyburd/redigo/redis
 </code></pre>
 <h3 id="connect-to-redis-server">Connect to redis server</h3>
@@ -111,7 +145,7 @@ _, err := redis.Scan(vals, &amp;value)
 <pre><code>redisConn := redisPool.Get()
 defer redisConn.Close()
 </code></pre>
-<h2 id="goworker">goworker</h2>
+<h1 id="goworker">goworker</h1>
 <h3 id="介紹">介紹</h3>
 <p>Goworker 是 golang 的一套 job queue 的 package，它可以幫你達成這些事，它是使用 resque 的資料格式(resque 有固定的資料格式)，
 resque 是一套 Ruby 開發的 job queue，也有被其他的語言開發成該語言的版本，你可以把它當作是 golang 版的 resque，
@@ -198,7 +232,7 @@ func main() {
 <p>結果 :</p>
 <pre><code>worker 就會 print 那筆 job 的資料
 </code></pre>
-<h2 id="dump-for-debug---spewhttpsgithubcomdavecghgo-spew">Dump (for debug) - <a href="https://github.com/davecgh/go-spew">spew</a></h2>
+<h1 id="dump-for-debug---spewhttpsgithubcomdavecghgo-spew">Dump (for debug) - <a href="https://github.com/davecgh/go-spew">spew</a></h1>
 <pre><code>a := map[string]int64{}
 a[&quot;A&quot;] = 1
 a[&quot;B&quot;] = 2
@@ -211,7 +245,7 @@ debug.Dump(a)
  (string) (len=1) &quot;B&quot;: (int64) 2
 }
 </code></pre>
-<h2 id="gorequesthttpsgithubcomparnurzealgorequest"><a href="https://github.com/parnurzeal/gorequest">gorequest</a></h2>
+<h1 id="gorequesthttpsgithubcomparnurzealgorequest"><a href="https://github.com/parnurzeal/gorequest">gorequest</a></h1>
 <pre><code>agent := gorequest.New().CustomMethod(&quot;POST&quot;, &quot;url&quot;).Timeout(30 * time.Second)
 agent.Header = header               // 將 HEADER 以 map 型態傳進去
 agent.Send(post_data)               // POST 需要, GET 不用, 傳入 String
@@ -263,7 +297,7 @@ func checkErr(err error, msg string) {
     }
 }
 </code></pre>
-<h2 id="fasthttp">fasthttp</h2>
+<h1 id="fasthttp">fasthttp</h1>
 <p>效能比原生的 http 好</p>
 <pre><code>import (
     &quot;github.com/buaazp/fasthttprouter&quot;
@@ -296,7 +330,7 @@ if err != nil {
     os.Exit(1)
 }
 </code></pre>
-<h2 id="go-logginghttpsgithubcomopgo-logging"><a href="https://github.com/op/go-logging">go-logging</a></h2>
+<h1 id="go-logginghttpsgithubcomopgo-logging"><a href="https://github.com/op/go-logging">go-logging</a></h1>
 <p>一套 log 的 package 特色如下 :</p>
 <ul>
 <li>可以自由的設計 log format</li>
@@ -335,7 +369,7 @@ backend2Leveled.SetLevel(logging.ERROR, &quot;&quot;)
 // 註冊
 logging.SetBackend(backendFormatter, backend2Leveled)
 </code></pre>
-<h2 id="mux---api-routerhttpsgithubcomgorillamux"><a href="https://github.com/gorilla/mux">Mux - API Router</a></h2>
+<h1 id="mux---api-routerhttpsgithubcomgorillamux"><a href="https://github.com/gorilla/mux">Mux - API Router</a></h1>
 <pre><code>func main() {
     l, _ := net.Listen(&quot;tcp&quot;, &quot;:3333&quot;)
     r := mux.NewRouter()
@@ -347,7 +381,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(&quot;Time: &quot; + time.Now().Format(time.RFC1123)))
 }
 </code></pre>
-<h2 id="websocket">Websocket</h2>
+<h1 id="websocket">Websocket</h1>
 <p>(Updated on 8th March, 2014)</p>
 <p>目前主要 golang 的 websocket 套件有兩個, 分别是官方維護的 <a href="http://godoc.org/code.google.com/p/go.net/websocket">code.google.com/p/go.net/websocket</a>,</p>
 <p>及非官方版本的 <a href="http://www.gorillatoolkit.org/pkg/websocket">github.com/gorilla/websocket</a>, 我也不知道哪個比較好,</p>
