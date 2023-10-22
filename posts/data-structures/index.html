@@ -451,6 +451,58 @@ A   A A   A A   A A   A     A   A A   A A   A A   A         h=0
 </code></pre>
 <p>the time complexity is <code>O(n)</code></p>
 <p>the proof is too complicated to me, please see <a href="https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity">https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity</a> if you are interested in</p>
+<h5 id="demonstration-2">Demonstration</h5>
+<p>Start with the last node in the tree that has children (for a binary tree represented as an array, this is n/2 - 1 where n is the total number of nodes or the array&rsquo;s length)</p>
+<blockquote>
+<p>what if n is odd e.g. 15, which node should I start? indices must be integers, so you would round down and start with the node at index 6. In a 0-indexed array, this would be the 7th element of the array.</p>
+</blockquote>
+<p>Original</p>
+<pre><code>                  2                     &lt;- h=3
+                /   \
+              /       \
+            /           \
+          3               1             &lt;- h=2
+        /   \            /  \
+      7       4       11      9         &lt;- h=1
+    /  \    /  \     /  \    /  \
+   8   14  10   5   12   6  13  17      &lt;- h=0
+</code></pre>
+<p>Start with <code>h=1</code></p>
+<pre><code>                  2
+                /   \
+              /       \
+            /           \
+          3               1
+        /   \            /  \
+     14      10       12      17
+    /  \    /  \     /  \    /  \
+   8    7  4    5   11   6  13   9
+</code></pre>
+<p>Next, <code>h=2</code></p>
+<pre><code>                  2
+                /   \
+              /       \
+            /           \
+          14              17
+        /   \            /  \
+      8      10       12      13
+    /  \    /  \     /  \    /  \
+   3    7  4    5   11   6  1    9
+</code></pre>
+<blockquote>
+<p>some nodes are exchanged to bottom with more than once time</p>
+</blockquote>
+<p>Then, <code>h=3</code></p>
+<pre><code>                  17
+                /   \
+              /       \
+            /           \
+          14              13
+        /   \            /  \
+      8      10       12      9
+    /  \    /  \     /  \    /  \
+   3    7  4    5   11   6  1    2
+</code></pre>
 <h3 id="the-difference-between-siftup-and-sift-down">The difference between siftUp and sift Down</h3>
 <p>siftUp</p>
 <ul>
