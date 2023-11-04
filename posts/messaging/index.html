@@ -20,9 +20,35 @@
     <h1>Messaging API</h1>
     
   </header>
-  <h2 id="slack">Slack</h2>
-<h3 id="申請">申請</h3>
-<p><a href="https://api.slack.com/docs/oauth-test-tokens">登入後到此頁產生 token</a></p>
+  <h1 id="slack">Slack</h1>
+<ol>
+<li>Create a workplace</li>
+<li>Create a channel</li>
+<li>Set up an app <a href="https://api.slack.com/apps">https://api.slack.com/apps</a> (even you have alrady created a workplace)
+<ol>
+<li>Click on &ldquo;Your Apps&rdquo; in the top right corne</li>
+<li>Click on &ldquo;Create New App&rdquo; and finish the flow</li>
+<li>Click on &ldquo;OAuth &amp; Permissions&rdquo; on left menu
+<ul>
+<li>Section &lsquo;Scopes&rsquo;: <code>chat:write</code></li>
+<li>Section &lsquo;OAuth Tokens for Your Workspace&rsquo;
+<ul>
+<li>click &lsquo;Install to Workplace&rsquo;</li>
+<li>You will get a <strong>token</strong> which can be used by your app</li>
+<li>You will see your bot app is on the left menu of your slack app</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Invite bot app into the channel by tagging <code>@botName</code> and inviting it into the channel</li>
+</ol>
+</li>
+</ol>
+<p>Other docs</p>
+<ul>
+<li><a href="https://api.slack.com/docs/rate-limits">Rate Limits</a> in normal case, 1 msg per second</li>
+<li><a href="https://api.slack.com/legacy/oauth-scopes">Scope</a></li>
+</ul>
 <h3 id="golang-example">Golang example</h3>
 <blockquote>
 <p>使用 <a href="https://github.com/nlopes/slack">nlopes/slack</a> 這個 package</p>

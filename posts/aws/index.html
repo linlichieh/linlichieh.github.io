@@ -21,9 +21,9 @@
     
   </header>
   <p>(最後更新: 2016-04-27)</p>
-<h2 id="介紹">介紹</h2>
+<h1 id="介紹">介紹</h1>
 <p>AWS (Amazon Web Services) 是針對主機或 App 提供整套 solution 的雲端服務</p>
-<h2 id="installupgrade-aws-cli">Install/Upgrade AWS CLI</h2>
+<h1 id="installupgrade-aws-cli">Install/Upgrade AWS CLI</h1>
 <p>安裝</p>
 <pre><code>sudo pip install --upgrade awscli
 </code></pre>
@@ -43,7 +43,7 @@ sudo service awslogsd stop  // Amazon Linux 2
 <blockquote>
 <p>stop|restart|start</p>
 </blockquote>
-<h2 id="region--az">Region &amp; AZ</h2>
+<h1 id="region--az">Region &amp; AZ</h1>
 <ul>
 <li>region 是 Data Center 的集合</li>
 <li>AZ 與 AZ 至少隔70公里以上</li>
@@ -52,7 +52,7 @@ sudo service awslogsd stop  // Amazon Linux 2
 <li>每個 DC 是 25Tbps</li>
 <li>同一 region 我的帳號的 eu-west-1a 跟你的帳號的 eu-west-1a 不一定是同一個 AZ, 避免太多人選擇同一 AZ</li>
 </ul>
-<h2 id="iam">IAM</h2>
+<h1 id="iam">IAM</h1>
 <ul>
 <li>如果有很多開發者要共用一個 AWS 帳號, 這算是必用的服務</li>
 <li>可以針對不同開發者給與不同權限</li>
@@ -75,7 +75,7 @@ sudo service awslogsd stop  // Amazon Linux 2
 <li>在 QA 建立一個 IAM Role 選擇 Another AWS Account 填入 Prod account ID, 然候權限給予 <code>AdministratorAccess</code></li>
 <li>在 Prod Account 右上角選擇 Switch Role, 填入 QA Account ID 及上一步建立的 Role name</li>
 </ol>
-<h2 id="route-53">Route 53</h2>
+<h1 id="route-53">Route 53</h1>
 <p>DNS 服務, 使用上很直覺簡單. 一個 domain 可以對應多個 ip  (可以填 TW 及 US IP)</p>
 <h3 id="操作">[操作]</h3>
 <p>Create Hosted Zone</p>
@@ -109,7 +109,7 @@ sudo service awslogsd stop  // Amazon Linux 2
 <h3 id="internal-domain">Internal domain</h3>
 <p>如果建立 mysql 要使用 interntal domain e.g. mysql.xxx.local 指到那台 endpoint 要記得將它的 VPC 的 hostnames 打開，否則不會通</p>
 <p>不知道有沒有打開可以到 VPC 那個網段可以下面是否顯示 <code>DNS hostnames: yes</code></p>
-<h2 id="vpc">VPC</h2>
+<h1 id="vpc">VPC</h1>
 <ul>
 <li>切割 sub-net</li>
 <li>與 AZ 是沒關係的, 而是用 IP 去指定 AZ</li>
@@ -177,7 +177,7 @@ Auto-assign Public IP : Use subnet setting (Disable)   =&gt; 就算 Enabled 也�
 <li>在 VPC 主頁(不是 sidebar)下面就有個 Create VPN Connection, 必須要先建立 Private Gateway 才可以建立 VPN</li>
 <li>或者用兩個 EIP 的 EC2 用 VPN 軟體將兩個 VPC 連起來</li>
 </ul>
-<h2 id="ec2">EC2</h2>
+<h1 id="ec2">EC2</h1>
 <ul>
 <li>就像是一台 VPS 主機讓你使用, 不支援 IPv6, 裡面絕對不會有 AWS 程式跑在裡面 (阿里雲好像會)</li>
 <li>要注意的是在主機裡面設 iptables 是沒有用的, 必須在 <code>console -&gt; EC2 -&gt; Security group</code> 設定才算生效</li>
@@ -219,7 +219,7 @@ Auto-assign Public IP : Use subnet setting (Disable)   =&gt; 就算 Enabled 也�
 <p>以下會找出 EC2 tag Name: jenkins Value: my-services 的主機, 並把 private IP 取出來</p>
 <pre><code>/usr/bin/aws ec2 describe-instances --filter Name=tag:jenkins,Values=my-services --query 'Reservations[*].Instances[*].[PrivateIpAddress]' --region ap-southeast-1 | /usr/bin/jq -c '.[] | .[] | .[]'
 </code></pre>
-<h2 id="elb--alb">ELB / ALB</h2>
+<h1 id="elb--alb">ELB / ALB</h1>
 <h3 id="elb-http-https-and-tcp">ELB (HTTP, HTTPS, and TCP)</h3>
 <p>Load balance 服務, 可以將多台主機放在 Load balance 下, 做隨機或權重分配, 減輕單一 server 負擔</p>
 <p>可以設定接 HTTPS 內部再導向 HTTP, 內部都是走 VPC 的網段</p>
@@ -246,7 +246,7 @@ Auto-assign Public IP : Use subnet setting (Disable)   =&gt; 就算 Enabled 也�
 <li>public key certificate : .crt</li>
 <li>chain 貼上 <code>openssl x509 -inform PEM -in GC_bundle_SHA2.crt</code> 的結果 (bundle 是 伺服器 SSL 憑證 + 中繼憑證)</li>
 </ul>
-<h2 id="auto-scaling">Auto Scaling</h2>
+<h1 id="auto-scaling">Auto Scaling</h1>
 <ul>
 <li>可以針對網站設定 Policy, 當主機到達某個條件增/減機器 (EC2), 需搭配使用 ELB</li>
 </ul>
@@ -290,7 +290,7 @@ echo &quot;qq white into dd&quot; &gt; /tmp/dd
 <p>建立 Auto Scaling configuration 及 group, 並持續 put-metric-data 測試是否 scale 成功</p>
 </li>
 </ol>
-<h2 id="cloudwatch">CloudWatch</h2>
+<h1 id="cloudwatch">CloudWatch</h1>
 <p>監控 EC2 的狀態 (CPU usage, Network I/O ,etc..)</p>
 <h3 id="備註-2">[備註]</h3>
 <p>預設默認一些 cpu 使用, io 等資訊</p>
@@ -391,7 +391,7 @@ Monthly CloudWatch charges = $15 + $0 = $15 per month
 <h3 id="測試-alarm-的方式">測試 alarm 的方式</h3>
 <p>先在 sns 建立一個自已的 topic 設定 email 寄給自已做通知</p>
 <p>alarm 再指向這個 sns topic, 如果測試完成後再刪除這個 sns topic</p>
-<h2 id="ebs">EBS</h2>
+<h1 id="ebs">EBS</h1>
 <ul>
 <li>SSD 硬碟, EC2 透過 Network I/O 掛載進來</li>
 <li>我曾聽一個 AWS 講師說 : AWS 對硬碟的觀念是不管再好的硬碟都有壞的一天, 與其買很好的硬碟不如把備援系統做到最好, 所以他們不怕硬碟常常壞, 反而專注在備援上, 蠻特別的</li>
@@ -402,9 +402,9 @@ Monthly CloudWatch charges = $15 + $0 = $15 per month
 <p>如果 EC2 stop 再 start, 而 EC2 會換一台機器上, 所以 IS 就無法使用了, 但 EBS 則不受限制</p>
 <p>IS 不收錢, 提供比 EBS 更高的 io/ps 因為沒有網路</p>
 <p>一開始選擇 OS 時會標示他預設是使用 IS 還是 EBS, 但幾乎都是 EBS, 除非是在 AMI markets 就會看到有些是 IS 的</p>
-<h2 id="glacier">Glacier</h2>
+<h1 id="glacier">Glacier</h1>
 <p>存的資料不常使用, 能接受 3~5 小時的取回時間, 成本只有 s3 的 1/10, EX: 常用來封存 log 等等之類的久放但沒事不會拿出來的資料</p>
-<h2 id="rds">RDS</h2>
+<h1 id="rds">RDS</h1>
 <ul>
 <li>勾選 multi-AZ 會在另一個 AZ 做 slave, 當 master 斷了會將 slave 轉成 master, 而 master 大約會在 5 分鐘恢復</li>
 <li>快照 DB schema 或輩份</li>
@@ -493,7 +493,7 @@ R3.xlarge   2540
 <h3 id="slow-queryhttpsdocsawsamazoncomamazonrdslatestuserguideuser_logaccessconceptsmysqlhtml"><a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Concepts.MySQL.html">Slow query</a></h3>
 <p>在 instance 下的 Parameter group, 點進去輸入 slow, 看 slow_query_log 有沒有打開</p>
 <p>進入 mysql console 去 query mysql.slow_log, 參考 <a href="/posts/mysql/">Slow query</a></p>
-<h2 id="dynamo-db">Dynamo DB</h2>
+<h1 id="dynamo-db">Dynamo DB</h1>
 <ul>
 <li>No-sQSL, 性能保證, 使用 SSD, 請求可在 10 毫秒內完成, 也不會因資料量大而變慢</li>
 <li>無 DB 概念, 最多 256 個 TABLE</li>
@@ -510,7 +510,7 @@ R3.xlarge   2540
 <li>有像 Array 的型別，叫作 SS  表示為 { … }</li>
 <li>蠻特別的是你可以在 Update 過後傳回舊資料或更新後的資料，<a href="http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_UpdateItem.html#DDB-UpdateItem-request-ReturnValues">官方有定義幾種 type</a></li>
 </ul>
-<h2 id="elastic-cache">Elastic Cache</h2>
+<h1 id="elastic-cache">Elastic Cache</h1>
 <ul>
 <li>Cache 服務</li>
 <li>支援 memcache 及 redis</li>
@@ -519,7 +519,7 @@ R3.xlarge   2540
 <h3 id="操作-3">[操作]</h3>
 <p>先新增 Cache Subnet Groups, 把 VPC 的 Subnet 選進去</p>
 <p>Security Group 要開 6379 port</p>
-<h2 id="cloudfront">CloudFront</h2>
+<h1 id="cloudfront">CloudFront</h1>
 <ul>
 <li>CDN 服務</li>
 <li>s3 如果要 https 的話需要使用 cloudfront</li>
@@ -624,7 +624,7 @@ R3.xlarge   2540
 <p>目的: 如果 cloudfront 上的檔案還沒 expire, 你的靜態檔如果更新了, 但拉到也可能還會是舊的, 可以選擇手動將 cache 清掉</p>
 <pre><code>CloudFront Distributions -&gt; (選 ID，點進去) -&gt; Invalidations -&gt; Create Invalidation -&gt; 輸入要清除的 uri(也可以用 * 清掉全部) -&gt; Invalidate
 </code></pre>
-<h2 id="s3">S3</h2>
+<h1 id="s3">S3</h1>
 <ul>
 <li>For web (low latency)</li>
 <li>區域性服務 (跨AZ)</li>
@@ -759,7 +759,7 @@ aws s3 ls                                                       # bucket list
 <p>You can delete all files with the same prefix, but first you need to look them up with list_objects(), then you can batch delete them.</p>
 <p>ref : <a href="https://forums.aws.amazon.com/message.jspa?messageID=249514">https://forums.aws.amazon.com/message.jspa?messageID=249514</a></p>
 <p>刪除所有檔案, 目錄也會自動消失</p>
-<h2 id="sqs">SQS</h2>
+<h1 id="sqs">SQS</h1>
 <p>AWS SQS 是一套 Queue 的系統，儲存要處理的工作，通常都是一個 message 用 json encode 存進去，再來就是自已實作 worker 那一段再串 SQS。</p>
 <ul>
 <li>支援 across regions, 即使在特定 region 下建立的 Queue, 但是 URL 是公開的, 外部也可以做 enqueue</li>
@@ -770,7 +770,7 @@ aws s3 ls                                                       # bucket list
 <li>內建的 Retry 機制可以透過在 Web UI 或是用程式的方式中修改 Queue 的 attribute 來達到，我們可以利用程式去修改 RedrivePolicy 屬性；我們只需要去指定參數 maxReceiveCount (一個 message 最多被接收幾次)及 deadLetterTargetArn (當達到上限的次數後要把它移到哪一個 Queue)，其他就交給 SQS 了</li>
 <li>如何知道過去的 queue 有沒有屯積, 還是馬上就被取出? 看該 queue 的 monitoring 的 <code>ApproximateNumberOfMessagesVisible</code>, 最好的狀況是都是0, 代表這個 queue 沒有處理不完的 message</li>
 </ul>
-<h2 id="ses">SES</h2>
+<h1 id="ses">SES</h1>
 <ul>
 <li>寄 Email 服務</li>
 <li>根據 AWS 自己的說法, 因為 AWS 對寄送的郵件有做控管, 所以不太會被當作垃圾信</li>
@@ -792,7 +792,7 @@ Posted by Adrian@AWS on November 4, 2014 8:31:29 AM PST
 <p>寄信的時候你可以只指定 from, ses 會判斷 from 的 domain 並且使用對應的 SES ARN</p>
 <p>也可以指定 SES ARN 寄信，但其實沒那麼必要，因為 <code>from</code> 跟 <code>domain 的 SES ARN</code> 的 domain 必須要是一樣的，否則信會寄不出去</p>
 <p>當一封信收到後，<code>from</code> 跟 <code>signed-by</code> 一定會是一樣的</p>
-<h2 id="cloud-formation">Cloud Formation</h2>
+<h1 id="cloudformation">CloudFormation</h1>
 <p>將 region 下所有的主機資訊輸出成 JSON, 如果下次要重 build 一個環境可以直接執行, 但記得要改參數</p>
 <h3 id="操作-4">[操作]</h3>
 <ol>
@@ -804,25 +804,34 @@ Posted by Adrian@AWS on November 4, 2014 8:31:29 AM PST
 </ol>
 <h3 id="無法解決">無法解決</h3>
 <p>Security Group 的 outbound 0.0.0.0/0 一直出現 <code>AWS::EC2::SecurityGroupEgress</code> <code>Encountered unsupported property CidrIP</code>, 找不出解決方法, 最後就放棄使用 CloudFormation 了</p>
-<h2 id="opsworks">Opsworks</h2>
+<h1 id="ecs">ECS</h1>
+<ol>
+<li>Create Cluster
+<ul>
+<li>If it failed, you need to go to CloudFormation to delete that stack becuase it uses CloudFormation under the hood</li>
+</ul>
+</li>
+<li>Create a Task Definition</li>
+</ol>
+<h1 id="opsworks">Opsworks</h1>
 <ul>
 <li>Deploy 大量主機</li>
 <li>Configuration Management 管理設定檔, 一次修改多個 config 及升級</li>
 </ul>
-<h2 id="elastic-beanstalk">Elastic Beanstalk</h2>
+<h1 id="elastic-beanstalk">Elastic Beanstalk</h1>
 <p>可以起一個 web server 並且放在 auto scaling 下, 或者是選擇一個 docker file</p>
 <p>並且選擇要如何更新 server, 有兩種方法,</p>
 <ol>
 <li>一種是百分比的, 如果是 30%, 那麼 AWS 就會以一次 shutdown 30% 的主機, 進行更新</li>
 <li>另種是一次幾台, 如果是一次一台的話, 那麼就會一台一台更新</li>
 </ol>
-<h2 id="cognito">Cognito</h2>
+<h1 id="cognito">Cognito</h1>
 <p>不需要煩惱及建置後端架構, 透過此服務即可達到 mobile 互相交換訊息</p>
-<h2 id="mobile-analytics">Mobile Analytics</h2>
+<h1 id="mobile-analytics">Mobile Analytics</h1>
 <p>Mobile 的 GA</p>
-<h2 id="cloudtrail">CloudTrail</h2>
+<h1 id="cloudtrail">CloudTrail</h1>
 <p>AWS console log</p>
-<h2 id="lambda">Lambda</h2>
+<h1 id="lambda">Lambda</h1>
 <ul>
 <li>像 IFTTT 是一個 event trigger 的服務</li>
 <li>例如 s3 一有上傳觸發一個你的 function</li>
@@ -851,9 +860,9 @@ Posted by Adrian@AWS on November 4, 2014 8:31:29 AM PST
 <li>每個 Table 都一定有一個主鍵，第二鍵則是 optional 的</li>
 <li>如果你要 query 的欄位不是主鍵那就要加 index</li>
 </ul>
-<h2 id="sms">SMS</h2>
+<h1 id="sms">SMS</h1>
 <p>寄 簡訊</p>
-<h2 id="sns">SNS</h2>
+<h1 id="sns">SNS</h1>
 <ul>
 <li>可以推送 notification 到手機(支援 APN, GCM 等等..)</li>
 <li>它不算是完整的 messaging service, 只有 aws 特定服務才可以 sub, 但觸發的 endpoint 就蠻多樣的 e.g. email, lambda, endpoint, etc.</li>
@@ -912,7 +921,7 @@ Posted by Adrian@AWS on November 4, 2014 8:31:29 AM PST
 <blockquote>
 <p>android 不會有這個問題</p>
 </blockquote>
-<h2 id="kinesis">Kinesis</h2>
+<h1 id="kinesis">Kinesis</h1>
 <p>主要是用來做 log 收集及分析, 跟 Apache Kafka 做的事情很類似</p>
 <blockquote>
 <p><a href="https://aws.amazon.com/tw/real-time-data-streaming-on-aws/">Kinesis vs Kafka</a></p>
@@ -1047,7 +1056,7 @@ FROM &ldquo;SOURCE_SQL_STREAM_001&rdquo; WHERE &ldquo;price&rdquo; &gt; 80</p>
 <li>CN <a href="https://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample">https://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample</a></li>
 <li><a href="https://aws.amazon.com/cn/blogs/china/cloudwatch-logs-kinesis-firehose-athena-quicksight-amazon-aurora/">https://aws.amazon.com/cn/blogs/china/cloudwatch-logs-kinesis-firehose-athena-quicksight-amazon-aurora/</a></li>
 </ul>
-<h2 id="other">Other</h2>
+<h1 id="other">Other</h1>
 <h3 id="安裝-aws-cli-tool">安裝 AWS CLI tool</h3>
 <pre><code>$ curl &quot;https://s3.amazonaws.com/aws-cli/awscli-bundle.zip&quot; -o &quot;awscli-bundle.zip&quot;
 $ unzip awscli-bundle.zip

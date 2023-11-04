@@ -12,12 +12,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/posts/messaging/</guid>
-      <description>Slack 申請 登入後到此頁產生 token
-Golang example 使用 nlopes/slack 這個 package
-填入 Token 並 New 它的 client
-api := slack.New(&amp;quot;xoxp-5*******************************************************************a&amp;quot;) Group
-groups, err := api.GetGroups(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, group := range groups { fmt.Printf(&amp;quot;ID: %s, Name: %s\n&amp;quot;, group.ID, group.Name) } Channel
-channels, err := api.GetChannels(false) if err != nil { fmt.Printf(&amp;quot;%s\n&amp;quot;, err) return } for _, channel := range channels { fmt.Printf(&amp;quot;Name: %s, ID: %s\n&amp;quot;, channel.</description>
+      <description>Slack Create a workplace Create a channel Set up an app https://api.slack.com/apps (even you have alrady created a workplace) Click on &amp;ldquo;Your Apps&amp;rdquo; in the top right corne Click on &amp;ldquo;Create New App&amp;rdquo; and finish the flow Click on &amp;ldquo;OAuth &amp;amp; Permissions&amp;rdquo; on left menu Section &amp;lsquo;Scopes&amp;rsquo;: chat:write Section &amp;lsquo;OAuth Tokens for Your Workspace&amp;rsquo; click &amp;lsquo;Install to Workplace&amp;rsquo; You will get a token which can be used by your app You will see your bot app is on the left menu of your slack app Invite bot app into the channel by tagging @botName and inviting it into the channel Other docs</description>
     </item>
     
   </channel>

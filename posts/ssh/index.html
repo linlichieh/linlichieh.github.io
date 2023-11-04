@@ -89,6 +89,9 @@ ssh -p 2222 test@localhost
 <blockquote>
 <p>AWS Ubuntu 主機預設 User 叫 ubuntu</p>
 </blockquote>
+<h3 id="generate-public-key-from-private-key-pem">Generate public key from private key (<code>.pem</code>)</h3>
+<pre><code>ssh-keygen -y -f your-app.pem &gt; your-app.pub
+</code></pre>
 <h3 id="在同一台主機避免跟同事用到同一個-session-方法">在同一台主機避免跟同事用到同一個 session 方法</h3>
 <p>可在 .bashrc 設定 :</p>
 <pre><code>sssh (){ ssh -t &quot;$1&quot; 'tmux attach -t test || tmux new -s test || screen -DR'; }
