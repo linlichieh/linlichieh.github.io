@@ -493,6 +493,15 @@ git pull upstream master
 <p>show remote origin list</p>
 <pre><code>git remote -v
 </code></pre>
+<h3 id="update-local-repo-and-remote-repo-on-github">Update local repo and remote repo on github</h3>
+<ol>
+<li>Update github repo via settings</li>
+<li><code>git remote set-url origin git@github.com:username/your-repo.git</code></li>
+<li><code>git remote -v</code> to check if it&rsquo;s all set</li>
+<li>rename local folder</li>
+<li>done</li>
+<li>(optional for go project) update module name in <code>go.mod</code></li>
+</ol>
 <h1 id="rev-parse">rev-parse</h1>
 <p>latest commit hash</p>
 <pre><code>git rev-parse HEAD
