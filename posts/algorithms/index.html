@@ -1399,7 +1399,7 @@ The algorithm continues until the target value is found or the search interval i
 </li>
 <li>more difficult to understand and debug</li>
 </ul>
-<h1 id="other-algorithms">Other algorithms</h1>
+<h1 id="other-sorting-algorithms">Other sorting algorithms</h1>
 <ul>
 <li>Tree sort
 <ul>
@@ -1427,6 +1427,22 @@ The algorithm continues until the target value is found or the search interval i
 </ul>
 </li>
 <li>Dijkstra</li>
+</ul>
+<h1 id="leetcode-techniques">Leetcode techniques</h1>
+<h3 id="cumulative-sum">Cumulative Sum</h3>
+<p>A cumulative sum is a sequence of partial sums of a given sequence. For an array of numbers, the cumulative sum at a certain index is the sum of all elements up to that index.</p>
+<p>If nums is <code>[a, b, c, d]</code>, the cumulative sum array would be <code>[a, a+b, a+b+c, a+b+c+d]</code>.</p>
+<p>For example, the original input:</p>
+<pre><code>[1, 2, 3, 4]
+</code></pre>
+<p>cumulative sum array:</p>
+<pre><code>[1, 3, 6, 10]
+</code></pre>
+<p>Once you have the cumulative sum array, you can quickly calculate the sum of any subarray from index i to j.</p>
+<p>For example</p>
+<ul>
+<li>what&rsquo;s the sum of 1 to 3? Ans: 1 to 3 is cumulativeSum[3] - cumulativeSum[0], which equals 10 - 1 = 9</li>
+<li>what&rsquo;s the sum of 2 to 3? Ans: 2 to 3 is cumulativeSum[3] - cumulativeSum[1], which equals 10 - 3 = 7</li>
 </ul>
 <h1 id="terms">Terms</h1>
 <h3 id="dynamic-programming">Dynamic Programming</h3>
