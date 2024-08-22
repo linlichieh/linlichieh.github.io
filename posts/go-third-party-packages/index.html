@@ -54,6 +54,109 @@ func someFunction() {
 <pre><code>(dlv) p string(char)
 &quot;a&quot;
 </code></pre>
+<h3 id="integrate-with-air-and-vscode">Integrate with air and VScode</h3>
+<p><code>.air.toml</code>:</p>
+<pre tabindex="0"><code># Config file for air
+[build]
+  # -gcflags=&#39;all=-N -l&#39; is crucial for dlv showing values of variables correctly in VARIABLE panel on VScode
+  cmd = &#34;go build -gcflags=&#39;all=-N -l&#39; -o ./tmp/main .&#34;
+  bin = &#34;tmp/main&#34;
+  full_bin = &#34;dlv exec ./tmp/main --headless=true --listen=:2345 --api-version=2 --accept-multiclient --log --continue tmp/main --&#34;
+  include_ext = [&#34;go&#34;, &#34;tpl&#34;, &#34;tmpl&#34;, &#34;html&#34;]
+  exclude_dir = [&#34;assets&#34;, &#34;tmp&#34;, &#34;vendor&#34;]
+  exclude_file = []
+  follow_symlink = true
+  root = &#34;.&#34;
+  tmp_dir = &#34;tmp&#34;
+  build_delay = 200
+  kill_delay = 500
+  include_dir = []
+
+[log]
+  color = true
+  timestamp = false
+
+[notify]
+  interval = 500
+  medium = &#34;log&#34;
+
+[live]
+  full = true
+  live_delay = 1000
+  delay = 1000
+
+[cmd]
+  hook = &#34;sh -c &#39;go generate ./...&#39;&#34;
+  watch = false
+  shell = &#34;/bin/sh&#34;
+</code></pre><p>docker-compose.yml</p>
+<pre tabindex="0"><code>ports:
+  - &#34;3000:3000&#34;
+  - &#34;2345:2345&#34;
+</code></pre><p>Dockerfile:</p>
+<pre tabindex="0"><code>FROM golang:1.22-alpine
+
+# Install air for live reloading
+RUN go install github.com/air-verse/air@latest
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and go.sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Command to run air for live reloading
+CMD [&#34;air&#34;]
+</code></pre><p><code>launch.json</code> in VScode</p>
+<pre tabindex="0"><code>{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    &#34;version&#34;: &#34;0.2.0&#34;,
+    &#34;configurations&#34;: [
+        {
+            &#34;name&#34;: &#34;Attach to Delve&#34;,
+            &#34;type&#34;: &#34;go&#34;,
+            &#34;request&#34;: &#34;attach&#34;,
+            &#34;mode&#34;: &#34;remote&#34;,
+            &#34;remotePath&#34;: &#34;/app&#34;, // Path inside the container
+            &#34;port&#34;: 2345, // Delve listening port
+            &#34;host&#34;: &#34;127.0.0.1&#34;, // Usually localhost unless you&#39;re connecting to a remote server
+            &#34;apiVersion&#34;: 2,
+            &#34;showLog&#34;: true,
+            &#34;trace&#34;: &#34;verbose&#34;
+        }
+    ]
+}
+</code></pre><p>After launching container, you can use <code>lsof -i :2345</code> to check if dlv is running successfully</p>
+<p>How to debug?</p>
+<ol>
+<li>Make sure VScode connect to dlv successfully
+<ol>
+<li>Open Debug panel on sidebar or pressing Cmd+Shift+D</li>
+<li>Open DEBUG CONSOLE on bottom menu</li>
+<li>Press F5 to connect to dlv, you shonldn&rsquo;t see any error</li>
+</ol>
+</li>
+<li>Set the breakpoint at your desired line
+<ul>
+<li>You will see <code>SetBreakPointsResponse</code> in DEBUG CONSOLE</li>
+</ul>
+</li>
+<li>Then run the code to hit the breakpoint
+<ul>
+<li>You will see the code that stops at that line in highlight mode</li>
+</ul>
+</li>
+<li>You can check the value of the variable by hovering over it</li>
+</ol>
 <h1 id="redigohttpsgithubcomgaryburdredigo"><a href="https://github.com/garyburd/redigo">redigo</a></h1>
 <pre><code>github.com/garyburd/redigo/redis
 </code></pre>
