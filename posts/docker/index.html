@@ -589,7 +589,15 @@ docker service create --name nginx --network {network name} -p 1080:80 nvbeta/sw
 <p>If adding below into Dockerfile doesn&rsquo;t work, make sure running <code>docker build --no-cache .</code> before <code>docker-compose up --build</code></p>
 <pre><code>RUN chmod +x /usr/src/app/wait-for-it.sh
 </code></pre>
-
+<h3 id="if-docker-is-loading-forever-and-cant-be-launched">If docker is loading forever and can&rsquo;t be launched:</h3>
+<ol>
+<li>Move docker from application to trash bin</li>
+<li>Remove this file</li>
+</ol>
+<pre tabindex="0"><code>rm -rf ~/Library/Containers/com.docker.docker
+rm -rf ~/Library/Application\ Support/Docker\ Desktop
+rm -rf ~/Library/Group\ Containers/group.com.docker
+</code></pre>
 </article>
 
 
