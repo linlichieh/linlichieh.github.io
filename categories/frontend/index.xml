@@ -22,5 +22,18 @@ console.log(&#39;1); setTimeout(() =&amp;gt; { console.log(&#39;2&#39;); }, 2000
 console.log(&#39;1&#39;) goes to CALL STACK and gets run setTimeout() goes to CALL STACK and gets run setTimeout() isn&amp;rsquo;t part of Js and pops out of CALL STACK then goes to WEB API WEB API starts a timer with 2 seconds console.</description>
     </item>
     
+    <item>
+      <title>React.js</title>
+      <link>/posts/reactjs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/reactjs/</guid>
+      <description>Develop react.js without node.js 1 ) Initialize a react app
+Run a node container to install react app. It&amp;rsquo;s important to mount the current work space to container volume so that the created react app folder will be in local folder as well.
+Run docker container run -it -v &amp;quot;$(pwd):/app&amp;quot; -w /app node:22 bash
+-w /app = WORKDIR /app -v &amp;quot;$(pwd):/app&amp;quot; = volumes .:/app
+Then you will enter the container.</description>
+    </item>
+    
   </channel>
 </rss>

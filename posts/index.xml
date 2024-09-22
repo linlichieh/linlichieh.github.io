@@ -1339,6 +1339,19 @@ Device 選擇 SD 卡, 按 write, 就會進行燒錄了
     </item>
     
     <item>
+      <title>React.js</title>
+      <link>/posts/reactjs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/reactjs/</guid>
+      <description>Develop react.js without node.js 1 ) Initialize a react app
+Run a node container to install react app. It&amp;rsquo;s important to mount the current work space to container volume so that the created react app folder will be in local folder as well.
+Run docker container run -it -v &amp;quot;$(pwd):/app&amp;quot; -w /app node:22 bash
+-w /app = WORKDIR /app -v &amp;quot;$(pwd):/app&amp;quot; = volumes .:/app
+Then you will enter the container.</description>
+    </item>
+    
+    <item>
       <title>Regular Expression</title>
       <link>/posts/regular-expression/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

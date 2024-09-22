@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>React.js | Software engineering notes</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.104.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="canonical" href="/posts/reactjs/">
+<link rel="alternate" type="application/rss+xml" href="" title="Software engineering notes">
+
+<header>
+  
+    <a href="/" class="title">Software engineering notes</a>
+  
+  
+</header>
+
+<article>
+  <header>
+    <h1>React.js</h1>
+    
+  </header>
+  <h1 id="develop-reactjs-without-nodejs">Develop react.js without node.js</h1>
+<p>1 ) Initialize a react app</p>
+<p>Run a node container to install react app. It&rsquo;s important to mount the current work space to container volume so that the created react app folder will be in local folder as well.</p>
+<p>Run <code>docker container run -it -v &quot;$(pwd):/app&quot; -w /app node:22 bash</code></p>
+<blockquote>
+<p><code>-w /app</code> = <code>WORKDIR /app</code>
+<code>-v &quot;$(pwd):/app&quot;</code> = <code>volumes .:/app</code></p>
+</blockquote>
+<p>Then you will enter the container.</p>
+<p>Next, use the <code>vite</code> to create react app</p>
+<p>Run <code>npm create vite@latest</code> and finish below</p>
+<ol>
+<li>Project name: react-app-demo</li>
+<li>Select a framework: React</li>
+<li>Select a variant: TypeScript</li>
+</ol>
+<p>Run:</p>
+<pre tabindex="0"><code>cd react-app-demo
+npm install
+npm run dev
+
+  VITE v5.4.7  ready in 124 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+</code></pre><blockquote>
+<p>The default port of the app is <code>:5173</code></p>
+</blockquote>
+<p>Once you see <code>➜  Local:   http://localhost:5173/</code> like above in the console, it means that the react is running successfully and you can quit the container.</p>
+<p>2 ) Create docker files in react app folder</p>
+<p>Dockerfile:</p>
+<pre tabindex="0"><code>FROM node:22
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 5173
+CMD [&#34;npm&#34;, &#34;run&#34;, &#34;dev&#34;, &#34;--&#34;, &#34;--host&#34;]
+</code></pre><p>docker-compose.yml:</p>
+<pre tabindex="0"><code>services:
+  react-app:
+    build: .
+    ports:
+      - &#34;5173:5173&#34;
+    volumes:
+      - .:/app
+</code></pre><p>Run <code>docker compose up</code></p>
+<p>Open your browser and open <code>http://localhost:5173/</code>.</p>
+<p>If you see <code>Vite + React</code> in the page, it meens that you are running react on your local successfully.</p>
+
+</article>
+
+
+
+</html>

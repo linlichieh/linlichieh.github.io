@@ -32,7 +32,7 @@
     <lastmod>2014-09-03T12:36:07+08:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
-    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
   </url><url>
     <loc>/posts/cryptography/</loc>
     <lastmod>2014-12-05T11:52:58+08:00</lastmod>
@@ -95,7 +95,7 @@
     <lastmod>2023-02-21T02:01:12+08:00</lastmod>
   </url><url>
     <loc>/categories/frontend/</loc>
-    <lastmod>2013-10-01T22:21:00+00:00</lastmod>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
   </url><url>
     <loc>/posts/frontend/</loc>
     <lastmod>2013-10-01T22:21:00+00:00</lastmod>
@@ -356,7 +356,7 @@
     <lastmod>2016-05-01T13:45:44+08:00</lastmod>
   </url><url>
     <loc>/posts/</loc>
-    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
   </url><url>
     <loc>/posts/process-manager/</loc>
     <lastmod>2014-10-29T00:27:20+08:00</lastmod>
@@ -415,6 +415,12 @@
     <loc>/categories/raspberrypi/</loc>
     <lastmod>2014-12-16T13:02:45+08:00</lastmod>
   </url><url>
+    <loc>/posts/reactjs/</loc>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
+  </url><url>
+    <loc>/categories/reactjs/</loc>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
+  </url><url>
     <loc>/categories/regex/</loc>
     <lastmod>2013-01-16T18:10:00+00:00</lastmod>
   </url><url>
@@ -443,7 +449,7 @@
     <lastmod>2016-05-13T08:29:59+08:00</lastmod>
   </url><url>
     <loc>/</loc>
-    <lastmod>2023-10-09T13:23:37+08:00</lastmod>
+    <lastmod>2024-09-22T14:27:33+08:00</lastmod>
   </url><url>
     <loc>/categories/ssh/</loc>
     <lastmod>2013-07-21T16:03:00+00:00</lastmod>
